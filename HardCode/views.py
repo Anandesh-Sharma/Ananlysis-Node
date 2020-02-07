@@ -1,3 +1,9 @@
 from django.shortcuts import render
-from rest_framework. import
-# Create your views here.
+from django.views.generic.base import View
+
+from .middleware.cibil_analysis_middleware import get_something
+
+
+class CibilAnalysis(View):
+    def get(self,requst):
+        return "haha"
