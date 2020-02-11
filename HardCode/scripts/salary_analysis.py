@@ -379,28 +379,7 @@ def get_time(data):
         data['timestamp'].values[i]=x
   return data
 
-def salary_check(file):
-  import json
-## READING JSON FILE AND CHANGING IN DATAFRAME
-  with open(file,'r') as f:
-    d = json.load(f)
-
-  name = f.name.split('/')[-1].split('.')[0]   #GETTING cust_id TO ADD AS COLUMN
-  d = pd.DataFrame(d)
-  d = d.transpose()
-  d['timestamp'] = d.index
-  d['cust_id'] = d.index
-  for i in range(d.shape[0]):
-    d['timestamp'][i] = datetime.utcfromtimestamp(int(d.index[i])/1000).strftime('%Y-%m-%d %H:%M:%S')
-    d['cust_id'][i] = name     #Appending  cust_id as column in dataframe
-  d.reset_index(inplace=True)
-  d = d.drop('index',axis=1)
-  d = d.sort_index(axis=1)
-  columns_titles = ['cust_id','timestamp','body','sender','read']
-  d=d.reindex(columns=columns_titles)
-  #data=pd.read_csv(file)
-  #print(data)
-  data = cleaning(d)
+def salary_check(data):
   grouper = pd.Grouper(key='timestamp', freq='M')
   data = get_time(data)
   var1=True
@@ -415,6 +394,7 @@ def salary_check(file):
   if (df_salary[-1]!=0):
      salary=df_salary[-1]
      var1=False
+     var2=False
   
   if var1:
     data = get_salary(data)
@@ -432,12 +412,13 @@ def salary_check(file):
 
     df_final_sal=pd.DataFrame(df_credit.tail())
     
-    print(df_final_sal)
+    #print(df_final_sal)
     
     if df_final_sal.shape[0]>1:
       if((df_final_sal["credit_amount"][-1]!=0) and (df_final_sal["credit_amount"][-2]!=0)):
       
         real_money = list(df_final_sal['credit_amount'])[::-1]
+        print(real_money)
         month=[w.month for w in list(df_final_sal.index)][::-1]
         a1=True
         a2=False
@@ -450,13 +431,13 @@ def salary_check(file):
               list_date.append(data['timestamp'][i])
               a1=False
               a2=True
-          elif a2:
+          if a2:
             if data['credit_amount'][i]==real_money[1]:
-              if data['timestamp'][i].month == month[1]:    
-                list_date.append(data['timestamp'][i])
-                a2=False
-                a3=True
-                break
+              #if data['timestamp'][i].month == month[1]:    
+              list_date.append(data['timestamp'][i])
+              #a2=False
+              #a3=True
+              break
           '''elif a3:
             if data['credit_amount'][i]==real_money[2]:
               if data['TIMESTAMP'][i].month == month[2]:    
@@ -465,13 +446,13 @@ def salary_check(file):
         
 
           from datetime import timedelta
-        
+        print(list_date)
         time1=list_date[0]+timedelta(days=34)
         time2=list_date[0]-timedelta(days=34)
-
-
         val1=df_final_sal["credit_amount"][-1]+df_final_sal["credit_amount"][-1]/4
         val2=df_final_sal["credit_amount"][-1]-df_final_sal["credit_amount"][-1]/4
+        
+        
         if (time2<list_date[1]<time1):
           if (val2<df_final_sal["credit_amount"][-2]<val1):
             salary=(df_final_sal["credit_amount"][-1]+df_final_sal["credit_amount"][-2])/2
@@ -481,3 +462,4 @@ def salary_check(file):
 
             
   return salary
+
