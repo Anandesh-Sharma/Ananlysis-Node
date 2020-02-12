@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-
+from datetime import timedelta
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -67,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'analysisnode.wsgi.application'
+#WSGI_APPLICATION = 'analysisnode.wsgi.application'
 
 
 # Database
@@ -79,7 +80,12 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+# DATABASES = {
+#    'default': {
+#       'ENGINE': 'djongo',
+#       'NAME': 'your-db-name',
+#    }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -113,8 +119,26 @@ USE_L10N = True
 
 USE_TZ = True
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
 
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JavaScript, Images)`
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+# AUTHENTICATION_BACKENDS = (
+#      'mongoengine.django.auth.MongoEngineBackend',
+#  )
+#
+# SESSION_ENGINE = 'mongoengine.django.sessions'
+# MONGO_DATABASE_NAME = 'credicxo_ananlysis'
+#
+# from mongoengine import connect
+# connect(MONGO_DATABASE_NAME)
