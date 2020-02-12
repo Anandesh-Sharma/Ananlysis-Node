@@ -11,21 +11,21 @@ import json
 @permission_classes((IsAuthenticated,))
 def get_something(request):
     try:
-        user_id = int(request.POST.get('user_id'))
+        user_id = int(request.data.get('user_id'))
     except:
-        return Response({'error': 'user_id parameter is required'}, 400)
+        return Response({'status': False,'message': 'user_id parameter is required'}, 400)
     try:
-        new_user = int(request.POST.get('new_user'))
+        new_user = int(request.data.get('new_user'))
     except:
-        return Response({'error': 'new_user parameter is required'}, 400)
+        return Response({'status': False,'message': 'new_user parameter is required'}, 400)
     try:
-        sms_json = int(request.POST.get('sms_json'))
+        sms_json = int(request.data.get('sms_json'))
     except:
-        return Response({'error': 'sms_json parameter is required'}, 400)
+        return Response({'status': False,'message': 'sms_json parameter is required'}, 400)
     try:
-        cibil_xml = int(request.GET.get('cibil_xml'))
+        cibil_xml = int(request.data.get('cibil_xml'))
     except:
-        return Response({'error': 'cibil_xml parameter is required'}, 400)
+        return Response({'status': False,'message': 'cibil_xml parameter is required'}, 400)
 
     # call parser
 
@@ -35,7 +35,7 @@ def get_something(request):
         ResponseCibilAnalysis = bl0.cibil_analysis(response_parser["data"], sms_json, user_id, new_user)
 
     else:
-        ResponseCibilAnalysis = {'Status': False, 'Message': 'None', 'Onhold': False, 'User_id': user_id, 'Limit': 0,
-                                 'Logic': 'BL0'}
+        ResponseCibilAnalysis = {'status': False, 'message': 'None', 'onhold': False, 'user_id': user_id, 'limit': 0,
+                                 'logic': 'BL0'}
 
     return Response(ResponseCibilAnalysis, 200)

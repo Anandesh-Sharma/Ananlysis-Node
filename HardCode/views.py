@@ -9,7 +9,6 @@ from rest_framework.response import Response
 class CibilAnalysis(View):
 
     def post(self, request):
-        print(request.POST)
+        #print(request.POST)
 
-        user_id = ''
-        return get_something(request,user_id)
+        return get_something(request,)
