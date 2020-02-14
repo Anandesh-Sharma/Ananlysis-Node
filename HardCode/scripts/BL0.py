@@ -1,8 +1,8 @@
 from pymongo import MongoClient
-from Classifier import classifier
-from cibil_analysis import cibil_analysis
-from Cheque_Bounce import cheque_user_outer
-from Util import conn
+from .Classifier import classifier
+from .cibil_analysis import cibil_analysis
+from .Cheque_Bounce import cheque_user_outer
+from .Util import conn
 import pandas as pd
 
 
