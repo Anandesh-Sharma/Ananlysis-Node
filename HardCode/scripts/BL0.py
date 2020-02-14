@@ -5,8 +5,8 @@ from Cheque_Bounce import cheque_user_outer
 from Util import conn
 import pandas as pd
 
-def bl0(df_cibil, sms_json, user_id, new_user):
 
+def bl0(df_cibil, sms_json, user_id, new_user):
     '''
     Implements BL0
     
@@ -40,64 +40,66 @@ def bl0(df_cibil, sms_json, user_id, new_user):
         limit(int)      :limiting amount of user calculated
         logic(string)   :buissness logic of the process
     '''
-    
-    if not isinstance(user_id,str):
-        return {'status': False, 'message': 'user_id not string type', 'onhold': None, 'user_id': user_id, 'limit': None,
-                         'logic': 'BL0'}
-    if not isinstance(new_user,bool):
-        return {'status': False, 'message': 'new_user not boolean type', 'onhold': None, 'user_id': user_id, 'limit': None,
-                         'logic': 'BL0'}
-    
-    try: # changes to be added for updating sms
+
+    if not isinstance(user_id, str):
+        return {'status': False, 'message': 'user_id not string type', 'onhold': None, 'user_id': user_id,
+                'limit': None,
+                'logic': 'BL0'}
+    if not isinstance(new_user, bool):
+        return {'status': False, 'message': 'new_user not boolean type', 'onhold': None, 'user_id': user_id,
+                'limit': None,
+                'logic': 'BL0'}
+
+    try:  # changes to be added for updating sms
         client = conn()
         db = client.messagecluster
-        file1=db.transaction.find_one({"_id":int(user_id)})
+        file1 = db.transaction.find_one({"_id": int(user_id)})
     except Exception as e:
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
-                         'logic': 'BL0'}
-    
-    if file1==None:
-        result = classifier(sms_json,user_id)
+                'logic': 'BL0'}
+
+    if file1 == None:
+        result = classifier(sms_json, user_id)
         if not result['status']:
             client.close()
             return result
     try:
-        file1=db.extra.find_one({"_id":int(user_id)})
+        file1 = db.extra.find_one({"_id": int(user_id)})
         df = pd.DataFrame(file1['sms'])
         a = cheque_user_outer(df)
-        file1=db.extra.find_one({"_id":int(user_id)})
+        file1 = db.extra.find_one({"_id": int(user_id)})
         df = pd.DataFrame(file1['sms'])
-        a+= cheque_user_outer(df)
+        a += cheque_user_outer(df)
     except Exception as e:
         client.close()
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
-                         'logic': 'BL0'}
+                'logic': 'BL0'}
     client.close()
-    if a>0:
+    if a > 0:
         return {'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id, 'limit': -1,
-                         'logic': 'BL0'}
+                'logic': 'BL0'}
     if new_user:
         try:
-            ans=cibil_analysis(df_cibil,cibil_score=749)
+            ans = cibil_analysis(df_cibil, cibil_score=749)
             if ans:
                 return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id, 'limit': 3000,
-                            'logic': 'BL0'}
+                        'logic': 'BL0'}
             else:
                 return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id, 'limit': 0,
-                            'logic': 'BL0'}
+                        'logic': 'BL0'}
         except Exception as e:
-            {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
-                         'logic': 'BL0'}
+            return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+                    'logic': 'BL0'}
 
     else:
         try:
-            ans=cibil_analysis(df_cibil,cibil_score=649)
+            ans = cibil_analysis(df_cibil, cibil_score=649)
             if ans:
                 return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id, 'limit': 3000,
-                            'logic': 'BL0'}
+                        'logic': 'BL0'}
             else:
                 return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id, 'limit': 0,
-                            'logic': 'BL0'}
+                        'logic': 'BL0'}
         except Exception as e:
-            {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
-                  'logic': 'BL0'}
+            return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+                    'logic': 'BL0'}
