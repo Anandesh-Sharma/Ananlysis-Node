@@ -1,8 +1,8 @@
-from Classifier_CreditCard import credit
-from Classifier_Loan import loan
-from Classifier_transaction import cleaning
+from .Classifier_CreditCard import credit
+from .Classifier_Loan import loan
+from .Classifier_transaction import cleaning
 import multiprocessing
-from Util import conn, read_json, convert_json
+from .Util import conn, read_json, convert_json
 import json
 
 
