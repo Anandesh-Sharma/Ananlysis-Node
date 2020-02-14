@@ -1,5 +1,5 @@
 import re
-from Util import conn,read_json,convert_json
+from .Util import conn,read_json,convert_json
 from tqdm import tqdm
 
 
