@@ -1,25 +1,26 @@
 import numpy as np
 
 
-def cibil_analysis(df):
+def cibil_analysis(df, cibil_score):
     """
     Based on BL0 analyse the cibil report
   
     Parameters: 
-    df (Data Frame): Containing fields of individual users with column names
-        account_type : type of account
-        pay_history-profile : payment histroy of individual loan of user
-        credit_score : credit score of the user
-        written-of-amt-total : written amount total of specific loan
+    df (Data Frame)   : Containing fields of individual users with column names
+        account_type          : type of account
+        pay_history-profile   : payment histroy of individual loan of user
+        credit_score          : credit score of the user
+        written-of-amt-total  :   written amount total of specific loan
         written-amt_principal : written principle total of specific loan
-  
+        payment_rating(int)   : payment rating of a person
+
     Returns: 
     bool    : whether we can pass loan
-    string  : containing buissness logic 
   
     """
     history = 'N'
     score = 0
+    payment_r = '0'
     amt_principal = 0
     amt_total = 0
     loan = [1, 2, 3, 8, 15]
@@ -101,13 +102,16 @@ def cibil_analysis(df):
                 amt_total = row['written-of-amt-total']
             if row['written-amt_principal'] != 0 and not np.isnan(row['written-amt_principal']):
                 amt_principal = row['written-amt_principal']
+            if row['payment_rating'] != '0' and row['payment_rating'] != '1' and row['payment_rating'] != '2':
+                payment_r = row['payment_rating']
 
     selected = ['N', '0', '1', '2']
     ans = False
-    if score > 649:
+    if score > cibil_score:
         if N_loans > 0:
             if history in selected:
                 if amt_total == 0 or np.isnan(amt_total):
                     if amt_principal == 0 or np.isnan(amt_principal):
-                        ans = True
-    return ans, 'BL0'
+                        if payment_r in selected:
+                            ans = True
+    return ans

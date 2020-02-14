@@ -1,5 +1,6 @@
 import pandas as pd
 import regex as re
+from datetime import datetime
 
 def cheque_user_inner(data):
     '''
@@ -17,7 +18,7 @@ def cheque_user_inner(data):
 
     Returns:
     tuple:containing two parameters
-        int:        month number of the message received
+        int:    month number of the message received
         set:    the service whose cheque is bounced'''
 
 
@@ -50,7 +51,7 @@ def cheque_user_inner(data):
         matcher_12 = re.search(pattern_12,message) 
 
         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None:
-            bounce.append((row['TIMESTAMP'].month,row['SMS_HEADER'][3:]))
+            bounce.append((datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S').month,row['sender'][3:]))
     return bounce
     
 def cheque_user_outer(df):
