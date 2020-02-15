@@ -42,17 +42,15 @@ def bl0(df_cibil, sms_json, user_id, new_user):
         limit(int)      :limiting amount of user calculated
         logic(string)   :buissness logic of the process
     '''
-
     if not isinstance(user_id, int):
         return {'status': False, 'message': 'user_id not int type', 'onhold': None, 'user_id': user_id,
                 'limit': None,
                 'logic': 'BL0'}
-    
+
     if not isinstance(new_user, bool):
         return {'status': False, 'message': 'new_user not boolean type', 'onhold': None, 'user_id': user_id,
                 'limit': None,
                 'logic': 'BL0'}
-
 
     try:  # changes to be added for updating sms
         client = conn()
@@ -67,9 +65,9 @@ def bl0(df_cibil, sms_json, user_id, new_user):
 
         if not result['status']:
             client.close()
-            result['user_id']=user_id
+            result['user_id'] = user_id
             return result
-                         
+
     try:
         file1 = db.extra.find_one({"_id": user_id})
         df = pd.DataFrame(file1['sms'])
@@ -81,54 +79,57 @@ def bl0(df_cibil, sms_json, user_id, new_user):
         client.close()
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
-    
-    if a>0:
+
+    if a > 0:
         return {'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id, 'limit': -1,
                 'logic': 'BL0'}
 
     try:
-            loan_analysis(str(user_id))
+        loan_analysis(str(user_id))
     except Exception as e:
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
-                        'logic': 'BL0'}
+                'logic': 'BL0'}
     except:
-        return {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id, 'limit': None,
-                        'logic': 'BL0'}
-    
+        return {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id,
+                'limit': None,
+                'logic': 'BL0'}
+
     try:
         salary_analysis(str(user_id))
     except Exception as e:
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
-                        'logic': 'BL0'}
+                'logic': 'BL0'}
     except:
-        return {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id, 'limit': None,
-                        'logic': 'BL0'}
-    
+        return {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id,
+                'limit': None,
+                'logic': 'BL0'}
+
     if not isinstance(df_cibil, pd.DataFrame):
         return {'status': False, 'message': 'df_cibil not dataframe type', 'onhold': None, 'user_id': user_id,
                 'limit': None, 'logic': 'BL0'}
-    
+
     if df_cibil.empty:
         return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
                 'limit': 0, 'logic': 'BL0'}
 
-    req_col = ["account_type","payment_history","credit_score","written_amt_total","written_amt_principal","payment_rating"]
+    req_col = ["account_type", "payment_history", "credit_score", "written_amt_total", "written_amt_principal",
+               "payment_rating"]
     temp_l = df_cibil.columns
 
     for i in req_col:
         if i not in temp_l:
-            return {'status': False, 'message': "df_cibil doesn't contain required columns", 'onhold': None, 'user_id': user_id,
-                'limit': None, 'logic': 'BL0'}
-    
-    del temp_l
+            return {'status': False, 'message': "df_cibil doesn't contain required columns", 'onhold': None,
+                    'user_id': user_id,
+                    'limit': None, 'logic': 'BL0'}
 
+    del temp_l
     if new_user:
         try:
             result = cibil_analysis(df_cibil, 749, user_id)
             if not result['status']:
                 return result
-            
-            ans=result['ans']
+
+            ans = result['ans']
 
             if ans:
                 return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id, 'limit': 3000,
@@ -142,11 +143,10 @@ def bl0(df_cibil, sms_json, user_id, new_user):
 
     else:
         try:
-            result = cibil_analysis(df_cibil, 649,user_id)
+            result = cibil_analysis(df_cibil, 649, user_id)
             if not result['status']:
-                return result
-
-            ans=result['ans']
+                return result23
+            ans = result['ans']
 
             if ans:
                 return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id, 'limit': 3000,
@@ -154,6 +154,7 @@ def bl0(df_cibil, sms_json, user_id, new_user):
             else:
                 return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id, 'limit': 0,
                         'logic': 'BL0'}
+
         except Exception as e:
             return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
                     'logic': 'BL0'}

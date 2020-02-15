@@ -8,7 +8,6 @@ from HardCode.scripts.apicreditdata import convert_to_df
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def get_cibil_analysis(request):
-    print(request.data)
     try:
         user_id = int(request.data.get('user_id'))
 
@@ -18,7 +17,7 @@ def get_cibil_analysis(request):
         new_user = request.data.get('new_user')
         if new_user is None:
             raise Exception
-        new_user = bool(new_user)
+        new_user = bool(int(new_user))
     except:
         return Response({'status': False,'message': 'new_user parameter is required'}, 400)
     try:
