@@ -33,15 +33,38 @@ def get_cibil_analysis(request):
     except:
         return Response({'status': False,'message': 'cibil_xml parameter is required'}, 400)
 
+    try:
+        current_loan_amount = request.data.get('current_loan_amount')
+        if current_loan_amount is None:
+            raise Exception
+    except:
+        return Response({'status': False,'message': 'current_loan_amount parameter is required'}, 400)
+
+    try:
+        all_loan_amount = request.data.get('all_loan_amount')
+        if all_loan_amount is None:
+            raise Exception
+    except:
+        return Response({'status': False,'message': 'all_loan_amount parameter is required'}, 400)
+
     # call parser
+    try:
+        map(lambda x: int(x),all_loan_amount)
+    except:
+        return Response({'status': False,'message': 'all_loan_amount values must be int convertible'}, 400)
+
+    try:
+        int(current_loan_amount)
+    except:
+        return Response({'status': False,'message': 'current_loan_amount parameter must be int convertible'}, 400)
 
     response_parser = convert_to_df(user_id, cibil_xml)
     if response_parser["status"]:
         # call node
-        ResponseCibilAnalysis = BL0.bl0(response_parser["data"], sms_json, user_id, new_user)
+        ResponseCibilAnalysis = BL0.bl0(response_parser["data"], sms_json, user_id, new_user,all_loan_amount,current_loan_amount)
 
     else:
-        ResponseCibilAnalysis = {'status': False, 'message': 'xml parser status is false', 'onhold': None, 'user_id': user_id, 'limit': 0,
+        ResponseCibilAnalysis = {'status': False, 'message': response_parser['message'], 'onhold': None, 'user_id': user_id, 'limit': 0,
                                  'logic': 'BL0'}
 
     return Response(ResponseCibilAnalysis, 200)
