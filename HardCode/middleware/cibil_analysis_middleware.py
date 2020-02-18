@@ -21,7 +21,8 @@ def get_cibil_analysis(request):
     except:
         return Response({'status': False, 'message': 'new_user parameter is required'}, 400)
     try:
-        sms_json = request.data.get('sms_json')
+        sms_json = request.data.get('sms_json').read().decode('utf-8')
+        print(sms_json)
         if sms_json is None:
             raise Exception
     except:
@@ -50,8 +51,6 @@ def get_cibil_analysis(request):
     # call parser
     try:
         all_loan_amount = list(map(int, all_loan_amount.split(',')))
-        print(all_loan_amount)
-        print(type(all_loan_amount))
     except:
         return Response({'status': False, 'message': 'all_loan_amount values must be int convertible'}, 400)
 
