@@ -1,6 +1,7 @@
 import re
-from .Util import conn,read_json,convert_json
 from tqdm import tqdm
+
+from .Util import conn, read_json, convert_json
 
 
 def get_loan_closed_messages(data, loan_messages_filtered, result, name):
@@ -23,7 +24,7 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
 
         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None:
             selected_rows.append(i)
-    
+
     if name in result.keys():
         a = result[name]
         a.extend(list(selected_rows))
@@ -49,7 +50,7 @@ def get_loan_messages(data):
 
         if matcher is not None:
             loan_messages.append(i)
-    
+
     return loan_messages
 
 
@@ -126,6 +127,7 @@ def get_approval(data, loan_messages_filtered, result, name):
             mask.append(False)
     return data.copy()[mask].reset_index(drop=True)
 
+
 def get_disbursed(data, loan_messages_filtered, result, name):
     selected_rows = []
     pattern_1 = '(.*)?disbursed(.*)?'
@@ -170,6 +172,7 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
     pattern_6 = '(.*)?low cibil score(.*)?'
     pattern_7 = 'low credit score'
     pattern_8 = 'declined\?'
+    pattern_9 = 'not.*?approved'
 
     for i in tqdm(range(data.shape[0])):
         if i not in loan_messages_filtered:
@@ -184,9 +187,10 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         matcher_6 = re.search(pattern_6, message)
         matcher_7 = re.search(pattern_7, message)
         matcher_8 = re.search(pattern_8, message)
+        matcher_9 = re.search(pattern_9, message)
 
-        if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_4 != None:
-            if matcher_6 == None and matcher_7 == None and matcher_8 == None and matcher_5==None:
+        if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_9 != None:
+            if matcher_6 == None and matcher_7 == None and matcher_8 == None and matcher_5 == None:
                 selected_rows.append(i)
     if name in result.keys():
         a = result[name]
@@ -205,7 +209,7 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
 
 
 def get_over_due(data, loan_messages_filtered, result, name):
-    selected_rows=[]
+    selected_rows = []
     pattern_1 = '(.*)?immediate(.*)payment(.*)'
     pattern_2 = '(.*)?delinquent(.*)?'
     pattern_3 = '(.*)?has(.*)?bounced(.*)?'
@@ -225,7 +229,6 @@ def get_over_due(data, loan_messages_filtered, result, name):
         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None:
             selected_rows.append(i)
 
-
     if name in result.keys():
         a = result[name]
         a.extend(list(selected_rows))
@@ -242,44 +245,51 @@ def get_over_due(data, loan_messages_filtered, result, name):
     return data.copy()[mask].reset_index(drop=True)
 
 
-def loan(df, result, name):
+def loan(df, result, user_id, max_timestamp, new):
     loan_messages = get_loan_messages(df)
     loan_messages_filtered = get_loan_messages_promotional_removed(df, loan_messages)
-    data = get_over_due(df, loan_messages_filtered, result, name)
 
-    data_over_due = convert_json(data, name)
-    #print('overdue')
-    #print(data_over_due)
+    data = get_over_due(df, loan_messages_filtered, result, user_id)
+    data_over_due = convert_json(data, user_id, max_timestamp)
 
+    data = get_approval(df, loan_messages_filtered, result, user_id)
+    data_approve = convert_json(data, user_id, max_timestamp)
 
-    data = get_approval(df, loan_messages_filtered, result, name)
+    data = get_loan_rejected_messages(df, loan_messages_filtered, result, user_id)
+    data_reject = convert_json(data, user_id, max_timestamp)
 
-    data_approve = convert_json(data, name)
-    #print('approve')
-    #print(data_approve)
+    data = get_disbursed(df, loan_messages_filtered, result, user_id)
+    data_disburse = convert_json(data, user_id, max_timestamp)
 
-    data = get_loan_rejected_messages(df, loan_messages_filtered, result, name)
+    data = get_loan_closed_messages(df, loan_messages_filtered, result, user_id)
+    data_closed = convert_json(data, user_id, max_timestamp)
 
-    data_reject = convert_json(data, name)
-    #print('reject')
-    #print(data_reject)
-
-    data = get_disbursed(df, loan_messages_filtered, result, name)
-
-    data_disburse = convert_json(data, name)
-    #print('disburse')
-    #print(data_disburse)
-
-    data = get_loan_closed_messages(df, loan_messages_filtered, result, name)
-
-    data_closed = convert_json(data, name)
-    #print('close')
-    #print(data_closed)
-    client = conn()
-    db = client.messagecluster
-    db.loanapproval.insert_one(data_approve)
-    db.loanrejection.insert_one(data_reject)
-    db.disbursed.insert_one(data_disburse)
-    db.loandueoverdue.insert_one(data_over_due)
-    db.loanclosed.insert_one(data_closed)
+    try:
+        client = conn()
+        db = client.messagecluster
+    except Exception as e:
+        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+                'logic': 'BL0'}
+    if new:
+        db.loanapproval.insert_one(data_approve)
+        db.loanrejection.insert_one(data_reject)
+        db.disbursed.insert_one(data_disburse)
+        db.loandueoverdue.insert_one(data_over_due)
+        db.loanclosed.insert_one(data_closed)
+    else:
+        for i in range(len(data_approve['sms'])):
+            db.loanapproval.update({"_id": int(user_id)}, {"$push": {"sms": data_approve['sms'][i]}})
+        db.loanapproval.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
+        for i in range(len(data_reject['sms'])):
+            db.loanrejection.update({"_id": int(user_id)}, {"$push": {"sms": data_reject['sms'][i]}})
+        db.loanrejection.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
+        for i in range(len(data_disburse['sms'])):
+            db.disbursed.update({"_id": int(user_id)}, {"$push": {"sms": data_disburse['sms'][i]}})
+        db.disbursed.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
+        for i in range(len(data_over_due['sms'])):
+            db.loandueoverdue.update({"_id": int(user_id)}, {"$push": {"sms": data_over_due['sms'][i]}})
+        db.loandueoverdue.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
+        for i in range(len(data_closed['sms'])):
+            db.loanclosed.update({"_id": int(user_id)}, {"$push": {"sms": data_closed['sms'][i]}})
+        db.loanclosed.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
     client.close()

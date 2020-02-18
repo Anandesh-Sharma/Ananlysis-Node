@@ -1,6 +1,6 @@
 import re
 import threading
-from .Util import conn,read_json,convert_json
+from .Util import conn, read_json, convert_json
 from tqdm import tqdm
 
 
@@ -46,7 +46,7 @@ def thread_for_cleaning_3(df, pattern, result, required_rows):
     result.append(check_header(df, pattern, required_rows))
 
 
-def cleaning(df, result, name):
+def cleaning(df, result, user_id, max_timestamp,new):
     transaction_patterns = ['debited', 'credited']
     thread_list = []
     results = []
@@ -167,7 +167,7 @@ def cleaning(df, result, name):
             continue
         matcher_1 = re.search("[Rr]egards", row["body"])
         matcher_2 = re.search("[a-zA-z]{2}-\d+", row["body"])
-        if matcher_1 is not None:
+        if matcher_1 != None:
             if 'DHANCO' not in row["sender"]:
                 g.append(index)
         elif matcher_2 is not None:
@@ -240,12 +240,12 @@ def cleaning(df, result, name):
 
     required_rows = list(set(required_rows) - set(garbage_rows))
 
-    if name in result.keys():
-        a = result[name]
+    if user_id in result.keys():
+        a = result[user_id]
         a.extend(list(required_rows))
-        result[name] = a
+        result[user_id] = a
     else:
-        result[name] = list(required_rows)
+        result[user_id] = list(required_rows)
     mask = []
     for i in range(df.shape[0]):
         if i in required_rows:
@@ -255,12 +255,19 @@ def cleaning(df, result, name):
     df_transaction = df.copy()[mask]
     df_transaction = df_transaction.reset_index(drop=True)
 
+    data_transaction = convert_json(df_transaction, user_id, max_timestamp)
 
-    data_transaction = convert_json(df_transaction, name)
-    #print('transaction')
-    #print(data_transaction)
-    client = conn()
-    db = client.messagecluster.transaction
-    db.insert_one(data_transaction)
+    try:
+        client = conn()
+        db = client.messagecluster
+    except Exception as e:
+        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+                'logic': 'BL0'}
+    if new:
+        db.transaction.insert_one(data_transaction)
+    else:
+        for i in range(len(data_transaction['sms'])):
+            db.transaction.update({"_id": int(user_id)}, {"$push": {'sms': data_transaction['sms'][i]}})
+        db.transaction.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
     client.close()
 

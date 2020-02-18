@@ -1,37 +1,32 @@
-# import json
-from datetime import datetime,date
+import logging
 import pandas as pd
+from datetime import datetime
+from logging.handlers import TimedRotatingFileHandler
 from pymongo import MongoClient
 from tqdm import tqdm
-import logging
-from logging.handlers import TimedRotatingFileHandler
 
-def logger_1(name,user_id):
-    logger = logging.getLogger('analysis_node '+str(user_id)+name)
+
+def conn():
+    connection = MongoClient(
+        "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&readPreference=primary&ssl=false")
+    return connection
+
+
+def logger_1(name, user_id):
+    logger = logging.getLogger('analysis_node ' + str(user_id) + name)
     logger.setLevel(logging.INFO)
-    logHandler = TimedRotatingFileHandler(filename = "analysis_node.log", when="midnight")
+    logHandler = TimedRotatingFileHandler(filename="analysis_node.log", when="midnight")
     logFormatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
     logHandler.setFormatter(logFormatter)
-
-
 
     if not logger.handlers:
         streamhandler = logging.StreamHandler()
         streamhandler.setLevel(logging.ERROR)
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
         streamhandler.setFormatter(formatter)
-
         logger.addHandler(streamhandler)
         logger.addHandler(logHandler)
-
-
-    # logger.error(message)
-    return logger 
-    
-def conn():
-    connection = MongoClient(
-        "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&readPreference=primary&ssl=false")
-    return connection
+    return logger
 
 
 def read_json(sms_json, user_id):
@@ -41,6 +36,7 @@ def read_json(sms_json, user_id):
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
     df['timestamp'] = [0] * df.shape[0]
     df['temp'] = df.index
+
     df.reset_index(drop=True, inplace=True)
     try:
         for i in range(df.shape[0]):
@@ -52,19 +48,50 @@ def read_json(sms_json, user_id):
     for i in range(df.shape[0]):
         if df['body'][i] == 'null':
             list_idx.append(i)
+
     df.drop(list_idx, inplace=True)
     df = df.sort_values(by=['timestamp'])
     df.reset_index(inplace=True, drop=True)
     columns_titles = ['body', 'timestamp', 'sender', 'read']
     df = df.reindex(columns=columns_titles)
+    max_timestamp = max(df['timestamp'])
+    result = update_sms(df, user_id, max_timestamp)
+    if not result['status']:
+        return result
+    if result['new']:
+        return result
+    df = result['df']
+    df.reset_index(inplace=True, drop=True)
     return {'status': True, 'message': 'success', 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
-            'df': df}
+            'df': df, "timestamp": max_timestamp, 'new': False}
 
 
-def convert_json(data, name):
-    obj = {"_id": int(name), "sms": []}
+def convert_json(data, name, max_timestamp):
+    obj = {"_id": int(name), "timestamp": max_timestamp, "sms": []}
     for i in tqdm(range(data.shape[0])):
         sms = {"sender": data['sender'][i], "body": data['body'][i], "timestamp": data['timestamp'][i],
                "read": data['read'][i]}
         obj['sms'].append(sms)
     return obj
+
+
+def update_sms(df, user_id, max_timestamp):
+    try:
+        client = conn()
+    except Exception as e:
+        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
+                'df': df, "timestamp": max_timestamp}
+
+    extra = client.messagecluster.extra
+    msgs = extra.find_one({"_id": int(user_id)})
+    client.close()
+    if msgs is None:
+        return {'status': True, 'message': 'success', 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
+                'new': True, 'df': df, "timestamp": max_timestamp}
+    old_timestamp = msgs["timestamp"]
+    for i in range(df.shape[0]):
+        if df['timestamp'][i] == old_timestamp:
+            index = i + 1
+    df = df.loc[index:]
+    return {'status': True, 'message': 'success', 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
+            'new': False, 'df': df, "timestamp": max_timestamp}

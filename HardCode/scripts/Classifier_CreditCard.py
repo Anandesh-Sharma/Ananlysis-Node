@@ -1,6 +1,7 @@
 import re
-from .Util import conn,read_json,convert_json
 from tqdm import tqdm
+
+from .Util import conn, read_json, convert_json
 
 
 def get_cc_messages(data, data_not_needed, result, name):
@@ -69,13 +70,21 @@ def get_creditcard_promotion(data):
     return credit_messages_filtered
 
 
-def credit(df, result, name):
+def credit(df, result, user_id, max_timestamp, new):
     data_not_needed = get_creditcard_promotion(df)
-    data = get_cc_messages(df, data_not_needed, result, name)
-    data_credit = convert_json(data, name)
-    #print('Credit')
-    #print(data_credit)
-    client = conn()
-    db = client.messagecluster.creditcard
-    db.insert_one(data_credit)
+    data = get_cc_messages(df, data_not_needed, result, user_id)
+    data_credit = convert_json(data, user_id, max_timestamp)
+
+    try:
+        client = conn()
+        db = client.messagecluster
+    except Exception as e:
+        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+                'logic': 'BL0'}
+    if new:
+        db.creditcard.insert_one(data_credit)
+    else:
+        for i in range(len(data_credit['sms'])):
+            db.creditcard.update({"_id": int(user_id)}, {"$push": {"sms": data_credit['sms'][i]}})
+        db.creditcard.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
     client.close()

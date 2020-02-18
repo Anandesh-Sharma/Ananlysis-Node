@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from HardCode.scripts import BL0
 from HardCode.scripts.apicreditdata import convert_to_df
-
+import json
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
@@ -22,7 +22,7 @@ def get_cibil_analysis(request):
         return Response({'status': False, 'message': 'new_user parameter is required'}, 400)
     try:
         sms_json = request.data.get('sms_json').read().decode('utf-8')
-        print(sms_json)
+        sms_json = json.loads(sms_json)
         if sms_json is None:
             raise Exception
     except:

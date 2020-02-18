@@ -1,6 +1,6 @@
-from . import xmlparser
 import json
 import pandas
+from . import xmlparser
 
 
 def convert_to_df(user_id, file):

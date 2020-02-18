@@ -1,13 +1,14 @@
-from pymongo import MongoClient
+import datetime
+import json
 import numpy as np
+import os
 import pandas as pd
 import re
-import os
-from glob import glob
-from tqdm import tqdm
-import datetime
 import warnings
-import json
+from glob import glob
+from pymongo import MongoClient
+from tqdm import tqdm
+
 warnings.filterwarnings('ignore')
 
 
@@ -45,7 +46,6 @@ def grouping(data):
     return group_by_sender
 
 
-
 def is_approval(message):
     """
     This funtion checks if the message is of approval or not.
@@ -56,15 +56,15 @@ def is_approval(message):
         bool            : True if the message is of approval else False   
 
     """
-    #pattern_1 = '[^pre-]approved(.*)?'
+    # pattern_1 = '[^pre-]approved(.*)?'
     pattern_2 = 'succesfully(.*)?approved'
-    #pattern_3 = '(.*)?has(.*)?been(.*)?approved'
+    # pattern_3 = '(.*)?has(.*)?been(.*)?approved'
     pattern_4 = '(.*)?application\sis\sapproved(.*)?'
 
-    #matcher_1 = re.search(pattern_1,message)
+    # matcher_1 = re.search(pattern_1,message)
     matcher_2 = re.search(pattern_2, message)
-    #matcher_3 = re.search(pattern_3,message)
-    #matcher_4 = re.search(pattern_4, message)
+    # matcher_3 = re.search(pattern_3,message)
+    # matcher_4 = re.search(pattern_4, message)
 
     if matcher_2 != None:
         return True
@@ -158,6 +158,7 @@ def trans_amount_confirm(message):
     else:
         return False
 
+
 def trans_amount_extract(message):
     """
     This function extracts amount from the message.
@@ -199,6 +200,7 @@ def trans_amount_extract(message):
         amount = -1
     return amount
 
+
 def amount_extract(temp_data, disbursed_date):
     INDEX = 0
     amount = 0
@@ -213,7 +215,7 @@ def amount_extract(temp_data, disbursed_date):
     for i in range(INDEX, temp_data.shape[0]):
         a = datetime.datetime.strptime(str(
             temp_data['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
-        if (a - start_date).seconds/60 < 5:
+        if (a - start_date).seconds / 60 < 5:
             dates_within_5_mins.append(i)
         else:
             break
@@ -254,7 +256,7 @@ def get_report(temp_data, trans):
     }
     i = 0
 
-    temp_data['Status'] = [0]*temp_data.shape[0]
+    temp_data['Status'] = [0] * temp_data.shape[0]
     while (i < len(temp_data)):
         j = i + 1
         message = str(temp_data['body'][i]).lower()
@@ -424,19 +426,20 @@ def process_customer(cust_id):
         result['status'] = -2
         result['error'] = 'no data of cashbin and kreditb'
         return result
-  
+
     else:
 
         if script_Status_updated['grouping_cashbin'] != -1:
             report_cashbin = get_report(cashbin, transaction_df)
             result['CASHBN'] = report_cashbin
-            
+
         if script_Status_updated['grouping_kreditb'] != -1:
             report_kreditb = get_report(kreditb, transaction_df)
             result['KREDTB'] = report_kreditb
-        result['status'] = 1            
+        result['status'] = 1
         return result
-        
+
+
 def loan_analysis(cust_id):
     """
     The script returns a loan anlaysis for two loan apps CASHBIN and KREDITB.
@@ -458,9 +461,9 @@ def loan_analysis(cust_id):
     result = process_customer(cust_id)
     res = json.dumps(result)
     res = json.loads(res)
-    key = {'_id':cust_id}
+    key = {'_id': cust_id}
     client = MongoClient(
         "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&StatusPreference=primary&ssl=false")
     db = client.messagecluster
-    db.loanapps.update_one(key,{"$set" : res}, upsert = True)
+    db.loanapps.update_one(key, {"$set": res}, upsert=True)
     client.close()
