@@ -1,10 +1,33 @@
 # import json
-from datetime import datetime
+from datetime import datetime,date
 import pandas as pd
 from pymongo import MongoClient
 from tqdm import tqdm
+import logging
+from logging.handlers import TimedRotatingFileHandler
+
+def logger_1(name,user_id):
+    logger = logging.getLogger('analysis_node '+str(user_id)+name)
+    logger.setLevel(logging.INFO)
+    logHandler = TimedRotatingFileHandler(filename = "analysis_node.log", when="midnight")
+    logFormatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+    logHandler.setFormatter(logFormatter)
 
 
+
+    if not logger.handlers:
+        streamhandler = logging.StreamHandler()
+        streamhandler.setLevel(logging.ERROR)
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+        streamhandler.setFormatter(formatter)
+
+        logger.addHandler(streamhandler)
+        logger.addHandler(logHandler)
+
+
+    # logger.error(message)
+    return logger 
+    
 def conn():
     connection = MongoClient(
         "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&readPreference=primary&ssl=false")

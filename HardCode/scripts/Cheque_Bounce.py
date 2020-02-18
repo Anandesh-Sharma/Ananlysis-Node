@@ -1,6 +1,7 @@
 import pandas as pd
 import regex as re
 from datetime import datetime
+from Util import logger_1
 
 def cheque_user_inner(data):
     '''
@@ -21,7 +22,9 @@ def cheque_user_inner(data):
         int:    month number of the message received
         set:    the service whose cheque is bounced'''
 
-
+    logger = logger_1('cheque user inner')
+    logger.info('cheque user inner function starts')
+    
     pattern_1='bounced'
     pattern_2='bounce ho chuka hai'
     pattern_3='has got bounce'
@@ -52,6 +55,7 @@ def cheque_user_inner(data):
 
         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None:
             bounce.append((datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S').month,row['sender'][3:]))
+    logger.info('cheque user inner successfully executed')
     return bounce
     
 def cheque_user_outer(df):
@@ -70,6 +74,8 @@ def cheque_user_outer(df):
 
     Returns:
     int : count of total unique service messages per month'''
+    logger = logger_1('cheque user outer')
+    logger.info('cheque user outer function starts')
     l={}
     for i in cheque_user_inner(df):
         if i[0] in l.keys():
@@ -79,4 +85,5 @@ def cheque_user_outer(df):
     count=0
     for i in l.keys():
         count+= len(l[i])
+    logger.info('cheque user outer successfully executed')
     return count
