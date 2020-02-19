@@ -1,10 +1,8 @@
-import json
 import xml.etree.ElementTree as ET
 import xmltodict
 
 
 def xml_parser(filename):
-    # data = {}
     try:
         tree = ET.parse(filename)
         xml_data = tree.getroot()

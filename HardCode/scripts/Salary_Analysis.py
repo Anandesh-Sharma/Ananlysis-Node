@@ -1,26 +1,27 @@
-import json
-import numpy as np
 import pandas as pd
-import pprint
-import pymongo
+import numpy as np
 import regex as re
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, wait, as_completed
+from datetime import timedelta
+import pymongo
+import json
+import pprint
+from pymongo import MongoClient
 import sys
 import warnings
-from concurrent.futures import ThreadPoolExecutor, wait, as_completed
-from datetime import datetime
-from datetime import timedelta
-from pymongo import MongoClient
 
 warnings.filterwarnings('ignore')
 
 
 def clean_debit(data):
-    '''
-    This code drops the rows for debited messages and bhanix finance company messages.
+    '''This code drops the rows for debited messages and bhanix finance company messages.
+
         Parameters: DataFrame.
+
         Output: DataFrame.
 
-    '''
+        '''
     pattern1 = "bhanix"
     pattern2 = "debited"
     d = []
@@ -41,10 +42,12 @@ def clean_debit(data):
 def get_credit_amount(data):
     '''
     This code finds the credited amount from the messages in a DataFrame.
-        Parameters: DataFrame.
-        Output: DataFrame.
-          
-    '''
+
+          Parameters: DataFrame.
+
+          Output: DataFrame.
+
+          '''
     data['credit_amount'] = [0] * data.shape[0]
     pattern_2 = '(?i)credited.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
     pattern_1 = '(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?credited'
@@ -300,7 +303,7 @@ def conn():
 
 def transaction(id):
     connect = conn()
-    transaction = connect.messagecluster.transaction
+    transaction = connect.messagecluster1.transaction
     file1 = transaction.find_one({"_id": id})
     x = pd.DataFrame(file1)
     df1 = pd.DataFrame()
@@ -317,7 +320,7 @@ def transaction(id):
 
 def extra(id):
     connect = conn()
-    extra = connect.messagecluster.extra
+    extra = connect.messagecluster1.extra
     file2 = extra.find_one({"_id": id})
     y = pd.DataFrame(file2)
     df2 = pd.DataFrame()
@@ -405,8 +408,9 @@ def salary_analysis(id):
     key = {'_id': id}
     connect = conn()
 
-    db = connect.messagecluster.salary
-    db.update_one(key, {"$set": json_sal}, upsert=True)
+    db = connect.messagecluster1.salary
+    db.update(key, json_sal, upsert=True)
     connect.close()
 
-# salary_analysis(181502)
+
+salary_analysis(181502)

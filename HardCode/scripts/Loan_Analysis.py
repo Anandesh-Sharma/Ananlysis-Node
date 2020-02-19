@@ -1,13 +1,13 @@
-import datetime
-import json
+from pymongo import MongoClient
 import numpy as np
-import os
 import pandas as pd
 import re
-import warnings
+import os
 from glob import glob
-from pymongo import MongoClient
 from tqdm import tqdm
+import datetime
+import warnings
+import json
 
 warnings.filterwarnings('ignore')
 
@@ -40,7 +40,7 @@ def grouping(data):
     Parameters:
         data(dataframe): dataframe of user
     Returns:
-        group_by_sender(dataframe): pandas groupby object    
+        group_by_sender(dataframe): pandas groupby object
     """
     group_by_sender = data.groupby('Sender-Name')
     return group_by_sender
@@ -53,7 +53,7 @@ def is_approval(message):
     Parameters:
         message(string) : message of user
     Returns:
-        bool            : True if the message is of approval else False   
+        bool            : True if the message is of approval else False
 
     """
     # pattern_1 = '[^pre-]approved(.*)?'
@@ -79,7 +79,7 @@ def is_disbursed(message):
     Parameters:
         message(string) : message of user
     Returns:
-        bool            : True if the message is of disbursal else False   
+        bool            : True if the message is of disbursal else False
 
     """
     pattern_1 = '(.*)?disbursed(.*)?'
@@ -105,7 +105,7 @@ def is_closed(message):
     Parameters:
         message(string) : message of user
     Returns:
-        bool            : True if the message is of closed else False   
+        bool            : True if the message is of closed else False
 
     """
     pattern_1 = '(.*)?loan(.*)?closed(.*)?'
@@ -136,7 +136,7 @@ def trans_amount_confirm(message):
     Parameters:
         message(string): message of the user
     Returns:
-        bool           : True if amount is present else false    
+        bool           : True if amount is present else false
     """
 
     pattern1 = '(?:(?:[Rr][sS]|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)?(.*)?successfully credited(.*)?'
@@ -166,7 +166,7 @@ def trans_amount_extract(message):
     Parameters:
         message(string):  message of the user
     Returns:
-        amount(int)    : amount present in the message    
+        amount(int)    : amount present in the message
     """
 
     pattern1 = '(?:(?:[Rr][sS]|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)?(.*)?successfully credited(.*)?'
@@ -245,7 +245,7 @@ def get_report(temp_data, trans):
     amount(list)            : amount of each loan identified, returns -1 if amount is not found
     error(string)           : displays an error message
     status(int)             : -1 if error in loading data, -2 if data of desired apps is not found, 1 if the code is executed successfully
-  
+
     """
     report = {
         'approved/disbursed': 0,
@@ -331,14 +331,14 @@ def get_customer_data(cust_id, script_Status):
     Returns:
         loan_data(dataframe)        : dataframe containing messages of loan disbursal and loan closed
         trans_data(dataframe)       : dataframe containing only transactional messgaes of the user
-        script_status(dictionary)   : a dictionary for reporting errors occured at various stages  
+        script_status(dictionary)   : a dictionary for reporting errors occured at various stages
     """
     try:
 
         client = MongoClient(
             "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&StatusPreference=primary&ssl=false")
         # connect to database
-        db = client.messagecluster
+        db = client.messagecluster1
 
         # connect to collection
         approval_data = db.loanapproval
@@ -373,6 +373,7 @@ def get_customer_data(cust_id, script_Status):
         loan_data = loan_data.reset_index(drop=True)
         transaction_df = transaction_df.reset_index(drop=True)
         client.close()
+        script_Status['data_fetch'] = 1
         return loan_data, transaction_df, script_Status
 
     except Exception as e:
@@ -387,21 +388,20 @@ def process_customer(cust_id):
     Parameters:
         cust_id(int)    : id of the user
     Returns:
-        result(dictionary) : loan analysis for the user    
+        result(dictionary) : loan analysis for the user
 
     """
-    script_Status = {'data_fetch': 0,
-                     'grouping_cashbin': 0,
+    script_Status = {'grouping_cashbin': 0,
                      'grouping_kreditb': 0}
     result = {}
-    result['status'] = 0
-    result['error'] = ''
+    # result['status'] = 0
+    # result['error'] = ''
     # result['_id'] = cust_id
 
-    loan_data, transaction_df, script_Status_updated = get_customer_data(
+    loan_data, transaction_df, script_Status = get_customer_data(
         cust_id, script_Status)
 
-    if script_Status_updated['data_fetch'] != -1:
+    if script_Status['data_fetch'] != -1:
 
         data = sms_header_splitter(loan_data)
         data_grouped = grouping(data)
@@ -410,30 +410,30 @@ def process_customer(cust_id):
             cashbin = data_grouped.get_group('CASHBN').sort_values(
                 by='timestamp').reset_index(drop=True)
         except:
-            script_Status_updated['grouping_cashbin'] = -1
+            script_Status['grouping_cashbin'] = -1
 
         try:
             kreditb = data_grouped.get_group('KREDTB').sort_values(
                 by='timestamp').reset_index(drop=True)
         except:
-            script_Status_updated['grouping_kreditb'] = -1
+            script_Status['grouping_kreditb'] = -1
     else:
         result['status'] = -1
         result['error'] = 'error in fetching data'
         return result
 
-    if (script_Status_updated['grouping_cashbin'] == -1) and (script_Status_updated['grouping_kreditb'] == -1):
+    if (script_Status['grouping_cashbin'] == -1) and (script_Status['grouping_kreditb'] == -1):
         result['status'] = -2
         result['error'] = 'no data of cashbin and kreditb'
         return result
 
     else:
 
-        if script_Status_updated['grouping_cashbin'] != -1:
+        if script_Status['grouping_cashbin'] != -1:
             report_cashbin = get_report(cashbin, transaction_df)
             result['CASHBN'] = report_cashbin
 
-        if script_Status_updated['grouping_kreditb'] != -1:
+        if script_Status['grouping_kreditb'] != -1:
             report_kreditb = get_report(kreditb, transaction_df)
             result['KREDTB'] = report_kreditb
         result['status'] = 1
@@ -444,8 +444,8 @@ def loan_analysis(cust_id):
     """
     The script returns a loan anlaysis for two loan apps CASHBIN and KREDITB.
 
-    Parameters: 
-        cust_id(int): id of the user 
+    Parameters:
+        cust_id(int): id of the user
 
     Returns: Dictionary(cust_id, approved/disbursed,closed, overdue, amount, error, status)
 
@@ -464,6 +464,6 @@ def loan_analysis(cust_id):
     key = {'_id': cust_id}
     client = MongoClient(
         "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&StatusPreference=primary&ssl=false")
-    db = client.messagecluster
-    db.loanapps.update_one(key, {"$set": res}, upsert=True)
+    db = client.messagecluster1
+    db.loanapps.update(key, res, upsert=True)
     client.close()

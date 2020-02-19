@@ -34,7 +34,7 @@ def extra(df, user_id, result, max_timestamp, new):
 
     try:
         client = conn()
-        db = client.messagecluster
+        db = client.messagecluster1
     except Exception as e:
 
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
@@ -130,5 +130,5 @@ def classifier(sms_json, user_id):
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     extra(df, user_id, result, max_timestamp, new)
-    return {'status': True, 'message': 'sucess in message extraction', 'onhold': None, 'user_id': user_id, 'limit': None,
+    return {'status': True, 'message': 'success in message extraction', 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}

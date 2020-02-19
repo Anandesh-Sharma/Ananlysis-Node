@@ -16,8 +16,8 @@ from pymongo import MongoClient
 
 client = MongoClient(
     "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&readPreference=primary&ssl=false")
-transaction = client.messagecluster.transaction
-extra = client.messagecluster.extra
+transaction = client.messagecluster1.transaction
+extra = client.messagecluster1.extra
 
 
 def customer_salary(id1):

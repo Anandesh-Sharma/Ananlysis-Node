@@ -259,7 +259,7 @@ def cleaning(df, result, user_id, max_timestamp,new):
 
     try:
         client = conn()
-        db = client.messagecluster
+        db = client.messagecluster1
     except Exception as e:
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}

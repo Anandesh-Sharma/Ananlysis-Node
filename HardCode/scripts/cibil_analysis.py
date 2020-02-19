@@ -34,7 +34,7 @@ def cibil_analysis(df, cibil_score, user_id):
     try:
         logger.info('cibil analysis loop starts')
         for i, row in df.iterrows():
-            if row['account_type'] in loan:
+            if int(row['account_type']) in loan:
                 N_loans += 1
 
             s2, s1, s0, sn, ss, sd, sb, s3, s4, s5, s6, sl, sm = False, False, False, False, False, False, False, False, False, False, False, False, False
