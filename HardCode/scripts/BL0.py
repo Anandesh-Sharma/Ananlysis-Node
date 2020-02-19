@@ -6,7 +6,7 @@ from .Cheque_Bounce import cheque_user_outer
 from .Loan_Analysis import loan_analysis
 from .Salary_Analysis import salary_analysis
 import pandas as pd
-
+from datetime import datetime
 
 def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
     '''
@@ -230,13 +230,13 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
             ans = result['ans']
             if current_loan > ans:
                 logger.info('returning result' + str(current_loan))
-                a = {'_id': user_id, 'onhold': False, 'limit': current_loan}
+                a = {'_id': user_id, 'onhold': False, 'limit': current_loan, 'timestamp': str(datetime.now(tz=None))}
                 client.analysisresult.bl1.update_one({'_id': user_id}, {'$set': a}, upsert=True)
                 return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
                         'limit': current_loan, 'logic': 'BL1'}
             else:
                 logger.info('returning result' + str(ans))
-                a = {'_id': user_id, 'onhold': False, 'limit': ans}
+                a = {'_id': user_id, 'onhold': False, 'limit': ans, 'timestamp': str(datetime.now(tz=None))}
                 client.analysisresult.bl1.update_one({'_id': user_id}, {'$set': a}, upsert=True)
                 return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
                         'limit': ans, 'logic': 'BL1'}
