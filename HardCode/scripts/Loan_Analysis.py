@@ -336,9 +336,9 @@ def get_customer_data(cust_id, script_Status):
     try:
 
         client = MongoClient(
-            "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&StatusPreference=primary&ssl=false")
+            "mongodb://god:rock0004@localhost:27017/?authSource=admin&StatusPreference=primary&ssl=false")
         # connect to database
-        db = client.messagecluster1
+        db = client.messagecluster
 
         # connect to collection
         approval_data = db.loanapproval
@@ -463,7 +463,7 @@ def loan_analysis(cust_id):
     res = json.loads(res)
     key = {'_id': cust_id}
     client = MongoClient(
-        "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&StatusPreference=primary&ssl=false")
-    db = client.messagecluster1
+        "mongodb://god:rock0004@localhost:27017/?authSource=admin&StatusPreference=primary&ssl=false")
+    db = client.messagecluster
     db.loanapps.update(key, res, upsert=True)
     client.close()

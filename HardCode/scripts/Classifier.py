@@ -34,7 +34,7 @@ def extra(df, user_id, result, max_timestamp, new):
 
     try:
         client = conn()
-        db = client.messagecluster1
+        db = client.messagecluster
     except Exception as e:
 
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,

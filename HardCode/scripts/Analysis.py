@@ -19,7 +19,7 @@ def analyse(user_id, df_cibil, new_user, current_loan):
     logger.info('Starting checking bounced cheque messages')
 
     try:
-        file1 = client.messagecluster1.extra.find_one({"_id": user_id})
+        file1 = client.messagecluster.extra.find_one({"_id": user_id})
         if file1 is None:
              a = 0
         else:

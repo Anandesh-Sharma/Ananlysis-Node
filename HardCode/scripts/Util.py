@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 def conn():
     connection = MongoClient(
-        "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&readPreference=primary&ssl=false",socketTimeoutMS=900000)
+        "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false",socketTimeoutMS=900000)
     return connection
 
 
@@ -82,7 +82,7 @@ def update_sms(df, user_id, max_timestamp):
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
                 'df': df, "timestamp": max_timestamp}
 
-    extra = client.messagecluster1.extra
+    extra = client.messagecluster.extra
     msgs = extra.find_one({"_id": int(user_id)})
     client.close()
     if msgs is None:

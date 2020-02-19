@@ -296,14 +296,14 @@ def salary_check(data):
 
 def conn():
     connection = MongoClient(
-        "mongodb://superadmin:rock0004@13.76.177.87:27017/?authSource=admin&readPreference=primary&ssl=false",
+        "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false",
         maxPoolSize=200)
     return connection
 
 
 def transaction(id):
     connect = conn()
-    transaction = connect.messagecluster1.transaction
+    transaction = connect.messagecluster.transaction
     file1 = transaction.find_one({"_id": id})
     x = pd.DataFrame(file1)
     df1 = pd.DataFrame()
@@ -320,7 +320,7 @@ def transaction(id):
 
 def extra(id):
     connect = conn()
-    extra = connect.messagecluster1.extra
+    extra = connect.messagecluster.extra
     file2 = extra.find_one({"_id": id})
     y = pd.DataFrame(file2)
     df2 = pd.DataFrame()
@@ -408,7 +408,7 @@ def salary_analysis(id):
     key = {'_id': id}
     connect = conn()
 
-    db = connect.messagecluster1.salary
+    db = connect.messagecluster.salary
     db.update(key, json_sal, upsert=True)
     connect.close()
 
