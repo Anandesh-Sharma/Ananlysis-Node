@@ -395,7 +395,7 @@ def customer_salary(id):
 def convert_json(data, name):
     obj = {"SALARY": []}
     for i in range(data.shape[0]):
-        salary = {"SALARY": data['SALARY'][i]}
+        salary = {"SALARY": int(data['SALARY'][i])}
         obj["SALARY"].append(salary)
     return obj
 
