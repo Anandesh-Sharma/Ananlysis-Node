@@ -85,6 +85,7 @@ def cleaning(df, result, user_id, max_timestamp,new):
                                             'ubclap',
                                             'qeedda',
                                             'myfynd',
+                                            'cmntri',
                                             'gofynd',
                                             'paytm',
                                             'airbnk',
