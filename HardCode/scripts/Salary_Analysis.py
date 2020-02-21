@@ -10,7 +10,8 @@ import pprint
 from pymongo import MongoClient
 import sys
 from tqdm import tqdm
-from util import logger_1
+from Util import logger_1
+
 
 def clean_debit(data):
     '''This code drops the rows for debited messages and bhanix finance company messages.
@@ -28,7 +29,7 @@ def clean_debit(data):
     pattern2 = "debited"
     d = []
     for i, row in data.iterrows():
-        message = data["body"][i].lower()
+        message = row["body"].lower()
         y1 = re.search(pattern1, message)
         y2 = re.search(pattern2, message)
 
@@ -219,6 +220,9 @@ def salary_check(data):
           Output: DataFrame.
 
     '''
+    logger=logger_1('Salary Check',id)
+    logger.info('Salary Calculation Started')
+
     data = clean_debit(data)
     grouper = pd.Grouper(key='timestamp', freq='M')
     data = get_time(data)
@@ -231,6 +235,7 @@ def salary_check(data):
     df_salary = data.groupby(grouper)['salary'].max()
 
     try:
+        logger.info('Calculating salary form EPF keyword')
         if (df_salary[-1] != 0):
             salary = df_salary[-1]
 
@@ -244,6 +249,7 @@ def salary_check(data):
 
         if var1:
             try:
+                logger.info('Calculating salary form Salary keyword')
                 data = get_salary(data)
                 df_d_salary = data.groupby(grouper)['direct_sal'].max()
                 if (df_d_salary[-1] != 0):
@@ -257,6 +263,7 @@ def salary_check(data):
 
         if var2:
             try:
+                logger.info('Calculating salary from credit messages')
                 data = get_credit_amount(data)
 
                 data["credit_amount"] = np.where(data["credit_amount"] >= 10000, data["credit_amount"], 0)
@@ -303,22 +310,29 @@ def salary_check(data):
                                 return
             except:
                 salary = None
+                logger.critical('salary not found')
 
     return salary
 
 
 def conn():
+    logger=logger_1('Connection',id)
+    logger.info('Building connection')
+
     ''' This function create connection with mongodb database
     Parameters:
       Output: Returns connection object
      '''
     
     connection = MongoClient(
-        "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false", maxPoolSize=200)
+        "mongodb://god:rock0004@13.67.79.22:27017/?authSource=admin&readPreference=primary&ssl=false", maxPoolSize=200)
     return connection
 
 
 def transaction(id):
+    logger=logger_1('Transaction Data',id)
+    logger.info('Collecting SMS from Transaction Collection')
+
     ''' This function connects with collection in mongodb database
     Parameters:
       Input : Customer Id
@@ -334,6 +348,8 @@ def transaction(id):
 
 
 def extra(id):
+    logger=logger_1('Extra Data',id)
+    logger.info('Collecting SMS from Extra Collection')
     ''' This function find rows having epf as keyword in data
     Parameters :
       Input  :  Customer id
@@ -354,6 +370,9 @@ def extra(id):
 
 
 def merge(id):
+    logger=logger_1('Merge Data',id)
+    logger.info('Merging the Transaction and Extra SMS')
+
     ''' This code 
     Parameters:
      Input : Customer id
@@ -368,7 +387,6 @@ def merge(id):
 
 
 def customer_salary(id):
-    print(1)
     '''This code first merges the data from the transaction and extra colection in mongodb
 
        then it calls the main function salary_check for calculating salary, .
@@ -383,6 +401,10 @@ def customer_salary(id):
           salary(int/  user_id=id Nonetype)     : salary of the customer found then int otherwise Nonetype.
 
     '''
+
+    logger=logger_1('Customer Salary',id)
+    logger.info('Checking salary status')
+
     try:
         salary_status = {}
         merged = merge(id)
@@ -400,7 +422,7 @@ def customer_salary(id):
             status = True
             message = "SUCCESS"
     except Exception as e:
-
+        logger.crtitical('Error in code')
         status = False
         message = "ERROR"
         salary_status["SALARY"] = None
@@ -423,6 +445,8 @@ def convert_json(data, name):
          name : Customer Id
       Output : Json object 
       '''
+    logger=logger_1('Convert Json',id)
+    logger.info('Converting to Json file')
     obj = {"SALARY": []}
     for i in range(data.shape[0]):
         salary = {"SALARY": int(data['SALARY'][i])}
@@ -431,6 +455,9 @@ def convert_json(data, name):
 
 
 def salary_analysis(id):
+    logger=logger_1('Salary Analysis',id)
+    logger.info('Salary Analysis started')
+    
     ''' This function  call function to push salary in mongodb database
     Parameters  :  
        Input  : Customer id
@@ -441,7 +468,7 @@ def salary_analysis(id):
     sal_df = pd.DataFrame(salary_dict, index=[0])
     json_sal = convert_json(sal_df, id)
 
-    print(json_sal)
+    #print(json_sal)
 
     key = {"_id": id}
     connect = conn()
@@ -449,3 +476,6 @@ def salary_analysis(id):
     db = connect.messagecluster.salary
     db.update(key, json_sal, upsert=True)
     connect.close()
+
+
+print(salary_analysis(12095))
