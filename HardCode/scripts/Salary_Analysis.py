@@ -10,7 +10,7 @@ import pprint
 from pymongo import MongoClient
 import sys
 from tqdm import tqdm
-
+from util import logger_1
 
 def clean_debit(data):
     '''This code drops the rows for debited messages and bhanix finance company messages.
@@ -20,6 +20,10 @@ def clean_debit(data):
         Output: DataFrame.
 
         '''
+    logger=logger_1("Clean Debit",id)
+    logger.info("Cleaning text data")
+                    
+    
     pattern1 = "bhanix"
     pattern2 = "debited"
     d = []
@@ -46,6 +50,9 @@ def get_credit_amount(data):
           Output: DataFrame.
 
           '''
+    logger=logger_1("Get Credit Data",id)
+    logger.info("Credit Amount")
+    
     data['credit_amount'] = [0] * data.shape[0]
     pattern_2 = '(?i)credited.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
     pattern_1 = '(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?credited'
@@ -107,6 +114,9 @@ def get_epf_amount(data):
           Output: DataFrame.
 
           '''
+    
+    logger=logger_1("Get Epf Amount",id)
+    logger.info("Epf Amount")
 
     data["epf_amount"] = [0] * data.shape[0]
     pattern1 = "(?:[Ee][Pp][Ff] [Cc]ontribution of).*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
@@ -135,6 +145,8 @@ def epf_to_salary(data, column):
           Output: DataFrame.
 
           '''
+    logger=logger_1("Epf Salary",id)
+    logger.info("Epf Salary Amount")
 
     data["salary"] = [0] * data.shape[0]
     for i in range(0, data.shape[0]):
@@ -150,6 +162,10 @@ def get_salary(data):
           Output: DataFrame.
 
           '''
+    
+    logger=logger_1('Get Salary',id)
+    logger.info('Direct Salary Amount')
+  
     data["direct_sal"] = [0] * data.shape[0]
     pattern1 = "credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
     pattern2 = "salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*credited"
@@ -181,6 +197,10 @@ def get_time(data):
           Output: DataFrame.
 
           '''
+    
+    logger=logger_1("Get Time",id)
+    logger.info("Convert Timestamp To Datetime")
+    
     for i in range(data.shape[0]):
         try:
             x = datetime.strptime(data['timestamp'].values[i], "%Y-%m-%d %H:%M:%S")
@@ -288,12 +308,23 @@ def salary_check(data):
 
 
 def conn():
+    ''' This function create connection with mongodb database
+    Parameters:
+      Output: Returns connection object
+     '''
+    
     connection = MongoClient(
         "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false", maxPoolSize=200)
     return connection
 
 
 def transaction(id):
+    ''' This function connects with collection in mongodb database
+    Parameters:
+      Input : Customer Id
+      Output: Dataframe
+     '''
+    
     connect = conn()
     transaction = connect.messagecluster.transaction
     file1 = transaction.find_one({"_id": id})
@@ -303,6 +334,12 @@ def transaction(id):
 
 
 def extra(id):
+    ''' This function find rows having epf as keyword in data
+    Parameters :
+      Input  :  Customer id
+      Output :  Returns epf amount
+    '''
+    
     connect = conn()
     extra = connect.messagecluster.extra
     file2 = extra.find_one({"_id": id})
@@ -317,6 +354,12 @@ def extra(id):
 
 
 def merge(id):
+    ''' This code 
+    Parameters:
+     Input : Customer id
+     Output: Dataframe
+    ''' 
+    
     tran = transaction(id)
     ext = extra(id)
     total = pd.concat([tran, ext], 0)
@@ -369,26 +412,17 @@ def customer_salary(id):
     return salary_status
 
 
-def convert_json(data, name):
-    obj = {"_id": int(name), "SALARY": []}
-    for i in tqdm(range(data.shape[0])):
-        salary = {"SALARY": data['SALARY'][i]}
-        obj['SALARY'].append(salary)
-    return obj
-
-
-def main(id):
-    salary_dict = customer_salary(id)
-    sal_df = pd.DataFrame(salary_dict, index=[0])
-    json_sal = convert_json(sal_df, id)
-    connect = conn()
-    db = connect.messagecluster.salary
-    db.insert_one(json_sal)
-    connect.close()
 
 
 # main functions used to push data to mongodb
 def convert_json(data, name):
+    ''' This code used to push data to mongodb
+    Parameters :
+      Input : 
+         data : Dataframe
+         name : Customer Id
+      Output : Json object 
+      '''
     obj = {"SALARY": []}
     for i in range(data.shape[0]):
         salary = {"SALARY": int(data['SALARY'][i])}
@@ -397,6 +431,12 @@ def convert_json(data, name):
 
 
 def salary_analysis(id):
+    ''' This function  call function to push salary in mongodb database
+    Parameters  :  
+       Input  : Customer id
+       Output : Salary updated in mongodb database
+    '''
+
     salary_dict = customer_salary(id)
     sal_df = pd.DataFrame(salary_dict, index=[0])
     json_sal = convert_json(sal_df, id)
