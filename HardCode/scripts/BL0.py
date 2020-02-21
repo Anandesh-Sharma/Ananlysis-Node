@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+# from pymongo import MongoClient
 from .Util import logger_1, conn
 from .Classifier import classifier
 from .Loan_Analysis import loan_analysis
@@ -188,7 +188,7 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
 
     logger.info('starting loan analysis')
     try:
-        loan_analysis(str(user_id))
+        loan_analysis(int(user_id))
     except Exception as e:
         logger.debug('error in loan analysis')
         r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
@@ -210,7 +210,7 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
     logger.info('loan analysis successsful')
     logger.info('starting salary analysis')
     try:
-        salary_analysis(str(user_id))
+        salary_analysis(int(user_id))
     except Exception as e:
         logger.debug('error in salary analysis')
         r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,

@@ -9,10 +9,8 @@ import json
 import pprint
 from pymongo import MongoClient
 import sys
-import warnings
-
-warnings.filterwarnings('ignore')
-
+from tqdm import tqdm
+from util import logger_1
 
 def clean_debit(data):
     '''This code drops the rows for debited messages and bhanix finance company messages.
@@ -22,6 +20,10 @@ def clean_debit(data):
         Output: DataFrame.
 
         '''
+    logger=logger_1("Clean Debit",id)
+    logger.info("Cleaning text data")
+                    
+    
     pattern1 = "bhanix"
     pattern2 = "debited"
     d = []
@@ -48,6 +50,9 @@ def get_credit_amount(data):
           Output: DataFrame.
 
           '''
+    logger=logger_1("Get Credit Data",id)
+    logger.info("Credit Amount")
+    
     data['credit_amount'] = [0] * data.shape[0]
     pattern_2 = '(?i)credited.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
     pattern_1 = '(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?credited'
@@ -109,6 +114,9 @@ def get_epf_amount(data):
           Output: DataFrame.
 
           '''
+    
+    logger=logger_1("Get Epf Amount",id)
+    logger.info("Epf Amount")
 
     data["epf_amount"] = [0] * data.shape[0]
     pattern1 = "(?:[Ee][Pp][Ff] [Cc]ontribution of).*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
@@ -137,6 +145,8 @@ def epf_to_salary(data, column):
           Output: DataFrame.
 
           '''
+    logger=logger_1("Epf Salary",id)
+    logger.info("Epf Salary Amount")
 
     data["salary"] = [0] * data.shape[0]
     for i in range(0, data.shape[0]):
@@ -152,6 +162,10 @@ def get_salary(data):
           Output: DataFrame.
 
           '''
+    
+    logger=logger_1('Get Salary',id)
+    logger.info('Direct Salary Amount')
+  
     data["direct_sal"] = [0] * data.shape[0]
     pattern1 = "credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
     pattern2 = "salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*credited"
@@ -183,6 +197,10 @@ def get_time(data):
           Output: DataFrame.
 
           '''
+    
+    logger=logger_1("Get Time",id)
+    logger.info("Convert Timestamp To Datetime")
+    
     for i in range(data.shape[0]):
         try:
             x = datetime.strptime(data['timestamp'].values[i], "%Y-%m-%d %H:%M:%S")
@@ -200,7 +218,7 @@ def salary_check(data):
 
           Output: DataFrame.
 
-          '''
+    '''
     data = clean_debit(data)
     grouper = pd.Grouper(key='timestamp', freq='M')
     data = get_time(data)
@@ -213,135 +231,135 @@ def salary_check(data):
     df_salary = data.groupby(grouper)['salary'].max()
 
     try:
-        if (df_salary[-1] != 0) | (df_salary != "nan"):
+        if (df_salary[-1] != 0):
             salary = df_salary[-1]
-        elif (df_salary[-2] != 0) | (df_salary != "nan"):
+
+        elif (df_salary[-2] != 0):
             salary = df_salary[-2]
 
             var1 = False
             var2 = False
-        # print(salary)
     except:
         salary = None
 
-    try:
         if var1:
-            data = get_salary(data)
-            df_d_salary = data.groupby(grouper)['direct_sal'].max()
-            if (df_d_salary[-1] != 0) | (df_d_salary != "nan"):
-                salary = df_d_salary[-1]
-            elif (df_d_salary[-2] != 0) | (df_d_salary != "nan"):
-                salary = df_d_salary[-2]
+            try:
+                data = get_salary(data)
+                df_d_salary = data.groupby(grouper)['direct_sal'].max()
+                if (df_d_salary[-1] != 0):
+                    salary = df_d_salary[-1]
+                elif (df_d_salary[-2] != 0):
+                    salary = df_d_salary[-2]
 
-                var2 = False
-
-    except:
-        salary = None
-
-    try:
+                    var2 = False
+            except:
+                salary = None
 
         if var2:
-            data = get_credit_amount(data)
+            try:
+                data = get_credit_amount(data)
 
-            data["credit_amount"] = np.where(data["credit_amount"] >= 10000, data["credit_amount"], 0)
+                data["credit_amount"] = np.where(data["credit_amount"] >= 10000, data["credit_amount"], 0)
 
-            df_credit = data.groupby(grouper)['credit_amount'].max()
+                df_credit = data.groupby(grouper)['credit_amount'].max()
 
-            df_final_sal = pd.DataFrame(df_credit.tail())
+                df_final_sal = pd.DataFrame(df_credit.tail())
 
-            # print(df_final_sal)
+                if df_final_sal.shape[0] > 1:
+                    if ((df_final_sal["credit_amount"][-1] != 0) and (df_final_sal["credit_amount"][-2] != 0)):
 
-            if df_final_sal.shape[0] > 1:
-                if ((df_final_sal["credit_amount"][-1] != 0) and (df_final_sal["credit_amount"][-2] != 0)):
+                        real_money = list(df_final_sal['credit_amount'])[::-1]
+                        month = [w.month for w in list(df_final_sal.index)][::-1]
+                        a1 = True
+                        a2 = False
+                        # a3=False
+                        list_date = []
+                        for i in range(data.shape[0]):
 
-                    real_money = list(df_final_sal['credit_amount'])[::-1]
-                    # print(real_money)
-                    month = [w.month for w in list(df_final_sal.index)][::-1]
-                    a1 = True
-                    a2 = False
-                    # a3=False
-                    list_date = []
-                    for i in range(data.shape[0]):
+                            if a1:
+                                if data['credit_amount'][i] == real_money[0]:
+                                    list_date.append(data['timestamp'][i])
+                                    a1 = False
+                                    a2 = True
+                            if a2:
+                                if data['credit_amount'][i] == real_money[1]:
+                                    # if data['timestamp'][i].month == month[1]:
+                                    list_date.append(data['timestamp'][i])
+                                    # a2=False
+                                    # a3=True
+                                    break
 
-                        if a1:
-                            if data['credit_amount'][i] == real_money[0]:
-                                list_date.append(data['timestamp'][i])
-                                a1 = False
-                                a2 = True
-                        if a2:
-                            if data['credit_amount'][i] == real_money[1]:
-                                # if data['timestamp'][i].month == month[1]:
-                                list_date.append(data['timestamp'][i])
-                                # a2=False
-                                # a3=True
-                                break
+                        # print(list_date)
+                        time1 = list_date[0] - timedelta(days=26)
+                        time2 = list_date[0] - timedelta(days=34)
+                        val1 = df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-1] / 4
+                        val2 = df_final_sal["credit_amount"][-1] - df_final_sal["credit_amount"][-1] / 4
 
-                    # print(list_date)
-                    time1 = list_date[0] - timedelta(days=26)
-                    time2 = list_date[0] - timedelta(days=34)
-                    val1 = df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-1] / 4
-                    val2 = df_final_sal["credit_amount"][-1] - df_final_sal["credit_amount"][-1] / 4
+                        if (time2 < list_date[1] < time1):
+                            if (val2 < df_final_sal["credit_amount"][-2] < val1):
+                                salary = (df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-2]) / 2
+                            else:
 
-                    if (time2 < list_date[1] < time1):
-                        if (val2 < df_final_sal["credit_amount"][-2] < val1):
-                            salary = (df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-2]) / 2
-                        else:
-
-                            return
-    except:
-        salary = None
+                                return
+            except:
+                salary = None
 
     return salary
 
 
 def conn():
+    ''' This function create connection with mongodb database
+    Parameters:
+      Output: Returns connection object
+     '''
+    
     connection = MongoClient(
-        "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false",
-        maxPoolSize=200)
+        "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false", maxPoolSize=200)
     return connection
 
 
 def transaction(id):
+    ''' This function connects with collection in mongodb database
+    Parameters:
+      Input : Customer Id
+      Output: Dataframe
+     '''
+    
     connect = conn()
     transaction = connect.messagecluster.transaction
     file1 = transaction.find_one({"_id": id})
-    x = pd.DataFrame(file1)
-    df1 = pd.DataFrame()
-    full = pd.DataFrame()
-    for i in range(x.shape[0]):
-        # print(x['sms'][i])
-        p = pd.DataFrame(x['sms'][i], index=[0])
-        df1 = pd.concat([df1, p], axis=0)
-    df1 = df1.reset_index(drop=True)
-    full = pd.concat([x, df1], axis=1)
-    full = full.drop(["sms"], 1)
-    return full
+    x = pd.DataFrame(file1["sms"])
+
+    return x
 
 
 def extra(id):
+    ''' This function find rows having epf as keyword in data
+    Parameters :
+      Input  :  Customer id
+      Output :  Returns epf amount
+    '''
+    
     connect = conn()
     extra = connect.messagecluster.extra
     file2 = extra.find_one({"_id": id})
-    y = pd.DataFrame(file2)
-    df2 = pd.DataFrame()
-    full2 = pd.DataFrame()
-    for i in range(y.shape[0]):
-        # print(x['sms'][i])
-        p = pd.DataFrame(y['sms'][i], index=[0])
-        df2 = pd.concat([df2, p], axis=0)
-    df2 = df2.reset_index(drop=True)
-    full2 = pd.concat([y, df2], axis=1)
-    full2 = full2.drop(["sms"], 1)
+    y = pd.DataFrame(file2["sms"])
 
     epf = []
-    for i in range(full2.shape[0]):
-        if re.search("EPFOHO", full2["sender"][i]):
-            epf.append(full2.values[i])
-    epf = pd.DataFrame(epf, columns=['_id', 'sender', 'body', 'timestamp', 'read'])
+    for i in range(y.shape[0]):
+        if re.search("EPFOHO", y["sender"][i]):
+            epf.append(y.values[i])
+    epf = pd.DataFrame(epf, columns=['sender', 'body', 'timestamp', 'read'])
     return epf
 
 
 def merge(id):
+    ''' This code 
+    Parameters:
+     Input : Customer id
+     Output: Dataframe
+    ''' 
+    
     tran = transaction(id)
     ext = extra(id)
     total = pd.concat([tran, ext], 0)
@@ -350,6 +368,7 @@ def merge(id):
 
 
 def customer_salary(id):
+    print(1)
     '''This code first merges the data from the transaction and extra colection in mongodb
 
        then it calls the main function salary_check for calculating salary, .
@@ -361,14 +380,15 @@ def customer_salary(id):
           user_id(int)             : id of the customer
           status(bool)             : if the code runs successfully or not
           message(string)          : success/error/no salary found
-          salary(int/Nonetype)     : salary of the customer found then int otherwise Nonetype.
+          salary(int/  user_id=id Nonetype)     : salary of the customer found then int otherwise Nonetype.
 
-          '''
-    salary_status = {}
-    user_id = id
+    '''
     try:
+        salary_status = {}
         merged = merge(id)
+
         salary = salary_check(merged)
+
         salary_status["SALARY"] = salary
 
         if (salary == 0) | (salary == None):
@@ -385,32 +405,47 @@ def customer_salary(id):
         message = "ERROR"
         salary_status["SALARY"] = None
 
-    salary_status["USER_ID"] = user_id
+    salary_status["USER_ID"] = id
     salary_status["STATUS"] = status
     salary_status["MESSAGE"] = message
 
     return salary_status
 
 
+
+
+# main functions used to push data to mongodb
 def convert_json(data, name):
+    ''' This code used to push data to mongodb
+    Parameters :
+      Input : 
+         data : Dataframe
+         name : Customer Id
+      Output : Json object 
+      '''
     obj = {"SALARY": []}
     for i in range(data.shape[0]):
-        salary = {"SALARY": data['SALARY'][i]}
+        salary = {"SALARY": int(data['SALARY'][i])}
         obj["SALARY"].append(salary)
     return obj
 
 
 def salary_analysis(id):
+    ''' This function  call function to push salary in mongodb database
+    Parameters  :  
+       Input  : Customer id
+       Output : Salary updated in mongodb database
+    '''
+
     salary_dict = customer_salary(id)
     sal_df = pd.DataFrame(salary_dict, index=[0])
     json_sal = convert_json(sal_df, id)
 
-    key = {'_id': id}
+    print(json_sal)
+
+    key = {"_id": id}
     connect = conn()
 
     db = connect.messagecluster.salary
     db.update(key, json_sal, upsert=True)
     connect.close()
-
-
-salary_analysis(181502)

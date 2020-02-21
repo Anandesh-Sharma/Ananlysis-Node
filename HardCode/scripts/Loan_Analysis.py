@@ -2,9 +2,9 @@ from pymongo import MongoClient
 import numpy as np
 import pandas as pd
 import re
-import os
-from glob import glob
-from tqdm import tqdm
+# import os
+# from glob import glob
+# from tqdm import tqdm
 import datetime
 import warnings
 import json
@@ -290,8 +290,6 @@ def get_report(temp_data, trans):
                     if days < 35:
                         report['closed'] += 1
                         report['days'].append(days)
-
-                        i = j + 1
                         break
                     else:
                         report['closed'] += 1
