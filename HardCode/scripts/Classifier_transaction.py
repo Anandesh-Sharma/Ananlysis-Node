@@ -169,7 +169,7 @@ def cleaning(df, result, user_id, max_timestamp,new):
         if index not in required_rows:
             continue
         matcher_1 = re.search("[Rr]egards", row["body"])
-        matcher_2 = re.search("[a-zA-z]{2}-\d+", row["body"])
+        matcher_2 = re.search(r"[a-zA-z]{2}-\d+", row["body"])
         if matcher_1 != None:
             if 'DHANCO' not in row["sender"]:
                 g.append(index)
@@ -187,7 +187,7 @@ def cleaning(df, result, user_id, max_timestamp,new):
                                      'documents have been received',
                                      'last day free', 'received a refund', 'will be processed shortly',
                                      'credited a free',
-                                     'request for modifying', 'free \d* [gm]b/day', 'data pack',
+                                     'request for modifying', r'free \d* [gm]b/day', 'data pack',
                                      'request for registration',
                                      'received by our company', 'month of', 'received a call', 'free data','welcome',
                                      'data benefits','win real cash',
@@ -198,7 +198,7 @@ def cleaning(df, result, user_id, max_timestamp,new):
                                      'redemption request', 'number received',
                                      'your order', 'beneficiary [a-z]*? is added successfully', 'dear employee',
                                      'subscribing', 'sorry',
-                                     'received \d*? enquiry', 'congratulations?', 'woohoo!', 'salary credited', 'hurry',
+                                     r'received \d*? enquiry', 'congratulations?', 'woohoo!', 'salary credited', 'hurry',
                                      'sign up', 'credited to your wallet', 'safe & secure!', '[gm]b is credited on',
                                      'cash reward',
                                      'remaining emi installment', 'salary amount', 'incentive amount ', 'dear investor',
@@ -221,7 +221,7 @@ def cleaning(df, result, user_id, max_timestamp,new):
                                      'added beneficiary', 'received a message', ' premium ', 'claim', 'points ',
                                      'frequency monthly', 'received a pay rise', 'cheque book',
                                      'will be', 'unpaid', 'received (for|in) clearing', 'presented for clearing',
-                                     'your application', 'to know', 'unpaid',
+                                     'your application', 'to know', 'unpaid',r'\slakh\s'
                                      'thanking you', 'redeem', 'transferred', 'available credit limit']
 
     garbage_rows = []
@@ -242,6 +242,52 @@ def cleaning(df, result, user_id, max_timestamp,new):
         garbage_rows.extend(i)
 
     required_rows = list(set(required_rows) - set(garbage_rows))
+    
+    loan_messages=[]
+    for i,row in df.iterrows():
+        if i not in required_rows:
+            continue
+        matcher=re.search("loan",row['body'].lower())
+        if matcher != None:
+            loan_messages.append(i)
+    imp_loan_messages=[]
+    pattern_0 = 'info.*?loan'
+    pattern_1 = r'[\*nx]+([0-9]{3,})'
+    pattern_2 = r'[a]\/c ([0-9]+)'
+    pattern_3 = r'[\.]{3,}([0-9]+)'
+    pattern_4 = r'account\s?[\*nx]+([0-9]{3,})'
+    pattern_unmatch = r'loan (a\/c|account)'
+
+    for i,row in df.iterrows():
+        if i not in loan_messages:
+            continue
+        message = row['body'].lower()
+        matcher_1 = re.search(pattern_1,message)
+        matcher_2 = re.search(pattern_2,message)
+        matcher_3 = re.search(pattern_3,message)
+        matcher_4 = re.search(pattern_4,message)
+        matcher_0 = re.search(pattern_0,message)
+        matcher_unmatch= re.search(pattern_unmatch,message)
+        if matcher_0!= None:
+            imp_loan_messages.append(i)    
+        
+        elif matcher_1!= None:
+            if(matcher_unmatch==None):
+                imp_loan_messages.append(i)
+            
+        elif matcher_2!= None:
+            if(matcher_unmatch==None):
+                imp_loan_messages.append(i)
+            
+        elif matcher_3!= None:
+            if(matcher_unmatch==None):
+                imp_loan_messages.append(i)
+            
+        elif matcher_4!=None:
+            if(matcher_unmatch==None):
+                imp_loan_messages.append(i)
+    required_rows = list(set(required_rows)-set(loan_messages))
+    required_rows.extend(list(set(imp_loan_messages)))
 
     if user_id in result.keys():
         a = result[user_id]
@@ -273,4 +319,3 @@ def cleaning(df, result, user_id, max_timestamp,new):
             db.transaction.update({"_id": int(user_id)}, {"$push": {'sms': data_transaction['sms'][i]}})
         db.transaction.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
     client.close()
-
