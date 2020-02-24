@@ -229,19 +229,24 @@ def salary_check(data):
     var1 = True
     var2 = True
     salary = 0
+    keyword=""
+   
 
     data = get_epf_amount(data)
     data = epf_to_salary(data, "epf_amount")
     df_salary = data.groupby(grouper)['salary'].max()
+    
 
     try:
         logger.info('Calculating salary form EPF keyword')
         if (df_salary[-1] != 0):
             salary = df_salary[-1]
+            keyword="EPF"
 
         elif (df_salary[-2] != 0):
             salary = df_salary[-2]
-
+            keyword="EPF"
+            
             var1 = False
             var2 = False
     except:
@@ -254,9 +259,10 @@ def salary_check(data):
                 df_d_salary = data.groupby(grouper)['direct_sal'].max()
                 if (df_d_salary[-1] != 0):
                     salary = df_d_salary[-1]
+                    keyword="Salary"
                 elif (df_d_salary[-2] != 0):
                     salary = df_d_salary[-2]
-
+                    keyword="Salary"
                     var2 = False
             except:
                 salary = None
@@ -305,6 +311,7 @@ def salary_check(data):
                         if (time2 < list_date[1] < time1):
                             if (val2 < df_final_sal["credit_amount"][-2] < val1):
                                 salary = (df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-2]) / 2
+                                keyword="Credit"
                             else:
 
                                 return
@@ -312,7 +319,7 @@ def salary_check(data):
                 salary = None
                 logger.critical('salary not found')
 
-    return salary
+    return salary,keyword
 
 
 def conn():
@@ -381,6 +388,7 @@ def merge(id):
     
     tran = transaction(id)
     ext = extra(id)
+    
     total = pd.concat([tran, ext], 0)
     total = total.reset_index(drop=True)
     return total
@@ -407,10 +415,12 @@ def customer_salary(id):
 
     try:
         salary_status = {}
+        print(0)
         merged = merge(id)
-
-        salary = salary_check(merged)
-
+        print(1)
+        
+        salary,keyword = salary_check(merged)
+        print(2)
         salary_status["SALARY"] = salary
 
         if (salary == 0) | (salary == None):
@@ -422,14 +432,16 @@ def customer_salary(id):
             status = True
             message = "SUCCESS"
     except Exception as e:
-        logger.crtitical('Error in code')
+        logger.critical('Error in code')
         status = False
         message = "ERROR"
         salary_status["SALARY"] = None
+        
 
     salary_status["USER_ID"] = id
     salary_status["STATUS"] = status
     salary_status["MESSAGE"] = message
+    salary_status["KEYWORD"] = keyword
 
     return salary_status
 
@@ -437,21 +449,21 @@ def customer_salary(id):
 
 
 # main functions used to push data to mongodb
-def convert_json(data, name):
-    ''' This code used to push data to mongodb
-    Parameters :
-      Input : 
-         data : Dataframe
-         name : Customer Id
-      Output : Json object 
-      '''
-    logger=logger_1('Convert Json',id)
-    logger.info('Converting to Json file')
-    obj = {"SALARY": []}
-    for i in range(data.shape[0]):
-        salary = {"SALARY": int(data['SALARY'][i])}
-        obj["SALARY"].append(salary)
-    return obj
+# def convert_json(data, name):
+#     ''' This code used to push data to mongodb
+#     Parameters :
+#       Input : 
+#          data : Dataframe
+#          name : Customer Id
+#       Output : Json object 
+#       '''
+#     logger=logger_1('Convert Json',id)
+#     logger.info('Converting to Json file')
+#     obj = {"SALARY": []}
+#     for i in range(data.shape[0]):
+#         salary = {"SALARY": int(data['SALARY'][i]),"KEYWORD":data["KEYWORD"][i]}
+#         obj["SALARY"].append(salary)
+#     return obj
 
 
 def salary_analysis(id):
@@ -465,17 +477,15 @@ def salary_analysis(id):
     '''
 
     salary_dict = customer_salary(id)
-    sal_df = pd.DataFrame(salary_dict, index=[0])
-    json_sal = convert_json(sal_df, id)
-
-    #print(json_sal)
-
+    # print(salary_dict)
+    # sal_df = pd.DataFrame(salary_dict, index=[0])
+    # json_sal = convert_json(sal_df, id)
+    json_sal={"_id":int(id),"Salary":int(salary_dict['SALARY']),"Keyword":salary_dict['KEYWORD']}
     key = {"_id": id}
     connect = conn()
 
-    db = connect.messagecluster.salary
+    db = connect.analysis.salary
     db.update(key, json_sal, upsert=True)
     connect.close()
 
 
-print(salary_analysis(12095))

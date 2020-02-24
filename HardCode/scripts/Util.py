@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 def conn():
     connection = MongoClient(
-        "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false",socketTimeoutMS=900000)
+        "mongodb://god:rock0004@13.67.79.22:27017/?authSource=admin&readPreference=primary&ssl=false",socketTimeoutMS=900000)
     return connection
 
 
