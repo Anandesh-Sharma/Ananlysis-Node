@@ -30,8 +30,7 @@ def extra(df, user_id, result, max_timestamp, new):
          logic(string) :buissness logic of the process
         """
     logger = logger_1("extra",user_id)
-    print("Extra Messages")
-    logger.info("Generetating dictionary of extra sms")
+    logger.info("Generating dictionary of extra sms")
     for i in result.keys():
         df.drop(list(set(result[i])), inplace=True)
         df.reset_index(drop=True, inplace=True)
@@ -93,7 +92,7 @@ def classifier(sms_json, user_id):
     manager = multiprocessing.Manager()
     result = manager.dict()
 
-    logger.info("Reading sms_json object")
+    logger.info("Read sms json object")
     result1 = read_json(sms_json, user_id)
     if not result1['status']:
         logger.error("JSON not read successfully")

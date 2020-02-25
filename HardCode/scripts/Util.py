@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore")
 
 def conn():
     connection = MongoClient(
-        "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false",socketTimeoutMS=900000)
+        "mongodb://god:rock0004@13.67.79.22:27017/?authSource=admin&readPreference=primary&ssl=false",socketTimeoutMS=900000)
     return connection
 
 
@@ -33,7 +33,6 @@ def logger_1(name, user_id):
 def read_json(sms_json, user_id):
     logger = logger_1("read json", user_id)
     try:
-        logger.info("converting json object into dataframe")
         df = pd.DataFrame.from_dict(sms_json, orient='index')
     except Exception as e:
         logger.debug("dataframe not converted successfully")
@@ -44,7 +43,6 @@ def read_json(sms_json, user_id):
     df.reset_index(drop=True, inplace=True)
     try:
         for i in range(df.shape[0]):
-            logger.info("converting timestamp from unix into datetime")
             df['timestamp'][i] = datetime.utcfromtimestamp(int(df['temp'][i]) / 1000).strftime('%Y-%m-%d %H:%M:%S')
     except Exception as e:
         logger.debug("timestamp not converted successfully")
@@ -81,7 +79,7 @@ def convert_json(data, name, max_timestamp):
         sms = {"sender": data['sender'][i], "body": data['body'][i], "timestamp": data['timestamp'][i],
                "read": data['read'][i]}
         obj['sms'].append(sms)
-    logger.info("data convrted into json successfully")
+    logger.info("data converted into json successfully")
     return obj
 
 
