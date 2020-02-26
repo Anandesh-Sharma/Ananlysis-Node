@@ -1,15 +1,10 @@
 import pandas as pd
 import numpy as np
 import regex as re
-from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor, wait, as_completed
+from datetime import datetime,timedelta
 from datetime import timedelta
-import pymongo
 import json
-import pprint
 from pymongo import MongoClient
-import sys
-from tqdm import tqdm
 from Util import logger_1
 
 
@@ -55,15 +50,15 @@ def get_credit_amount(data,id):
     logger.info("Credit Amount Calculation starts")
     
     data['credit_amount'] = [0] * data.shape[0]
-    pattern_2 = '(?i)credited.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
-    pattern_1 = '(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?credited'
+    pattern_2 = r'(?i)credited.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
+    pattern_1 = r'(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?credited'
     # pattern_3 = "credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
-    pattern_4 = '(?i)(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?deposited'
-    pattern_5 = '(?i)(?:(?:rs|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?received'
-    pattern_6 = '(?i)received.*?(?:(?:rs|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
+    pattern_4 = r'(?i)(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?deposited'
+    pattern_5 = r'(?i)(?:(?:rs|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?received'
+    pattern_6 = r'(?i)received.*?(?:(?:rs|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
     # pattern_7 = "salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*credited"
     # pattern_debit_1 = '(?i)debited(.*)?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
-    pattern_debit_2 = 'credited to beneficiary'
+    pattern_debit_2 = r'credited to beneficiary'
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
@@ -121,8 +116,8 @@ def get_epf_amount(data,id):
     logger.info("Epf Amount Calculation starts")
 
     data["epf_amount"] = [0] * data.shape[0]
-    pattern1 = "(?:[Ee][Pp][Ff] [Cc]ontribution of).*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
-    pattern2 = "(?:passbook balance).*?(?:contribution of).*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
+    pattern1 = r"(?:[Ee][Pp][Ff] [Cc]ontribution of).*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
+    pattern2 = r"(?:passbook balance).*?(?:contribution of).*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
 
     for i, row in data.iterrows():
         m = row["body"].lower()
@@ -171,9 +166,9 @@ def get_salary(data,id):
     logger.info('Direct Salary Amount Calculation starts')
   
     data["direct_sal"] = [0] * data.shape[0]
-    pattern1 = "credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
-    pattern2 = "salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*credited"
-    pattern3 = "(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*?imps\/salary"
+    pattern1 = r"credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
+    pattern2 = r"salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*credited"
+    pattern3 = r"(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*?imps\/salary"
 
     for i, row in data.iterrows():
         m = row["body"].lower()
@@ -233,7 +228,6 @@ def salary_check(data,id):
     grouper = pd.Grouper(key='timestamp', freq='M')
     data = get_time(data,id)
     var1 = True
-    #var2 = True
     salary = 0
     keyword=""
    
@@ -249,14 +243,12 @@ def salary_check(data,id):
         salary = df_salary[-1]
         keyword="EPF"
         var1 = False
-        var2 = False
         logger.info("found salary from EPF keyword")
 
     elif (df_salary[-2] != 0):
         salary = df_salary[-2]
         keyword="EPF"
         var1 = False
-        var2 = False
         logger.info("found salary from EPF keyword")
 
     if var1:
@@ -264,73 +256,17 @@ def salary_check(data,id):
             logger.info('Finding salary from Salary keyword')
             data = get_salary(data,id)
             df_d_salary = data.groupby(grouper)['direct_sal'].max()
-            #print(df_d_salary)
             if (df_d_salary[-1] != 0):
                 salary = df_d_salary[-1]
                 keyword="Salary"
-                var2 = False
                 logger.info("salary found from salary keyword")
             elif (df_d_salary[-2] != 0):
                 salary = df_d_salary[-2]
                 keyword="Salary"
-                var2 = False
                 logger.info("salary found from salary keyword")    
             
         except:
             salary = None
-
-    # if var2:
-    #     try:
-    #         logger.info('Finding salary from credit messages')
-    #         data = get_credit_amount(data)
-
-    #         data["credit_amount"] = np.where(data["credit_amount"] >= 10000, data["credit_amount"], 0)
-
-    #         df_credit = data.groupby(grouper)['credit_amount'].max()
-
-    #         df_final_sal = pd.DataFrame(df_credit.tail())
-
-    #         if df_final_sal.shape[0] > 1:
-    #             if ((df_final_sal["credit_amount"][-1] != 0) and (df_final_sal["credit_amount"][-2] != 0)):
-
-    #                 real_money = list(df_final_sal['credit_amount'])[::-1]
-    #                 # month = [w.month for w in list(df_final_sal.index)][::-1]
-    #                 a1 = True
-    #                 a2 = False
-    #                 # a3=False
-    #                 list_date = []
-    #                 for i in range(data.shape[0]):
-
-    #                     if a1:
-    #                         if data['credit_amount'][i] == real_money[0]:
-    #                             list_date.append(data['timestamp'][i])
-    #                             a1 = False
-    #                             a2 = True
-    #                     if a2:
-    #                         if data['credit_amount'][i] == real_money[1]:
-    #                             # if data['timestamp'][i].month == month[1]:
-    #                             list_date.append(data['timestamp'][i])
-    #                             # a2=False
-    #                             # a3=True
-    #                             break
-
-    #                 # print(list_date)
-    #                 time1 = list_date[0] - timedelta(days=26)
-    #                 time2 = list_date[0] - timedelta(days=34)
-    #                 val1 = df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-1] / 4
-    #                 val2 = df_final_sal["credit_amount"][-1] - df_final_sal["credit_amount"][-1] / 4
-
-    #                 if (time2 < list_date[1] < time1):
-    #                     if (val2 < df_final_sal["credit_amount"][-2] < val1):
-    #                         salary = (df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-2]) / 2
-    #                         keyword="Credit"
-    #                     else:
-
-    #                         return
-    #     except:
-    #         salary = None
-    #         logger.critical('salary not found')
-
     return salary,keyword
 
 
@@ -457,7 +393,6 @@ def customer_salary(id):
             logger.info("Data merged successfully")
         
         salary,keyword = salary_check(merged,id)
-        #print(salary,keyword)
         
        
 
@@ -491,23 +426,6 @@ def customer_salary(id):
 
 
 
-# def convert_json(data, name):
-#     ''' This code used to push data to mongodb
-#     Parameters :
-#       Input : 
-#          data : Dataframe
-#          name : Customer Id
-#       Output : Json object 
-#       '''
-#     logger=logger_1('Convert Json',id)
-#     logger.info('Converting to Json file')
-#     obj = {"SALARY": []}
-#     for i in range(data.shape[0]):
-#         salary = {"SALARY": int(data['SALARY'][i]),"KEYWORD":data["KEYWORD"][i]}
-#         obj["SALARY"].append(salary)
-#     return obj
-
-
 def salary_analysis(id):
         
     ''' This function  call function to push salary in mongodb database
@@ -525,12 +443,8 @@ def salary_analysis(id):
     else:    
         
 
-        # print(salary_dict)
-        # sal_df = pd.DataFrame(salary_dict, index=[0])
-        # json_sal = convert_json(sal_df, id)
         json_sal={"_id":int(id),"salary":str(salary_dict['salary']),"keyword":salary_dict['keyword']}
         salary_dict={"_id":int(id),"salary":str(salary_dict['salary']),"keyword":salary_dict['keyword'],'status':True,'message':salary_dict["message"]}
-        #print(json_sal)
         key = {"_id": id}
         connect = conn()
 
@@ -540,5 +454,3 @@ def salary_analysis(id):
         connect.close()
 
     return salary_dict
-
-print(salary_analysis(211910))
