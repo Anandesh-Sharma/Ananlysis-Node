@@ -1,7 +1,8 @@
 import re
 import threading
-from .Util import conn, read_json, convert_json
-from tqdm import tqdm
+from .Util import conn, read_json, convert_json, logger_1
+import warnings
+warnings.filterwarnings("ignore")
 
 
 def check_body_1(df, pattern):
@@ -47,6 +48,7 @@ def thread_for_cleaning_3(df, pattern, result, required_rows):
 
 
 def cleaning(df, result, user_id, max_timestamp,new):
+    logger = logger_1("cleaning", user_id)
     transaction_patterns = ['debited', 'credited']
     thread_list = []
     results = []
@@ -56,11 +58,13 @@ def cleaning(df, result, user_id, max_timestamp,new):
         thread = threading.Thread(target=thread_for_cleaning_1, args=(df, pattern, results))
         thread_list.append(thread)
 
+    logger.info("thread for cleaning 1 starts")
     for thread in thread_list:
         thread.start()
 
-    for thread in tqdm(thread_list):
+    for thread in thread_list:
         thread.join()
+    logger.info("thread for cleaning 1 complete")
 
     for i in results:
         length = length - set(i)
@@ -153,11 +157,13 @@ def cleaning(df, result, user_id, max_timestamp,new):
         thread = threading.Thread(target=thread_for_cleaning_3, args=(df, pattern, results, required_rows))
         thread_list.append(thread)
 
+    logger.info("thread for cleaning 3 starts")
     for thread in thread_list:
         thread.start()
 
-    for thread in tqdm(thread_list):
+    for thread in thread_list:
         thread.join()
+    logger.info("thread for cleaning 3 complete")
 
     for i in results:
         garbage_header_rows.extend(i)
@@ -232,11 +238,13 @@ def cleaning(df, result, user_id, max_timestamp,new):
         thread = threading.Thread(target=thread_for_cleaning_2, args=(df, pattern, results, required_rows))
         thread_list.append(thread)
 
+    logger.info("thread for cleaning 2 starts")
     for thread in thread_list:
         thread.start()
 
-    for thread in tqdm(thread_list):
+    for thread in thread_list:
         thread.join()
+    logger.info("thread for cleaning 2 complete")
 
     for i in results:
         garbage_rows.extend(i)
@@ -288,6 +296,7 @@ def cleaning(df, result, user_id, max_timestamp,new):
                 imp_loan_messages.append(i)
     required_rows = list(set(required_rows)-set(loan_messages))
     required_rows.extend(list(set(imp_loan_messages)))
+    logger.info("important loan messages saved")
 
     if user_id in result.keys():
         a = result[user_id]
@@ -295,6 +304,8 @@ def cleaning(df, result, user_id, max_timestamp,new):
         result[user_id] = a
     else:
         result[user_id] = list(required_rows)
+    logger.info("Appended name in result dictionary for transaction messages successfully")
+
     mask = []
     for i in range(df.shape[0]):
         if i in required_rows:
@@ -303,19 +314,29 @@ def cleaning(df, result, user_id, max_timestamp,new):
             mask.append(False)
     df_transaction = df.copy()[mask]
     df_transaction = df_transaction.reset_index(drop=True)
-
+    logger.info("Dropped sms other than transaction")
+    logger.info("Converting transaction messages dataframe into json")
     data_transaction = convert_json(df_transaction, user_id, max_timestamp)
 
     try:
+        logger.info('making connection with db')
         client = conn()
         db = client.messagecluster
     except Exception as e:
+        logger.critical('error in connection')
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
+    logger.info('connection success')
+
     if new:
+        logger.info("New user checked")
         db.transaction.insert_one(data_transaction)
+        logger.info("All transaction messages of new user inserted successfully")
     else:
         for i in range(len(data_transaction['sms'])):
+            logger.info("Old User checked")
             db.transaction.update({"_id": int(user_id)}, {"$push": {'sms': data_transaction['sms'][i]}})
+            logger.info("transaction sms of old user updated successfully")
         db.transaction.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
+        logger.info("Timestamp of User updated")
     client.close()

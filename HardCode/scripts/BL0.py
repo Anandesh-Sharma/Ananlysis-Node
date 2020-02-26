@@ -5,6 +5,8 @@ from .Loan_Analysis import loan_analysis
 from .Salary_Analysis import salary_analysis
 from .Analysis import analyse
 import pandas as pd
+import warnings
+warnings.filterwarnings("ignore")
 
 from time import sleep
 
