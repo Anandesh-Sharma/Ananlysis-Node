@@ -313,7 +313,7 @@ def transaction(id):
 def extra(id):
     ''' This function find rows having epf as keyword in data
       Parameters :
-      Input  :  Customer id
+      Input  :  Customer id(int)
       Output :  Returns epf messages dataframe
     '''
     logger=logger_1('Extra Data',id)
@@ -336,7 +336,7 @@ def merge(id):
     
     ''' This code 
      Parameters:
-     Input : Customer id
+     Input : Customer id(int)
      Output: Dictionary with Parameters:    status(bool):code run successfully or not , 
                                                 message(string):success/error ,  
                                                 df(dataframe): dataframe of merged data
@@ -435,7 +435,7 @@ def salary_analysis(id):
         
     ''' This function  call function to push salary in mongodb database
        Parameters  :  
-       Input  : Customer id
+       Input  : Customer id(int)
        Output : Dictionary with Parameters:     _id(int): user_id
                                                 status(bool):code run successfully or not , 
                                                 message(string):success/error/not found ,  
