@@ -217,7 +217,7 @@ def salary_check(data,id):
 
           Parameters: DataFrame.
 
-          Output: Salary,Keyword.
+          Output: Salary(int),Keyword(string).
 
     '''
     
@@ -289,7 +289,10 @@ def transaction(id):
     ''' This function connects with collection in mongodb database
       Parameters:
       Input : Customer Id
-      Output: Dataframe
+      Output: Dictionary with Parameters:    status(bool):code run successfully or not , 
+                                                message(string):success/error ,  
+                                                df(dataframe): dataframe of transaction data
+      
     '''
 
     logger=logger_1('Transaction Data',id)
@@ -334,7 +337,9 @@ def merge(id):
     ''' This code 
      Parameters:
      Input : Customer id
-     Output: Dataframe
+     Output: Dictionary with Parameters:    status(bool):code run successfully or not , 
+                                                message(string):success/error ,  
+                                                df(dataframe): dataframe of merged data
     ''' 
     logger=logger_1('Merge Data',id)
     logger.info('Merging the Transaction and Extra SMS')
@@ -398,7 +403,7 @@ def customer_salary(id):
 
         salary_status["salary"] = salary
         if (salary == 0) | (salary == None):
-            salary_status["salary"] = 0
+            salary_status["salary"] = "0"
             status = False
             message = "Not found"
             logger.info("no found salary")
@@ -412,11 +417,11 @@ def customer_salary(id):
         logger.critical(e)
         status = False
         message = "ERROR"
-        salary_status["salary"] = 0
+        salary_status["salary"] = "0"
         
         
 
-    salary_status["user_id"] = id
+    salary_status["_id"] = id
     salary_status["status"] = status
     salary_status["message"] = message
     salary_status["keyword"] = keyword
@@ -431,13 +436,17 @@ def salary_analysis(id):
     ''' This function  call function to push salary in mongodb database
        Parameters  :  
        Input  : Customer id
-       Output : Salary updated in mongodb database
+       Output : Dictionary with Parameters:     _id(int): user_id
+                                                status(bool):code run successfully or not , 
+                                                message(string):success/error/not found ,  
+                                                keyword(string): EPF/Salary
+                                                salary(str): salary of user
     '''
     logger=logger_1('Salary Analysis',id)
     logger.info('Salary Analysis started')
 
     salary_dict = customer_salary(id)
-    
+    print(type(salary_dict["salary"]))
     if salary_dict['status']==False:
         return salary_dict
     else:    
@@ -454,3 +463,4 @@ def salary_analysis(id):
         connect.close()
 
     return salary_dict
+
