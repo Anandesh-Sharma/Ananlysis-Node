@@ -352,7 +352,7 @@ def merge(id):
         logger.info("Data fetched from Transaction collection")
     else:
         logger.error("No data fetched from Transaction collection")    
-        return {'status':False,'message':'no transaction message'}
+        return {'status':False,'message':'no transaction message',"salary":"0"}
     ext = extra(id)
     if ext.shape[0]!=0:
         logger.info("Data fetched from Extra collection")
@@ -446,7 +446,7 @@ def salary_analysis(id):
     logger.info('Salary Analysis started')
 
     salary_dict = customer_salary(id)
-    print(type(salary_dict["salary"]))
+    #print(type(salary_dict["salary"]))
     if salary_dict['status']==False:
         return salary_dict
     else:    
@@ -464,3 +464,4 @@ def salary_analysis(id):
 
     return salary_dict
 
+print(salary_analysis(229533))
