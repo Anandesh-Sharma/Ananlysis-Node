@@ -13,7 +13,7 @@ from tqdm import tqdm
 from Util import logger_1
 
 
-def clean_debit(data):
+def clean_debit(data,id):
     '''This code drops the rows for debited messages and bhanix finance company messages.
 
         Parameters: DataFrame.
@@ -38,11 +38,11 @@ def clean_debit(data):
 
     data.drop(d, inplace=True)
     data.reset_index(drop=True, inplace=True)
-
+    logger.info("Cleaning completed")
     return data
 
 
-def get_credit_amount(data):
+def get_credit_amount(data,id):
     '''
     This code finds the credited amount from the messages in a DataFrame.
 
@@ -51,8 +51,8 @@ def get_credit_amount(data):
           Output: DataFrame.
 
     '''
-    logger=logger_1("Get Credit Data",id)
-    logger.info("Credit Amount Calculated")
+    logger=logger_1("Get Credit Amount",id)
+    logger.info("Credit Amount Calculation starts")
     
     data['credit_amount'] = [0] * data.shape[0]
     pattern_2 = '(?i)credited.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
@@ -104,10 +104,11 @@ def get_credit_amount(data):
             print(e)
             print(i + 2)
             print(str(amount).replace(",", ""))
+    logger.info('credit amount calculation completes')        
     return data
 
 
-def get_epf_amount(data):
+def get_epf_amount(data,id):
     '''This code finds the epf(employee provident fund) amount from the messages in the DataFrame.
 
           Parameters: DataFrame.
@@ -117,7 +118,7 @@ def get_epf_amount(data):
     '''
     
     logger=logger_1("Get Epf Amount",id)
-    logger.info("Epf Amount Calculated")
+    logger.info("Epf Amount Calculation starts")
 
     data["epf_amount"] = [0] * data.shape[0]
     pattern1 = "(?:[Ee][Pp][Ff] [Cc]ontribution of).*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
@@ -135,10 +136,11 @@ def get_epf_amount(data):
         else:
             amount = 0
         data["epf_amount"][i] = float(str(amount).replace(",", ""))
+    logger.info("epf amount calculation completed")
     return data
 
 
-def epf_to_salary(data, column):
+def epf_to_salary(data, column,id):
     '''This code calculates the salary from the epf amount with formula: epf=12% of salary.
 
           Parameters: DataFrame.
@@ -146,16 +148,17 @@ def epf_to_salary(data, column):
           Output: DataFrame.
 
     '''
-    logger=logger_1("Epf Salary",id)
-    logger.info("Salary Calculated from Amount")
+    logger=logger_1("Epf to Salary",id)
+    logger.info("Salary Calculation from EPF Amount starts")
 
     data["salary"] = [0] * data.shape[0]
     for i in range(0, data.shape[0]):
         data["salary"][i] = (data[column][i] * 100) / 12
+    
     return data
 
 
-def get_salary(data):
+def get_salary(data,id):
     '''This code finds the salary from the messages if keyword 'salary' is found.
 
           Parameters: DataFrame.
@@ -165,7 +168,7 @@ def get_salary(data):
     '''
     
     logger=logger_1('Get Salary',id)
-    logger.info('Direct Salary Amount Calculated')
+    logger.info('Direct Salary Amount Calculation starts')
   
     data["direct_sal"] = [0] * data.shape[0]
     pattern1 = "credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
@@ -178,6 +181,7 @@ def get_salary(data):
         y1 = re.search(pattern1, m)
         y2 = re.search(pattern2, m)
         y3 = re.search(pattern3, m)
+        
         if (y1 != None):
             amount = y1.group(3)
         elif (y2 != None):
@@ -187,10 +191,11 @@ def get_salary(data):
         else:
             amount = 0
         data["direct_sal"][i] = float(str(amount).replace(",", ""))
+    logger.info('Direct salary calculation completes')
     return data
 
 
-def get_time(data):
+def get_time(data,id):
     '''This code converts the timestamp from unix format to datetime.
 
           Parameters: DataFrame.
@@ -212,7 +217,7 @@ def get_time(data):
     return data
 
 
-def salary_check(data):
+def salary_check(data,id):
     '''This code calls all the function to calculate salary of a user based on the messages in dataFrame.
 
           Parameters: DataFrame.
@@ -220,104 +225,111 @@ def salary_check(data):
           Output: Salary,Keyword.
 
     '''
+    
     logger=logger_1('Salary Check',id)
     logger.info('Salary Calculation Started')
 
-    data = clean_debit(data)
+    data = clean_debit(data,id)
     grouper = pd.Grouper(key='timestamp', freq='M')
-    data = get_time(data)
+    data = get_time(data,id)
     var1 = True
-    var2 = True
+    #var2 = True
     salary = 0
     keyword=""
    
 
-    data = get_epf_amount(data)
-    data = epf_to_salary(data, "epf_amount")
+    data = get_epf_amount(data,id)
+    data = epf_to_salary(data, "epf_amount",id)
     df_salary = data.groupby(grouper)['salary'].max()
     
 
-    try:
-        logger.info('Calculating salary from EPF keyword')
-        if (df_salary[-1] != 0):
-            salary = df_salary[-1]
-            keyword="EPF"
+    
+    logger.info('Finding salary from EPF keyword')
+    if (df_salary[-1] != 0):
+        salary = df_salary[-1]
+        keyword="EPF"
+        var1 = False
+        var2 = False
+        logger.info("found salary from EPF keyword")
 
-        elif (df_salary[-2] != 0):
-            salary = df_salary[-2]
-            keyword="EPF"
+    elif (df_salary[-2] != 0):
+        salary = df_salary[-2]
+        keyword="EPF"
+        var1 = False
+        var2 = False
+        logger.info("found salary from EPF keyword")
+
+    if var1:
+        try:
+            logger.info('Finding salary from Salary keyword')
+            data = get_salary(data,id)
+            df_d_salary = data.groupby(grouper)['direct_sal'].max()
+            #print(df_d_salary)
+            if (df_d_salary[-1] != 0):
+                salary = df_d_salary[-1]
+                keyword="Salary"
+                var2 = False
+                logger.info("salary found from salary keyword")
+            elif (df_d_salary[-2] != 0):
+                salary = df_d_salary[-2]
+                keyword="Salary"
+                var2 = False
+                logger.info("salary found from salary keyword")    
             
-            var1 = False
-            var2 = False
-    except:
-        salary = None
+        except:
+            salary = None
 
-        if var1:
-            try:
-                logger.info('Calculating salary from Salary keyword')
-                data = get_salary(data)
-                df_d_salary = data.groupby(grouper)['direct_sal'].max()
-                if (df_d_salary[-1] != 0):
-                    salary = df_d_salary[-1]
-                    keyword="Salary"
-                elif (df_d_salary[-2] != 0):
-                    salary = df_d_salary[-2]
-                    keyword="Salary"
-                    var2 = False
-            except:
-                salary = None
+    # if var2:
+    #     try:
+    #         logger.info('Finding salary from credit messages')
+    #         data = get_credit_amount(data)
 
-        if var2:
-            try:
-                logger.info('Calculating salary from credit messages')
-                data = get_credit_amount(data)
+    #         data["credit_amount"] = np.where(data["credit_amount"] >= 10000, data["credit_amount"], 0)
 
-                data["credit_amount"] = np.where(data["credit_amount"] >= 10000, data["credit_amount"], 0)
+    #         df_credit = data.groupby(grouper)['credit_amount'].max()
 
-                df_credit = data.groupby(grouper)['credit_amount'].max()
+    #         df_final_sal = pd.DataFrame(df_credit.tail())
 
-                df_final_sal = pd.DataFrame(df_credit.tail())
+    #         if df_final_sal.shape[0] > 1:
+    #             if ((df_final_sal["credit_amount"][-1] != 0) and (df_final_sal["credit_amount"][-2] != 0)):
 
-                if df_final_sal.shape[0] > 1:
-                    if ((df_final_sal["credit_amount"][-1] != 0) and (df_final_sal["credit_amount"][-2] != 0)):
+    #                 real_money = list(df_final_sal['credit_amount'])[::-1]
+    #                 # month = [w.month for w in list(df_final_sal.index)][::-1]
+    #                 a1 = True
+    #                 a2 = False
+    #                 # a3=False
+    #                 list_date = []
+    #                 for i in range(data.shape[0]):
 
-                        real_money = list(df_final_sal['credit_amount'])[::-1]
-                        month = [w.month for w in list(df_final_sal.index)][::-1]
-                        a1 = True
-                        a2 = False
-                        # a3=False
-                        list_date = []
-                        for i in range(data.shape[0]):
+    #                     if a1:
+    #                         if data['credit_amount'][i] == real_money[0]:
+    #                             list_date.append(data['timestamp'][i])
+    #                             a1 = False
+    #                             a2 = True
+    #                     if a2:
+    #                         if data['credit_amount'][i] == real_money[1]:
+    #                             # if data['timestamp'][i].month == month[1]:
+    #                             list_date.append(data['timestamp'][i])
+    #                             # a2=False
+    #                             # a3=True
+    #                             break
 
-                            if a1:
-                                if data['credit_amount'][i] == real_money[0]:
-                                    list_date.append(data['timestamp'][i])
-                                    a1 = False
-                                    a2 = True
-                            if a2:
-                                if data['credit_amount'][i] == real_money[1]:
-                                    # if data['timestamp'][i].month == month[1]:
-                                    list_date.append(data['timestamp'][i])
-                                    # a2=False
-                                    # a3=True
-                                    break
+    #                 # print(list_date)
+    #                 time1 = list_date[0] - timedelta(days=26)
+    #                 time2 = list_date[0] - timedelta(days=34)
+    #                 val1 = df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-1] / 4
+    #                 val2 = df_final_sal["credit_amount"][-1] - df_final_sal["credit_amount"][-1] / 4
 
-                        # print(list_date)
-                        time1 = list_date[0] - timedelta(days=26)
-                        time2 = list_date[0] - timedelta(days=34)
-                        val1 = df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-1] / 4
-                        val2 = df_final_sal["credit_amount"][-1] - df_final_sal["credit_amount"][-1] / 4
+    #                 if (time2 < list_date[1] < time1):
+    #                     if (val2 < df_final_sal["credit_amount"][-2] < val1):
+    #                         salary = (df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-2]) / 2
+    #                         keyword="Credit"
+    #                     else:
 
-                        if (time2 < list_date[1] < time1):
-                            if (val2 < df_final_sal["credit_amount"][-2] < val1):
-                                salary = (df_final_sal["credit_amount"][-1] + df_final_sal["credit_amount"][-2]) / 2
-                                keyword="Credit"
-                            else:
-
-                                return
-            except:
-                salary = None
-                logger.critical('salary not found')
+    #                         return
+    #     except:
+    #         salary = None
+    #         logger.critical('salary not found')
 
     return salary,keyword
 
@@ -348,11 +360,15 @@ def transaction(id):
     logger.info('Collecting SMS from Transaction Collection') 
     
     connect = conn()
-    transaction = connect.messagecluster.transaction
+    transaction = connect.messageclusterTesting.transaction
+    
     file1 = transaction.find_one({"_id": id})
+    if file1==None:
+        logger.info("Transaction data not available")
+        return {'status':False,'message':"file doesn't exist"}
     x = pd.DataFrame(file1["sms"])
-
-    return x
+    
+    return {'status':True,'message':"success","df":x}
 
 
 def extra(id):
@@ -365,7 +381,7 @@ def extra(id):
     logger.info('Collecting SMS from Extra Collection')
     
     connect = conn()
-    extra = connect.messagecluster.extra
+    extra = connect.messageclusterTesting.extra
     file2 = extra.find_one({"_id": id})
     y = pd.DataFrame(file2["sms"])
 
@@ -387,20 +403,25 @@ def merge(id):
     logger=logger_1('Merge Data',id)
     logger.info('Merging the Transaction and Extra SMS')
     
-    tran = transaction(id)
+    result=transaction(id)
+    if not result['status']:
+            return result
+    tran =result['df']
     if tran.shape[0]!=0:
         logger.info("Data fetched from Transaction collection")
     else:
-        logger.error("Unable to fetch data from Transaction collection")    
+        logger.error("No data fetched from Transaction collection")    
+        return {'status':False,'message':'no transaction message'}
     ext = extra(id)
     if ext.shape[0]!=0:
         logger.info("Data fetched from Extra collection")
     else:
-        logger.error("Unable to fetch data from Extra collection")  
+        logger.info("No data fetched from Extra collection")  
     
     total = pd.concat([tran, ext], 0)
     total = total.reset_index(drop=True)
-    return total
+    
+    return {'status':True,'message':'success','total':total}
 
 
 def customer_salary(id):
@@ -422,42 +443,48 @@ def customer_salary(id):
 
     logger=logger_1('Customer Salary',id)
     logger.info('Checking salary status')
+    salary_status = {}
 
     try:
-        salary_status = {}
         
-        merged = merge(id)
+        result = merge(id)
+        if not result['status']:
+            return result
+        merged =result['total']
         if merged.shape[0]==0:
             logger.error("Data not merged")
         else:
             logger.info("Data merged successfully")
         
-        salary,keyword = salary_check(merged)
-        logger.info("salary calculated")
+        salary,keyword = salary_check(merged,id)
+        #print(salary,keyword)
+        
+       
 
-        salary_status["SALARY"] = salary
-
+        salary_status["salary"] = salary
         if (salary == 0) | (salary == None):
-            salary_status["SALARY"] = None
+            salary_status["salary"] = 0
             status = False
-            message = "No Salary Found"
+            message = "Not found"
+            logger.info("no found salary")
             
 
         else:
             status = True
             message = "SUCCESS"
+            logger.info("salary calculated")
     except Exception as e:
         logger.critical(e)
         status = False
         message = "ERROR"
-        salary_status["SALARY"] = None
+        salary_status["salary"] = 0
+        
         
 
-    salary_status["USER_ID"] = id
-    salary_status["STATUS"] = status
-    salary_status["MESSAGE"] = message
-    salary_status["KEYWORD"] = keyword
-
+    salary_status["user_id"] = id
+    salary_status["status"] = status
+    salary_status["message"] = message
+    salary_status["keyword"] = keyword
     return salary_status
 
 
@@ -492,18 +519,26 @@ def salary_analysis(id):
     logger.info('Salary Analysis started')
 
     salary_dict = customer_salary(id)
-    # print(salary_dict)
-    # sal_df = pd.DataFrame(salary_dict, index=[0])
-    # json_sal = convert_json(sal_df, id)
-    json_sal={"_id":int(id),"Salary":int(salary_dict['SALARY']),"Keyword":salary_dict['KEYWORD']}
-    key = {"_id": id}
-    connect = conn()
+    
+    if salary_dict['status']==False:
+        return salary_dict
+    else:    
+        
 
-    db = connect.analysis.salary
-    db.update(key, json_sal, upsert=True)
-    logger.info("salary updated in database")
-    connect.close()
+        # print(salary_dict)
+        # sal_df = pd.DataFrame(salary_dict, index=[0])
+        # json_sal = convert_json(sal_df, id)
+        json_sal={"_id":int(id),"salary":str(salary_dict['salary']),"keyword":salary_dict['keyword']}
+        salary_dict={"_id":int(id),"salary":str(salary_dict['salary']),"keyword":salary_dict['keyword'],'status':True,'message':salary_dict["message"]}
+        #print(json_sal)
+        key = {"_id": id}
+        connect = conn()
+
+        db = connect.analysis.salary
+        db.update(key, json_sal, upsert=True)
+        logger.info("salary updated in database")
+        connect.close()
 
     return salary_dict
 
-salary_analysis(11075)
+print(salary_analysis(211910))
