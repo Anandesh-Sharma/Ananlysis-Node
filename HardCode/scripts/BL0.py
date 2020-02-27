@@ -4,6 +4,7 @@ from .loan_main import final_output
 from .Salary_Analysis import salary_analysis
 from .Cheque_Bounce import cheque_user_outer
 from .Loan_Salary_Logic import *
+from .Analysis import analyse
 from .transaction_balance_sheet import create_transaction_balanced_sheet
 import warnings
 import json
@@ -284,6 +285,8 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
     
     elif salary_present:
         result = salary_analysis_function(int(result['salary']),list_loans,current_loan,user_id)
+    else:
+        result = analyse(user_id, df_cibil, new_user, current_loan)
     logger.info("analysis complete")
     client.analysisresult.bl0.update({'_id' : user_id}, result, upsert = True)
     client.close()
