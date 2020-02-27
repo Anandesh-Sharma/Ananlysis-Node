@@ -445,4 +445,4 @@ def final_output(cust_id):
     script_status = {'status':True,"message":"successfull",'result':report}                  
     return script_status
 
-
+print(final_output(34639))
