@@ -97,7 +97,7 @@ def get_customer_data(cust_id):
     except Exception as e:
         # script_Status['data_fetch'] = -1 
         logger.critical(e)
-        script_status = {'status' : False, 'message' : 'data not fetch'}
+        script_status = {'status' : False, 'message' : 'unable to fetch data'}
         client.close()  
     finally:
         return loan_data
@@ -132,7 +132,7 @@ def preprocessing(cust_id):
     loan_data_grouped = grouping(loan_data)
     logger.info("Data Grouped by Sender-Name")
     loan_details_of_all_apps = {}
-    # print('*****USER LOAN APPS*****')
+
     for app, grp in loan_data_grouped:
         logger.info("iteration in groups starts")
         if app == 'CASHBN' or app == 'KREDTB' or app == 'KREDTZ' or app == 'LNFRNT' or app == 'RRLOAN' or app == 'LOANAP' or app == 'KISSHT' or app == 'GTCASH' or app == 'FLASHO' or app == 'CSHMMA' or app == 'ZPLOAN':
@@ -272,7 +272,7 @@ def preprocessing(cust_id):
                                 elif is_disbursed(message_overdue):
                                     """
                                     The function to check next message is also disbursal or not. if YES, than get back to previous method
-          
+                                    
                                     Parameters:
                                         message_new(str)     : next user message after due message in lowercase
                                     """
@@ -355,7 +355,7 @@ def preprocessing(cust_id):
                 i += 1  
             
             loan_details_of_all_apps[str(app)] = loan_details_individual_app   
-    # print('************************')         
+            
     return loan_details_of_all_apps
 
 
@@ -377,15 +377,13 @@ def final_output(cust_id):
             loan_due_amount(str)     : due messages amount info
             overdue_max_amount(str)  : maximum overdue amount
             loan_duration(int)       : duration of loan  
-    Returns:
-        status
-        message
-        report(dictionary):
-            pay_within_30_days(bool) :    if pay within 30 days
-            current_open_amount      :    if loan is open than amount of loan
-            total_loan               :    total loans
-            current_open             :    current open loans
-            max_amount               :    maximum loan amount in all loans    
+        Returns:
+            report(dictionary):
+                pay_within_30_days(bool) :    if pay within 30 days
+                current_open_amount      :    if loan is open than amount of loan
+                total_loan               :    total loans
+                current_open             :    current open loans
+                max_amount               :    maximum loan amount in all loans    
     '''
     a = preprocessing(cust_id)
     logger = logger_1('final_output', cust_id)
@@ -394,7 +392,8 @@ def final_output(cust_id):
         'TOTAL_LOANS' : 0,
         'PAY_WITHIN_30_DAYS' : True,
         'CURRENT_OPEN_AMOUNT' : [],
-        'MAX_AMOUNT' : ''
+        'MAX_AMOUNT' : '', 
+        'empty' : False 
     }
 
 
@@ -413,10 +412,12 @@ def final_output(cust_id):
                     li.append(a[i][j]['loan_due_amount'])
                 except:
                     continue 
-            now = datetime.now()          li.append(a[i][j]['loan_disbursed_amount'])
-                    li.append(a[i][j]['loan_closed_amount'])
-                    li.append(a[i][j]['loan_due_amount'])
-          NT_OPEN'] += 1
+            now = datetime.now()
+            days = (now - pd.to_datetime(a[i][j]['disbursed_date'])).days
+            # print(days)
+            if not isinstance(a[i][j]['closed_date'], datetime):
+                if days < 30:
+                    report['CURRENT_OPEN'] += 1
                     try:
                         report['CURRENT_OPEN_AMOUNT'].append(a[i][j]['loan_disbursed_amount'])
                         report['CURRENT_OPEN_AMOUNT'].append(a[i][j]['loan_due_amount'])
@@ -439,7 +440,9 @@ def final_output(cust_id):
         report['MAX_AMOUNT'] = max(li)
     except:
         logger.info('no amount detect')  
+        report['empty'] = True
+        script_status = {'status' : True, 'message' : 'successfull', 'result' : report}
     script_status = {'status':True,"message":"successfull",'result':report}                  
     return script_status
 
-
+print(final_output(34639))

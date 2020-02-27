@@ -383,7 +383,6 @@ def salary_analysis(id):
     logger.info('Salary Analysis started')
 
     salary_dict = customer_salary(id)
-    #print(type(salary_dict["salary"]))
     if salary_dict['status']==False:
         return salary_dict
     else:    

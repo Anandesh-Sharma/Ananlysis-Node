@@ -2,8 +2,11 @@ from .Util import logger_1, conn
 from .Classifier import classifier
 from .Loan_Analysis import loan_analysis
 from .Salary_Analysis import salary_analysis
+from .Cheque_Bounce import cheque_user_outer
 from .Loan_Salary_Logic import *
+from .transaction_balance_sheet import create_transaction_balanced_sheet
 import warnings
+import json
 import pandas as pd
 warnings.filterwarnings("ignore")
 
@@ -69,27 +72,18 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         r = {'status': False, 'message': 'current_loan not int type', 'onhold': None, 'user_id': user_id,
              'limit': None,
              'logic': 'BL0'}
-        a = {"processing": False, "result": r}
-        client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
-        client.close()
         return r
 
     if not isinstance(list_loans, list):
         logger.error('list_loan not list type')
         r = {'status': False, 'message': 'list_loan not list type', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        a = {"processing": False, "result": r}
-        client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
-        client.close()
         return r
 
     if not isinstance(df_cibil, pd.DataFrame):
         logger.error('df_cibil not dataframe type')
         r = {'status': False, 'message': 'df_cibil not dataframe type', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        a = {"processing": False, "result": r}
-        client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
-        client.close()
         return r
 
     req_col = ["account_type", "payment_history", "credit_score", "written_amt_total", "written_amt_principal",
@@ -101,9 +95,6 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
             logger.error('df_cibil does not contain required columns')
             r = {'status': False, 'message': "df_cibil doesn't contain required columns", 'onhold': None,
                  'user_id': user_id, 'limit': None, 'logic': 'BL0'}
-            a = {"processing": False, "result": r}
-            client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
-            client.close()
             return r
 
     del temp_l
@@ -113,9 +104,6 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
             logger.error('list_loan items not int type')
             r = {'status': False, 'message': 'list_loan items not int type', 'onhold': None, 'user_id': user_id,
                  'limit': None, 'logic': 'BL0'}
-            a = {"processing": False, "result": r}
-            client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
-            client.close()
             return r
 
     list_loans.sort()
@@ -124,9 +112,6 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         logger.error('new_user not boolean type')
         r = {'status': False, 'message': 'new_user not boolean type', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        a = {"processing": False, "result": r}
-        client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
-        client.close()
         return r
 
     logger.info('checking variables finished')
@@ -142,11 +127,47 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         logger.debug('classification of messages failed')
         r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
-        a = {"processing": False, "result": r}
-        client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
-        client.close()
         return r
 
+    logger.info('started making balanced sheet')
+    result=create_transaction_balanced_sheet(user_id)
+    if not result['status']:
+        return result
+    res = json.dumps(result)
+    res = json.loads(res)
+    try: 
+        conn
+    balance_sheet_collection.update({'_id' : cust_id}, res, upsert = True)
+    logger.info('balanced sheet complete')
+
+    if new_user:
+        try:
+            file1 = client.messagecluster.extra.find_one({"_id": user_id})
+            if file1 is None:
+                a = 0
+            else:
+                df = pd.DataFrame(file1['sms'])
+                a = cheque_user_outer(df, user_id)
+        except Exception as e:
+            logger.debug('error occured during checking bounced cheque messages')
+            r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+                'logic': 'BL0'}
+            a = {"processing": False, "result": r}
+            client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
+            client.close()
+            return r
+
+        logger.info('successfully checked bounced cheque messages')
+        if a > 0:
+            logger.info('user has bounced cheques exiting')
+            a = {'_id': user_id, 'onhold': True, 'limit': -1, 'logic': 'BL0'}
+            client.analysisresult.bl0.update({'_id': user_id}, a, upsert=True)
+            r = {'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id, 'limit': -1,
+                'logic': 'BL0'}
+            a = {"processing": False, "result": r}
+            client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
+            client.close()
+            return r
     logger.info('starting loan analysis')
     try:
         result_loan = loan_analysis(int(user_id))
@@ -191,17 +212,39 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         r = {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
         return r
+    
     logger.info('checking result salary and loan salary output')
+    if not isinstance(result_loan['report'],dict):
+        logger.caution("loan dict doesn't contain loan report")
+        return {'status': False, 'message': 'result_loan not dict type', 'onhold': None, 'user_id': user_id,
+        'limit': None, 'logic': 'BL0'}
+
+    if 'empty' not in result_loan['report'].keys():
+        logger.caution("loan dict report doesn't contain empty")
+        return {'status': False, 'message': 'empty key not present in loan dict', 'onhold': None, 'user_id': user_id,
+            'limit': None, 'logic': 'BL0'}
+
     logger.info('checking result salary and loan salary output complete')
+    logger.info('Starting Analysis')
     
     if int(result_salary['salary'])>0:
         salary_present=True
-    
+    else:
+        salary_present=False
+
+    if result_loan['report']['empty']:
+        loan_present=False
+    else:
+        loan_present=True
+
     if salary_present and loan_present:
-        loan_salary(result_salary['salary'],result_loan)
+        result = loan_salary_analysis_function(result_salary['salary'],result_loan['report'],list_loans,current_loan,user_id)
     
     elif loan_present:
-        loan(result_loan)
+        result = loan_analysis_function(result_loan['report'],list_loans,current_loan,user_id)
     
     elif salary_present:
-        salary(int(result['salary']))
+        result = salary_analysis_function(int(result['salary']),list_loans,current_loan,user_id)
+    logger.info("analysis complete")
+
+    return result
