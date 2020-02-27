@@ -8,9 +8,11 @@ import json
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def get_cibil_analysis(request):
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print(request.data)
     try:
         user_id = int(request.data.get('user_id'))
-
+        print(user_id)
     except:
         return Response({'status': False, 'message': 'user_id parameter is required'}, 400)
     try:
@@ -18,6 +20,7 @@ def get_cibil_analysis(request):
         if new_user is None:
             raise Exception
         new_user = bool(int(new_user))
+        print(new_user)
     except:
         return Response({'status': False, 'message': 'new_user parameter is required'}, 400)
     try:
@@ -45,13 +48,15 @@ def get_cibil_analysis(request):
         all_loan_amount = request.data.get('all_loan_amount')
         if all_loan_amount is None:
             raise Exception
+        print(all_loan_amount)
     except:
         return Response({'status': False, 'message': 'all_loan_amount parameter is required'}, 400)
 
     # call parser
     try:
-        all_loan_amount = list(map(int, all_loan_amount.split(',')))
-    except:
+        all_loan_amount = list(map(lambda x: int(float(x)), all_loan_amount.split(',')))
+    except Exception as e:
+        print(e)
         return Response({'status': False, 'message': 'all_loan_amount values must be int convertible'}, 400)
 
     try:
