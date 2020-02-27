@@ -5,7 +5,7 @@ from datetime import datetime,timedelta
 from datetime import timedelta
 import json
 from pymongo import MongoClient
-from Util import logger_1
+from .Util import logger_1
 
 
 def clean_debit(data,id):
@@ -357,6 +357,7 @@ def customer_salary(id):
         salary_status["salary"] = "0"
         
         
+        
 
     salary_status["_id"] = id
     salary_status["status"] = status
@@ -383,6 +384,7 @@ def salary_analysis(id):
     logger.info('Salary Analysis started')
 
     salary_dict = customer_salary(id)
+    
     if salary_dict['status']==False:
         return salary_dict
     else:    
