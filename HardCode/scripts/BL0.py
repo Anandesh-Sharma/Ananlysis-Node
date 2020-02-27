@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 
 
 
-def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
+def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
     '''
     Implements BL0
     
@@ -83,29 +83,6 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         client.analysisresult.bl0.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
-
-    if not isinstance(df_cibil, pd.DataFrame):
-        logger.error('df_cibil not dataframe type')
-        r = {'status': False, 'message': 'df_cibil not dataframe type', 'onhold': None, 'user_id': user_id,
-             'limit': None, 'logic': 'BL0'}
-        client.analysisresult.bl0.update({'_id' : user_id}, r, upsert = True)
-        client.close()
-        return r
-
-    req_col = ["account_type", "payment_history", "credit_score", "written_amt_total", "written_amt_principal",
-               "payment_rating"]
-    temp_l = df_cibil.columns
-
-    for i in req_col:
-        if i not in temp_l:
-            logger.error('df_cibil does not contain required columns')
-            r = {'status': False, 'message': "df_cibil doesn't contain required columns", 'onhold': None,
-                 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
-            client.analysisresult.bl0.update({'_id' : user_id}, r, upsert = True)
-            client.close()
-            return r
-
-    del temp_l
 
     for i in list_loans:
         if not isinstance(i, int):
@@ -266,8 +243,8 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
 
     logger.info('checking result salary and loan salary output complete')
     logger.info('Starting Analysis')
-    
-    if int(result_salary['salary'])>0:
+    print(result_salary)
+    if float(result_salary['salary'])>0:
         salary_present=True
     else:
         salary_present=False
@@ -284,9 +261,9 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         result = loan_analysis_function(result_loan['result'],list_loans,current_loan,user_id)
     
     elif salary_present:
-        result = salary_analysis_function(int(result['salary']),list_loans,current_loan,user_id)
+        result = salary_analysis_function(float(result_salary['salary']),list_loans,current_loan,user_id)
     else:
-        result = analyse(user_id, df_cibil, new_user, current_loan)
+        result = analyse(user_id, cibil_score, new_user, current_loan)
     logger.info("analysis complete")
     client.analysisresult.bl0.update({'_id' : user_id}, result, upsert = True)
     client.close()

@@ -54,7 +54,7 @@ def get_customer_data(cust_id):
             loan_data = loan_data.append(closed_df)
             logger.info("Found loan closed data")
         else:
-            logger.critical("loan closed data not found")
+            logger.error("loan closed data not found")
             raise Exception
 
         '''if trans != None:
@@ -67,7 +67,7 @@ def get_customer_data(cust_id):
             loan_data = loan_data.append(disbursed_df)
             logger.info("Found loan disbursed data")
         else:
-            logger.critical("loan disbursed data not found") 
+            logger.error("loan disbursed data not found") 
             raise Exception
 
         if overdue != None:
@@ -75,7 +75,7 @@ def get_customer_data(cust_id):
             loan_data = loan_data.append(overdue_df)
             logger.info("Found loan overdue data")
         else:
-            logger.critical("loan overdue data not found")
+            logger.error("loan overdue data not found")
             raise Exception
 
         if approval != None:
@@ -83,7 +83,7 @@ def get_customer_data(cust_id):
             loan_data = loan_data.append(approval_df)
             logger.info("Found loan approval data")
         else:
-            logger.critical("loan approval data not found")
+            logger.error("loan approval data not found")
             raise Exception
 
         loan_data.sort_values(by=["timestamp"])
@@ -449,7 +449,7 @@ def final_output(cust_id):
         return {'status':False,"message":e} 
 
     
-    client.client.loan_analysis.loan_output.update({'_id' : cust_id},report, upsert = True)
+    client.loan_analysis.loan_output.update({'_id' : cust_id},report, upsert = True)
     client.close()
     logger.info('Successfully upload result to the database')       
     script_status = {'status':True,"message":"successfull",'result':report}                  
