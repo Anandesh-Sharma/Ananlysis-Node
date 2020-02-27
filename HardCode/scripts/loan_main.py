@@ -441,6 +441,18 @@ def final_output(cust_id):
         logger.info('no amount detect')  
         report['empty'] = True
         script_status = {'status' : True, 'message' : 'successfull', 'result' : report}
+    try:
+        client = conn()
+        logger.info('Successfully connect to the database')
+    except Exception as e:
+        logger.critical('Unable to connect to the database')
+        return {'status':False,"message":e} 
+
+    
+    client.client.loan_analysis.loan_output.update({'_id' : cust_id},report, upsert = True)
+    client.close()
+    logger.info('Successfully upload result to the database')       
     script_status = {'status':True,"message":"successfull",'result':report}                  
-    return script_status
+    return script_status 
+
 
