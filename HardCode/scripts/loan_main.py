@@ -443,5 +443,3 @@ def final_output(cust_id):
     return script_status
 
 
-
-print(final_output(31873))

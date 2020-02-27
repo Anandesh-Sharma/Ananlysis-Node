@@ -463,5 +463,3 @@ def salary_analysis(id):
         connect.close()
 
     return salary_dict
-
-print(salary_analysis(229533))
