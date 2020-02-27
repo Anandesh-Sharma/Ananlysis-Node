@@ -1,13 +1,14 @@
 import re
-from tqdm import tqdm
-
-from .Util import conn, read_json, convert_json
+from .Util import conn, read_json, convert_json, logger_1
+import warnings
+warnings.filterwarnings("ignore")
 
 
 def get_cc_messages(data, data_not_needed, result, name):
+    logger = logger_1("cc messages", name)
     index_of_messages = []
     pattern = '(.*)?credit card(.*)?'
-    for i in tqdm(range(data.shape[0])):
+    for i in range(data.shape[0]):
         if i in data_not_needed:
             continue
         message = str(data['body'][i]).lower()
@@ -15,13 +16,17 @@ def get_cc_messages(data, data_not_needed, result, name):
 
         if matcher is not None:
             index_of_messages.append(i)
+    logger.info("Credit card sms extracted successfully")
 
+    logger.info("appending name in result credit card dictionary")
     if name in result.keys():
         a = result[name]
         a.extend(list(index_of_messages))
         result[name] = a
     else:
         result[name] = list(index_of_messages)
+    logger.info("Appended name in result credit card dictionary successfully")
+
 
     mask = []
     for i in range(data.shape[0]):
@@ -29,7 +34,7 @@ def get_cc_messages(data, data_not_needed, result, name):
             mask.append(True)
         else:
             mask.append(False)
-
+    logger.info("Dropped sms other than credit card")
     return data.copy()[mask].reset_index(drop=True)
 
 
@@ -49,7 +54,7 @@ def get_creditcard_promotion(data):
     pattern_11 = 'offers'
     pattern_12 = 'won'
     pattern_13 = 'features'
-    for i in tqdm(range(len(data['body']))):
+    for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
         matcher_1 = re.search(pattern_1, message)
         matcher_2 = re.search(pattern_2, message)
@@ -71,20 +76,33 @@ def get_creditcard_promotion(data):
 
 
 def credit(df, result, user_id, max_timestamp, new):
+    logger = logger_1("credit card", user_id)
+    logger.info("Removing credit card promotional sms")
     data_not_needed = get_creditcard_promotion(df)
+    logger.info("Extracting Credit card sms")
     data = get_cc_messages(df, data_not_needed, result, user_id)
+    logger.info("Converting credit card dataframe into json")
     data_credit = convert_json(data, user_id, max_timestamp)
 
     try:
+        logger.info('making connection with db')
         client = conn()
         db = client.messagecluster
     except Exception as e:
+        logger.critical('error in connection')
         return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
+    logger.info('connection success')
+
     if new:
+        logger.info("New user checked")
         db.creditcard.insert_one(data_credit)
+        logger.info("Credit card sms of new user inserted successfully")
     else:
         for i in range(len(data_credit['sms'])):
+            logger.info("Old User checked")
             db.creditcard.update({"_id": int(user_id)}, {"$push": {"sms": data_credit['sms'][i]}})
+            logger.info("Credit card sms of old user updated successfully")
         db.creditcard.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
+        logger.info("Timestamp of User updated")
     client.close()
