@@ -343,7 +343,7 @@ def customer_salary(id):
             salary_status["salary"] = "0"
             status = False
             message = "Not found"
-            logger.info("no found salary")
+            logger.info("not found salary")
             
 
         else:
