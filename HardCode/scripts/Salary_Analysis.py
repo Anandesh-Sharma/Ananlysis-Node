@@ -37,70 +37,6 @@ def clean_debit(data,id):
     return data
 
 
-def get_credit_amount(data,id):
-    '''
-    This code finds the credited amount from the messages in a DataFrame.
-
-          Parameters: DataFrame.
-
-          Output: DataFrame.
-
-    '''
-    logger=logger_1("Get Credit Amount",id)
-    logger.info("Credit Amount Calculation starts")
-    
-    data['credit_amount'] = [0] * data.shape[0]
-    pattern_2 = r'(?i)credited.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
-    pattern_1 = r'(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?credited'
-    # pattern_3 = "credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
-    pattern_4 = r'(?i)(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?deposited'
-    pattern_5 = r'(?i)(?:(?:rs|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?received'
-    pattern_6 = r'(?i)received.*?(?:(?:rs|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
-    # pattern_7 = "salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*credited"
-    # pattern_debit_1 = '(?i)debited(.*)?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
-    pattern_debit_2 = r'credited to beneficiary'
-
-    for i in range(data.shape[0]):
-        message = str(data['body'][i]).lower()
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        # matcher_3 = re.search(pattern_3,message)
-        matcher_4 = re.search(pattern_4, message)
-        matcher_5 = re.search(pattern_5, message)
-        matcher_6 = re.search(pattern_6, message)
-
-        amount = 0
-        if matcher_1 != None:
-            # matcher_debit_1 = re.search(pattern_debit_1,message)
-            matcher_debit_2 = re.search(pattern_debit_2, message)
-            if (matcher_debit_2 != None):
-                amount = 0
-
-            else:
-                amount = matcher_1.group(1)
-
-        elif matcher_2 != None:
-            amount = matcher_2.group(1)
-
-
-        elif matcher_4 != None:
-            amount = matcher_4.group(1)
-        elif matcher_5 != None:
-            amount = matcher_5.group(1)
-        elif matcher_6 != None:
-            amount = matcher_6.group(1)
-
-
-        else:
-            amount = 0
-        try:
-            data['credit_amount'][i] = float(str(amount).replace(",", ""))
-        except Exception as e:
-            print(e)
-            print(i + 2)
-            print(str(amount).replace(",", ""))
-    logger.info('credit amount calculation completes')        
-    return data
 
 
 def get_epf_amount(data,id):
@@ -207,7 +143,8 @@ def get_time(data,id):
             x = datetime.strptime(data['timestamp'].values[i], "%Y-%m-%d %H:%M:%S")
             data['timestamp'].values[i] = x
         except:
-            print("timestamp could not be converted at " + i)
+            return {"status":False,"message":"timestamp not converted"}
+            logger.error("timestamp not converted")
 
     return data
 
