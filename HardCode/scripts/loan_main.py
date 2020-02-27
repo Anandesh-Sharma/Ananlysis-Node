@@ -96,8 +96,8 @@ def get_customer_data(cust_id):
         client.close()
     except Exception as e:
         # script_Status['data_fetch'] = -1 
-        logger.critical("Error in establishing connection with DataBase")
-        script_status = {'status' : False}
+        logger.critical(e)
+        script_status = {'status' : False, 'message' : 'unable to fetch data'}
         client.close()  
     finally:
         return loan_data
@@ -132,7 +132,7 @@ def preprocessing(cust_id):
     loan_data_grouped = grouping(loan_data)
     logger.info("Data Grouped by Sender-Name")
     loan_details_of_all_apps = {}
-    # print('*****USER LOAN APPS*****')
+
     for app, grp in loan_data_grouped:
         logger.info("iteration in groups starts")
         if app == 'CASHBN' or app == 'KREDTB' or app == 'KREDTZ' or app == 'LNFRNT' or app == 'RRLOAN' or app == 'LOANAP' or app == 'KISSHT' or app == 'GTCASH' or app == 'FLASHO' or app == 'CSHMMA' or app == 'ZPLOAN':
@@ -355,7 +355,7 @@ def preprocessing(cust_id):
                 i += 1  
             
             loan_details_of_all_apps[str(app)] = loan_details_individual_app   
-    # print('************************')         
+            
     return loan_details_of_all_apps
 
 
@@ -392,7 +392,8 @@ def final_output(cust_id):
         'TOTAL_LOANS' : 0,
         'PAY_WITHIN_30_DAYS' : True,
         'CURRENT_OPEN_AMOUNT' : [],
-        'MAX_AMOUNT' : ''
+        'MAX_AMOUNT' : '', 
+        'empty' : False 
     }
 
 
@@ -439,6 +440,8 @@ def final_output(cust_id):
         report['MAX_AMOUNT'] = max(li)
     except:
         logger.info('no amount detect')  
+        report['empty'] = True
+        script_status = {'status' : True, 'message' : 'successfull', 'result' : report}
     script_status = {'status':True,"message":"successfull",'result':report}                  
     return script_status
 
