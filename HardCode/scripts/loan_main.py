@@ -8,8 +8,8 @@ import warnings
 warnings.filterwarnings('ignore')
 from pymongo import MongoClient
 # from pprint import pprint
-from my_modules import *
-from Util import logger_1
+from .my_modules import *
+from .Util import logger_1,conn
 
 
 script_status = {}
@@ -29,8 +29,7 @@ def get_customer_data(cust_id):
 
     try:
 
-        client = MongoClient(
-            "mongodb://superadmin:anandesh@13.67.79.22:27017/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false", username = "god" , password  = "rock0004")
+        client = conn()
         # connect to database
         db = client.messageclusterTesting
         logger.info("Successfully established the connection with DataBase")
@@ -445,4 +444,3 @@ def final_output(cust_id):
     script_status = {'status':True,"message":"successfull",'result':report}                  
     return script_status
 
-print(final_output(34639))

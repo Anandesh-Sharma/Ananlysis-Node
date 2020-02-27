@@ -236,7 +236,7 @@ def transaction(id):
     logger.info('Collecting SMS from Transaction Collection') 
     
     connect = conn()
-    transaction = connect.messageclusterTesting.transaction
+    transaction = connect.messagecluster.transaction
     
     file1 = transaction.find_one({"_id": id})
     if file1==None:
@@ -257,7 +257,7 @@ def extra(id):
     logger.info('Collecting SMS from Extra Collection')
     
     connect = conn()
-    extra = connect.messageclusterTesting.extra
+    extra = connect.messagecluster.extra
     file2 = extra.find_one({"_id": id})
     y = pd.DataFrame(file2["sms"])
 
@@ -341,8 +341,8 @@ def customer_salary(id):
         salary_status["salary"] = salary
         if (salary == 0) | (salary == None):
             salary_status["salary"] = "0"
-            status = False
-            message = "Not found"
+            status = True
+            message = "Salary Not found"
             logger.info("not found salary")
             
 

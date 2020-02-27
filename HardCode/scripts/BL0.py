@@ -147,13 +147,13 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
     logger.info('started making balanced sheet')
     result=create_transaction_balanced_sheet(user_id)
     if not result['status']:
-        client.analysisresult.bl0.update({'_id' : user_id}, r, upsert = True)
+        client.analysisresult.bl0.update({'_id' : user_id}, result, upsert = True)
         client.close()
         return result
     res = json.dumps(result)
     res = json.loads(res)
     try:
-        client.balance_sheet.update({'_id' : user_id}, res, upsert = True)
+        client.analysis.balance_sheet.update({'_id' : user_id}, res, upsert = True)
         logger.info('balanced sheet complete')
     except Exception as e:
         logger.critical('error in connection')
@@ -220,11 +220,13 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
     try:
         result_salary = salary_analysis(int(user_id))
         if not result_salary['status']:
-            logger.caution('Error in loan analysis')
+            logger.error('Error in loan analysis')
             result_salary['onhold']=None
             result_salary['user_id']= user_id
             result_salary['limit']= None
             result_salary['logic'] = 'BL0'
+            r = {'status': True, 'message': None, 'onhold': None, 'user_id': user_id, 'limit': None,
+             'logic': 'BL0'}
             client.analysisresult.bl0.update({'_id' : user_id}, r, upsert = True)
             client.close()
             return result_salary
@@ -245,16 +247,16 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         return r
     
     logger.info('checking result salary and loan salary output')
-    if not isinstance(result_loan['report'],dict):
-        logger.caution("loan dict doesn't contain loan report")
+    if not isinstance(result_loan['result'],dict):
+        logger.caution("loan dict doesn't contain loan result")
         r={'status': False, 'message': 'result_loan not dict type', 'onhold': None, 'user_id': user_id,
         'limit': None, 'logic': 'BL0'}
         client.analysisresult.bl0.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
 
-    if 'empty' not in result_loan['report'].keys():
-        logger.caution("loan dict report doesn't contain empty")
+    if 'empty' not in result_loan['result'].keys():
+        logger.caution("loan dict result doesn't contain empty")
         r={'status': False, 'message': 'empty key not present in loan dict', 'onhold': None, 'user_id': user_id,
             'limit': None, 'logic': 'BL0'}
         client.analysisresult.bl0.update({'_id' : user_id}, r, upsert = True)
@@ -269,16 +271,16 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
     else:
         salary_present=False
 
-    if result_loan['report']['empty']:
+    if result_loan['result']['empty']:
         loan_present=False
     else:
         loan_present=True
 
     if salary_present and loan_present:
-        result = loan_salary_analysis_function(result_salary['salary'],result_loan['report'],list_loans,current_loan,user_id)
+        result = loan_salary_analysis_function(result_salary['salary'],result_loan['result'],list_loans,current_loan,user_id)
     
     elif loan_present:
-        result = loan_analysis_function(result_loan['report'],list_loans,current_loan,user_id)
+        result = loan_analysis_function(result_loan['result'],list_loans,current_loan,user_id)
     
     elif salary_present:
         result = salary_analysis_function(int(result['salary']),list_loans,current_loan,user_id)

@@ -109,3 +109,23 @@ def update_sms(df, user_id, max_timestamp):
     logger.info("update messages of existing user in mongodb")
     return {'status': True, 'message': 'success', 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
             'new': False, 'df': df, "timestamp": max_timestamp}
+
+def convert_json_balanced_sheet(data,credit,debit):
+    obj = {"sheet": []}
+    print(credit)
+    for i in range(len(credit)):
+        credit[i]=(credit[i][0],int(credit[i][1]))
+    for i in range(len(debit)):
+        debit[i]=(credit[i][0],int(debit[i][1]))
+    obj['credit']=credit
+    obj['debit']=debit
+    for i in range(data.shape[0]):
+        sms = {"sender": data['sender'][i], "body": data['body'][i], "timestamp": str(data['timestamp'][i]),
+        "read": data['read'][i],"time_message":str(data['time,message'][i]),"acc_no":int(data['acc_no'][i]),
+        "VPA":str(data['VPA'][i]),"IMPS Ref no":str(data["IMPS Ref no"][i]),'UPI Ref no':int(data['UPI Ref no'][i]),
+        'neft':int(data['neft'][i]), 'Neft no':str(data['neft no'][i]), 'Credit Amount':float(data['credit_amount'][i]),
+        'Debit Amount':float(data['debit_amount'][i]),'UPI':int(data['upi'][i]), 'Date Time':str(data['date_time'][i]),
+       'Date Message':str(data['date,message'][i]), 'IMPS':int(data['imps'][i]),'Available Balance':float(data['available balance'][i])}
+        obj['sheet'].append(sms)
+    
+    return obj
