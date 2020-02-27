@@ -7,7 +7,7 @@ import re
 import warnings 
 warnings.filterwarnings('ignore')
 from pymongo import MongoClient
-from pprint import pprint
+# from pprint import pprint
 from my_modules import *
 from Util import logger_1
 
@@ -132,12 +132,12 @@ def preprocessing(cust_id):
     loan_data_grouped = grouping(loan_data)
     logger.info("Data Grouped by Sender-Name")
     loan_details_of_all_apps = {}
-    print('*****USER LOAN APPS*****')
+    # print('*****USER LOAN APPS*****')
     for app, grp in loan_data_grouped:
         logger.info("iteration in groups starts")
         if app == 'CASHBN' or app == 'KREDTB' or app == 'KREDTZ' or app == 'LNFRNT' or app == 'RRLOAN' or app == 'LOANAP' or app == 'KISSHT' or app == 'GTCASH' or app == 'FLASHO' or app == 'CSHMMA' or app == 'ZPLOAN':
          
-            print(app)
+            # print(app)
             grp = grp.sort_values(by='timestamp')
             grp = grp.reset_index(drop=True)
 
@@ -355,7 +355,7 @@ def preprocessing(cust_id):
                 i += 1  
             
             loan_details_of_all_apps[str(app)] = loan_details_individual_app   
-    print('************************')         
+    # print('************************')         
     return loan_details_of_all_apps
 
 
@@ -413,7 +413,7 @@ def final_output(cust_id):
                     continue 
             now = datetime.now()
             days = (now - pd.to_datetime(a[i][j]['disbursed_date'])).days
-            print(days)
+            # print(days)
             if not isinstance(a[i][j]['closed_date'], datetime):
                 if days < 30:
                     report['CURRENT_OPEN'] += 1
