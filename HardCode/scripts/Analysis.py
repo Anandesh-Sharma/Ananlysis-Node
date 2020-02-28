@@ -15,8 +15,7 @@ def analyse(user_id, cibil_score, new_user, current_loan):
         a=0
     if current_loan>a:
         a=current_loan
-    if 0<a<3000:
-        a=3000
+
     r = {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
                  'limit': a, 'logic': 'BL0'}
     return r
