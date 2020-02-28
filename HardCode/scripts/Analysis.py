@@ -18,3 +18,12 @@ def analyse(user_id, cibil_score, new_user, current_loan):
     r = {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
                  'limit': a, 'logic': 'BL0'}
     return r
+
+def cibil_analysis(cibil_score):
+    if int(cibil_score)>749:
+        return r = {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
+                 'limit': 3000, 'logic': 'BL0'}
+    
+    else:
+        return r = {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
+                 'limit': 0, 'logic': 'BL0'}

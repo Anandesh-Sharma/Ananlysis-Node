@@ -1,7 +1,7 @@
-from transaction_analysis import process_data
-from monthly_transactions import monthly_credit_sum,monthly_debit_sum,pd
-from Validation2 import *
-from Util import conn, logger_1,convert_json_balanced_sheet,convert_json_balanced_sheet_empty
+from .transaction_analysis import process_data
+from .monthly_transactions import monthly_credit_sum,monthly_debit_sum,pd
+from .Validation2 import *
+from .Util import conn, logger_1,convert_json_balanced_sheet,convert_json_balanced_sheet_empty
 import json
 
 

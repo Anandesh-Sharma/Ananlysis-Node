@@ -3,7 +3,7 @@ import numpy as np
 import regex as re
 from datetime import datetime
 import logging
-from Util import logger_1
+from .Util import logger_1
 
 
 # from concurrent.futures import ThreadPoolExecutor, wait, as_completed
