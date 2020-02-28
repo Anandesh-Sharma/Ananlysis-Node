@@ -5,7 +5,7 @@ from datetime import datetime,timedelta
 from datetime import timedelta
 import json
 from pymongo import MongoClient
-from .Util import logger_1
+from Util import logger_1
 
 
 def clean_debit(data,id):
@@ -85,7 +85,7 @@ def epf_to_salary(data, column,id):
     data["salary"] = [0] * data.shape[0]
     for i in range(0, data.shape[0]):
         data["salary"][i] = (data[column][i] * 100) / 12
-    
+    logger.info("Salary Calculation from EPF Amount complete")
     return data
 
 
@@ -143,10 +143,10 @@ def get_time(data,id):
             x = datetime.strptime(data['timestamp'].values[i], "%Y-%m-%d %H:%M:%S")
             data['timestamp'].values[i] = x
         except:
-            return {"status":False,"message":"timestamp not converted"}
             logger.error("timestamp not converted")
+            return {"status":False,"message":"timestamp not converted"}
 
-    return data
+    return {"status":True,"message":"success",'data':data}
 
 
 def salary_check(data,id):
@@ -163,7 +163,10 @@ def salary_check(data,id):
 
     data = clean_debit(data,id)
     grouper = pd.Grouper(key='timestamp', freq='M')
-    data = get_time(data,id)
+    result = get_time(data,id)
+    if not result['status']:
+        return result
+    data=result['data']
     var1 = True
     salary = 0
     keyword=""
@@ -171,6 +174,8 @@ def salary_check(data,id):
 
     data = get_epf_amount(data,id)
     data = epf_to_salary(data, "epf_amount",id)
+    if data.shape[0]==0:
+        return{'status':False,'message':'no messages found'}
     df_salary = data.groupby(grouper)['salary'].max()
     
 
@@ -204,7 +209,7 @@ def salary_check(data,id):
             
         except:
             salary = None
-    return salary,keyword
+    return {'status':True,'message':'success',"salary":salary,"keyword":keyword}
 
 
 def conn(id):
@@ -334,7 +339,10 @@ def customer_salary(id):
         else:
             logger.info("Data merged successfully")
         
-        salary,keyword = salary_check(merged,id)
+        result = salary_check(merged,id)
+        if not result['status']:
+            return result
+        salary,keyword =result['salary'],result['keyword']
         
        
 
@@ -355,6 +363,7 @@ def customer_salary(id):
         status = False
         message = "ERROR"
         salary_status["salary"] = "0"
+        keyword = None
         
         
         
@@ -386,7 +395,13 @@ def salary_analysis(id):
     salary_dict = customer_salary(id)
     
     if salary_dict['status']==False:
-        return salary_dict
+        connect = conn(id)
+        key = {"_id": id}
+        db = connect.analysis.salary
+        db.update(key, salary_dict, upsert=True)
+        logger.info("salary updated in database")
+        connect.close()
+        return {'status':True, 'message':'success','salary':0,'keyword':""}
     else:    
         
 
