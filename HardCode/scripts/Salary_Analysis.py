@@ -235,7 +235,7 @@ def transaction(id):
     logger=logger_1('Transaction Data',id)
     logger.info('Collecting SMS from Transaction Collection') 
     
-    connect = conn()
+    connect = conn(id)
     transaction = connect.messagecluster.transaction
     
     file1 = transaction.find_one({"_id": id})
@@ -256,7 +256,7 @@ def extra(id):
     logger=logger_1('Extra Data',id)
     logger.info('Collecting SMS from Extra Collection')
     
-    connect = conn()
+    connect = conn(id)
     extra = connect.messagecluster.extra
     file2 = extra.find_one({"_id": id})
     y = pd.DataFrame(file2["sms"])
@@ -393,7 +393,7 @@ def salary_analysis(id):
         json_sal={"_id":int(id),"salary":str(salary_dict['salary']),"keyword":salary_dict['keyword']}
         salary_dict={"_id":int(id),"salary":str(salary_dict['salary']),"keyword":salary_dict['keyword'],'status':True,'message':salary_dict["message"]}
         key = {"_id": id}
-        connect = conn()
+        connect = conn(id)
 
         db = connect.analysis.salary
         db.update(key, json_sal, upsert=True)
