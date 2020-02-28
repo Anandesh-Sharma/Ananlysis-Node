@@ -318,11 +318,11 @@ def loan(df, result, user_id, max_timestamp, new):
 
     if new:
         logger.info("New user checked")
-        db.loanapproval.insert_one(data_approve)
-        db.loanrejection.insert_one(data_reject)
-        db.disbursed.insert_one(data_disburse)
-        db.loandueoverdue.insert_one(data_over_due)
-        db.loanclosed.insert_one(data_closed)
+        db.loanclosed.update({"_id": int(user_id)}, {"sms":data_closed['sms'],'timestamp':data_closed['timestamp'] },upsert=True)
+        db.loanapproval.update({"_id": int(user_id)}, {"sms":data_approve['sms'],'timestamp':data_approve['timestamp'] },upsert=True)
+        db.loanrejection.update({"_id": int(user_id)}, {"sms":data_reject['sms'],'timestamp':data_reject['timestamp'] },upsert=True)
+        db.disbursed.update({"_id": int(user_id)}, {"sms":data_disburse['sms'],'timestamp':data_disburse['timestamp'] },upsert=True)
+        db.loandueoverdue.update({"_id": int(user_id)}, {"sms":data_over_due['sms'],'timestamp':data_over_due['timestamp'] },upsert=True)
         logger.info("All loan messages of new user inserted successfully")
     else:
 
