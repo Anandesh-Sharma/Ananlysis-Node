@@ -267,10 +267,39 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
+    try:
+        result_loan['result']['CURRENT_OPEN'] =int(result_loan['result']['CURRENT_OPEN'])
+    except:
+        result_loan['result']['CURRENT_OPEN'] = 0
+    try:
+        result_loan['result']['TOTAL_LOANS'] =int(result_loan['result']['TOTAL_LOANS'])
+    except:
+        result_loan['result']['TOTAL_LOANS'] = 0
+    try:
+        result_loan['result']['PAY_WITHIN_30_DAYS'] =bool(result_loan['result']['PAY_WITHIN_30_DAYS'])
+    except:
+        result_loan['result']['PAY_WITHIN_30_DAYS'] = False
+    try:
+        result_loan['result']['MAX_AMOUNT'] =float(result_loan['result']['MAX_AMOUNT'])
+    except:
+        result_loan['result']['MAX_AMOUNT'] = 0
+    try:
+        result_loan['result']['empty'] =bool(result_loan['result']['empty'])
+    except:
+        result_loan['result']['empty'] = True
+    g=[]
+    for i in result_loan['result']['CURRENT_OPEN_AMOUNT']:
+        if i is None:
+            continue
+        else:
+            try:
+                g.append(float(i))
+            except:
+                continue
+    result_loan['result']['CURRENT_OPEN_AMOUNT']=g
 
     logger.info('checking result salary and loan salary output complete')
     logger.info('Starting Analysis')
-    print(result_salary)
     if float(result_salary['salary'])>0:
         salary_present=True
     else:
@@ -294,6 +323,10 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         client.analysisresult.salary_bl0.update({'_id' : user_id}, result, upsert = True)
     
     else:
+        result = analyse(user_id, cibil_score, new_user, current_loan)
+        client.analysisresult.cibil.update({'_id' : user_id}, result, upsert = True)
+    
+    if result['limit']<3000:
         result = analyse(user_id, cibil_score, new_user, current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, result, upsert = True)
 
