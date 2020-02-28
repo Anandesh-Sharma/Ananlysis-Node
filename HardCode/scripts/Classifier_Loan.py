@@ -234,7 +234,7 @@ def get_over_due(data, loan_messages_filtered, result, name):
     selected_rows = []
     pattern_1 = '(.*)?immediate(.*)payment(.*)'
     pattern_2 = '(.*)?delinquent(.*)?'
-    pattern_3 = '(.*)?has(.*)?bounced(.*)?'
+    # pattern_3 = '(.*)?has(.*)?bounced(.*)?'
     pattern_4 = 'missed(.*)?payments'
     pattern_5 = '(.*)?due(.*)?'
     pattern_6 = '\sover-?due\s'
@@ -245,13 +245,13 @@ def get_over_due(data, loan_messages_filtered, result, name):
         message = str(data['body'][i]).lower()
         matcher_1 = re.search(pattern_1, message)
         matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
+        # matcher_3 = re.search(pattern_3, message)
         matcher_4 = re.search(pattern_4, message)
         matcher_5 = re.search(pattern_5, message)
         matcher_6 = re.search(pattern_6, message)
 
 
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None:
+        if matcher_1 is not None or matcher_2 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None:
             selected_rows.append(i)
     logger.info("Loan due overdue sms extracted successfully")
 
