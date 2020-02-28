@@ -207,7 +207,7 @@ def salary_check(data,id):
     return salary,keyword
 
 
-def conn():
+def conn(id):
     ''' This function create connection with mongodb database
     Parameters:
       Output: Returns connection object
