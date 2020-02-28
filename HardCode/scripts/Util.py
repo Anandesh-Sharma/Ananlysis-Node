@@ -102,9 +102,14 @@ def update_sms(df, user_id, max_timestamp):
         return {'status': True, 'message': 'success', 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
                 'new': True, 'df': df, "timestamp": max_timestamp}
     old_timestamp = msgs["timestamp"]
+    p=True
     for i in range(df.shape[0]):
         if df['timestamp'][i] == old_timestamp:
             index = i + 1
+            p=False
+            break
+    if p:
+        index=0
     df = df.loc[index:]
     logger.info("update messages of existing user in mongodb")
     return {'status': True, 'message': 'success', 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
