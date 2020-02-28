@@ -5,7 +5,7 @@ from datetime import datetime,timedelta
 from datetime import timedelta
 import json
 from pymongo import MongoClient
-from Util import logger_1
+from .Util import logger_1
 
 
 def clean_debit(data,id):
