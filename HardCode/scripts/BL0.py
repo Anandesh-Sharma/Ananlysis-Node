@@ -111,7 +111,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         if not result['status']:
             logger.debug('classification of messages failed')
             client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-            r=cibil_analysis(cibil_score)
+            r=cibil_analysis(cibil_score,current_loan)
             client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
             client.close()
             return r
@@ -121,7 +121,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
         client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-        r=cibil_analysis(cibil_score)
+        r=cibil_analysis(cibil_score,current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
@@ -130,7 +130,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
     result = create_transaction_balanced_sheet(user_id)
     if not result['status']:
         client.analysisresult.exception.update({'_id' : user_id}, result, upsert = True)
-        r=cibil_analysis(cibil_score)
+        r=cibil_analysis(cibil_score,current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return result
@@ -143,7 +143,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         logger.critical('error in connection')
         r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,'logic': 'BL0'}
         client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-        r=cibil_analysis(cibil_score)
+        r=cibil_analysis(cibil_score,current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
@@ -161,7 +161,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
             r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
             client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-            r=cibil_analysis(cibil_score)
+            r=cibil_analysis(cibil_score,current_loan)
             client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
             client.close()
             return r
@@ -185,7 +185,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
             result_loan['limit']= None
             result_loan['logic'] = 'BL0'
             client.analysisresult.exception.update({'_id' : user_id}, result_loan, upsert = True)
-            r=cibil_analysis(cibil_score)
+            r=cibil_analysis(cibil_score,current_loan)
             client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
             client.close()
             return result_loan
@@ -194,7 +194,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
         client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-        r=cibil_analysis(cibil_score)
+        r=cibil_analysis(cibil_score,current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
@@ -204,7 +204,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         r = {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
         client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-        r=cibil_analysis(cibil_score)
+        r=cibil_analysis(cibil_score,current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
@@ -222,7 +222,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
             r = {'status': True, 'message': None, 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
             client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-            r=cibil_analysis(cibil_score)
+            r=cibil_analysis(cibil_score,current_loan)
             client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
             client.close()
             return result_salary
@@ -231,7 +231,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
         client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-        r=cibil_analysis(cibil_score)
+        r=cibil_analysis(cibil_score,current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
@@ -241,7 +241,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         r = {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
         client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-        r=cibil_analysis(cibil_score)
+        r=cibil_analysis(cibil_score,current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
@@ -252,7 +252,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         r={'status': False, 'message': 'result_loan not dict type', 'onhold': None, 'user_id': user_id,
         'limit': None, 'logic': 'BL0'}
         client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-        r=cibil_analysis(cibil_score)
+        r=cibil_analysis(cibil_score,current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
@@ -262,7 +262,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         r={'status': False, 'message': 'empty key not present in loan dict', 'onhold': None, 'user_id': user_id,
             'limit': None, 'logic': 'BL0'}
         client.analysisresult.exception.update({'_id' : user_id}, r, upsert = True)
-        r=cibil_analysis(cibil_score)
+        r=cibil_analysis(cibil_score,current_loan)
         client.analysisresult.cibil.update({'_id' : user_id}, r, upsert = True)
         client.close()
         return r
