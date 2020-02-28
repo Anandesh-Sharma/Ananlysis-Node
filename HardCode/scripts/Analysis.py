@@ -26,7 +26,7 @@ def cibil_analysis(cibil_score,current_loan):
     else:
         a=0
 
-    if a<current_loan:
-        a=current_loan
+    if a<int(current_loan):
+        a=int(current_loan)
     return r = {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
                  'limit': a, 'logic': 'BL0'}
