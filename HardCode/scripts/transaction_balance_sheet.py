@@ -103,5 +103,3 @@ def create_transaction_balanced_sheet(user_id):
     
     r['df'] = convert_json_balanced_sheet(df,debit=debit,credit=credit)
     return r
-
-create_transaction_balanced_sheet(999003)
