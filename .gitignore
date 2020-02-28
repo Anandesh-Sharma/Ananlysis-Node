@@ -257,4 +257,5 @@ fabric.properties
 
 # Pyre type checker
 
+analysis_node.log*
 # End of https://www.gitignore.io/api/django,python,pycharm
