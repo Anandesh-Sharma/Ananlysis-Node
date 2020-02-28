@@ -123,7 +123,7 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
         return r
 
     logger.info('started making balanced sheet')
-    result=create_transaction_balanced_sheet(user_id)
+    result = create_transaction_balanced_sheet(user_id)
     if not result['status']:
         client.analysisresult.bl0.update({'_id' : user_id}, result, upsert = True)
         client.close()

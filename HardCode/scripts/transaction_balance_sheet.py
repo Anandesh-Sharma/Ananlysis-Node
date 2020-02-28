@@ -1,7 +1,7 @@
-from .transaction_analysis import process_data
-from .monthly_transactions import monthly_credit_sum,monthly_debit_sum,pd
-from .Validation2 import *
-from .Util import conn, logger_1,convert_json_balanced_sheet
+from transaction_analysis import process_data
+from monthly_transactions import monthly_credit_sum,monthly_debit_sum,pd
+from Validation2 import *
+from Util import conn, logger_1,convert_json_balanced_sheet,convert_json_balanced_sheet_empty
 import json
 
 
@@ -30,6 +30,10 @@ def create_transaction_balanced_sheet(user_id):
 
     logger.info('Converting file to dataframe')
     df = pd.DataFrame(file1['sms'])
+    if df.shape[0]==0:
+        r = {'status':True,'message':'success'}
+        r['df'] = convert_json_balanced_sheet_empty()
+        return r
     logger.info('Conversion Successful')
     logger.info('Starting to process data')
     result = process_data(df,user_id)
@@ -100,3 +104,4 @@ def create_transaction_balanced_sheet(user_id):
     r['df'] = convert_json_balanced_sheet(df,debit=debit,credit=credit)
     return r
 
+create_transaction_balanced_sheet(999003)

@@ -3,7 +3,7 @@ import numpy as np
 import regex as re
 from datetime import datetime
 import logging
-from .Util import logger_1
+from Util import logger_1
 
 
 # from concurrent.futures import ThreadPoolExecutor, wait, as_completed
@@ -275,14 +275,23 @@ def get_time_message(data):
 
         elif matcher_2 is not None:
             try:
+                pattern_error_0=r'(\d{1,2})\:(\d{1,2})\:(\d{2})\:(\d{3})'
                 pattern_error = r'(\d{1,2})\:(\d{1,2})\:(\d{2})\:(\d{2})'
                 matcher_error = re.search(pattern_error, message)
-                if matcher_error is None:
-                    time = matcher_2.group()
-
-                else:
+                matcher_error_0=re.search(pattern_error_0,message)
+                a=0
+                if matcher_error_0 is not None:
+                    a=1
+                    time = matcher_error_0.group(1) + ':' + matcher_error_0.group(2) + ':' + matcher_error.group(3)
+                
+                elif matcher_error is not None:
+                    a=2
                     time = matcher_error.group(2) + ':' + matcher_error.group(3) + ':' + matcher_error.group(4)
 
+                else:
+                    a=3
+                    time = matcher_2.group()
+                    
                 time = datetime.strptime(time, '%H:%M:%S').time()
                 data['time,message'][i] = time
             except Exception as e:
@@ -304,8 +313,7 @@ def get_time_message(data):
                 data['time,message'][i] = time
             except Exception as e:
                 logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + e)
-
-
+        
 def get_date_time(data):
     for i in range(data.shape[0]):
         date = data['date,message'][i]
