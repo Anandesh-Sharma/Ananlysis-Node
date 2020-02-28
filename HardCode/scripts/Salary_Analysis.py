@@ -162,6 +162,8 @@ def salary_check(data,id):
     logger.info('Salary Calculation Started')
 
     data = clean_debit(data,id)
+    if data.shape[0]==0:
+        return{'status':False,'message':'no messages found'}
     grouper = pd.Grouper(key='timestamp', freq='M')
     result = get_time(data,id)
     if not result['status']:
