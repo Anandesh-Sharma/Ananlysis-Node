@@ -12,7 +12,7 @@ def analyse(user_id, df_cibil, new_user, current_loan):
         client = conn()
     except Exception as e:
         logger.critical('error in connection')
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
 
     logger.info('connection success')
@@ -21,13 +21,13 @@ def analyse(user_id, df_cibil, new_user, current_loan):
     try:
         file1 = client.messagecluster.extra.find_one({"_id": user_id})
         if file1 is None:
-             a = 0
+            a = 0
         else:
             df = pd.DataFrame(file1['sms'])
             a = cheque_user_outer(df, user_id)
     except Exception as e:
         logger.debug('error occured during checking bounced cheque messages')
-        r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
         a = {"processing": False, "result": r}
         client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
@@ -107,7 +107,7 @@ def analyse(user_id, df_cibil, new_user, current_loan):
 
         except Exception as e:
             logger.debug('Exception in cibil analysis')
-            r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+            r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                  'logic': 'BL0'}
             a = {"processing": False, "result": r}
             client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
@@ -154,7 +154,7 @@ def analyse(user_id, df_cibil, new_user, current_loan):
 
         except Exception as e:
             logger.debug('Exception in cibil analysis')
-            r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+            r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                  'logic': 'BL1'}
             a = {"processing": False, "result": r}
             client.analysisresult.result.update({"_id": user_id}, a, upsert=True)

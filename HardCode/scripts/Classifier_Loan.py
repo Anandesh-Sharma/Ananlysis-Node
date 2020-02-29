@@ -312,7 +312,7 @@ def loan(df, result, user_id, max_timestamp, new):
         db = client.messagecluster
     except Exception as e:
         logger.critical('error in connection')
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info('connection success')
 

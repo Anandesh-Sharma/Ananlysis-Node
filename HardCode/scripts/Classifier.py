@@ -43,7 +43,7 @@ def extra(df, user_id, result, max_timestamp, new):
         db = client.messagecluster
     except Exception as e:
         logger.critical('error in connection')
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info('connection success')
 
@@ -106,60 +106,60 @@ def classifier(sms_json, user_id):
         p1 = multiprocessing.Process(target=credit, args=(df, result, user_id, max_timestamp, new,))
     except Exception as e:
         logger.debug("error in credit card classifier")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info("Multiprocessing start for Loan Classifier")
     try:
         p2 = multiprocessing.Process(target=loan(df, result, user_id, max_timestamp, new, ))
     except Exception as e:
         logger.debug("error in loan classifier")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info("Multiprocessing start for Transaction Classifier")
     try:
         p3 = multiprocessing.Process(target=cleaning(df, result, user_id, max_timestamp, new, ))
     except Exception as e:
         logger.debug("error in transaction classifier")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info("process 1 starts")
     try:
         p1.start()
     except Exception as e:
         logger.debug("error in credit card classifier")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info("process 2 starts")
     try:
         p2.start()
     except Exception as e:
         logger.debug("error in loan classifier")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info("process 3 starts")
     try:
         p3.start()
     except Exception as e:
         logger.debug("error in transaction classifier")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     
     try:
         p1.join()
     except Exception as e:
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info("process 1 complete")
     try:
         p2.join()
     except Exception as e:
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info("process 2 complete")
     try:
         p3.join()
     except Exception as e:
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info("process 3 complete")
 

@@ -73,7 +73,7 @@ def get_cibil_analysis(request):
         ResponseCibilAnalysis = BL0.bl0(cibil_score, sms_json, user_id, new_user, all_loan_amount,
                                         current_loan_amount)
     except Exception as e:
-        ResponseCibilAnalysis = {'status': False, 'message': e, 'onhold': None,
+        ResponseCibilAnalysis = {'status': False, 'message': str(e), 'onhold': None,
                                  'user_id': user_id, 'limit': 0,
                                  'logic': 'BL0'}
 

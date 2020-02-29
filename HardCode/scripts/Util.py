@@ -33,10 +33,15 @@ def logger_1(name, user_id):
 def read_json(sms_json, user_id):
     logger = logger_1("read json", user_id)
     try:
-        df = pd.DataFrame.from_dict(sms_json, orient='index')
+        if len(sms_json) == 0:
+            raise Exception
+        else:
+            df = pd.DataFrame.from_dict(sms_json, orient='index')
+
     except Exception as e:
+        print("FFFF")
         logger.debug("dataframe not converted successfully")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
     df['timestamp'] = [0] * df.shape[0]
     df['temp'] = df.index
 
@@ -46,7 +51,7 @@ def read_json(sms_json, user_id):
             df['timestamp'][i] = datetime.utcfromtimestamp(int(df['temp'][i]) / 1000).strftime('%Y-%m-%d %H:%M:%S')
     except Exception as e:
         logger.debug("timestamp not converted successfully")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
     df.reset_index(inplace=True, drop=True)
     list_idx = []
     for i in range(df.shape[0]):
@@ -90,7 +95,7 @@ def update_sms(df, user_id, max_timestamp):
         client = conn()
     except Exception as e:
         logger.critical('error in connection')
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
                 'df': df, "timestamp": max_timestamp}
     logger.info('connection success')
 

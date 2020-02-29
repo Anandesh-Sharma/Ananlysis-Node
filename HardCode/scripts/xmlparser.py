@@ -11,5 +11,5 @@ def xml_parser(filename):
         data_dict = xmltodict.parse(xmlstr)
         return data_dict, True
     except Exception as e:
-        response = {'status': False, 'data': None, 'message': e}
+        response = {'status': False, 'data': None, 'message': str(e)}
         return response, False
