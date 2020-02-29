@@ -1,9 +1,9 @@
 import pandas as pd
-import numpy as np
+# import numpy as np
 import regex as re
 from datetime import datetime, timedelta
-from datetime import timedelta
-import json
+# from datetime import timedelta
+# import json
 from pymongo import MongoClient
 from .Util import logger_1
 
@@ -177,13 +177,13 @@ def salary_check(data, id):
     df_salary = data.groupby(grouper)['salary'].max()
 
     logger.info('Finding salary from EPF keyword')
-    if (df_salary[-1] != 0):
+    if df_salary[-1] != 0:
         salary = df_salary[-1]
         keyword = "EPF"
         var1 = False
         logger.info("found salary from EPF keyword")
 
-    elif (df_salary[-2] != 0):
+    elif df_salary[-2] != 0:
         salary = df_salary[-2]
         keyword = "EPF"
         var1 = False
