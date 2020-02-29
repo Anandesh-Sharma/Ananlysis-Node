@@ -16,7 +16,7 @@ def conn():
 def logger_1(name, user_id):
     logger = logging.getLogger('analysis_node ' + str(user_id) + "  " + name)
     logger.setLevel(logging.INFO)
-    logHandler = TimedRotatingFileHandler(filename="analysis_node.log", when="midnight")
+    logHandler = TimedRotatingFileHandler(filename="logs/analysis_node_{}.log".format(user_id), when="midnight")
     logFormatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
     logHandler.setFormatter(logFormatter)
 
