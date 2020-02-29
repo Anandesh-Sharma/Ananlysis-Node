@@ -302,7 +302,9 @@ def bl0(cibil_score, sms_json, user_id, new_user, list_loans, current_loan):
     logger.info('checking result salary and loan salary output complete')
     logger.info('Starting Analysis')
     salary_present = False
+    print(result_salary['salary'], type(result_salary['salary']))
     if float(result_salary['salary']) > 0:
+        print(float(result_salary['salary']))
         salary_present = True
     if result_loan['result']['empty']:
         loan_present = False

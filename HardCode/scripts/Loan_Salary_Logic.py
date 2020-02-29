@@ -43,7 +43,7 @@ def loan_analysis_function(loan_dict, list_loans, current_loan, user_id):
 
 def loan_salary_analysis_function(salary, loan_dict, list_loans, current_loan, user_id):
     if loan_dict['PAY_WITHIN_30_DAYS']:
-        if 10000 < int(salary) < 15000:
+        if 10000 < float(salary) < 15000:
             max_amount = float(loan_dict['MAX_AMOUNT'])
             current_open_amount = loan_dict['CURRENT_OPEN_AMOUNT']
             current_open = int(loan_dict['CURRENT_OPEN'])
@@ -87,7 +87,7 @@ def loan_salary_analysis_function(salary, loan_dict, list_loans, current_loan, u
                     a = current_loan
             else:
                 a = 0
-        elif int(salary) > 25000:
+        elif float(salary) > 25000:
             max_amount = float(loan_dict['MAX_AMOUNT'])
             current_open_amount = loan_dict['CURRENT_OPEN_AMOUNT']
             current_open = int(loan_dict['CURRENT_OPEN'])
