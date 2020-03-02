@@ -64,7 +64,7 @@ def loan_salary_analysis_function(salary, loan_dict, list_loans, current_loan, u
                     a = current_loan
             else:
                 a = 0
-        elif 15000 < int(salary) < 25000:
+        elif 15000 < float(salary) < 25000:
             max_amount = float(loan_dict['MAX_AMOUNT'])
             current_open_amount = loan_dict['CURRENT_OPEN_AMOUNT']
             current_open = int(loan_dict['CURRENT_OPEN'])
@@ -100,8 +100,6 @@ def loan_salary_analysis_function(salary, loan_dict, list_loans, current_loan, u
                 if a < 3000:
                     a = 3000
                 for i in list_loans[::-1]:
-                    print(i, type(i))
-                    print(a, type(a))
                     if i > a:
                         continue
                     a = i
