@@ -1,16 +1,16 @@
-import numpy as np
-import pandas as pd
-import os
-from glob import glob
+# import numpy as np
+# import pandas as pd
+# import os
+# from pymongo import MongoClient
+from .my_modules import *
+from .Util import logger_1, conn
+# from glob import glob
 from datetime import datetime
-import re
+# import re
 import warnings
 
 warnings.filterwarnings('ignore')
-from pymongo import MongoClient
-# from pprint import pprint
-from .my_modules import *
-from .Util import logger_1, conn
+
 
 script_status = {}
 
@@ -54,7 +54,6 @@ def get_customer_data(cust_id):
             logger.info("Found loan closed data")
         else:
             logger.error("loan closed data not found")
-            raise Exception
 
         '''if trans != None:
             transaction_df = pd.DataFrame(trans['sms'])
@@ -67,7 +66,6 @@ def get_customer_data(cust_id):
             logger.info("Found loan disbursed data")
         else:
             logger.error("loan disbursed data not found")
-            raise Exception
 
         if overdue != None:
             overdue_df = pd.DataFrame(overdue['sms'])
@@ -75,7 +73,6 @@ def get_customer_data(cust_id):
             logger.info("Found loan overdue data")
         else:
             logger.error("loan overdue data not found")
-            raise Exception
 
         if approval != None:
             approval_df = pd.DataFrame(approval['sms'])
@@ -83,7 +80,6 @@ def get_customer_data(cust_id):
             logger.info("Found loan approval data")
         else:
             logger.error("loan approval data not found")
-            raise Exception
 
         loan_data.sort_values(by=["timestamp"])
         # transaction_df.sort_values(by=["timestamp"])
@@ -420,6 +416,8 @@ def final_output(cust_id):
                     try:
                         report['CURRENT_OPEN_AMOUNT'].append(a[i][j]['loan_disbursed_amount'])
                         report['CURRENT_OPEN_AMOUNT'].append(a[i][j]['loan_due_amount'])
+                        if report['CURRENT_OPEN_AMOUNT'][-1] == '':
+                            report['CURRENT_OPEN_AMOUNT'][-1] = 0
                     except:
                         continue
             else:
