@@ -1,4 +1,4 @@
-import json
+# import json
 import pandas
 from . import xmlparser
 
@@ -26,9 +26,10 @@ def convert_to_df(user_id, file):
                 d['payment_history'].append(pay_history)
                 d['payment_rating'].append(pay_rating)
                 d['account_type'].append(acc_type)
-                df = pandas.DataFrame(d)
-                message = "SUCCESS"
-                response = {'status': True, 'data': df, 'message': message}
+            df = pandas.DataFrame(d)
+            message = "SUCCESS"
+            response = {'status': True, 'data': df, 'message': message}
+            print(df)
         except Exception as e:
             message = e
             response = {'status': False, 'data': None, 'message': message}

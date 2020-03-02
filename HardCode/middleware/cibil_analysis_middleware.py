@@ -2,8 +2,10 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from HardCode.scripts import BL0
+from HardCode.scripts import Analysis
 from HardCode.scripts.apicreditdata import convert_to_df
 import json
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
@@ -26,13 +28,12 @@ def get_cibil_analysis(request):
             raise Exception
     except:
         return Response({'status': False, 'message': 'sms_json parameter is required'}, 400)
-    #try:
-     #   cibil_xml = request.data.get('cibil_xml')
-      #  if cibil_xml is None:
-      #      raise Exception
-   # except:
-     #   return Response({'status': False, 'message': 'cibil_xml parameter is required'}, 400)
-     
+
+    try:
+        cibil_xml = request.data.get('cibil_xml')
+    except:
+        return Response({'status': False, 'message': 'cibil_xml parameter is required'}, 400)
+
     try:
         cibil_score = request.data.get('cibil_score')
         if cibil_score is None:
@@ -64,17 +65,20 @@ def get_cibil_analysis(request):
     except:
         return Response({'status': False, 'message': 'current_loan_amount parameter must be int convertible'}, 400)
 
-    # response_parser = convert_to_df(user_id, cibil_xml)
-    # if response_parser["status"]:
-        # call node
-        # response_parser["data"] removed (!= Cibil Analysis)
-    try:
-    
-        ResponseCibilAnalysis = BL0.bl0(cibil_score, sms_json, user_id, new_user, all_loan_amount,
-                                        current_loan_amount)
-    except Exception as e:
-        ResponseCibilAnalysis = {'status': False, 'message': str(e), 'onhold': None,
-                                 'user_id': user_id, 'limit': 0,
-                                 'logic': 'BL0'}
+    cibil_df = None
+    if cibil_xml:
+        response_parser = convert_to_df(user_id, cibil_xml)
+        if response_parser["status"]:
+            cibil_df = response_parser['data']
 
-    return Response(ResponseCibilAnalysis, 200)
+    try:
+
+        response_bl0 = BL0.bl0(cibil_xml=cibil_df, cibil_score=cibil_score, sms_json=sms_json, user_id=user_id
+                               , new_user=new_user, list_loans=all_loan_amount,
+                               current_loan=current_loan_amount)
+    except Exception:
+        response_bl0 = Analysis.analyse(user_id=user_id, current_loan=current_loan_amount, cibil_df=cibil_df,
+                                        new_user=new_user
+                                        , cibil_score=cibil_score)
+
+    return Response(response_bl0, 200)
