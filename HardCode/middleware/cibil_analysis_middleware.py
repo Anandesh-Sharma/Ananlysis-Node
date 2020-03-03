@@ -69,7 +69,7 @@ def get_cibil_analysis(request):
     if cibil_xml:
         response_parser = convert_to_df(user_id, cibil_xml)
         if response_parser["status"]:
-            cibil_df = response_parser['data']
+            cibil_df = response_parser
 
     try:
 
