@@ -11,6 +11,7 @@ Original file is located at
 import pandas as pd
 # import pprint
 # import pymongo
+from .Salary_Analysis import salary_check
 import regex as re
 from pymongo import MongoClient
 
@@ -53,5 +54,5 @@ def customer_salary(id1):
     total = pd.concat([full, epf], 0)
     total = total.reset_index(drop=True)
 
-    salary = salary_check(total)
+    salary = salary_check(total, id1)
     return salary
