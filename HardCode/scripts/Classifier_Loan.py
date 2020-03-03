@@ -234,7 +234,7 @@ def get_over_due(data, loan_messages_filtered, result, name):
     selected_rows = []
     pattern_1 = '(.*)?immediate(.*)payment(.*)'
     pattern_2 = '(.*)?delinquent(.*)?'
-    pattern_3 = '(.*)?has(.*)?bounced(.*)?'
+    # pattern_3 = '(.*)?has(.*)?bounced(.*)?'
     pattern_4 = 'missed(.*)?payments'
     pattern_5 = '(.*)?due(.*)?'
     pattern_6 = '\sover-?due\s'
@@ -245,13 +245,13 @@ def get_over_due(data, loan_messages_filtered, result, name):
         message = str(data['body'][i]).lower()
         matcher_1 = re.search(pattern_1, message)
         matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
+        # matcher_3 = re.search(pattern_3, message)
         matcher_4 = re.search(pattern_4, message)
         matcher_5 = re.search(pattern_5, message)
         matcher_6 = re.search(pattern_6, message)
 
 
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None:
+        if matcher_1 is not None or matcher_2 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None:
             selected_rows.append(i)
     logger.info("Loan due overdue sms extracted successfully")
 
@@ -312,17 +312,17 @@ def loan(df, result, user_id, max_timestamp, new):
         db = client.messagecluster
     except Exception as e:
         logger.critical('error in connection')
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
     logger.info('connection success')
 
     if new:
         logger.info("New user checked")
-        db.loanapproval.insert_one(data_approve)
-        db.loanrejection.insert_one(data_reject)
-        db.disbursed.insert_one(data_disburse)
-        db.loandueoverdue.insert_one(data_over_due)
-        db.loanclosed.insert_one(data_closed)
+        db.loanclosed.update({"_id": int(user_id)}, {"sms":data_closed['sms'],'timestamp':data_closed['timestamp'] },upsert=True)
+        db.loanapproval.update({"_id": int(user_id)}, {"sms":data_approve['sms'],'timestamp':data_approve['timestamp'] },upsert=True)
+        db.loanrejection.update({"_id": int(user_id)}, {"sms":data_reject['sms'],'timestamp':data_reject['timestamp'] },upsert=True)
+        db.disbursed.update({"_id": int(user_id)}, {"sms":data_disburse['sms'],'timestamp':data_disburse['timestamp'] },upsert=True)
+        db.loandueoverdue.update({"_id": int(user_id)}, {"sms":data_over_due['sms'],'timestamp':data_over_due['timestamp'] },upsert=True)
         logger.info("All loan messages of new user inserted successfully")
     else:
 

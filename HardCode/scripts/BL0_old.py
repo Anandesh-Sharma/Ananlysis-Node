@@ -6,6 +6,7 @@ from .Salary_Analysis import salary_analysis
 from .Analysis import analyse
 import pandas as pd
 import warnings
+
 warnings.filterwarnings("ignore")
 
 from time import sleep
@@ -61,7 +62,7 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         client = conn()
     except Exception as e:
         logger.critical('error in connection')
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
 
     logger.info('connection success')
@@ -181,7 +182,7 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
 
     except Exception as e:
         logger.debug('classification of messages failed')
-        r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
         a = {"processing": False, "result": r}
         client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
@@ -193,7 +194,7 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         loan_analysis(int(user_id))
     except Exception as e:
         logger.debug('error in loan analysis')
-        r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
         a = {"processing": False, "result": r}
         client.analysisresult.result.update({"_id": user_id}, a, upsert=True)
@@ -215,7 +216,7 @@ def bl0(df_cibil, sms_json, user_id, new_user, list_loans, current_loan):
         salary_analysis(int(user_id))
     except Exception as e:
         logger.debug('error in salary analysis')
-        r = {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
         a = {"processing": False, "result": r}
         client.analysisresult.result.update({"_id": user_id}, a, upsert=True)

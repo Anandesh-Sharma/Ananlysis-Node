@@ -1,14 +1,14 @@
 import pandas as pd
-import numpy as np
+# import numpy as np
 import regex as re
-from datetime import datetime,timedelta
-from datetime import timedelta
-import json
+from datetime import datetime, timedelta
+# from datetime import timedelta
+# import json
 from pymongo import MongoClient
 from .Util import logger_1
 
 
-def clean_debit(data,id):
+def clean_debit(data, id):
     '''This code drops the rows for debited messages and bhanix finance company messages.
 
         Parameters: DataFrame.
@@ -16,10 +16,9 @@ def clean_debit(data,id):
         Output: DataFrame.
 
     '''
-    logger=logger_1("Clean Debit",id)
+    logger = logger_1("Clean Debit", id)
     logger.info("Cleaning text data")
-                    
-    
+
     pattern1 = "bhanix"
     pattern2 = "debited"
     d = []
@@ -37,9 +36,7 @@ def clean_debit(data,id):
     return data
 
 
-
-
-def get_epf_amount(data,id):
+def get_epf_amount(data, id):
     '''This code finds the epf(employee provident fund) amount from the messages in the DataFrame.
 
           Parameters: DataFrame.
@@ -47,8 +44,8 @@ def get_epf_amount(data,id):
           Output: DataFrame.
 
     '''
-    
-    logger=logger_1("Get Epf Amount",id)
+
+    logger = logger_1("Get Epf Amount", id)
     logger.info("Epf Amount Calculation starts")
 
     data["epf_amount"] = [0] * data.shape[0]
@@ -71,7 +68,7 @@ def get_epf_amount(data,id):
     return data
 
 
-def epf_to_salary(data, column,id):
+def epf_to_salary(data, column, id):
     '''This code calculates the salary from the epf amount with formula: epf=12% of salary.
 
           Parameters: DataFrame.
@@ -79,17 +76,17 @@ def epf_to_salary(data, column,id):
           Output: DataFrame.
 
     '''
-    logger=logger_1("Epf to Salary",id)
+    logger = logger_1("Epf to Salary", id)
     logger.info("Salary Calculation from EPF Amount starts")
 
     data["salary"] = [0] * data.shape[0]
     for i in range(0, data.shape[0]):
         data["salary"][i] = (data[column][i] * 100) / 12
-    
+    logger.info("Salary Calculation from EPF Amount complete")
     return data
 
 
-def get_salary(data,id):
+def get_salary(data, id):
     '''This code finds the salary from the messages if keyword 'salary' is found.
 
           Parameters: DataFrame.
@@ -97,10 +94,10 @@ def get_salary(data,id):
           Output: DataFrame.
 
     '''
-    
-    logger=logger_1('Get Salary',id)
+
+    logger = logger_1('Get Salary', id)
     logger.info('Direct Salary Amount Calculation starts')
-  
+
     data["direct_sal"] = [0] * data.shape[0]
     pattern1 = r"credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
     pattern2 = r"salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*credited"
@@ -112,7 +109,7 @@ def get_salary(data,id):
         y1 = re.search(pattern1, m)
         y2 = re.search(pattern2, m)
         y3 = re.search(pattern3, m)
-        
+
         if (y1 != None):
             amount = y1.group(3)
         elif (y2 != None):
@@ -126,7 +123,7 @@ def get_salary(data,id):
     return data
 
 
-def get_time(data,id):
+def get_time(data, id):
     '''This code converts the timestamp from unix format to datetime.
 
           Parameters: DataFrame.
@@ -134,22 +131,22 @@ def get_time(data,id):
           Output: DataFrame.
 
           '''
-    
-    logger=logger_1("Get Time",id)
+
+    logger = logger_1("Get Time", id)
     logger.info("Convert Timestamp To Datetime")
-    
+
     for i in range(data.shape[0]):
         try:
             x = datetime.strptime(data['timestamp'].values[i], "%Y-%m-%d %H:%M:%S")
             data['timestamp'].values[i] = x
         except:
-            return {"status":False,"message":"timestamp not converted"}
             logger.error("timestamp not converted")
+            return {"status": False, "message": "timestamp not converted"}
 
-    return data
+    return {"status": True, "message": "success", 'data': data}
 
 
-def salary_check(data,id):
+def salary_check(data, id):
     '''This code calls all the function to calculate salary of a user based on the messages in dataFrame.
 
           Parameters: DataFrame.
@@ -157,72 +154,75 @@ def salary_check(data,id):
           Output: Salary(int),Keyword(string).
 
     '''
-    
-    logger=logger_1('Salary Check',id)
+
+    logger = logger_1('Salary Check', id)
     logger.info('Salary Calculation Started')
 
-    data = clean_debit(data,id)
+    data = clean_debit(data, id)
+    if data.shape[0] == 0:
+        return {'status': False, 'message': 'no messages found'}
     grouper = pd.Grouper(key='timestamp', freq='M')
-    data = get_time(data,id)
+    result = get_time(data, id)
+    if not result['status']:
+        return result
+    data = result['data']
     var1 = True
     salary = 0
-    keyword=""
-   
+    keyword = ""
 
-    data = get_epf_amount(data,id)
-    data = epf_to_salary(data, "epf_amount",id)
+    data = get_epf_amount(data, id)
+    data = epf_to_salary(data, "epf_amount", id)
+    if data.shape[0] == 0:
+        return {'status': False, 'message': 'no messages found'}
     df_salary = data.groupby(grouper)['salary'].max()
-    
 
-    
     logger.info('Finding salary from EPF keyword')
-    if (df_salary[-1] != 0):
+    if df_salary[-1] != 0:
         salary = df_salary[-1]
-        keyword="EPF"
+        keyword = "EPF"
         var1 = False
         logger.info("found salary from EPF keyword")
 
-    elif (df_salary[-2] != 0):
+    elif df_salary[-2] != 0:
         salary = df_salary[-2]
-        keyword="EPF"
+        keyword = "EPF"
         var1 = False
         logger.info("found salary from EPF keyword")
 
     if var1:
         try:
             logger.info('Finding salary from Salary keyword')
-            data = get_salary(data,id)
+            data = get_salary(data, id)
             df_d_salary = data.groupby(grouper)['direct_sal'].max()
             if (df_d_salary[-1] != 0):
                 salary = df_d_salary[-1]
-                keyword="Salary"
+                keyword = "Salary"
                 logger.info("salary found from salary keyword")
             elif (df_d_salary[-2] != 0):
                 salary = df_d_salary[-2]
-                keyword="Salary"
-                logger.info("salary found from salary keyword")    
-            
+                keyword = "Salary"
+                logger.info("salary found from salary keyword")
+
         except:
             salary = None
-    return salary,keyword
+    return {'status': True, 'message': 'success', "salary": salary, "keyword": keyword}
 
 
-def conn():
+def conn(id):
     ''' This function create connection with mongodb database
     Parameters:
       Output: Returns connection object
      '''
 
-    logger=logger_1('Connection',id)
+    logger = logger_1('Connection', id)
     logger.info('Building connection')
-    
+
     connection = MongoClient(
         "mongodb://god:rock0004@13.67.79.22:27017/?authSource=admin&readPreference=primary&ssl=false", maxPoolSize=200)
     return connection
 
 
 def transaction(id):
-    
     ''' This function connects with collection in mongodb database
       Parameters:
       Input : Customer Id
@@ -232,19 +232,19 @@ def transaction(id):
       
     '''
 
-    logger=logger_1('Transaction Data',id)
-    logger.info('Collecting SMS from Transaction Collection') 
-    
-    connect = conn()
+    logger = logger_1('Transaction Data', id)
+    logger.info('Collecting SMS from Transaction Collection')
+
+    connect = conn(id)
     transaction = connect.messagecluster.transaction
-    
+
     file1 = transaction.find_one({"_id": id})
-    if file1==None:
+    if file1 == None:
         logger.info("Transaction data not available")
-        return {'status':False,'message':"file doesn't exist"}
+        return {'status': False, 'message': "file doesn't exist"}
     x = pd.DataFrame(file1["sms"])
-    
-    return {'status':True,'message':"success","df":x}
+
+    return {'status': True, 'message': "success", "df": x}
 
 
 def extra(id):
@@ -253,10 +253,10 @@ def extra(id):
       Input  :  Customer id(int)
       Output :  Returns epf messages dataframe
     '''
-    logger=logger_1('Extra Data',id)
+    logger = logger_1('Extra Data', id)
     logger.info('Collecting SMS from Extra Collection')
-    
-    connect = conn()
+
+    connect = conn(id)
     extra = connect.messagecluster.extra
     file2 = extra.find_one({"_id": id})
     y = pd.DataFrame(file2["sms"])
@@ -270,36 +270,35 @@ def extra(id):
 
 
 def merge(id):
-    
-    ''' This code 
+    ''' This code
      Parameters:
      Input : Customer id(int)
      Output: Dictionary with Parameters:    status(bool):code run successfully or not , 
                                                 message(string):success/error ,  
                                                 df(dataframe): dataframe of merged data
-    ''' 
-    logger=logger_1('Merge Data',id)
+    '''
+    logger = logger_1('Merge Data', id)
     logger.info('Merging the Transaction and Extra SMS')
-    
-    result=transaction(id)
+
+    result = transaction(id)
     if not result['status']:
-            return result
-    tran =result['df']
-    if tran.shape[0]!=0:
+        return result
+    tran = result['df']
+    if tran.shape[0] != 0:
         logger.info("Data fetched from Transaction collection")
     else:
-        logger.error("No data fetched from Transaction collection")    
-        return {'status':False,'message':'no transaction message',"salary":"0"}
+        logger.error("No data fetched from Transaction collection")
+        return {'status': False, 'message': 'no transaction message', "salary": "0"}
     ext = extra(id)
-    if ext.shape[0]!=0:
+    if ext.shape[0] != 0:
         logger.info("Data fetched from Extra collection")
     else:
-        logger.info("No data fetched from Extra collection")  
-    
+        logger.info("No data fetched from Extra collection")
+
     total = pd.concat([tran, ext], 0)
     total = total.reset_index(drop=True)
-    
-    return {'status':True,'message':'success','total':total}
+
+    return {'status': True, 'message': 'success', 'total': total}
 
 
 def customer_salary(id):
@@ -319,24 +318,25 @@ def customer_salary(id):
 
     '''
 
-    logger=logger_1('Customer Salary',id)
+    logger = logger_1('Customer Salary', id)
     logger.info('Checking salary status')
     salary_status = {}
 
     try:
-        
+
         result = merge(id)
         if not result['status']:
             return result
-        merged =result['total']
-        if merged.shape[0]==0:
+        merged = result['total']
+        if merged.shape[0] == 0:
             logger.error("Data not merged")
         else:
             logger.info("Data merged successfully")
-        
-        salary,keyword = salary_check(merged,id)
-        
-       
+
+        result = salary_check(merged, id)
+        if not result['status']:
+            return result
+        salary, keyword = result['salary'], result['keyword']
 
         salary_status["salary"] = salary
         if (salary == 0) | (salary == None):
@@ -344,7 +344,7 @@ def customer_salary(id):
             status = True
             message = "Salary Not found"
             logger.info("not found salary")
-            
+
 
         else:
             status = True
@@ -355,9 +355,7 @@ def customer_salary(id):
         status = False
         message = "ERROR"
         salary_status["salary"] = "0"
-        
-        
-        
+        keyword = None
 
     salary_status["_id"] = id
     salary_status["status"] = status
@@ -366,11 +364,7 @@ def customer_salary(id):
     return salary_status
 
 
-
-
-
 def salary_analysis(id):
-        
     ''' This function  call function to push salary in mongodb database
        Parameters  :  
        Input  : Customer id(int)
@@ -380,20 +374,26 @@ def salary_analysis(id):
                                                 keyword(string): EPF/Salary
                                                 salary(str): salary of user
     '''
-    logger=logger_1('Salary Analysis',id)
+    logger = logger_1('Salary Analysis', id)
     logger.info('Salary Analysis started')
 
     salary_dict = customer_salary(id)
-    
-    if salary_dict['status']==False:
-        return salary_dict
-    else:    
-        
 
-        json_sal={"_id":int(id),"salary":str(salary_dict['salary']),"keyword":salary_dict['keyword']}
-        salary_dict={"_id":int(id),"salary":str(salary_dict['salary']),"keyword":salary_dict['keyword'],'status':True,'message':salary_dict["message"]}
+    if salary_dict['status'] == False:
+        connect = conn(id)
         key = {"_id": id}
-        connect = conn()
+        db = connect.analysis.salary
+        db.update(key, salary_dict, upsert=True)
+        logger.info("salary updated in database")
+        connect.close()
+        return {'status': True, 'message': 'success', 'salary': 0, 'keyword': ""}
+    else:
+
+        json_sal = {"_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword']}
+        salary_dict = {"_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword'],
+                       'status': True, 'message': salary_dict["message"]}
+        key = {"_id": id}
+        connect = conn(id)
 
         db = connect.analysis.salary
         db.update(key, json_sal, upsert=True)

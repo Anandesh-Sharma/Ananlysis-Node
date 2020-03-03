@@ -147,8 +147,6 @@ def get_credit_amount(data):
             data['credit_amount'][i] = float(str(amount).replace(",", ""))
         except Exception as e:
             print(e)
-            print(i + 2)
-            print(str(amount).replace(",", ""))
 
 
 def get_debit_amount(data):
@@ -242,7 +240,7 @@ def get_date_message(data):
         try:
             data['date,message'][i] = data['timestamp'][i].date()
         except Exception as e:
-            logging.exception('transaction_balance_sheet/transaction_analysis/get_date_time:' + e)
+            logging.exception('transaction_balance_sheet/transaction_analysis/get_date_time:' + str(e))
 
 
 def get_time_message(data):
@@ -271,22 +269,31 @@ def get_time_message(data):
                 time = datetime.strptime(time, '%H:%M:%S').time()
                 data['time,message'][i] = time
             except Exception as e:
-                logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher1:' + e)
+                logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher1:' + str(e))
 
         elif matcher_2 is not None:
             try:
+                pattern_error_0 = r'(\d{1,2})\:(\d{1,2})\:(\d{2})\:(\d{3})'
                 pattern_error = r'(\d{1,2})\:(\d{1,2})\:(\d{2})\:(\d{2})'
                 matcher_error = re.search(pattern_error, message)
-                if matcher_error is None:
-                    time = matcher_2.group()
+                matcher_error_0 = re.search(pattern_error_0, message)
+                a = 0
+                if matcher_error_0 is not None:
+                    a = 1
+                    time = matcher_error_0.group(1) + ':' + matcher_error_0.group(2) + ':' + matcher_error.group(3)
+
+                elif matcher_error is not None:
+                    a = 2
+                    time = matcher_error.group(2) + ':' + matcher_error.group(3) + ':' + matcher_error.group(4)
 
                 else:
-                    time = matcher_error.group(2) + ':' + matcher_error.group(3) + ':' + matcher_error.group(4)
+                    a = 3
+                    time = matcher_2.group()
 
                 time = datetime.strptime(time, '%H:%M:%S').time()
                 data['time,message'][i] = time
             except Exception as e:
-                logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + e)
+                logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + str(e))
 
         elif matcher_3 is not None:
             try:
@@ -303,19 +310,19 @@ def get_time_message(data):
                 time = datetime.strptime(time, '%H:%M:%S').time()
                 data['time,message'][i] = time
             except Exception as e:
-                logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + e)
+                logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + str(e))
 
 
 def get_date_time(data):
     for i in range(data.shape[0]):
         date = data['date,message'][i]
         time = data['time,message'][i]
-        if ((date == 0 or date=='') and (time=='' or time == 0)):
+        if ((date == 0 or date == '') and (time == '' or time == 0)):
             continue
-        elif (date == 0 or date ==''):
+        elif (date == 0 or date == ''):
             date = pd.to_datetime(data['timestamp'][i]).date()
             date.strftime('%d/%m/%Y')
-        elif (time == 0 or time==''):
+        elif (time == 0 or time == ''):
             continue
         try:
             data['date_time'][i] = datetime.combine(date, time)
@@ -347,12 +354,12 @@ def balance_check(data):
 
 def get_time(data):
     for i in range(data.shape[0]):
-        x = datetime.strptime(data['timestamp'][i],'%Y-%m-%d %H:%M:%S')
+        x = datetime.strptime(data['timestamp'][i], '%Y-%m-%d %H:%M:%S')
         data['timestamp'][i] = x
 
 
-def date_time_thread(data,user_id):
-    logger=logger_1('date_time_thread',user_id)
+def date_time_thread(data, user_id):
+    logger = logger_1('date_time_thread', user_id)
     logger.info('starting get date func')
     get_date_message(data)
     logger.info('starting get date func successful')
@@ -366,8 +373,8 @@ def date_time_thread(data,user_id):
     logger.info('starting get date time func successful')
 
 
-def process_data(data,user_id):
-    logger=logger_1('process_data',user_id)
+def process_data(data, user_id):
+    logger = logger_1('process_data', user_id)
     try:
         logger.info('initializing')
         initialize(data)
@@ -385,8 +392,8 @@ def process_data(data,user_id):
         logger.info('starting vpa fetch')
         get_vpa(data)
         logger.info('vpa fetch complete')
-        
-        logger.info('starting upi ref fetch') 
+
+        logger.info('starting upi ref fetch')
         get_upi_ref_no(data)
         logger.info('upi ref fetch complete')
 
@@ -401,7 +408,7 @@ def process_data(data,user_id):
         logger.info('starting neft_no fetch')
         get_neft_no(data)
         logger.info('neft no fetch complete')
-        
+
         logger.info('starting neft keyword fetch')
         get_neft_keyword(data)
         logger.info('neft keyword fetch complete')
@@ -427,8 +434,8 @@ def process_data(data,user_id):
         logger.info('get_time fetch complete')
 
         logger.info('starting date time thread')
-        date_time_thread(data,user_id)
+        date_time_thread(data, user_id)
         logger.info('data time threa complete')
     except Exception as e:
-        return {'status':False,'message':e}
-    return {'status':True, 'message':'success', 'df':data}
+        return {'status': False, 'message': e}
+    return {'status': True, 'message': 'success', 'df': data}

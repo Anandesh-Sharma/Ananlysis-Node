@@ -87,7 +87,7 @@ def time_based_checking(data):
     data.reset_index(drop=True, inplace=True)
     return {'df':data,'status':True,'message':'success'}
   except Exception as e:
-    return {'status':False,'message': e}
+    return {'status':False,'message': str(e)}
 
 def time_check_dbs(data):
   fault=[]
@@ -117,4 +117,4 @@ def time_check_dbs(data):
     data.reset_index(drop=True, inplace=True)
     return {'data':data,'status':True,'message':'success','df':data}
   except Exception as e:
-    return {'status':False,'message': e}
+    return {'status':False,'message': str(e)}

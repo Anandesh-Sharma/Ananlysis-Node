@@ -16,7 +16,7 @@ def conn():
 def logger_1(name, user_id):
     logger = logging.getLogger('analysis_node ' + str(user_id) + "  " + name)
     logger.setLevel(logging.INFO)
-    logHandler = TimedRotatingFileHandler(filename="analysis_node.log", when="midnight")
+    logHandler = TimedRotatingFileHandler(filename="logs/analysis_node_{}.log".format(user_id), when="midnight")
     logFormatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
     logHandler.setFormatter(logFormatter)
 
@@ -33,10 +33,15 @@ def logger_1(name, user_id):
 def read_json(sms_json, user_id):
     logger = logger_1("read json", user_id)
     try:
-        df = pd.DataFrame.from_dict(sms_json, orient='index')
+        if len(sms_json) == 0:
+            raise Exception
+        else:
+            df = pd.DataFrame.from_dict(sms_json, orient='index')
+
     except Exception as e:
+        print("FFFF")
         logger.debug("dataframe not converted successfully")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
     df['timestamp'] = [0] * df.shape[0]
     df['temp'] = df.index
 
@@ -46,7 +51,7 @@ def read_json(sms_json, user_id):
             df['timestamp'][i] = datetime.utcfromtimestamp(int(df['temp'][i]) / 1000).strftime('%Y-%m-%d %H:%M:%S')
     except Exception as e:
         logger.debug("timestamp not converted successfully")
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
     df.reset_index(inplace=True, drop=True)
     list_idx = []
     for i in range(df.shape[0]):
@@ -90,7 +95,7 @@ def update_sms(df, user_id, max_timestamp):
         client = conn()
     except Exception as e:
         logger.critical('error in connection')
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
                 'df': df, "timestamp": max_timestamp}
     logger.info('connection success')
 
@@ -102,9 +107,14 @@ def update_sms(df, user_id, max_timestamp):
         return {'status': True, 'message': 'success', 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
                 'new': True, 'df': df, "timestamp": max_timestamp}
     old_timestamp = msgs["timestamp"]
+    p=True
     for i in range(df.shape[0]):
         if df['timestamp'][i] == old_timestamp:
             index = i + 1
+            p=False
+            break
+    if p:
+        index=0
     df = df.loc[index:]
     logger.info("update messages of existing user in mongodb")
     return {'status': True, 'message': 'success', 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
@@ -112,7 +122,6 @@ def update_sms(df, user_id, max_timestamp):
 
 def convert_json_balanced_sheet(data,credit,debit):
     obj = {"sheet": []}
-    print(credit)
     for i in range(len(credit)):
         credit[i]=(credit[i][0],int(credit[i][1]))
     for i in range(len(debit)):
@@ -127,5 +136,19 @@ def convert_json_balanced_sheet(data,credit,debit):
         'Debit Amount':float(data['debit_amount'][i]),'UPI':int(data['upi'][i]), 'Date Time':str(data['date_time'][i]),
        'Date Message':str(data['date,message'][i]), 'IMPS':int(data['imps'][i]),'Available Balance':float(data['available balance'][i])}
         obj['sheet'].append(sms)
+    
+    return obj
+
+def convert_json_balanced_sheet_empty():
+    obj = {"sheet": []}
+    obj['credit']=[]
+    obj['debit']=[]
+    sms = {"sender": "", "body": "", "timestamp": "",
+        "read": "","time_message":"","acc_no":"",
+        "VPA":"","IMPS Ref no":"",'UPI Ref no':"",
+        'neft':"", 'Neft no':"", 'Credit Amount':"",
+        'Debit Amount':"",'UPI':"", 'Date Time':"",
+       'Date Message':"", 'IMPS':"",'Available Balance':""} 
+    obj['sheet'].append(sms)
     
     return obj

@@ -1,12 +1,11 @@
-import json
+# import json
 import pandas
 from . import xmlparser
 
 
 def convert_to_df(user_id, file):
     d = {'written_amt_total': [], 'written_amt_principal': [], 'credit_score': [], 'payment_rating': [],
-         'payment_history': [], 'account_type': []}
-    # path = "Cibils_userid/" + str(user_id) + "/experian_cibil.xml"
+         'payment_history': [], 'account_type': [], 'account_status': []}
     data_dict, file_found = xmlparser.xml_parser(file)
     if file_found:
         response = {'status': False, 'data': None, 'message': 'None'}
@@ -20,15 +19,17 @@ def convert_to_df(user_id, file):
                 pay_history = acc_details[i]['Payment_History_Profile']
                 acc_type = acc_details[i]['Account_Type']
                 pay_rating = acc_details[i]['Payment_Rating']
+                account_status = acc_details[i]['Account_Status']
                 d['written_amt_total'].append(amt_total)
                 d['written_amt_principal'].append(amt_principal)
                 d['credit_score'].append(credit_score)
                 d['payment_history'].append(pay_history)
                 d['payment_rating'].append(pay_rating)
                 d['account_type'].append(acc_type)
-                df = pandas.DataFrame(d)
-                message = "SUCCESS"
-                response = {'status': True, 'data': df, 'message': message}
+                d['account_status'].append(account_status)
+            df = pandas.DataFrame(d)
+            message = "SUCCESS"
+            response = {'status': True, 'data': df, 'message': message}
         except Exception as e:
             message = e
             response = {'status': False, 'data': None, 'message': message}
@@ -36,5 +37,3 @@ def convert_to_df(user_id, file):
     else:
         response = {'status': False, 'data': None, 'message': 'None'}
         return response
-
-# convert_to_df(170099)['data'].to_csv('170099experian.csv',index = None)
