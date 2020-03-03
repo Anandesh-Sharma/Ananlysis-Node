@@ -65,7 +65,7 @@ def get_cibil_analysis(request):
     except:
         return Response({'status': False, 'message': 'current_loan_amount parameter must be int convertible'}, 400)
 
-    cibil_df = None
+    cibil_df = {'status': False, 'data': None, 'message': 'None'}
     if cibil_xml:
         response_parser = convert_to_df(user_id, cibil_xml)
         if response_parser["status"]:
