@@ -24,9 +24,9 @@ def convert_to_df(user_id, file):
                 d['written_amt_principal'].append(amt_principal)
                 d['credit_score'].append(credit_score)
                 d['payment_history'].append(pay_history)
-                d['payment_rating'].append(pay_rating)
+                d['payment_rating'].append(str(pay_rating))
                 d['account_type'].append(acc_type)
-                d['account_status'].append(account_status)
+                d['account_status'].append(str(account_status))
             df = pandas.DataFrame(d)
             message = "SUCCESS"
             response = {'status': True, 'data': df, 'message': message}

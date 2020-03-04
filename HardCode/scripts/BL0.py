@@ -21,7 +21,7 @@ def bl0(**kwargs):
     new_user = kwargs.get('new_user')
     list_loans = kwargs.get('list_loans')
     current_loan = kwargs.get('current_loan')
-    cibil_df = kwargs.get('cibil_df')
+    cibil_df = kwargs.get('cibil_xml')
     '''
     user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                                         new_user=new_user
