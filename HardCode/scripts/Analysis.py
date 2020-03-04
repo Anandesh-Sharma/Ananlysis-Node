@@ -21,11 +21,9 @@ def analyse(**kwargs):
             Payment_Ratings[pay_rating] = user_id
 
         Blocked_Payment_Ratings = [3, 4, 5, 6]
-        Blocked_Status = [93, 89, 97, 32, 33, 34, 35, 37, 38, 43, 44, 45, 46, 47, 49, 50, 53, 54, 55, 56, 57, 58,
-                          59,
-                          61,
-                          62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 75, 76, 77, 79, 81, 85, 86, 87, 88, 94,
-                          90]
+        Blocked_Status = [93, 89, 97, 32, 33, 34, 35, 37, 38, 43, 44, 45, 46, 47, 49, 50, 53, 54, 55, 56, 57, 58, 59,
+                          60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 75, 76, 77, 79, 81, 85, 86, 87, 88,
+                          94, 90]
         for bpr in Blocked_Payment_Ratings:
             if str(bpr) in Payment_Ratings:
                 review = True
