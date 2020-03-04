@@ -27,12 +27,12 @@ def analyse(**kwargs):
                           62, 63, 64, 65, 66, 67, 68, 69, 70, 72, 73, 74, 75, 76, 77, 79, 81, 85, 86, 87, 88, 94,
                           90]
         for bpr in Blocked_Payment_Ratings:
-            if bpr in Payment_Ratings:
+            if str(bpr) in Payment_Ratings:
                 review = True
                 break
         if not review:
             for bs in Blocked_Status:
-                if bs in Account_Status:
+                if str(bs) in Account_Status:
                     review = True
                     break
 
