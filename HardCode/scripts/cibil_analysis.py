@@ -129,5 +129,5 @@ def cibil_analysis(df, cibil_score, user_id):
 
     except Exception as e:
         logger.debug('cibil analysis function failed')
-        return {'status': False, 'message': e, 'onhold': None, 'user_id': user_id, 'limit': None,
+        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}

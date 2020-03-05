@@ -7,10 +7,11 @@ Original file is located at
     https://colab.research.google.com/drive/1ednjCaAMAxaSfm9nD1-c2KGbuyvrDBAg
 """
 
-import json
+# import json
 import pandas as pd
-import pprint
-import pymongo
+# import pprint
+# import pymongo
+from .Salary_Analysis import salary_check
 import regex as re
 from pymongo import MongoClient
 
@@ -53,5 +54,5 @@ def customer_salary(id1):
     total = pd.concat([full, epf], 0)
     total = total.reset_index(drop=True)
 
-    salary = salary_check(total)
+    salary = salary_check(total, id1)
     return salary
