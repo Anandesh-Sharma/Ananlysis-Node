@@ -1,0 +1,1206 @@
+2020-03-02 09:16:46,853 analysis_node 5238  bl0 INFO     making connection with db
+2020-03-02 09:16:46,854 analysis_node 5238  bl0 INFO     connection success
+2020-03-02 09:16:46,854 analysis_node 5238  bl0 INFO     checking started
+2020-03-02 09:16:46,854 analysis_node 5238  bl0 INFO     checking variables finished
+2020-03-02 09:16:46,854 analysis_node 5238  bl0 INFO     starting classification
+2020-03-02 09:16:46,855 analysis_node 5238  Classifier INFO     Creating Multiprocessing Manager
+2020-03-02 09:16:46,867 analysis_node 5238  Classifier INFO     Read sms json object
+2020-03-02 09:16:46,918 analysis_node 5238  read json INFO     update sms of existing user
+2020-03-02 09:16:46,919 analysis_node 5238  update sms INFO     making connection with db
+2020-03-02 09:16:46,920 analysis_node 5238  update sms INFO     connection success
+2020-03-02 09:16:47,792 analysis_node 5238  update sms INFO     update messages of existing user in mongodb
+2020-03-02 09:16:47,793 analysis_node 5238  Classifier INFO     Multiprocessing start for Credit card Classifier
+2020-03-02 09:16:47,793 analysis_node 5238  Classifier INFO     Multiprocessing start for Loan Classifier
+2020-03-02 09:16:47,794 analysis_node 5238  loan INFO     get all loan messages
+2020-03-02 09:16:47,870 analysis_node 5238  loan INFO     remove all loan promotional messages
+2020-03-02 09:16:48,084 analysis_node 5238  loan INFO     get all loan due overdue messages
+2020-03-02 09:16:48,118 analysis_node 5238  loan due overdue INFO     Loan due overdue sms extracted successfully
+2020-03-02 09:16:48,118 analysis_node 5238  loan due overdue INFO     Append name in result dictionary for loan due overdue
+2020-03-02 09:16:48,118 analysis_node 5238  loan due overdue INFO     Appended name in result dictionary for loan due overdue successfully
+2020-03-02 09:16:48,119 analysis_node 5238  loan due overdue INFO     Dropped sms other than loan due overdue
+2020-03-02 09:16:48,119 analysis_node 5238  loan INFO     Converting loan due overdue dataframe into json
+2020-03-02 09:16:48,121 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:16:48,121 analysis_node 5238  loan INFO     get all loan approval messages
+2020-03-02 09:16:48,137 analysis_node 5238  loan approval INFO     Loan approval sms extracted successfully
+2020-03-02 09:16:48,137 analysis_node 5238  loan approval INFO     Append name in result dictionary for loan approval
+2020-03-02 09:16:48,138 analysis_node 5238  loan approval INFO     Appended name in result dictionary for loan approval successfully
+2020-03-02 09:16:48,138 analysis_node 5238  loan approval INFO     Dropped sms other than loan approval
+2020-03-02 09:16:48,139 analysis_node 5238  loan INFO     Converting loan approval dataframe into json
+2020-03-02 09:16:48,139 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:16:48,139 analysis_node 5238  loan INFO     get all loan rejection messages
+2020-03-02 09:16:48,204 analysis_node 5238  loan rejection INFO     Loan rejection sms extracted successfully
+2020-03-02 09:16:48,205 analysis_node 5238  loan rejection INFO     Append name in result dictionary for loan rejction
+2020-03-02 09:16:48,205 analysis_node 5238  loan rejection INFO     Appended name in result dictionary for loan rejection successfully
+2020-03-02 09:16:48,205 analysis_node 5238  loan rejection INFO     Dropped sms other than loan rejection
+2020-03-02 09:16:48,206 analysis_node 5238  loan INFO     Converting loan rejection dataframe into json
+2020-03-02 09:16:48,206 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:16:48,206 analysis_node 5238  loan INFO     get all loan disbursed messages
+2020-03-02 09:16:48,249 analysis_node 5238  loan disbursed INFO     Loan disbursed sms extracted successfully
+2020-03-02 09:16:48,249 analysis_node 5238  loan disbursed INFO     Append name in result dictionary for loan disbursed
+2020-03-02 09:16:48,249 analysis_node 5238  loan disbursed INFO     Appended name in result dictionary for loan disbursed successfully
+2020-03-02 09:16:48,249 analysis_node 5238  loan disbursed INFO     Dropped sms other than loan disbursed
+2020-03-02 09:16:48,250 analysis_node 5238  loan INFO     Converting loan disbursed dataframe into json
+2020-03-02 09:16:48,250 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:16:48,250 analysis_node 5238  loan INFO     get all loan closed messages
+2020-03-02 09:16:48,280 analysis_node 5238  loan closed messages INFO     Loan closed sms extracted successfully
+2020-03-02 09:16:48,280 analysis_node 5238  loan closed messages INFO     Append name in result dictionary for loan closed
+2020-03-02 09:16:48,281 analysis_node 5238  loan closed messages INFO     Appended name in result dictionary for loan closed successfully
+2020-03-02 09:16:48,281 analysis_node 5238  loan closed messages INFO     Dropped sms other than loan closed
+2020-03-02 09:16:48,282 analysis_node 5238  loan INFO     Converting loan closed dataframe into json
+2020-03-02 09:16:48,282 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:16:48,282 analysis_node 5238  loan INFO     making connection with db
+2020-03-02 09:16:48,283 analysis_node 5238  loan INFO     connection success
+2020-03-02 09:16:48,283 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:48,980 analysis_node 5238  loan INFO     loan approval sms of old user updated successfully
+2020-03-02 09:16:49,059 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:16:49,134 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:16:49,134 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,209 analysis_node 5238  loan INFO     loan disbursed sms of old user updated successfully
+2020-03-02 09:16:49,210 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,285 analysis_node 5238  loan INFO     loan disbursed sms of old user updated successfully
+2020-03-02 09:16:49,360 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:16:49,361 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,436 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:49,436 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,511 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:49,512 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,586 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:49,586 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,665 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:49,665 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,740 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:49,740 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,815 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:49,815 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,892 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:49,893 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:49,968 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:49,968 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,044 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,045 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,122 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,122 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,196 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,197 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,271 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,271 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,345 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,345 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,421 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,421 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,495 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,496 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,571 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,571 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,647 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,648 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,728 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,728 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,803 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,803 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,877 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,877 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:50,953 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:50,953 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:51,027 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:51,028 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:51,104 analysis_node 5238  loan INFO     loan due overdue sms of old user updated successfully
+2020-03-02 09:16:51,178 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:16:51,179 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:51,254 analysis_node 5238  loan INFO     loan closed sms of old user updated successfully
+2020-03-02 09:16:51,254 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:51,328 analysis_node 5238  loan INFO     loan closed sms of old user updated successfully
+2020-03-02 09:16:51,328 analysis_node 5238  loan INFO     Old User checked
+2020-03-02 09:16:51,402 analysis_node 5238  loan INFO     loan closed sms of old user updated successfully
+2020-03-02 09:16:51,476 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:16:51,553 analysis_node 5238  Classifier INFO     Multiprocessing start for Transaction Classifier
+2020-03-02 09:16:51,554 analysis_node 5238  cleaning INFO     thread for cleaning 1 starts
+2020-03-02 09:16:51,648 analysis_node 5238  cleaning INFO     thread for cleaning 1 complete
+2020-03-02 09:16:51,649 analysis_node 5238  cleaning INFO     thread for cleaning 3 starts
+2020-03-02 09:16:53,846 analysis_node 5238  cleaning INFO     thread for cleaning 3 complete
+2020-03-02 09:16:53,876 analysis_node 5238  cleaning INFO     thread for cleaning 2 starts
+2020-03-02 09:16:57,744 analysis_node 5238  cleaning INFO     thread for cleaning 2 complete
+2020-03-02 09:16:57,796 analysis_node 5238  cleaning INFO     important loan messages saved
+2020-03-02 09:16:57,797 analysis_node 5238  cleaning INFO     Appended name in result dictionary for transaction messages successfully
+2020-03-02 09:16:57,797 analysis_node 5238  cleaning INFO     Dropped sms other than transaction
+2020-03-02 09:16:57,797 analysis_node 5238  cleaning INFO     Converting transaction messages dataframe into json
+2020-03-02 09:16:57,799 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:16:57,799 analysis_node 5238  cleaning INFO     making connection with db
+2020-03-02 09:16:57,800 analysis_node 5238  cleaning INFO     connection success
+2020-03-02 09:16:57,800 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:58,503 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:58,503 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:58,582 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:58,582 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:58,658 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:58,658 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:58,736 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:58,736 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:58,813 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:58,813 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:58,890 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:58,890 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:58,970 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:58,970 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,046 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,046 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,121 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,121 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,195 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,195 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,269 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,269 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,343 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,343 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,417 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,417 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,497 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,498 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,575 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,575 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,652 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,652 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,731 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,731 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,805 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,805 analysis_node 5238  cleaning INFO     Old User checked
+2020-03-02 09:16:59,887 analysis_node 5238  cleaning INFO     transaction sms of old user updated successfully
+2020-03-02 09:16:59,964 analysis_node 5238  cleaning INFO     Timestamp of User updated
+2020-03-02 09:17:00,038 analysis_node 5238  Classifier INFO     process 1 starts
+2020-03-02 09:17:00,042 analysis_node 5238  Classifier INFO     process 2 starts
+2020-03-02 09:17:00,048 analysis_node 5238  Classifier INFO     process 3 starts
+2020-03-02 09:17:00,053 analysis_node 5238  credit card INFO     Removing credit card promotional sms
+2020-03-02 09:17:00,070 analysis_node 5238  credit card INFO     Extracting Credit card sms
+2020-03-02 09:17:00,138 analysis_node 5238  cc messages INFO     Credit card sms extracted successfully
+2020-03-02 09:17:00,138 analysis_node 5238  cc messages INFO     appending name in result credit card dictionary
+2020-03-02 09:17:00,138 analysis_node 5238  cc messages INFO     Appended name in result credit card dictionary successfully
+2020-03-02 09:17:00,139 analysis_node 5238  cc messages INFO     Dropped sms other than credit card
+2020-03-02 09:17:00,140 analysis_node 5238  credit card INFO     Converting credit card dataframe into json
+2020-03-02 09:17:00,141 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:17:00,142 analysis_node 5238  credit card INFO     making connection with db
+2020-03-02 09:17:00,144 analysis_node 5238  credit card INFO     connection success
+2020-03-02 09:17:00,144 analysis_node 5238  credit card INFO     Old User checked
+2020-03-02 09:17:00,830 analysis_node 5238  credit card INFO     Credit card sms of old user updated successfully
+2020-03-02 09:17:00,830 analysis_node 5238  credit card INFO     Old User checked
+2020-03-02 09:17:00,913 analysis_node 5238  credit card INFO     Credit card sms of old user updated successfully
+2020-03-02 09:17:00,913 analysis_node 5238  credit card INFO     Old User checked
+2020-03-02 09:17:00,987 analysis_node 5238  credit card INFO     Credit card sms of old user updated successfully
+2020-03-02 09:17:01,065 analysis_node 5238  credit card INFO     Timestamp of User updated
+2020-03-02 09:17:01,153 analysis_node 5238  Classifier INFO     process 1 complete
+2020-03-02 09:17:01,153 analysis_node 5238  Classifier INFO     process 2 complete
+2020-03-02 09:17:01,153 analysis_node 5238  Classifier INFO     process 3 complete
+2020-03-02 09:17:01,154 analysis_node 5238  Classifier INFO     extra classifier called
+2020-03-02 09:17:01,155 analysis_node 5238  extra INFO     Generating dictionary of extra sms
+2020-03-02 09:17:01,188 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:17:01,188 analysis_node 5238  extra INFO     Converted extra sms into JSON obj
+2020-03-02 09:17:01,188 analysis_node 5238  extra INFO     making connection with db
+2020-03-02 09:17:01,190 analysis_node 5238  extra INFO     connection success
+2020-03-02 09:17:01,190 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:01,885 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:01,886 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:01,968 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:01,969 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,043 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,043 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,122 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,123 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,197 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,197 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,276 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,276 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,358 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,358 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,432 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,432 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,508 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,509 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,586 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,586 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,665 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,665 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,740 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,740 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,814 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,814 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,888 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,888 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:02,963 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:02,963 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,043 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,044 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,118 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,119 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,197 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,198 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,273 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,273 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,355 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,355 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,432 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,433 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,508 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,508 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,584 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,584 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,665 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,666 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,741 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,742 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,816 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,817 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,897 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,897 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:03,977 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:03,977 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,057 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,057 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,133 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,134 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,215 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,216 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,292 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,292 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,376 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,376 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,455 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,455 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,533 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,533 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,610 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,610 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,686 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,687 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,762 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,762 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,845 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,846 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:04,926 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:04,927 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,005 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,005 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,080 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,080 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,164 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,164 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,242 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,242 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,317 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,318 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,397 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,397 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,472 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,472 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,548 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,548 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,624 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,624 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,702 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,702 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,780 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,780 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,858 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,858 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:05,933 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:05,933 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,012 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,012 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,093 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,093 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,173 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,173 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,251 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,251 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,327 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,327 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,410 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,411 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,486 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,486 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,567 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,567 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,645 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,645 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,721 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,722 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,800 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,800 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,876 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,877 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:06,955 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:06,955 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,031 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,031 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,105 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,105 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,180 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,181 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,260 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,260 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,334 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,334 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,409 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,410 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,488 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,488 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,569 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,570 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,649 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,649 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,726 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,726 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,803 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,803 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,884 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,884 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:07,960 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:07,960 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,043 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,044 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,123 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,123 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,200 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,200 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,278 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,278 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,354 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,354 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,431 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,431 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,509 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,509 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,583 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,584 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,661 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,661 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,741 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,741 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,820 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,820 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,897 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,897 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:08,977 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:08,978 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,061 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,061 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,137 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,137 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,216 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,216 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,295 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,295 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,377 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,377 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,450 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,451 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,525 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,525 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,605 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,605 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,680 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,680 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,761 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,761 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,837 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,837 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,914 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,915 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:09,989 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:09,989 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,066 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,066 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,140 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,140 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,216 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,216 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,295 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,295 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,376 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,376 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,457 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,457 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,532 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,532 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,613 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,613 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,691 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,692 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,766 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,766 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,841 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,841 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,919 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,919 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:10,998 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:10,998 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,074 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,074 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,151 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,151 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,227 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,227 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,301 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,301 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,383 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,383 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,458 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,458 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,540 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,540 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,618 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,618 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,698 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,698 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,778 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,778 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,854 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,854 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:11,932 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:11,932 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,012 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,012 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,087 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,088 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,163 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,163 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,243 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,244 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,319 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,320 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,394 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,395 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,469 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,469 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,545 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,545 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,619 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,620 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,696 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,696 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,774 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,775 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,851 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,852 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:12,928 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:12,928 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,004 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,004 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,078 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,078 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,156 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,156 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,233 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,233 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,308 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,308 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,384 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,384 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,461 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,461 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,537 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,539 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,614 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,614 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,692 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,693 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,771 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,772 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,847 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,847 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:13,924 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:13,924 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,002 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,002 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,081 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,081 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,157 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,157 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,236 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,236 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,312 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,312 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,388 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,388 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,464 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,464 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,541 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,541 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,619 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,619 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,697 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,698 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,773 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,773 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,848 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,848 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:14,926 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:14,926 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,004 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,005 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,080 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,080 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,155 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,156 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,235 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,235 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,311 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,311 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,387 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,387 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,465 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,465 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,542 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,542 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,617 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,617 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,694 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,694 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,769 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,769 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,844 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,845 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,921 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,921 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:15,997 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:15,997 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,073 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,073 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,150 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,150 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,229 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,230 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,310 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,310 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,387 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,388 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,463 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,463 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,540 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,541 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,617 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,617 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,695 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,695 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,776 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,776 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,851 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,851 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:16,927 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:16,928 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,002 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,003 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,080 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,080 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,160 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,160 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,241 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,241 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,319 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,319 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,397 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,397 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,478 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,478 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,554 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,554 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,628 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,628 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,708 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,709 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,783 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,783 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,860 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,860 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:17,936 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:17,936 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,012 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,012 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,087 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,087 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,162 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,162 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,238 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,238 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,318 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,318 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,397 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,397 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,476 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,477 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,553 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,553 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,630 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,630 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,706 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,706 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,782 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,782 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,859 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,859 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:18,935 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:18,935 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,011 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,011 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,090 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,090 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,172 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,172 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,248 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,248 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,327 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,327 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,404 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,404 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,479 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,479 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,556 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,556 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,637 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,637 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,718 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,718 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,800 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,800 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,883 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,883 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:19,959 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:19,959 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,037 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,037 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,112 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,112 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,194 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,194 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,271 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,272 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,347 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,347 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,423 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,424 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,499 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,499 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,576 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,576 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,656 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,656 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,732 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,732 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,808 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,809 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,885 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,885 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:20,962 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:20,962 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,037 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,037 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,113 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,113 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,189 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,189 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,265 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,266 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,341 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,341 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,418 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,418 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,495 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,495 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,573 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,573 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,655 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,656 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,730 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,730 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,808 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,808 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,885 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,885 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:21,961 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:21,961 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,036 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,036 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,112 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,112 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,190 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,190 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,265 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,266 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,345 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,345 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,423 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,424 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,499 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,499 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,577 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,578 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,652 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,652 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,733 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,733 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,813 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,813 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,891 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,891 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:22,967 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:22,967 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,043 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,044 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,121 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,122 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,204 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,204 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,287 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,287 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,364 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,364 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,440 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,441 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,516 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,516 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,594 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,594 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,675 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,675 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,757 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,758 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,840 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,840 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,919 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,919 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:23,994 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:23,994 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,073 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,074 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,148 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,148 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,224 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,224 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,303 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,304 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,381 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,382 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,457 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,458 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,534 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,535 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,613 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,613 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,688 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,689 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,773 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,773 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,857 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,857 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:24,935 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:24,935 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,017 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,018 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,095 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,095 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,172 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,172 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,252 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,252 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,333 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,333 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,410 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,410 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,486 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,486 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,562 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,562 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,637 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,637 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,712 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,712 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,787 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,787 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,868 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,869 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:25,947 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:25,947 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:26,024 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:26,024 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:26,101 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:26,101 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:26,177 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:26,177 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:26,255 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:26,256 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:26,333 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:26,333 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:26,410 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:26,410 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:26,487 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:26,487 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:26,567 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:26,567 analysis_node 5238  extra INFO     Old User checked
+2020-03-02 09:17:26,645 analysis_node 5238  extra INFO     Extra sms of old user updated successfully
+2020-03-02 09:17:26,721 analysis_node 5238  extra INFO     Timestamp of User updated
+2020-03-02 09:17:26,806 analysis_node 5238  bl0 INFO     started making balanced sheet
+2020-03-02 09:17:26,807 analysis_node 5238  create transaction_balanced_sheet INFO     Connecting to db
+2020-03-02 09:17:27,503 analysis_node 5238  create transaction_balanced_sheet INFO     conncection successful
+2020-03-02 09:17:27,503 analysis_node 5238  create transaction_balanced_sheet INFO     Converting file to dataframe
+2020-03-02 09:17:27,505 analysis_node 5238  create transaction_balanced_sheet INFO     Conversion Successful
+2020-03-02 09:17:27,505 analysis_node 5238  create transaction_balanced_sheet INFO     Starting to process data
+2020-03-02 09:17:27,506 analysis_node 5238  process_data INFO     initializing
+2020-03-02 09:17:27,530 analysis_node 5238  process_data INFO     initialization done
+2020-03-02 09:17:27,534 analysis_node 5238  process_data INFO     starting header split
+2020-03-02 09:17:27,537 analysis_node 5238  process_data INFO     header_split complete
+2020-03-02 09:17:27,537 analysis_node 5238  process_data INFO     starting account number fetch
+2020-03-02 09:17:27,541 analysis_node 5238  process_data INFO     account number fetch complete
+2020-03-02 09:17:27,541 analysis_node 5238  process_data INFO     starting vpa fetch
+2020-03-02 09:17:27,548 analysis_node 5238  process_data INFO     vpa fetch complete
+2020-03-02 09:17:27,548 analysis_node 5238  process_data INFO     starting upi ref fetch
+2020-03-02 09:17:27,551 analysis_node 5238  process_data INFO     upi ref fetch complete
+2020-03-02 09:17:27,551 analysis_node 5238  process_data INFO     starting debit amount fetch
+2020-03-02 09:17:27,553 analysis_node 5238  process_data INFO     debit amount fetch complete
+2020-03-02 09:17:27,553 analysis_node 5238  process_data INFO     starting credit amount fetch 
+2020-03-02 09:17:27,555 analysis_node 5238  process_data INFO     credit amount fetch complete
+2020-03-02 09:17:27,555 analysis_node 5238  process_data INFO     starting neft_no fetch
+2020-03-02 09:17:27,558 analysis_node 5238  process_data INFO     neft no fetch complete
+2020-03-02 09:17:27,558 analysis_node 5238  process_data INFO     starting neft keyword fetch
+2020-03-02 09:17:27,560 analysis_node 5238  process_data INFO     neft keyword fetch complete
+2020-03-02 09:17:27,560 analysis_node 5238  process_data INFO     starting imps keyword fetch
+2020-03-02 09:17:27,565 analysis_node 5238  process_data INFO     neft keyword fetch complete
+2020-03-02 09:17:27,565 analysis_node 5238  process_data INFO     starting imps reference fetch
+2020-03-02 09:17:27,567 analysis_node 5238  process_data INFO     imps reference fetch complete
+2020-03-02 09:17:27,567 analysis_node 5238  process_data INFO     starting upi keyword fetch
+2020-03-02 09:17:27,568 analysis_node 5238  process_data INFO     upi keyword fetch complete
+2020-03-02 09:17:27,568 analysis_node 5238  process_data INFO     starting balance fetch
+2020-03-02 09:17:27,570 analysis_node 5238  process_data INFO     balance fetch complete
+2020-03-02 09:17:27,570 analysis_node 5238  process_data INFO     starting get_time fetch
+2020-03-02 09:17:27,572 analysis_node 5238  process_data INFO     get_time fetch complete
+2020-03-02 09:17:27,572 analysis_node 5238  process_data INFO     starting date time thread
+2020-03-02 09:17:27,572 analysis_node 5238  date_time_thread INFO     starting get date func
+2020-03-02 09:17:27,576 analysis_node 5238  date_time_thread INFO     starting get date func successful
+2020-03-02 09:17:27,576 analysis_node 5238  date_time_thread INFO     starting get time func
+2020-03-02 09:17:27,581 analysis_node 5238  date_time_thread INFO     starting get time func successful
+2020-03-02 09:17:27,581 analysis_node 5238  date_time_thread INFO     starting get date time func
+2020-03-02 09:17:27,583 analysis_node 5238  date_time_thread INFO     starting get date time func successful
+2020-03-02 09:17:27,583 analysis_node 5238  process_data INFO     data time threa complete
+2020-03-02 09:17:27,583 analysis_node 5238  create transaction_balanced_sheet INFO     Processing of data Successful
+2020-03-02 09:17:27,583 analysis_node 5238  create transaction_balanced_sheet INFO     Starting validation
+2020-03-02 09:17:27,583 analysis_node 5238  create transaction_balanced_sheet INFO     Checking Upi ref number
+2020-03-02 09:17:27,586 analysis_node 5238  create transaction_balanced_sheet INFO     Upi Ref Check of data Successful
+2020-03-02 09:17:27,586 analysis_node 5238  create transaction_balanced_sheet INFO     Starting Imps Ref Check
+2020-03-02 09:17:27,588 analysis_node 5238  create transaction_balanced_sheet INFO     Imps Ref Check Successful
+2020-03-02 09:17:27,588 analysis_node 5238  create transaction_balanced_sheet INFO     Starting Time based Checking
+2020-03-02 09:17:27,601 analysis_node 5238  create transaction_balanced_sheet INFO     Time Based Check Successful
+2020-03-02 09:17:27,601 analysis_node 5238  create transaction_balanced_sheet INFO     Starting Time Check DBS
+2020-03-02 09:17:27,602 analysis_node 5238  create transaction_balanced_sheet INFO     Time Based Check DBS Successful
+2020-03-02 09:17:27,602 analysis_node 5238  create transaction_balanced_sheet INFO     Finding Monthly Credit Sum
+2020-03-02 09:17:27,607 analysis_node 5238  create transaction_balanced_sheet INFO     Monthly credit sum successful
+2020-03-02 09:17:27,607 analysis_node 5238  create transaction_balanced_sheet INFO     Finding Monthly Debit Sum
+2020-03-02 09:17:27,613 analysis_node 5238  create transaction_balanced_sheet INFO     Monthly debit sum successful
+2020-03-02 09:17:28,263 analysis_node 5238  bl0 INFO     balanced sheet complete
+2020-03-02 09:17:28,263 analysis_node 5238  bl0 INFO     starting loan analysis
+2020-03-02 09:17:28,270 analysis_node 5238  get_customer_data INFO     Successfully established the connection with DataBase
+2020-03-02 09:17:29,196 analysis_node 5238  get_customer_data INFO     Found loan closed data
+2020-03-02 09:17:29,200 analysis_node 5238  get_customer_data INFO     Found loan disbursed data
+2020-03-02 09:17:29,202 analysis_node 5238  get_customer_data INFO     Found loan overdue data
+2020-03-02 09:17:29,205 analysis_node 5238  get_customer_data INFO     Found loan approval data
+2020-03-02 09:17:29,298 analysis_node 5238  preprocessing INFO     Data Splitted by headers
+2020-03-02 09:17:29,299 analysis_node 5238  preprocessing INFO     Data Grouped by Sender-Name
+2020-03-02 09:17:29,302 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,302 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,303 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,304 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,305 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,307 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,309 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,311 analysis_node 5238  preprocessing INFO     disbursed message found
+2020-03-02 09:17:29,312 analysis_node 5238  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:17:29,313 analysis_node 5238  preprocessing INFO     due message found
+2020-03-02 09:17:29,313 analysis_node 5238  preprocessing INFO     Looking for overdue message
+2020-03-02 09:17:29,314 analysis_node 5238  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:17:29,315 analysis_node 5238  preprocessing INFO     due message found
+2020-03-02 09:17:29,315 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,315 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,316 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,316 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,317 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,317 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,317 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,318 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,319 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,320 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,320 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,324 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,329 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,332 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,333 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,333 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,334 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,335 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,335 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,336 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:17:29,337 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,338 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,338 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,338 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:17:29,341 analysis_node 5238  final_output INFO     Successfully connect to the database
+2020-03-02 09:17:30,102 analysis_node 5238  final_output INFO     Successfully upload result to the database
+2020-03-02 09:17:30,102 analysis_node 5238  bl0 INFO     loan analysis successsful
+2020-03-02 09:17:30,103 analysis_node 5238  bl0 INFO     starting salary analysis
+2020-03-02 09:17:30,103 analysis_node 5238  Salary Analysis INFO     Salary Analysis started
+2020-03-02 09:17:30,104 analysis_node 5238  Customer Salary INFO     Checking salary status
+2020-03-02 09:17:30,104 analysis_node 5238  Merge Data INFO     Merging the Transaction and Extra SMS
+2020-03-02 09:17:30,104 analysis_node 5238  Transaction Data INFO     Collecting SMS from Transaction Collection
+2020-03-02 09:17:30,105 analysis_node 5238  Connection INFO     Building connection
+2020-03-02 09:17:30,836 analysis_node 5238  Merge Data INFO     Data fetched from Transaction collection
+2020-03-02 09:17:30,836 analysis_node 5238  Extra Data INFO     Collecting SMS from Extra Collection
+2020-03-02 09:17:30,837 analysis_node 5238  Connection INFO     Building connection
+2020-03-02 09:17:31,798 analysis_node 5238  Merge Data INFO     Data fetched from Extra collection
+2020-03-02 09:17:31,799 analysis_node 5238  Customer Salary INFO     Data merged successfully
+2020-03-02 09:17:31,799 analysis_node 5238  Salary Check INFO     Salary Calculation Started
+2020-03-02 09:17:31,799 analysis_node 5238  Clean Debit INFO     Cleaning text data
+2020-03-02 09:17:31,803 analysis_node 5238  Clean Debit INFO     Cleaning completed
+2020-03-02 09:17:31,804 analysis_node 5238  Get Time INFO     Convert Timestamp To Datetime
+2020-03-02 09:17:31,804 analysis_node 5238  Get Epf Amount INFO     Epf Amount Calculation starts
+2020-03-02 09:17:31,811 analysis_node 5238  Get Epf Amount INFO     epf amount calculation completed
+2020-03-02 09:17:31,811 analysis_node 5238  Epf to Salary INFO     Salary Calculation from EPF Amount starts
+2020-03-02 09:17:31,815 analysis_node 5238  Epf to Salary INFO     Salary Calculation from EPF Amount complete
+2020-03-02 09:17:31,819 analysis_node 5238  Salary Check INFO     Finding salary from EPF keyword
+2020-03-02 09:17:31,819 analysis_node 5238  Salary Check INFO     found salary from EPF keyword
+2020-03-02 09:17:31,819 analysis_node 5238  Customer Salary INFO     salary calculated
+2020-03-02 09:17:31,819 analysis_node 5238  Connection INFO     Building connection
+2020-03-02 09:17:32,542 analysis_node 5238  Salary Analysis INFO     salary updated in database
+2020-03-02 09:17:32,620 analysis_node 5238  bl0 INFO     checking result salary and loan salary output
+2020-03-02 09:17:32,620 analysis_node 5238  bl0 INFO     checking result salary and loan salary output complete
+2020-03-02 09:17:32,621 analysis_node 5238  bl0 INFO     Starting Analysis
+2020-03-02 09:17:32,703 analysis_node 5238  Analysis INFO     Stariting cibil analysis
+2020-03-02 09:17:32,703 analysis_node 5238  Analysis INFO     user cibil check
+2020-03-02 09:17:32,703 analysis_node 5238  Analysis INFO     returning result 3k
+2020-03-02 09:17:32,778 analysis_node 5238  bl0 INFO     analysis complete
+2020-03-02 09:31:21,638 analysis_node 5238  bl0 INFO     making connection with db
+2020-03-02 09:31:21,640 analysis_node 5238  bl0 INFO     connection success
+2020-03-02 09:31:21,640 analysis_node 5238  bl0 INFO     checking started
+2020-03-02 09:31:21,640 analysis_node 5238  bl0 INFO     checking variables finished
+2020-03-02 09:31:21,640 analysis_node 5238  bl0 INFO     starting classification
+2020-03-02 09:31:21,641 analysis_node 5238  Classifier INFO     Creating Multiprocessing Manager
+2020-03-02 09:31:21,663 analysis_node 5238  Classifier INFO     Read sms json object
+2020-03-02 09:31:21,713 analysis_node 5238  read json INFO     update sms of existing user
+2020-03-02 09:31:21,714 analysis_node 5238  update sms INFO     making connection with db
+2020-03-02 09:31:21,716 analysis_node 5238  update sms INFO     connection success
+2020-03-02 09:31:22,735 analysis_node 5238  update sms INFO     update messages of existing user in mongodb
+2020-03-02 09:31:22,736 analysis_node 5238  Classifier INFO     Multiprocessing start for Credit card Classifier
+2020-03-02 09:31:22,737 analysis_node 5238  Classifier INFO     Multiprocessing start for Loan Classifier
+2020-03-02 09:31:22,738 analysis_node 5238  loan INFO     get all loan messages
+2020-03-02 09:31:22,738 analysis_node 5238  loan INFO     remove all loan promotional messages
+2020-03-02 09:31:22,739 analysis_node 5238  loan INFO     get all loan due overdue messages
+2020-03-02 09:31:22,739 analysis_node 5238  loan due overdue INFO     Loan due overdue sms extracted successfully
+2020-03-02 09:31:22,740 analysis_node 5238  loan due overdue INFO     Append name in result dictionary for loan due overdue
+2020-03-02 09:31:22,754 analysis_node 5238  loan due overdue INFO     Appended name in result dictionary for loan due overdue successfully
+2020-03-02 09:31:22,755 analysis_node 5238  loan due overdue INFO     Dropped sms other than loan due overdue
+2020-03-02 09:31:22,761 analysis_node 5238  loan INFO     Converting loan due overdue dataframe into json
+2020-03-02 09:31:22,763 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:31:22,763 analysis_node 5238  loan INFO     get all loan approval messages
+2020-03-02 09:31:22,765 analysis_node 5238  loan approval INFO     Loan approval sms extracted successfully
+2020-03-02 09:31:22,766 analysis_node 5238  loan approval INFO     Append name in result dictionary for loan approval
+2020-03-02 09:31:22,767 analysis_node 5238  loan approval INFO     Appended name in result dictionary for loan approval successfully
+2020-03-02 09:31:22,768 analysis_node 5238  loan approval INFO     Dropped sms other than loan approval
+2020-03-02 09:31:22,771 analysis_node 5238  loan INFO     Converting loan approval dataframe into json
+2020-03-02 09:31:22,772 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:31:22,773 analysis_node 5238  loan INFO     get all loan rejection messages
+2020-03-02 09:31:22,775 analysis_node 5238  loan rejection INFO     Loan rejection sms extracted successfully
+2020-03-02 09:31:22,775 analysis_node 5238  loan rejection INFO     Append name in result dictionary for loan rejction
+2020-03-02 09:31:22,780 analysis_node 5238  loan rejection INFO     Appended name in result dictionary for loan rejection successfully
+2020-03-02 09:31:22,781 analysis_node 5238  loan rejection INFO     Dropped sms other than loan rejection
+2020-03-02 09:31:22,786 analysis_node 5238  loan INFO     Converting loan rejection dataframe into json
+2020-03-02 09:31:22,787 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:31:22,788 analysis_node 5238  loan INFO     get all loan disbursed messages
+2020-03-02 09:31:22,789 analysis_node 5238  loan disbursed INFO     Loan disbursed sms extracted successfully
+2020-03-02 09:31:22,789 analysis_node 5238  loan disbursed INFO     Append name in result dictionary for loan disbursed
+2020-03-02 09:31:22,790 analysis_node 5238  loan disbursed INFO     Appended name in result dictionary for loan disbursed successfully
+2020-03-02 09:31:22,791 analysis_node 5238  loan disbursed INFO     Dropped sms other than loan disbursed
+2020-03-02 09:31:22,795 analysis_node 5238  loan INFO     Converting loan disbursed dataframe into json
+2020-03-02 09:31:22,796 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:31:22,796 analysis_node 5238  loan INFO     get all loan closed messages
+2020-03-02 09:31:22,797 analysis_node 5238  loan closed messages INFO     Loan closed sms extracted successfully
+2020-03-02 09:31:22,797 analysis_node 5238  loan closed messages INFO     Append name in result dictionary for loan closed
+2020-03-02 09:31:22,799 analysis_node 5238  loan closed messages INFO     Appended name in result dictionary for loan closed successfully
+2020-03-02 09:31:22,799 analysis_node 5238  loan closed messages INFO     Dropped sms other than loan closed
+2020-03-02 09:31:22,801 analysis_node 5238  loan INFO     Converting loan closed dataframe into json
+2020-03-02 09:31:22,801 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:31:22,801 analysis_node 5238  loan INFO     making connection with db
+2020-03-02 09:31:22,803 analysis_node 5238  loan INFO     connection success
+2020-03-02 09:31:23,504 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:31:23,585 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:31:23,661 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:31:23,740 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:31:23,821 analysis_node 5238  loan INFO     Timestamp of User updated
+2020-03-02 09:31:23,900 analysis_node 5238  Classifier INFO     Multiprocessing start for Transaction Classifier
+2020-03-02 09:31:23,900 analysis_node 5238  cleaning INFO     thread for cleaning 1 starts
+2020-03-02 09:31:23,901 analysis_node 5238  cleaning INFO     thread for cleaning 1 complete
+2020-03-02 09:31:23,901 analysis_node 5238  cleaning INFO     thread for cleaning 3 starts
+2020-03-02 09:31:23,906 analysis_node 5238  cleaning INFO     thread for cleaning 3 complete
+2020-03-02 09:31:23,907 analysis_node 5238  cleaning INFO     thread for cleaning 2 starts
+2020-03-02 09:31:23,915 analysis_node 5238  cleaning INFO     thread for cleaning 2 complete
+2020-03-02 09:31:23,915 analysis_node 5238  cleaning INFO     important loan messages saved
+2020-03-02 09:31:23,915 analysis_node 5238  cleaning INFO     Appended name in result dictionary for transaction messages successfully
+2020-03-02 09:31:23,916 analysis_node 5238  cleaning INFO     Dropped sms other than transaction
+2020-03-02 09:31:23,916 analysis_node 5238  cleaning INFO     Converting transaction messages dataframe into json
+2020-03-02 09:31:23,916 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:31:23,916 analysis_node 5238  cleaning INFO     making connection with db
+2020-03-02 09:31:23,917 analysis_node 5238  cleaning INFO     connection success
+2020-03-02 09:31:24,646 analysis_node 5238  cleaning INFO     Timestamp of User updated
+2020-03-02 09:31:24,728 analysis_node 5238  Classifier INFO     process 1 starts
+2020-03-02 09:31:24,731 analysis_node 5238  Classifier INFO     process 2 starts
+2020-03-02 09:31:24,735 analysis_node 5238  Classifier INFO     process 3 starts
+2020-03-02 09:31:24,739 analysis_node 5238  credit card INFO     Removing credit card promotional sms
+2020-03-02 09:31:24,739 analysis_node 5238  credit card INFO     Extracting Credit card sms
+2020-03-02 09:31:24,740 analysis_node 5238  cc messages INFO     Credit card sms extracted successfully
+2020-03-02 09:31:24,740 analysis_node 5238  cc messages INFO     appending name in result credit card dictionary
+2020-03-02 09:31:24,742 analysis_node 5238  cc messages INFO     Appended name in result credit card dictionary successfully
+2020-03-02 09:31:24,743 analysis_node 5238  cc messages INFO     Dropped sms other than credit card
+2020-03-02 09:31:24,749 analysis_node 5238  credit card INFO     Converting credit card dataframe into json
+2020-03-02 09:31:24,750 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:31:24,750 analysis_node 5238  credit card INFO     making connection with db
+2020-03-02 09:31:24,753 analysis_node 5238  credit card INFO     connection success
+2020-03-02 09:31:25,464 analysis_node 5238  credit card INFO     Timestamp of User updated
+2020-03-02 09:31:25,553 analysis_node 5238  Classifier INFO     process 1 complete
+2020-03-02 09:31:25,554 analysis_node 5238  Classifier INFO     process 2 complete
+2020-03-02 09:31:25,554 analysis_node 5238  Classifier INFO     process 3 complete
+2020-03-02 09:31:25,555 analysis_node 5238  Classifier INFO     extra classifier called
+2020-03-02 09:31:25,556 analysis_node 5238  extra INFO     Generating dictionary of extra sms
+2020-03-02 09:31:25,567 analysis_node 5238  convert json INFO     data converted into json successfully
+2020-03-02 09:31:25,568 analysis_node 5238  extra INFO     Converted extra sms into JSON obj
+2020-03-02 09:31:25,568 analysis_node 5238  extra INFO     making connection with db
+2020-03-02 09:31:25,573 analysis_node 5238  extra INFO     connection success
+2020-03-02 09:31:26,270 analysis_node 5238  extra INFO     Timestamp of User updated
+2020-03-02 09:31:26,353 analysis_node 5238  bl0 INFO     started making balanced sheet
+2020-03-02 09:31:26,353 analysis_node 5238  create transaction_balanced_sheet INFO     Connecting to db
+2020-03-02 09:31:27,067 analysis_node 5238  create transaction_balanced_sheet INFO     conncection successful
+2020-03-02 09:31:27,067 analysis_node 5238  create transaction_balanced_sheet INFO     Converting file to dataframe
+2020-03-02 09:31:27,069 analysis_node 5238  create transaction_balanced_sheet INFO     Conversion Successful
+2020-03-02 09:31:27,069 analysis_node 5238  create transaction_balanced_sheet INFO     Starting to process data
+2020-03-02 09:31:27,069 analysis_node 5238  process_data INFO     initializing
+2020-03-02 09:31:27,079 analysis_node 5238  process_data INFO     initialization done
+2020-03-02 09:31:27,081 analysis_node 5238  process_data INFO     starting header split
+2020-03-02 09:31:27,082 analysis_node 5238  process_data INFO     header_split complete
+2020-03-02 09:31:27,083 analysis_node 5238  process_data INFO     starting account number fetch
+2020-03-02 09:31:27,086 analysis_node 5238  process_data INFO     account number fetch complete
+2020-03-02 09:31:27,086 analysis_node 5238  process_data INFO     starting vpa fetch
+2020-03-02 09:31:27,089 analysis_node 5238  process_data INFO     vpa fetch complete
+2020-03-02 09:31:27,089 analysis_node 5238  process_data INFO     starting upi ref fetch
+2020-03-02 09:31:27,092 analysis_node 5238  process_data INFO     upi ref fetch complete
+2020-03-02 09:31:27,092 analysis_node 5238  process_data INFO     starting debit amount fetch
+2020-03-02 09:31:27,094 analysis_node 5238  process_data INFO     debit amount fetch complete
+2020-03-02 09:31:27,095 analysis_node 5238  process_data INFO     starting credit amount fetch 
+2020-03-02 09:31:27,097 analysis_node 5238  process_data INFO     credit amount fetch complete
+2020-03-02 09:31:27,097 analysis_node 5238  process_data INFO     starting neft_no fetch
+2020-03-02 09:31:27,099 analysis_node 5238  process_data INFO     neft no fetch complete
+2020-03-02 09:31:27,099 analysis_node 5238  process_data INFO     starting neft keyword fetch
+2020-03-02 09:31:27,101 analysis_node 5238  process_data INFO     neft keyword fetch complete
+2020-03-02 09:31:27,101 analysis_node 5238  process_data INFO     starting imps keyword fetch
+2020-03-02 09:31:27,102 analysis_node 5238  process_data INFO     neft keyword fetch complete
+2020-03-02 09:31:27,102 analysis_node 5238  process_data INFO     starting imps reference fetch
+2020-03-02 09:31:27,104 analysis_node 5238  process_data INFO     imps reference fetch complete
+2020-03-02 09:31:27,104 analysis_node 5238  process_data INFO     starting upi keyword fetch
+2020-03-02 09:31:27,106 analysis_node 5238  process_data INFO     upi keyword fetch complete
+2020-03-02 09:31:27,107 analysis_node 5238  process_data INFO     starting balance fetch
+2020-03-02 09:31:27,110 analysis_node 5238  process_data INFO     balance fetch complete
+2020-03-02 09:31:27,110 analysis_node 5238  process_data INFO     starting get_time fetch
+2020-03-02 09:31:27,112 analysis_node 5238  process_data INFO     get_time fetch complete
+2020-03-02 09:31:27,113 analysis_node 5238  process_data INFO     starting date time thread
+2020-03-02 09:31:27,113 analysis_node 5238  date_time_thread INFO     starting get date func
+2020-03-02 09:31:27,115 analysis_node 5238  date_time_thread INFO     starting get date func successful
+2020-03-02 09:31:27,115 analysis_node 5238  date_time_thread INFO     starting get time func
+2020-03-02 09:31:27,119 analysis_node 5238  date_time_thread INFO     starting get time func successful
+2020-03-02 09:31:27,119 analysis_node 5238  date_time_thread INFO     starting get date time func
+2020-03-02 09:31:27,121 analysis_node 5238  date_time_thread INFO     starting get date time func successful
+2020-03-02 09:31:27,121 analysis_node 5238  process_data INFO     data time threa complete
+2020-03-02 09:31:27,121 analysis_node 5238  create transaction_balanced_sheet INFO     Processing of data Successful
+2020-03-02 09:31:27,121 analysis_node 5238  create transaction_balanced_sheet INFO     Starting validation
+2020-03-02 09:31:27,122 analysis_node 5238  create transaction_balanced_sheet INFO     Checking Upi ref number
+2020-03-02 09:31:27,125 analysis_node 5238  create transaction_balanced_sheet INFO     Upi Ref Check of data Successful
+2020-03-02 09:31:27,126 analysis_node 5238  create transaction_balanced_sheet INFO     Starting Imps Ref Check
+2020-03-02 09:31:27,129 analysis_node 5238  create transaction_balanced_sheet INFO     Imps Ref Check Successful
+2020-03-02 09:31:27,129 analysis_node 5238  create transaction_balanced_sheet INFO     Starting Time based Checking
+2020-03-02 09:31:27,137 analysis_node 5238  create transaction_balanced_sheet INFO     Time Based Check Successful
+2020-03-02 09:31:27,137 analysis_node 5238  create transaction_balanced_sheet INFO     Starting Time Check DBS
+2020-03-02 09:31:27,138 analysis_node 5238  create transaction_balanced_sheet INFO     Time Based Check DBS Successful
+2020-03-02 09:31:27,139 analysis_node 5238  create transaction_balanced_sheet INFO     Finding Monthly Credit Sum
+2020-03-02 09:31:27,145 analysis_node 5238  create transaction_balanced_sheet INFO     Monthly credit sum successful
+2020-03-02 09:31:27,145 analysis_node 5238  create transaction_balanced_sheet INFO     Finding Monthly Debit Sum
+2020-03-02 09:31:27,149 analysis_node 5238  create transaction_balanced_sheet INFO     Monthly debit sum successful
+2020-03-02 09:31:27,717 analysis_node 5238  bl0 INFO     balanced sheet complete
+2020-03-02 09:31:27,717 analysis_node 5238  bl0 INFO     starting loan analysis
+2020-03-02 09:31:27,719 analysis_node 5238  get_customer_data INFO     Successfully established the connection with DataBase
+2020-03-02 09:31:28,680 analysis_node 5238  get_customer_data INFO     Found loan closed data
+2020-03-02 09:31:28,685 analysis_node 5238  get_customer_data INFO     Found loan disbursed data
+2020-03-02 09:31:28,687 analysis_node 5238  get_customer_data INFO     Found loan overdue data
+2020-03-02 09:31:28,690 analysis_node 5238  get_customer_data INFO     Found loan approval data
+2020-03-02 09:31:28,782 analysis_node 5238  preprocessing INFO     Data Splitted by headers
+2020-03-02 09:31:28,783 analysis_node 5238  preprocessing INFO     Data Grouped by Sender-Name
+2020-03-02 09:31:28,784 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,785 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,785 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,786 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,787 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,787 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,788 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,790 analysis_node 5238  preprocessing INFO     disbursed message found
+2020-03-02 09:31:28,790 analysis_node 5238  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:31:28,792 analysis_node 5238  preprocessing INFO     due message found
+2020-03-02 09:31:28,793 analysis_node 5238  preprocessing INFO     Looking for overdue message
+2020-03-02 09:31:28,795 analysis_node 5238  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:31:28,795 analysis_node 5238  preprocessing INFO     due message found
+2020-03-02 09:31:28,795 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,796 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,797 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,797 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,798 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,798 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,798 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,799 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,800 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,801 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,802 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,805 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,808 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,811 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,812 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,813 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,813 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,814 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,815 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,816 analysis_node 5238  preprocessing INFO     iteration in messages starts
+2020-03-02 09:31:28,817 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,817 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,817 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,818 analysis_node 5238  preprocessing INFO     iteration in groups starts
+2020-03-02 09:31:28,819 analysis_node 5238  final_output INFO     Successfully connect to the database
+2020-03-02 09:31:29,596 analysis_node 5238  final_output INFO     Successfully upload result to the database
+2020-03-02 09:31:29,596 analysis_node 5238  bl0 INFO     loan analysis successsful
+2020-03-02 09:31:29,597 analysis_node 5238  bl0 INFO     starting salary analysis
+2020-03-02 09:31:29,598 analysis_node 5238  Salary Analysis INFO     Salary Analysis started
+2020-03-02 09:31:29,598 analysis_node 5238  Customer Salary INFO     Checking salary status
+2020-03-02 09:31:29,599 analysis_node 5238  Merge Data INFO     Merging the Transaction and Extra SMS
+2020-03-02 09:31:29,600 analysis_node 5238  Transaction Data INFO     Collecting SMS from Transaction Collection
+2020-03-02 09:31:29,600 analysis_node 5238  Connection INFO     Building connection
+2020-03-02 09:31:30,475 analysis_node 5238  Merge Data INFO     Data fetched from Transaction collection
+2020-03-02 09:31:30,476 analysis_node 5238  Extra Data INFO     Collecting SMS from Extra Collection
+2020-03-02 09:31:30,477 analysis_node 5238  Connection INFO     Building connection
+2020-03-02 09:31:31,438 analysis_node 5238  Merge Data INFO     Data fetched from Extra collection
+2020-03-02 09:31:31,439 analysis_node 5238  Customer Salary INFO     Data merged successfully
+2020-03-02 09:31:31,440 analysis_node 5238  Salary Check INFO     Salary Calculation Started
+2020-03-02 09:31:31,440 analysis_node 5238  Clean Debit INFO     Cleaning text data
+2020-03-02 09:31:31,444 analysis_node 5238  Clean Debit INFO     Cleaning completed
+2020-03-02 09:31:31,444 analysis_node 5238  Get Time INFO     Convert Timestamp To Datetime
+2020-03-02 09:31:31,445 analysis_node 5238  Get Epf Amount INFO     Epf Amount Calculation starts
+2020-03-02 09:31:31,450 analysis_node 5238  Get Epf Amount INFO     epf amount calculation completed
+2020-03-02 09:31:31,451 analysis_node 5238  Epf to Salary INFO     Salary Calculation from EPF Amount starts
+2020-03-02 09:31:31,453 analysis_node 5238  Epf to Salary INFO     Salary Calculation from EPF Amount complete
+2020-03-02 09:31:31,458 analysis_node 5238  Salary Check INFO     Finding salary from EPF keyword
+2020-03-02 09:31:31,458 analysis_node 5238  Salary Check INFO     found salary from EPF keyword
+2020-03-02 09:31:31,459 analysis_node 5238  Customer Salary INFO     salary calculated
+2020-03-02 09:31:31,459 analysis_node 5238  Connection INFO     Building connection
+2020-03-02 09:31:32,183 analysis_node 5238  Salary Analysis INFO     salary updated in database
+2020-03-02 09:31:32,265 analysis_node 5238  bl0 INFO     checking result salary and loan salary output
+2020-03-02 09:31:32,265 analysis_node 5238  bl0 INFO     checking result salary and loan salary output complete
+2020-03-02 09:31:32,265 analysis_node 5238  bl0 INFO     Starting Analysis
+2020-03-02 09:31:32,343 analysis_node 5238  Analysis INFO     Stariting cibil analysis
+2020-03-02 09:31:32,343 analysis_node 5238  Analysis INFO     user cibil check
+2020-03-02 09:31:32,343 analysis_node 5238  Analysis INFO     returning result 3k
+2020-03-02 09:31:32,424 analysis_node 5238  bl0 INFO     analysis complete

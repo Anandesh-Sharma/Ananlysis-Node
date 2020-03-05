@@ -1,0 +1,951 @@
+2020-03-02 09:03:10,029 analysis_node 5038  bl0 INFO     making connection with db
+2020-03-02 09:03:10,030 analysis_node 5038  bl0 INFO     connection success
+2020-03-02 09:03:10,030 analysis_node 5038  bl0 INFO     checking started
+2020-03-02 09:03:10,030 analysis_node 5038  bl0 INFO     checking variables finished
+2020-03-02 09:03:10,030 analysis_node 5038  bl0 INFO     starting classification
+2020-03-02 09:03:10,031 analysis_node 5038  Classifier INFO     Creating Multiprocessing Manager
+2020-03-02 09:03:10,038 analysis_node 5038  Classifier INFO     Read sms json object
+2020-03-02 09:03:10,097 analysis_node 5038  read json INFO     update sms of existing user
+2020-03-02 09:03:10,098 analysis_node 5038  update sms INFO     making connection with db
+2020-03-02 09:03:10,099 analysis_node 5038  update sms INFO     connection success
+2020-03-02 09:03:11,045 analysis_node 5038  update sms INFO     update messages of existing user in mongodb
+2020-03-02 09:03:11,046 analysis_node 5038  Classifier INFO     Multiprocessing start for Credit card Classifier
+2020-03-02 09:03:11,046 analysis_node 5038  Classifier INFO     Multiprocessing start for Loan Classifier
+2020-03-02 09:03:11,047 analysis_node 5038  loan INFO     get all loan messages
+2020-03-02 09:03:11,047 analysis_node 5038  loan INFO     remove all loan promotional messages
+2020-03-02 09:03:11,047 analysis_node 5038  loan INFO     get all loan due overdue messages
+2020-03-02 09:03:11,047 analysis_node 5038  loan due overdue INFO     Loan due overdue sms extracted successfully
+2020-03-02 09:03:11,047 analysis_node 5038  loan due overdue INFO     Append name in result dictionary for loan due overdue
+2020-03-02 09:03:11,049 analysis_node 5038  loan due overdue INFO     Appended name in result dictionary for loan due overdue successfully
+2020-03-02 09:03:11,049 analysis_node 5038  loan due overdue INFO     Dropped sms other than loan due overdue
+2020-03-02 09:03:11,050 analysis_node 5038  loan INFO     Converting loan due overdue dataframe into json
+2020-03-02 09:03:11,051 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:03:11,051 analysis_node 5038  loan INFO     get all loan approval messages
+2020-03-02 09:03:11,051 analysis_node 5038  loan approval INFO     Loan approval sms extracted successfully
+2020-03-02 09:03:11,051 analysis_node 5038  loan approval INFO     Append name in result dictionary for loan approval
+2020-03-02 09:03:11,051 analysis_node 5038  loan approval INFO     Appended name in result dictionary for loan approval successfully
+2020-03-02 09:03:11,052 analysis_node 5038  loan approval INFO     Dropped sms other than loan approval
+2020-03-02 09:03:11,053 analysis_node 5038  loan INFO     Converting loan approval dataframe into json
+2020-03-02 09:03:11,053 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:03:11,053 analysis_node 5038  loan INFO     get all loan rejection messages
+2020-03-02 09:03:11,053 analysis_node 5038  loan rejection INFO     Loan rejection sms extracted successfully
+2020-03-02 09:03:11,053 analysis_node 5038  loan rejection INFO     Append name in result dictionary for loan rejction
+2020-03-02 09:03:11,054 analysis_node 5038  loan rejection INFO     Appended name in result dictionary for loan rejection successfully
+2020-03-02 09:03:11,054 analysis_node 5038  loan rejection INFO     Dropped sms other than loan rejection
+2020-03-02 09:03:11,055 analysis_node 5038  loan INFO     Converting loan rejection dataframe into json
+2020-03-02 09:03:11,055 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:03:11,056 analysis_node 5038  loan INFO     get all loan disbursed messages
+2020-03-02 09:03:11,056 analysis_node 5038  loan disbursed INFO     Loan disbursed sms extracted successfully
+2020-03-02 09:03:11,056 analysis_node 5038  loan disbursed INFO     Append name in result dictionary for loan disbursed
+2020-03-02 09:03:11,056 analysis_node 5038  loan disbursed INFO     Appended name in result dictionary for loan disbursed successfully
+2020-03-02 09:03:11,056 analysis_node 5038  loan disbursed INFO     Dropped sms other than loan disbursed
+2020-03-02 09:03:11,058 analysis_node 5038  loan INFO     Converting loan disbursed dataframe into json
+2020-03-02 09:03:11,058 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:03:11,058 analysis_node 5038  loan INFO     get all loan closed messages
+2020-03-02 09:03:11,059 analysis_node 5038  loan closed messages INFO     Loan closed sms extracted successfully
+2020-03-02 09:03:11,059 analysis_node 5038  loan closed messages INFO     Append name in result dictionary for loan closed
+2020-03-02 09:03:11,059 analysis_node 5038  loan closed messages INFO     Appended name in result dictionary for loan closed successfully
+2020-03-02 09:03:11,059 analysis_node 5038  loan closed messages INFO     Dropped sms other than loan closed
+2020-03-02 09:03:11,060 analysis_node 5038  loan INFO     Converting loan closed dataframe into json
+2020-03-02 09:03:11,061 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:03:11,061 analysis_node 5038  loan INFO     making connection with db
+2020-03-02 09:03:11,062 analysis_node 5038  loan INFO     connection success
+2020-03-02 09:03:11,779 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:03:11,855 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:03:11,931 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:03:12,006 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:03:12,081 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:03:12,158 analysis_node 5038  Classifier INFO     Multiprocessing start for Transaction Classifier
+2020-03-02 09:03:12,159 analysis_node 5038  cleaning INFO     thread for cleaning 1 starts
+2020-03-02 09:03:12,160 analysis_node 5038  cleaning INFO     thread for cleaning 1 complete
+2020-03-02 09:03:12,162 analysis_node 5038  cleaning INFO     thread for cleaning 3 starts
+2020-03-02 09:03:12,179 analysis_node 5038  cleaning INFO     thread for cleaning 3 complete
+2020-03-02 09:03:12,182 analysis_node 5038  cleaning INFO     thread for cleaning 2 starts
+2020-03-02 09:03:12,198 analysis_node 5038  cleaning INFO     thread for cleaning 2 complete
+2020-03-02 09:03:12,198 analysis_node 5038  cleaning INFO     important loan messages saved
+2020-03-02 09:03:12,198 analysis_node 5038  cleaning INFO     Appended name in result dictionary for transaction messages successfully
+2020-03-02 09:03:12,199 analysis_node 5038  cleaning INFO     Dropped sms other than transaction
+2020-03-02 09:03:12,199 analysis_node 5038  cleaning INFO     Converting transaction messages dataframe into json
+2020-03-02 09:03:12,200 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:03:12,200 analysis_node 5038  cleaning INFO     making connection with db
+2020-03-02 09:03:12,201 analysis_node 5038  cleaning INFO     connection success
+2020-03-02 09:03:12,887 analysis_node 5038  cleaning INFO     Timestamp of User updated
+2020-03-02 09:03:12,963 analysis_node 5038  Classifier INFO     process 1 starts
+2020-03-02 09:03:12,967 analysis_node 5038  Classifier INFO     process 2 starts
+2020-03-02 09:03:12,972 analysis_node 5038  Classifier INFO     process 3 starts
+2020-03-02 09:03:12,979 analysis_node 5038  credit card INFO     Removing credit card promotional sms
+2020-03-02 09:03:12,979 analysis_node 5038  credit card INFO     Extracting Credit card sms
+2020-03-02 09:03:12,980 analysis_node 5038  cc messages INFO     Credit card sms extracted successfully
+2020-03-02 09:03:12,980 analysis_node 5038  cc messages INFO     appending name in result credit card dictionary
+2020-03-02 09:03:12,981 analysis_node 5038  cc messages INFO     Appended name in result credit card dictionary successfully
+2020-03-02 09:03:12,982 analysis_node 5038  cc messages INFO     Dropped sms other than credit card
+2020-03-02 09:03:12,987 analysis_node 5038  credit card INFO     Converting credit card dataframe into json
+2020-03-02 09:03:12,988 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:03:12,988 analysis_node 5038  credit card INFO     making connection with db
+2020-03-02 09:03:12,990 analysis_node 5038  credit card INFO     connection success
+2020-03-02 09:03:13,686 analysis_node 5038  credit card INFO     Timestamp of User updated
+2020-03-02 09:03:13,769 analysis_node 5038  Classifier INFO     process 1 complete
+2020-03-02 09:03:13,770 analysis_node 5038  Classifier INFO     process 2 complete
+2020-03-02 09:03:13,770 analysis_node 5038  Classifier INFO     process 3 complete
+2020-03-02 09:03:13,770 analysis_node 5038  Classifier INFO     extra classifier called
+2020-03-02 09:03:13,771 analysis_node 5038  extra INFO     Generating dictionary of extra sms
+2020-03-02 09:03:13,778 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:03:13,778 analysis_node 5038  extra INFO     Converted extra sms into JSON obj
+2020-03-02 09:03:13,778 analysis_node 5038  extra INFO     making connection with db
+2020-03-02 09:03:13,782 analysis_node 5038  extra INFO     connection success
+2020-03-02 09:03:14,476 analysis_node 5038  extra INFO     Timestamp of User updated
+2020-03-02 09:03:14,560 analysis_node 5038  bl0 INFO     started making balanced sheet
+2020-03-02 09:03:14,561 analysis_node 5038  create transaction_balanced_sheet INFO     Connecting to db
+2020-03-02 09:03:15,255 analysis_node 5038  create transaction_balanced_sheet INFO     conncection successful
+2020-03-02 09:03:15,255 analysis_node 5038  create transaction_balanced_sheet INFO     Converting file to dataframe
+2020-03-02 09:03:15,259 analysis_node 5038  create transaction_balanced_sheet INFO     Conversion Successful
+2020-03-02 09:03:15,259 analysis_node 5038  create transaction_balanced_sheet INFO     Starting to process data
+2020-03-02 09:03:15,260 analysis_node 5038  process_data INFO     initializing
+2020-03-02 09:03:15,278 analysis_node 5038  process_data INFO     initialization done
+2020-03-02 09:03:15,280 analysis_node 5038  process_data INFO     starting header split
+2020-03-02 09:03:15,283 analysis_node 5038  process_data INFO     header_split complete
+2020-03-02 09:03:15,283 analysis_node 5038  process_data INFO     starting account number fetch
+2020-03-02 09:03:15,287 analysis_node 5038  process_data INFO     account number fetch complete
+2020-03-02 09:03:15,287 analysis_node 5038  process_data INFO     starting vpa fetch
+2020-03-02 09:03:15,292 analysis_node 5038  process_data INFO     vpa fetch complete
+2020-03-02 09:03:15,292 analysis_node 5038  process_data INFO     starting upi ref fetch
+2020-03-02 09:03:15,295 analysis_node 5038  process_data INFO     upi ref fetch complete
+2020-03-02 09:03:15,295 analysis_node 5038  process_data INFO     starting debit amount fetch
+2020-03-02 09:03:15,297 analysis_node 5038  process_data INFO     debit amount fetch complete
+2020-03-02 09:03:15,297 analysis_node 5038  process_data INFO     starting credit amount fetch 
+2020-03-02 09:03:15,299 analysis_node 5038  process_data INFO     credit amount fetch complete
+2020-03-02 09:03:15,299 analysis_node 5038  process_data INFO     starting neft_no fetch
+2020-03-02 09:03:15,302 analysis_node 5038  process_data INFO     neft no fetch complete
+2020-03-02 09:03:15,302 analysis_node 5038  process_data INFO     starting neft keyword fetch
+2020-03-02 09:03:15,304 analysis_node 5038  process_data INFO     neft keyword fetch complete
+2020-03-02 09:03:15,304 analysis_node 5038  process_data INFO     starting imps keyword fetch
+2020-03-02 09:03:15,306 analysis_node 5038  process_data INFO     neft keyword fetch complete
+2020-03-02 09:03:15,306 analysis_node 5038  process_data INFO     starting imps reference fetch
+2020-03-02 09:03:15,308 analysis_node 5038  process_data INFO     imps reference fetch complete
+2020-03-02 09:03:15,308 analysis_node 5038  process_data INFO     starting upi keyword fetch
+2020-03-02 09:03:15,311 analysis_node 5038  process_data INFO     upi keyword fetch complete
+2020-03-02 09:03:15,311 analysis_node 5038  process_data INFO     starting balance fetch
+2020-03-02 09:03:15,313 analysis_node 5038  process_data INFO     balance fetch complete
+2020-03-02 09:03:15,313 analysis_node 5038  process_data INFO     starting get_time fetch
+2020-03-02 09:03:15,314 analysis_node 5038  process_data INFO     get_time fetch complete
+2020-03-02 09:03:15,315 analysis_node 5038  process_data INFO     starting date time thread
+2020-03-02 09:03:15,315 analysis_node 5038  date_time_thread INFO     starting get date func
+2020-03-02 09:03:15,317 analysis_node 5038  date_time_thread INFO     starting get date func successful
+2020-03-02 09:03:15,317 analysis_node 5038  date_time_thread INFO     starting get time func
+2020-03-02 09:03:15,320 analysis_node 5038  date_time_thread INFO     starting get time func successful
+2020-03-02 09:03:15,320 analysis_node 5038  date_time_thread INFO     starting get date time func
+2020-03-02 09:03:15,322 analysis_node 5038  date_time_thread INFO     starting get date time func successful
+2020-03-02 09:03:15,322 analysis_node 5038  process_data INFO     data time threa complete
+2020-03-02 09:03:15,322 analysis_node 5038  create transaction_balanced_sheet INFO     Processing of data Successful
+2020-03-02 09:03:15,323 analysis_node 5038  create transaction_balanced_sheet INFO     Starting validation
+2020-03-02 09:03:15,323 analysis_node 5038  create transaction_balanced_sheet INFO     Checking Upi ref number
+2020-03-02 09:03:15,327 analysis_node 5038  create transaction_balanced_sheet INFO     Upi Ref Check of data Successful
+2020-03-02 09:03:15,327 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Imps Ref Check
+2020-03-02 09:03:15,329 analysis_node 5038  create transaction_balanced_sheet INFO     Imps Ref Check Successful
+2020-03-02 09:03:15,330 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Time based Checking
+2020-03-02 09:03:15,341 analysis_node 5038  create transaction_balanced_sheet INFO     Time Based Check Successful
+2020-03-02 09:03:15,341 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Time Check DBS
+2020-03-02 09:03:15,342 analysis_node 5038  create transaction_balanced_sheet INFO     Time Based Check DBS Successful
+2020-03-02 09:03:15,342 analysis_node 5038  create transaction_balanced_sheet INFO     Finding Monthly Credit Sum
+2020-03-02 09:03:15,347 analysis_node 5038  create transaction_balanced_sheet INFO     Monthly credit sum successful
+2020-03-02 09:03:15,347 analysis_node 5038  create transaction_balanced_sheet INFO     Finding Monthly Debit Sum
+2020-03-02 09:03:15,351 analysis_node 5038  create transaction_balanced_sheet INFO     Monthly debit sum successful
+2020-03-02 09:03:15,912 analysis_node 5038  bl0 INFO     balanced sheet complete
+2020-03-02 09:03:15,912 analysis_node 5038  bl0 INFO     starting loan analysis
+2020-03-02 09:03:15,914 analysis_node 5038  get_customer_data INFO     Successfully established the connection with DataBase
+2020-03-02 09:03:16,837 analysis_node 5038  get_customer_data INFO     Found loan closed data
+2020-03-02 09:03:16,841 analysis_node 5038  get_customer_data INFO     Found loan disbursed data
+2020-03-02 09:03:16,844 analysis_node 5038  get_customer_data INFO     Found loan overdue data
+2020-03-02 09:03:16,846 analysis_node 5038  get_customer_data INFO     Found loan approval data
+2020-03-02 09:03:16,947 analysis_node 5038  preprocessing INFO     Data Splitted by headers
+2020-03-02 09:03:16,948 analysis_node 5038  preprocessing INFO     Data Grouped by Sender-Name
+2020-03-02 09:03:16,952 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:03:16,953 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:03:16,954 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,956 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,958 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,960 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,961 analysis_node 5038  preprocessing INFO     disbursed message found
+2020-03-02 09:03:16,962 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:03:16,962 analysis_node 5038  preprocessing INFO     due message found
+2020-03-02 09:03:16,963 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:03:16,964 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:03:16,965 analysis_node 5038  preprocessing INFO     loan closed messagge found
+2020-03-02 09:03:16,966 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:03:16,966 analysis_node 5038  preprocessing INFO     due message found
+2020-03-02 09:03:16,967 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:03:16,968 analysis_node 5038  preprocessing INFO     loan closed messagge found
+2020-03-02 09:03:16,968 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:03:16,970 analysis_node 5038  preprocessing INFO     loan closed message found
+2020-03-02 09:03:16,970 analysis_node 5038  preprocessing INFO     Loan Closed!
+2020-03-02 09:03:16,970 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,970 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,971 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,972 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:03:16,972 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:03:16,973 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:03:16,973 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:03:16,974 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,975 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,976 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:03:16,977 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,979 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,981 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,984 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,984 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,985 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,986 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,986 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,987 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,988 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:03:16,989 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:03:16,989 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:03:16,990 analysis_node 5038  final_output INFO     no amount detect
+2020-03-02 09:03:16,991 analysis_node 5038  final_output INFO     Successfully connect to the database
+2020-03-02 09:03:17,758 analysis_node 5038  final_output INFO     Successfully upload result to the database
+2020-03-02 09:03:17,759 analysis_node 5038  bl0 INFO     loan analysis successsful
+2020-03-02 09:03:17,759 analysis_node 5038  bl0 INFO     starting salary analysis
+2020-03-02 09:03:17,760 analysis_node 5038  Salary Analysis INFO     Salary Analysis started
+2020-03-02 09:03:17,760 analysis_node 5038  Customer Salary INFO     Checking salary status
+2020-03-02 09:03:17,760 analysis_node 5038  Merge Data INFO     Merging the Transaction and Extra SMS
+2020-03-02 09:03:17,761 analysis_node 5038  Transaction Data INFO     Collecting SMS from Transaction Collection
+2020-03-02 09:03:17,761 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:03:18,469 analysis_node 5038  Merge Data INFO     Data fetched from Transaction collection
+2020-03-02 09:03:18,470 analysis_node 5038  Extra Data INFO     Collecting SMS from Extra Collection
+2020-03-02 09:03:18,471 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:03:19,346 analysis_node 5038  Merge Data INFO     Data fetched from Extra collection
+2020-03-02 09:03:19,347 analysis_node 5038  Customer Salary INFO     Data merged successfully
+2020-03-02 09:03:19,347 analysis_node 5038  Salary Check INFO     Salary Calculation Started
+2020-03-02 09:03:19,348 analysis_node 5038  Clean Debit INFO     Cleaning text data
+2020-03-02 09:03:19,353 analysis_node 5038  Clean Debit INFO     Cleaning completed
+2020-03-02 09:03:19,354 analysis_node 5038  Get Time INFO     Convert Timestamp To Datetime
+2020-03-02 09:03:19,355 analysis_node 5038  Get Epf Amount INFO     Epf Amount Calculation starts
+2020-03-02 09:03:19,362 analysis_node 5038  Get Epf Amount INFO     epf amount calculation completed
+2020-03-02 09:03:19,362 analysis_node 5038  Epf to Salary INFO     Salary Calculation from EPF Amount starts
+2020-03-02 09:03:19,365 analysis_node 5038  Epf to Salary INFO     Salary Calculation from EPF Amount complete
+2020-03-02 09:03:19,369 analysis_node 5038  Salary Check INFO     Finding salary from EPF keyword
+2020-03-02 09:03:19,369 analysis_node 5038  Salary Check INFO     found salary from EPF keyword
+2020-03-02 09:03:19,369 analysis_node 5038  Customer Salary INFO     salary calculated
+2020-03-02 09:03:19,370 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:03:20,070 analysis_node 5038  Salary Analysis INFO     salary updated in database
+2020-03-02 09:03:20,381 analysis_node 5038  cheque user outer INFO     cheque user outer function starts
+2020-03-02 09:03:20,382 analysis_node 5038  cheque user inner INFO     cheque user inner function starts
+2020-03-02 09:03:20,447 analysis_node 5038  cheque user inner INFO     cheque user inner successfully executed
+2020-03-02 09:03:20,448 analysis_node 5038  cheque user outer INFO     cheque user outer successfully executed
+2020-03-02 09:03:20,448 analysis_node 5038  bl0 INFO     successfully checked bounced cheque messages
+2020-03-02 09:03:20,448 analysis_node 5038  bl0 INFO     checking result salary and loan salary output
+2020-03-02 09:03:20,448 analysis_node 5038  bl0 INFO     checking result salary and loan salary output complete
+2020-03-02 09:03:20,448 analysis_node 5038  bl0 INFO     Starting Analysis
+2020-03-02 09:03:20,522 analysis_node 5038  bl0 INFO     analysis complete
+2020-03-02 09:04:31,442 analysis_node 5038  bl0 INFO     making connection with db
+2020-03-02 09:04:31,444 analysis_node 5038  bl0 INFO     connection success
+2020-03-02 09:04:31,444 analysis_node 5038  bl0 INFO     checking started
+2020-03-02 09:04:31,444 analysis_node 5038  bl0 INFO     checking variables finished
+2020-03-02 09:04:31,444 analysis_node 5038  bl0 INFO     starting classification
+2020-03-02 09:04:31,444 analysis_node 5038  Classifier INFO     Creating Multiprocessing Manager
+2020-03-02 09:04:31,457 analysis_node 5038  Classifier INFO     Read sms json object
+2020-03-02 09:04:31,558 analysis_node 5038  read json INFO     update sms of existing user
+2020-03-02 09:04:31,559 analysis_node 5038  update sms INFO     making connection with db
+2020-03-02 09:04:31,564 analysis_node 5038  update sms INFO     connection success
+2020-03-02 09:04:32,491 analysis_node 5038  update sms INFO     update messages of existing user in mongodb
+2020-03-02 09:04:32,491 analysis_node 5038  Classifier INFO     Multiprocessing start for Credit card Classifier
+2020-03-02 09:04:32,491 analysis_node 5038  Classifier INFO     Multiprocessing start for Loan Classifier
+2020-03-02 09:04:32,491 analysis_node 5038  loan INFO     get all loan messages
+2020-03-02 09:04:32,491 analysis_node 5038  loan INFO     remove all loan promotional messages
+2020-03-02 09:04:32,491 analysis_node 5038  loan INFO     get all loan due overdue messages
+2020-03-02 09:04:32,492 analysis_node 5038  loan due overdue INFO     Loan due overdue sms extracted successfully
+2020-03-02 09:04:32,492 analysis_node 5038  loan due overdue INFO     Append name in result dictionary for loan due overdue
+2020-03-02 09:04:32,492 analysis_node 5038  loan due overdue INFO     Appended name in result dictionary for loan due overdue successfully
+2020-03-02 09:04:32,492 analysis_node 5038  loan due overdue INFO     Dropped sms other than loan due overdue
+2020-03-02 09:04:32,493 analysis_node 5038  loan INFO     Converting loan due overdue dataframe into json
+2020-03-02 09:04:32,494 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:04:32,494 analysis_node 5038  loan INFO     get all loan approval messages
+2020-03-02 09:04:32,494 analysis_node 5038  loan approval INFO     Loan approval sms extracted successfully
+2020-03-02 09:04:32,494 analysis_node 5038  loan approval INFO     Append name in result dictionary for loan approval
+2020-03-02 09:04:32,494 analysis_node 5038  loan approval INFO     Appended name in result dictionary for loan approval successfully
+2020-03-02 09:04:32,494 analysis_node 5038  loan approval INFO     Dropped sms other than loan approval
+2020-03-02 09:04:32,496 analysis_node 5038  loan INFO     Converting loan approval dataframe into json
+2020-03-02 09:04:32,496 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:04:32,496 analysis_node 5038  loan INFO     get all loan rejection messages
+2020-03-02 09:04:32,496 analysis_node 5038  loan rejection INFO     Loan rejection sms extracted successfully
+2020-03-02 09:04:32,497 analysis_node 5038  loan rejection INFO     Append name in result dictionary for loan rejction
+2020-03-02 09:04:32,497 analysis_node 5038  loan rejection INFO     Appended name in result dictionary for loan rejection successfully
+2020-03-02 09:04:32,497 analysis_node 5038  loan rejection INFO     Dropped sms other than loan rejection
+2020-03-02 09:04:32,499 analysis_node 5038  loan INFO     Converting loan rejection dataframe into json
+2020-03-02 09:04:32,499 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:04:32,499 analysis_node 5038  loan INFO     get all loan disbursed messages
+2020-03-02 09:04:32,500 analysis_node 5038  loan disbursed INFO     Loan disbursed sms extracted successfully
+2020-03-02 09:04:32,500 analysis_node 5038  loan disbursed INFO     Append name in result dictionary for loan disbursed
+2020-03-02 09:04:32,500 analysis_node 5038  loan disbursed INFO     Appended name in result dictionary for loan disbursed successfully
+2020-03-02 09:04:32,500 analysis_node 5038  loan disbursed INFO     Dropped sms other than loan disbursed
+2020-03-02 09:04:32,501 analysis_node 5038  loan INFO     Converting loan disbursed dataframe into json
+2020-03-02 09:04:32,502 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:04:32,502 analysis_node 5038  loan INFO     get all loan closed messages
+2020-03-02 09:04:32,502 analysis_node 5038  loan closed messages INFO     Loan closed sms extracted successfully
+2020-03-02 09:04:32,502 analysis_node 5038  loan closed messages INFO     Append name in result dictionary for loan closed
+2020-03-02 09:04:32,502 analysis_node 5038  loan closed messages INFO     Appended name in result dictionary for loan closed successfully
+2020-03-02 09:04:32,502 analysis_node 5038  loan closed messages INFO     Dropped sms other than loan closed
+2020-03-02 09:04:32,503 analysis_node 5038  loan INFO     Converting loan closed dataframe into json
+2020-03-02 09:04:32,503 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:04:32,504 analysis_node 5038  loan INFO     making connection with db
+2020-03-02 09:04:32,509 analysis_node 5038  loan INFO     connection success
+2020-03-02 09:04:33,186 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:04:33,264 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:04:33,339 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:04:33,416 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:04:33,491 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:04:33,565 analysis_node 5038  Classifier INFO     Multiprocessing start for Transaction Classifier
+2020-03-02 09:04:33,566 analysis_node 5038  cleaning INFO     thread for cleaning 1 starts
+2020-03-02 09:04:33,567 analysis_node 5038  cleaning INFO     thread for cleaning 1 complete
+2020-03-02 09:04:33,568 analysis_node 5038  cleaning INFO     thread for cleaning 3 starts
+2020-03-02 09:04:33,580 analysis_node 5038  cleaning INFO     thread for cleaning 3 complete
+2020-03-02 09:04:33,582 analysis_node 5038  cleaning INFO     thread for cleaning 2 starts
+2020-03-02 09:04:33,601 analysis_node 5038  cleaning INFO     thread for cleaning 2 complete
+2020-03-02 09:04:33,601 analysis_node 5038  cleaning INFO     important loan messages saved
+2020-03-02 09:04:33,601 analysis_node 5038  cleaning INFO     Appended name in result dictionary for transaction messages successfully
+2020-03-02 09:04:33,603 analysis_node 5038  cleaning INFO     Dropped sms other than transaction
+2020-03-02 09:04:33,603 analysis_node 5038  cleaning INFO     Converting transaction messages dataframe into json
+2020-03-02 09:04:33,603 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:04:33,603 analysis_node 5038  cleaning INFO     making connection with db
+2020-03-02 09:04:33,605 analysis_node 5038  cleaning INFO     connection success
+2020-03-02 09:04:34,290 analysis_node 5038  cleaning INFO     Timestamp of User updated
+2020-03-02 09:04:34,364 analysis_node 5038  Classifier INFO     process 1 starts
+2020-03-02 09:04:34,369 analysis_node 5038  Classifier INFO     process 2 starts
+2020-03-02 09:04:34,376 analysis_node 5038  Classifier INFO     process 3 starts
+2020-03-02 09:04:34,390 analysis_node 5038  credit card INFO     Removing credit card promotional sms
+2020-03-02 09:04:34,391 analysis_node 5038  credit card INFO     Extracting Credit card sms
+2020-03-02 09:04:34,392 analysis_node 5038  cc messages INFO     Credit card sms extracted successfully
+2020-03-02 09:04:34,392 analysis_node 5038  cc messages INFO     appending name in result credit card dictionary
+2020-03-02 09:04:34,397 analysis_node 5038  cc messages INFO     Appended name in result credit card dictionary successfully
+2020-03-02 09:04:34,398 analysis_node 5038  cc messages INFO     Dropped sms other than credit card
+2020-03-02 09:04:34,404 analysis_node 5038  credit card INFO     Converting credit card dataframe into json
+2020-03-02 09:04:34,405 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:04:34,405 analysis_node 5038  credit card INFO     making connection with db
+2020-03-02 09:04:34,408 analysis_node 5038  credit card INFO     connection success
+2020-03-02 09:04:35,107 analysis_node 5038  credit card INFO     Timestamp of User updated
+2020-03-02 09:04:35,188 analysis_node 5038  Classifier INFO     process 1 complete
+2020-03-02 09:04:35,189 analysis_node 5038  Classifier INFO     process 2 complete
+2020-03-02 09:04:35,189 analysis_node 5038  Classifier INFO     process 3 complete
+2020-03-02 09:04:35,189 analysis_node 5038  Classifier INFO     extra classifier called
+2020-03-02 09:04:35,190 analysis_node 5038  extra INFO     Generating dictionary of extra sms
+2020-03-02 09:04:35,196 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:04:35,197 analysis_node 5038  extra INFO     Converted extra sms into JSON obj
+2020-03-02 09:04:35,197 analysis_node 5038  extra INFO     making connection with db
+2020-03-02 09:04:35,199 analysis_node 5038  extra INFO     connection success
+2020-03-02 09:04:35,888 analysis_node 5038  extra INFO     Timestamp of User updated
+2020-03-02 09:04:35,968 analysis_node 5038  bl0 INFO     started making balanced sheet
+2020-03-02 09:04:35,969 analysis_node 5038  create transaction_balanced_sheet INFO     Connecting to db
+2020-03-02 09:04:36,660 analysis_node 5038  create transaction_balanced_sheet INFO     conncection successful
+2020-03-02 09:04:36,661 analysis_node 5038  create transaction_balanced_sheet INFO     Converting file to dataframe
+2020-03-02 09:04:36,663 analysis_node 5038  create transaction_balanced_sheet INFO     Conversion Successful
+2020-03-02 09:04:36,663 analysis_node 5038  create transaction_balanced_sheet INFO     Starting to process data
+2020-03-02 09:04:36,664 analysis_node 5038  process_data INFO     initializing
+2020-03-02 09:04:36,677 analysis_node 5038  process_data INFO     initialization done
+2020-03-02 09:04:36,679 analysis_node 5038  process_data INFO     starting header split
+2020-03-02 09:04:36,682 analysis_node 5038  process_data INFO     header_split complete
+2020-03-02 09:04:36,682 analysis_node 5038  process_data INFO     starting account number fetch
+2020-03-02 09:04:36,685 analysis_node 5038  process_data INFO     account number fetch complete
+2020-03-02 09:04:36,685 analysis_node 5038  process_data INFO     starting vpa fetch
+2020-03-02 09:04:36,689 analysis_node 5038  process_data INFO     vpa fetch complete
+2020-03-02 09:04:36,690 analysis_node 5038  process_data INFO     starting upi ref fetch
+2020-03-02 09:04:36,692 analysis_node 5038  process_data INFO     upi ref fetch complete
+2020-03-02 09:04:36,692 analysis_node 5038  process_data INFO     starting debit amount fetch
+2020-03-02 09:04:36,694 analysis_node 5038  process_data INFO     debit amount fetch complete
+2020-03-02 09:04:36,694 analysis_node 5038  process_data INFO     starting credit amount fetch 
+2020-03-02 09:04:36,697 analysis_node 5038  process_data INFO     credit amount fetch complete
+2020-03-02 09:04:36,697 analysis_node 5038  process_data INFO     starting neft_no fetch
+2020-03-02 09:04:36,699 analysis_node 5038  process_data INFO     neft no fetch complete
+2020-03-02 09:04:36,699 analysis_node 5038  process_data INFO     starting neft keyword fetch
+2020-03-02 09:04:36,701 analysis_node 5038  process_data INFO     neft keyword fetch complete
+2020-03-02 09:04:36,701 analysis_node 5038  process_data INFO     starting imps keyword fetch
+2020-03-02 09:04:36,702 analysis_node 5038  process_data INFO     neft keyword fetch complete
+2020-03-02 09:04:36,703 analysis_node 5038  process_data INFO     starting imps reference fetch
+2020-03-02 09:04:36,705 analysis_node 5038  process_data INFO     imps reference fetch complete
+2020-03-02 09:04:36,705 analysis_node 5038  process_data INFO     starting upi keyword fetch
+2020-03-02 09:04:36,708 analysis_node 5038  process_data INFO     upi keyword fetch complete
+2020-03-02 09:04:36,708 analysis_node 5038  process_data INFO     starting balance fetch
+2020-03-02 09:04:36,710 analysis_node 5038  process_data INFO     balance fetch complete
+2020-03-02 09:04:36,710 analysis_node 5038  process_data INFO     starting get_time fetch
+2020-03-02 09:04:36,712 analysis_node 5038  process_data INFO     get_time fetch complete
+2020-03-02 09:04:36,712 analysis_node 5038  process_data INFO     starting date time thread
+2020-03-02 09:04:36,712 analysis_node 5038  date_time_thread INFO     starting get date func
+2020-03-02 09:04:36,714 analysis_node 5038  date_time_thread INFO     starting get date func successful
+2020-03-02 09:04:36,715 analysis_node 5038  date_time_thread INFO     starting get time func
+2020-03-02 09:04:36,717 analysis_node 5038  date_time_thread INFO     starting get time func successful
+2020-03-02 09:04:36,717 analysis_node 5038  date_time_thread INFO     starting get date time func
+2020-03-02 09:04:36,720 analysis_node 5038  date_time_thread INFO     starting get date time func successful
+2020-03-02 09:04:36,720 analysis_node 5038  process_data INFO     data time threa complete
+2020-03-02 09:04:36,720 analysis_node 5038  create transaction_balanced_sheet INFO     Processing of data Successful
+2020-03-02 09:04:36,720 analysis_node 5038  create transaction_balanced_sheet INFO     Starting validation
+2020-03-02 09:04:36,720 analysis_node 5038  create transaction_balanced_sheet INFO     Checking Upi ref number
+2020-03-02 09:04:36,723 analysis_node 5038  create transaction_balanced_sheet INFO     Upi Ref Check of data Successful
+2020-03-02 09:04:36,723 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Imps Ref Check
+2020-03-02 09:04:36,726 analysis_node 5038  create transaction_balanced_sheet INFO     Imps Ref Check Successful
+2020-03-02 09:04:36,726 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Time based Checking
+2020-03-02 09:04:36,735 analysis_node 5038  create transaction_balanced_sheet INFO     Time Based Check Successful
+2020-03-02 09:04:36,736 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Time Check DBS
+2020-03-02 09:04:36,737 analysis_node 5038  create transaction_balanced_sheet INFO     Time Based Check DBS Successful
+2020-03-02 09:04:36,737 analysis_node 5038  create transaction_balanced_sheet INFO     Finding Monthly Credit Sum
+2020-03-02 09:04:36,743 analysis_node 5038  create transaction_balanced_sheet INFO     Monthly credit sum successful
+2020-03-02 09:04:36,743 analysis_node 5038  create transaction_balanced_sheet INFO     Finding Monthly Debit Sum
+2020-03-02 09:04:36,747 analysis_node 5038  create transaction_balanced_sheet INFO     Monthly debit sum successful
+2020-03-02 09:04:37,288 analysis_node 5038  bl0 INFO     balanced sheet complete
+2020-03-02 09:04:37,288 analysis_node 5038  bl0 INFO     starting loan analysis
+2020-03-02 09:04:37,291 analysis_node 5038  get_customer_data INFO     Successfully established the connection with DataBase
+2020-03-02 09:04:38,216 analysis_node 5038  get_customer_data INFO     Found loan closed data
+2020-03-02 09:04:38,219 analysis_node 5038  get_customer_data INFO     Found loan disbursed data
+2020-03-02 09:04:38,222 analysis_node 5038  get_customer_data INFO     Found loan overdue data
+2020-03-02 09:04:38,224 analysis_node 5038  get_customer_data INFO     Found loan approval data
+2020-03-02 09:04:38,321 analysis_node 5038  preprocessing INFO     Data Splitted by headers
+2020-03-02 09:04:38,322 analysis_node 5038  preprocessing INFO     Data Grouped by Sender-Name
+2020-03-02 09:04:38,326 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:04:38,327 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:04:38,329 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,330 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,331 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,332 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,334 analysis_node 5038  preprocessing INFO     disbursed message found
+2020-03-02 09:04:38,335 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:04:38,336 analysis_node 5038  preprocessing INFO     due message found
+2020-03-02 09:04:38,336 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:04:38,338 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:04:38,340 analysis_node 5038  preprocessing INFO     loan closed messagge found
+2020-03-02 09:04:38,340 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:04:38,341 analysis_node 5038  preprocessing INFO     due message found
+2020-03-02 09:04:38,341 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:04:38,342 analysis_node 5038  preprocessing INFO     loan closed messagge found
+2020-03-02 09:04:38,342 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:04:38,344 analysis_node 5038  preprocessing INFO     loan closed message found
+2020-03-02 09:04:38,345 analysis_node 5038  preprocessing INFO     Loan Closed!
+2020-03-02 09:04:38,345 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,345 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,345 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,346 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:04:38,347 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:04:38,347 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:04:38,347 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:04:38,348 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,349 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,349 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:04:38,350 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,352 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,356 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,358 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,359 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,360 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,360 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,361 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,362 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,362 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:04:38,363 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:04:38,364 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:04:38,364 analysis_node 5038  final_output INFO     no amount detect
+2020-03-02 09:04:38,365 analysis_node 5038  final_output INFO     Successfully connect to the database
+2020-03-02 09:04:39,120 analysis_node 5038  final_output INFO     Successfully upload result to the database
+2020-03-02 09:04:39,120 analysis_node 5038  bl0 INFO     loan analysis successsful
+2020-03-02 09:04:39,120 analysis_node 5038  bl0 INFO     starting salary analysis
+2020-03-02 09:04:39,120 analysis_node 5038  Salary Analysis INFO     Salary Analysis started
+2020-03-02 09:04:39,121 analysis_node 5038  Customer Salary INFO     Checking salary status
+2020-03-02 09:04:39,121 analysis_node 5038  Merge Data INFO     Merging the Transaction and Extra SMS
+2020-03-02 09:04:39,121 analysis_node 5038  Transaction Data INFO     Collecting SMS from Transaction Collection
+2020-03-02 09:04:39,122 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:04:39,815 analysis_node 5038  Merge Data INFO     Data fetched from Transaction collection
+2020-03-02 09:04:39,816 analysis_node 5038  Extra Data INFO     Collecting SMS from Extra Collection
+2020-03-02 09:04:39,816 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:04:40,686 analysis_node 5038  Merge Data INFO     Data fetched from Extra collection
+2020-03-02 09:04:40,687 analysis_node 5038  Customer Salary INFO     Data merged successfully
+2020-03-02 09:04:40,688 analysis_node 5038  Salary Check INFO     Salary Calculation Started
+2020-03-02 09:04:40,688 analysis_node 5038  Clean Debit INFO     Cleaning text data
+2020-03-02 09:04:40,695 analysis_node 5038  Clean Debit INFO     Cleaning completed
+2020-03-02 09:04:40,695 analysis_node 5038  Get Time INFO     Convert Timestamp To Datetime
+2020-03-02 09:04:40,696 analysis_node 5038  Get Epf Amount INFO     Epf Amount Calculation starts
+2020-03-02 09:04:40,702 analysis_node 5038  Get Epf Amount INFO     epf amount calculation completed
+2020-03-02 09:04:40,702 analysis_node 5038  Epf to Salary INFO     Salary Calculation from EPF Amount starts
+2020-03-02 09:04:40,706 analysis_node 5038  Epf to Salary INFO     Salary Calculation from EPF Amount complete
+2020-03-02 09:04:40,711 analysis_node 5038  Salary Check INFO     Finding salary from EPF keyword
+2020-03-02 09:04:40,712 analysis_node 5038  Salary Check INFO     found salary from EPF keyword
+2020-03-02 09:04:40,712 analysis_node 5038  Customer Salary INFO     salary calculated
+2020-03-02 09:04:40,712 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:04:41,404 analysis_node 5038  Salary Analysis INFO     salary updated in database
+2020-03-02 09:04:41,706 analysis_node 5038  cheque user outer INFO     cheque user outer function starts
+2020-03-02 09:04:41,707 analysis_node 5038  cheque user inner INFO     cheque user inner function starts
+2020-03-02 09:04:41,773 analysis_node 5038  cheque user inner INFO     cheque user inner successfully executed
+2020-03-02 09:04:41,773 analysis_node 5038  cheque user outer INFO     cheque user outer successfully executed
+2020-03-02 09:04:41,773 analysis_node 5038  bl0 INFO     successfully checked bounced cheque messages
+2020-03-02 09:04:41,773 analysis_node 5038  bl0 INFO     checking result salary and loan salary output
+2020-03-02 09:04:41,773 analysis_node 5038  bl0 INFO     checking result salary and loan salary output complete
+2020-03-02 09:04:41,773 analysis_node 5038  bl0 INFO     Starting Analysis
+2020-03-02 09:04:41,850 analysis_node 5038  bl0 INFO     analysis complete
+2020-03-02 09:05:07,182 analysis_node 5038  bl0 INFO     making connection with db
+2020-03-02 09:05:07,186 analysis_node 5038  bl0 INFO     connection success
+2020-03-02 09:05:07,186 analysis_node 5038  bl0 INFO     checking started
+2020-03-02 09:05:07,186 analysis_node 5038  bl0 INFO     checking variables finished
+2020-03-02 09:05:07,186 analysis_node 5038  bl0 INFO     starting classification
+2020-03-02 09:05:07,187 analysis_node 5038  Classifier INFO     Creating Multiprocessing Manager
+2020-03-02 09:05:07,195 analysis_node 5038  Classifier INFO     Read sms json object
+2020-03-02 09:05:07,248 analysis_node 5038  read json INFO     update sms of existing user
+2020-03-02 09:05:07,249 analysis_node 5038  update sms INFO     making connection with db
+2020-03-02 09:05:07,250 analysis_node 5038  update sms INFO     connection success
+2020-03-02 09:05:08,178 analysis_node 5038  update sms INFO     update messages of existing user in mongodb
+2020-03-02 09:05:08,179 analysis_node 5038  Classifier INFO     Multiprocessing start for Credit card Classifier
+2020-03-02 09:05:08,180 analysis_node 5038  Classifier INFO     Multiprocessing start for Loan Classifier
+2020-03-02 09:05:08,181 analysis_node 5038  loan INFO     get all loan messages
+2020-03-02 09:05:08,181 analysis_node 5038  loan INFO     remove all loan promotional messages
+2020-03-02 09:05:08,182 analysis_node 5038  loan INFO     get all loan due overdue messages
+2020-03-02 09:05:08,183 analysis_node 5038  loan due overdue INFO     Loan due overdue sms extracted successfully
+2020-03-02 09:05:08,183 analysis_node 5038  loan due overdue INFO     Append name in result dictionary for loan due overdue
+2020-03-02 09:05:08,185 analysis_node 5038  loan due overdue INFO     Appended name in result dictionary for loan due overdue successfully
+2020-03-02 09:05:08,185 analysis_node 5038  loan due overdue INFO     Dropped sms other than loan due overdue
+2020-03-02 09:05:08,187 analysis_node 5038  loan INFO     Converting loan due overdue dataframe into json
+2020-03-02 09:05:08,187 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:05:08,188 analysis_node 5038  loan INFO     get all loan approval messages
+2020-03-02 09:05:08,188 analysis_node 5038  loan approval INFO     Loan approval sms extracted successfully
+2020-03-02 09:05:08,188 analysis_node 5038  loan approval INFO     Append name in result dictionary for loan approval
+2020-03-02 09:05:08,188 analysis_node 5038  loan approval INFO     Appended name in result dictionary for loan approval successfully
+2020-03-02 09:05:08,188 analysis_node 5038  loan approval INFO     Dropped sms other than loan approval
+2020-03-02 09:05:08,190 analysis_node 5038  loan INFO     Converting loan approval dataframe into json
+2020-03-02 09:05:08,191 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:05:08,191 analysis_node 5038  loan INFO     get all loan rejection messages
+2020-03-02 09:05:08,191 analysis_node 5038  loan rejection INFO     Loan rejection sms extracted successfully
+2020-03-02 09:05:08,191 analysis_node 5038  loan rejection INFO     Append name in result dictionary for loan rejction
+2020-03-02 09:05:08,191 analysis_node 5038  loan rejection INFO     Appended name in result dictionary for loan rejection successfully
+2020-03-02 09:05:08,191 analysis_node 5038  loan rejection INFO     Dropped sms other than loan rejection
+2020-03-02 09:05:08,193 analysis_node 5038  loan INFO     Converting loan rejection dataframe into json
+2020-03-02 09:05:08,193 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:05:08,193 analysis_node 5038  loan INFO     get all loan disbursed messages
+2020-03-02 09:05:08,193 analysis_node 5038  loan disbursed INFO     Loan disbursed sms extracted successfully
+2020-03-02 09:05:08,193 analysis_node 5038  loan disbursed INFO     Append name in result dictionary for loan disbursed
+2020-03-02 09:05:08,193 analysis_node 5038  loan disbursed INFO     Appended name in result dictionary for loan disbursed successfully
+2020-03-02 09:05:08,193 analysis_node 5038  loan disbursed INFO     Dropped sms other than loan disbursed
+2020-03-02 09:05:08,194 analysis_node 5038  loan INFO     Converting loan disbursed dataframe into json
+2020-03-02 09:05:08,195 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:05:08,195 analysis_node 5038  loan INFO     get all loan closed messages
+2020-03-02 09:05:08,195 analysis_node 5038  loan closed messages INFO     Loan closed sms extracted successfully
+2020-03-02 09:05:08,195 analysis_node 5038  loan closed messages INFO     Append name in result dictionary for loan closed
+2020-03-02 09:05:08,196 analysis_node 5038  loan closed messages INFO     Appended name in result dictionary for loan closed successfully
+2020-03-02 09:05:08,196 analysis_node 5038  loan closed messages INFO     Dropped sms other than loan closed
+2020-03-02 09:05:08,199 analysis_node 5038  loan INFO     Converting loan closed dataframe into json
+2020-03-02 09:05:08,200 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:05:08,200 analysis_node 5038  loan INFO     making connection with db
+2020-03-02 09:05:08,202 analysis_node 5038  loan INFO     connection success
+2020-03-02 09:05:08,894 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:05:08,970 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:05:09,049 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:05:09,126 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:05:09,204 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:05:09,280 analysis_node 5038  Classifier INFO     Multiprocessing start for Transaction Classifier
+2020-03-02 09:05:09,281 analysis_node 5038  cleaning INFO     thread for cleaning 1 starts
+2020-03-02 09:05:09,281 analysis_node 5038  cleaning INFO     thread for cleaning 1 complete
+2020-03-02 09:05:09,282 analysis_node 5038  cleaning INFO     thread for cleaning 3 starts
+2020-03-02 09:05:09,290 analysis_node 5038  cleaning INFO     thread for cleaning 3 complete
+2020-03-02 09:05:09,293 analysis_node 5038  cleaning INFO     thread for cleaning 2 starts
+2020-03-02 09:05:09,310 analysis_node 5038  cleaning INFO     thread for cleaning 2 complete
+2020-03-02 09:05:09,310 analysis_node 5038  cleaning INFO     important loan messages saved
+2020-03-02 09:05:09,310 analysis_node 5038  cleaning INFO     Appended name in result dictionary for transaction messages successfully
+2020-03-02 09:05:09,312 analysis_node 5038  cleaning INFO     Dropped sms other than transaction
+2020-03-02 09:05:09,312 analysis_node 5038  cleaning INFO     Converting transaction messages dataframe into json
+2020-03-02 09:05:09,312 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:05:09,312 analysis_node 5038  cleaning INFO     making connection with db
+2020-03-02 09:05:09,313 analysis_node 5038  cleaning INFO     connection success
+2020-03-02 09:05:10,006 analysis_node 5038  cleaning INFO     Timestamp of User updated
+2020-03-02 09:05:10,083 analysis_node 5038  Classifier INFO     process 1 starts
+2020-03-02 09:05:10,088 analysis_node 5038  Classifier INFO     process 2 starts
+2020-03-02 09:05:10,095 analysis_node 5038  Classifier INFO     process 3 starts
+2020-03-02 09:05:10,105 analysis_node 5038  credit card INFO     Removing credit card promotional sms
+2020-03-02 09:05:10,106 analysis_node 5038  credit card INFO     Extracting Credit card sms
+2020-03-02 09:05:10,106 analysis_node 5038  cc messages INFO     Credit card sms extracted successfully
+2020-03-02 09:05:10,106 analysis_node 5038  cc messages INFO     appending name in result credit card dictionary
+2020-03-02 09:05:10,109 analysis_node 5038  cc messages INFO     Appended name in result credit card dictionary successfully
+2020-03-02 09:05:10,110 analysis_node 5038  cc messages INFO     Dropped sms other than credit card
+2020-03-02 09:05:10,115 analysis_node 5038  credit card INFO     Converting credit card dataframe into json
+2020-03-02 09:05:10,116 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:05:10,116 analysis_node 5038  credit card INFO     making connection with db
+2020-03-02 09:05:10,119 analysis_node 5038  credit card INFO     connection success
+2020-03-02 09:05:10,813 analysis_node 5038  credit card INFO     Timestamp of User updated
+2020-03-02 09:05:10,902 analysis_node 5038  Classifier INFO     process 1 complete
+2020-03-02 09:05:10,903 analysis_node 5038  Classifier INFO     process 2 complete
+2020-03-02 09:05:10,903 analysis_node 5038  Classifier INFO     process 3 complete
+2020-03-02 09:05:10,903 analysis_node 5038  Classifier INFO     extra classifier called
+2020-03-02 09:05:10,905 analysis_node 5038  extra INFO     Generating dictionary of extra sms
+2020-03-02 09:05:10,911 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:05:10,911 analysis_node 5038  extra INFO     Converted extra sms into JSON obj
+2020-03-02 09:05:10,911 analysis_node 5038  extra INFO     making connection with db
+2020-03-02 09:05:10,914 analysis_node 5038  extra INFO     connection success
+2020-03-02 09:05:11,606 analysis_node 5038  extra INFO     Timestamp of User updated
+2020-03-02 09:05:11,689 analysis_node 5038  bl0 INFO     started making balanced sheet
+2020-03-02 09:05:11,690 analysis_node 5038  create transaction_balanced_sheet INFO     Connecting to db
+2020-03-02 09:05:12,384 analysis_node 5038  create transaction_balanced_sheet INFO     conncection successful
+2020-03-02 09:05:12,384 analysis_node 5038  create transaction_balanced_sheet INFO     Converting file to dataframe
+2020-03-02 09:05:12,387 analysis_node 5038  create transaction_balanced_sheet INFO     Conversion Successful
+2020-03-02 09:05:12,387 analysis_node 5038  create transaction_balanced_sheet INFO     Starting to process data
+2020-03-02 09:05:12,388 analysis_node 5038  process_data INFO     initializing
+2020-03-02 09:05:12,401 analysis_node 5038  process_data INFO     initialization done
+2020-03-02 09:05:12,404 analysis_node 5038  process_data INFO     starting header split
+2020-03-02 09:05:12,407 analysis_node 5038  process_data INFO     header_split complete
+2020-03-02 09:05:12,407 analysis_node 5038  process_data INFO     starting account number fetch
+2020-03-02 09:05:12,411 analysis_node 5038  process_data INFO     account number fetch complete
+2020-03-02 09:05:12,412 analysis_node 5038  process_data INFO     starting vpa fetch
+2020-03-02 09:05:12,416 analysis_node 5038  process_data INFO     vpa fetch complete
+2020-03-02 09:05:12,416 analysis_node 5038  process_data INFO     starting upi ref fetch
+2020-03-02 09:05:12,419 analysis_node 5038  process_data INFO     upi ref fetch complete
+2020-03-02 09:05:12,419 analysis_node 5038  process_data INFO     starting debit amount fetch
+2020-03-02 09:05:12,423 analysis_node 5038  process_data INFO     debit amount fetch complete
+2020-03-02 09:05:12,423 analysis_node 5038  process_data INFO     starting credit amount fetch 
+2020-03-02 09:05:12,425 analysis_node 5038  process_data INFO     credit amount fetch complete
+2020-03-02 09:05:12,425 analysis_node 5038  process_data INFO     starting neft_no fetch
+2020-03-02 09:05:12,427 analysis_node 5038  process_data INFO     neft no fetch complete
+2020-03-02 09:05:12,427 analysis_node 5038  process_data INFO     starting neft keyword fetch
+2020-03-02 09:05:12,429 analysis_node 5038  process_data INFO     neft keyword fetch complete
+2020-03-02 09:05:12,429 analysis_node 5038  process_data INFO     starting imps keyword fetch
+2020-03-02 09:05:12,430 analysis_node 5038  process_data INFO     neft keyword fetch complete
+2020-03-02 09:05:12,431 analysis_node 5038  process_data INFO     starting imps reference fetch
+2020-03-02 09:05:12,432 analysis_node 5038  process_data INFO     imps reference fetch complete
+2020-03-02 09:05:12,432 analysis_node 5038  process_data INFO     starting upi keyword fetch
+2020-03-02 09:05:12,434 analysis_node 5038  process_data INFO     upi keyword fetch complete
+2020-03-02 09:05:12,434 analysis_node 5038  process_data INFO     starting balance fetch
+2020-03-02 09:05:12,436 analysis_node 5038  process_data INFO     balance fetch complete
+2020-03-02 09:05:12,436 analysis_node 5038  process_data INFO     starting get_time fetch
+2020-03-02 09:05:12,438 analysis_node 5038  process_data INFO     get_time fetch complete
+2020-03-02 09:05:12,438 analysis_node 5038  process_data INFO     starting date time thread
+2020-03-02 09:05:12,439 analysis_node 5038  date_time_thread INFO     starting get date func
+2020-03-02 09:05:12,441 analysis_node 5038  date_time_thread INFO     starting get date func successful
+2020-03-02 09:05:12,441 analysis_node 5038  date_time_thread INFO     starting get time func
+2020-03-02 09:05:12,444 analysis_node 5038  date_time_thread INFO     starting get time func successful
+2020-03-02 09:05:12,444 analysis_node 5038  date_time_thread INFO     starting get date time func
+2020-03-02 09:05:12,446 analysis_node 5038  date_time_thread INFO     starting get date time func successful
+2020-03-02 09:05:12,446 analysis_node 5038  process_data INFO     data time threa complete
+2020-03-02 09:05:12,446 analysis_node 5038  create transaction_balanced_sheet INFO     Processing of data Successful
+2020-03-02 09:05:12,447 analysis_node 5038  create transaction_balanced_sheet INFO     Starting validation
+2020-03-02 09:05:12,447 analysis_node 5038  create transaction_balanced_sheet INFO     Checking Upi ref number
+2020-03-02 09:05:12,449 analysis_node 5038  create transaction_balanced_sheet INFO     Upi Ref Check of data Successful
+2020-03-02 09:05:12,449 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Imps Ref Check
+2020-03-02 09:05:12,452 analysis_node 5038  create transaction_balanced_sheet INFO     Imps Ref Check Successful
+2020-03-02 09:05:12,452 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Time based Checking
+2020-03-02 09:05:12,462 analysis_node 5038  create transaction_balanced_sheet INFO     Time Based Check Successful
+2020-03-02 09:05:12,462 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Time Check DBS
+2020-03-02 09:05:12,463 analysis_node 5038  create transaction_balanced_sheet INFO     Time Based Check DBS Successful
+2020-03-02 09:05:12,464 analysis_node 5038  create transaction_balanced_sheet INFO     Finding Monthly Credit Sum
+2020-03-02 09:05:12,468 analysis_node 5038  create transaction_balanced_sheet INFO     Monthly credit sum successful
+2020-03-02 09:05:12,468 analysis_node 5038  create transaction_balanced_sheet INFO     Finding Monthly Debit Sum
+2020-03-02 09:05:12,473 analysis_node 5038  create transaction_balanced_sheet INFO     Monthly debit sum successful
+2020-03-02 09:05:13,031 analysis_node 5038  bl0 INFO     balanced sheet complete
+2020-03-02 09:05:13,031 analysis_node 5038  bl0 INFO     starting loan analysis
+2020-03-02 09:05:13,034 analysis_node 5038  get_customer_data INFO     Successfully established the connection with DataBase
+2020-03-02 09:05:13,982 analysis_node 5038  get_customer_data INFO     Found loan closed data
+2020-03-02 09:05:13,984 analysis_node 5038  get_customer_data INFO     Found loan disbursed data
+2020-03-02 09:05:13,987 analysis_node 5038  get_customer_data INFO     Found loan overdue data
+2020-03-02 09:05:13,990 analysis_node 5038  get_customer_data INFO     Found loan approval data
+2020-03-02 09:05:14,072 analysis_node 5038  preprocessing INFO     Data Splitted by headers
+2020-03-02 09:05:14,072 analysis_node 5038  preprocessing INFO     Data Grouped by Sender-Name
+2020-03-02 09:05:14,073 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:05:14,073 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:05:14,074 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,074 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,074 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,075 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,076 analysis_node 5038  preprocessing INFO     disbursed message found
+2020-03-02 09:05:14,076 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:05:14,076 analysis_node 5038  preprocessing INFO     due message found
+2020-03-02 09:05:14,077 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:05:14,077 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:05:14,078 analysis_node 5038  preprocessing INFO     loan closed messagge found
+2020-03-02 09:05:14,078 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:05:14,078 analysis_node 5038  preprocessing INFO     due message found
+2020-03-02 09:05:14,079 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:05:14,079 analysis_node 5038  preprocessing INFO     loan closed messagge found
+2020-03-02 09:05:14,079 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:05:14,081 analysis_node 5038  preprocessing INFO     loan closed message found
+2020-03-02 09:05:14,081 analysis_node 5038  preprocessing INFO     Loan Closed!
+2020-03-02 09:05:14,081 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,081 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,082 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,082 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:05:14,083 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:05:14,083 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:05:14,083 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:05:14,084 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,084 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,085 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:05:14,086 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,090 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,092 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,095 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,095 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,096 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,097 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,097 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,098 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,099 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:05:14,100 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:05:14,101 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:05:14,101 analysis_node 5038  final_output INFO     no amount detect
+2020-03-02 09:05:14,102 analysis_node 5038  final_output INFO     Successfully connect to the database
+2020-03-02 09:05:14,886 analysis_node 5038  final_output INFO     Successfully upload result to the database
+2020-03-02 09:05:14,886 analysis_node 5038  bl0 INFO     loan analysis successsful
+2020-03-02 09:05:14,886 analysis_node 5038  bl0 INFO     starting salary analysis
+2020-03-02 09:05:14,887 analysis_node 5038  Salary Analysis INFO     Salary Analysis started
+2020-03-02 09:05:14,887 analysis_node 5038  Customer Salary INFO     Checking salary status
+2020-03-02 09:05:14,888 analysis_node 5038  Merge Data INFO     Merging the Transaction and Extra SMS
+2020-03-02 09:05:14,888 analysis_node 5038  Transaction Data INFO     Collecting SMS from Transaction Collection
+2020-03-02 09:05:14,888 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:05:15,590 analysis_node 5038  Merge Data INFO     Data fetched from Transaction collection
+2020-03-02 09:05:15,591 analysis_node 5038  Extra Data INFO     Collecting SMS from Extra Collection
+2020-03-02 09:05:15,592 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:05:16,474 analysis_node 5038  Merge Data INFO     Data fetched from Extra collection
+2020-03-02 09:05:16,475 analysis_node 5038  Customer Salary INFO     Data merged successfully
+2020-03-02 09:05:16,476 analysis_node 5038  Salary Check INFO     Salary Calculation Started
+2020-03-02 09:05:16,476 analysis_node 5038  Clean Debit INFO     Cleaning text data
+2020-03-02 09:05:16,482 analysis_node 5038  Clean Debit INFO     Cleaning completed
+2020-03-02 09:05:16,482 analysis_node 5038  Get Time INFO     Convert Timestamp To Datetime
+2020-03-02 09:05:16,483 analysis_node 5038  Get Epf Amount INFO     Epf Amount Calculation starts
+2020-03-02 09:05:16,490 analysis_node 5038  Get Epf Amount INFO     epf amount calculation completed
+2020-03-02 09:05:16,491 analysis_node 5038  Epf to Salary INFO     Salary Calculation from EPF Amount starts
+2020-03-02 09:05:16,493 analysis_node 5038  Epf to Salary INFO     Salary Calculation from EPF Amount complete
+2020-03-02 09:05:16,498 analysis_node 5038  Salary Check INFO     Finding salary from EPF keyword
+2020-03-02 09:05:16,498 analysis_node 5038  Salary Check INFO     found salary from EPF keyword
+2020-03-02 09:05:16,498 analysis_node 5038  Customer Salary INFO     salary calculated
+2020-03-02 09:05:16,499 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:05:17,194 analysis_node 5038  Salary Analysis INFO     salary updated in database
+2020-03-02 09:05:17,496 analysis_node 5038  cheque user outer INFO     cheque user outer function starts
+2020-03-02 09:05:17,497 analysis_node 5038  cheque user inner INFO     cheque user inner function starts
+2020-03-02 09:05:17,554 analysis_node 5038  cheque user inner INFO     cheque user inner successfully executed
+2020-03-02 09:05:17,554 analysis_node 5038  cheque user outer INFO     cheque user outer successfully executed
+2020-03-02 09:05:17,554 analysis_node 5038  bl0 INFO     successfully checked bounced cheque messages
+2020-03-02 09:05:17,554 analysis_node 5038  bl0 INFO     checking result salary and loan salary output
+2020-03-02 09:05:17,554 analysis_node 5038  bl0 INFO     checking result salary and loan salary output complete
+2020-03-02 09:05:17,554 analysis_node 5038  bl0 INFO     Starting Analysis
+2020-03-02 09:05:17,629 analysis_node 5038  bl0 INFO     analysis complete
+2020-03-02 09:13:33,677 analysis_node 5038  bl0 INFO     making connection with db
+2020-03-02 09:13:33,678 analysis_node 5038  bl0 INFO     connection success
+2020-03-02 09:13:33,678 analysis_node 5038  bl0 INFO     checking started
+2020-03-02 09:13:33,679 analysis_node 5038  bl0 INFO     checking variables finished
+2020-03-02 09:13:33,679 analysis_node 5038  bl0 INFO     starting classification
+2020-03-02 09:13:33,679 analysis_node 5038  Classifier INFO     Creating Multiprocessing Manager
+2020-03-02 09:13:33,690 analysis_node 5038  Classifier INFO     Read sms json object
+2020-03-02 09:13:33,747 analysis_node 5038  read json INFO     update sms of existing user
+2020-03-02 09:13:33,747 analysis_node 5038  update sms INFO     making connection with db
+2020-03-02 09:13:33,750 analysis_node 5038  update sms INFO     connection success
+2020-03-02 09:13:34,713 analysis_node 5038  update sms INFO     update messages of existing user in mongodb
+2020-03-02 09:13:34,714 analysis_node 5038  Classifier INFO     Multiprocessing start for Credit card Classifier
+2020-03-02 09:13:34,714 analysis_node 5038  Classifier INFO     Multiprocessing start for Loan Classifier
+2020-03-02 09:13:34,714 analysis_node 5038  loan INFO     get all loan messages
+2020-03-02 09:13:34,714 analysis_node 5038  loan INFO     remove all loan promotional messages
+2020-03-02 09:13:34,714 analysis_node 5038  loan INFO     get all loan due overdue messages
+2020-03-02 09:13:34,715 analysis_node 5038  loan due overdue INFO     Loan due overdue sms extracted successfully
+2020-03-02 09:13:34,715 analysis_node 5038  loan due overdue INFO     Append name in result dictionary for loan due overdue
+2020-03-02 09:13:34,716 analysis_node 5038  loan due overdue INFO     Appended name in result dictionary for loan due overdue successfully
+2020-03-02 09:13:34,716 analysis_node 5038  loan due overdue INFO     Dropped sms other than loan due overdue
+2020-03-02 09:13:34,718 analysis_node 5038  loan INFO     Converting loan due overdue dataframe into json
+2020-03-02 09:13:34,718 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:13:34,719 analysis_node 5038  loan INFO     get all loan approval messages
+2020-03-02 09:13:34,719 analysis_node 5038  loan approval INFO     Loan approval sms extracted successfully
+2020-03-02 09:13:34,719 analysis_node 5038  loan approval INFO     Append name in result dictionary for loan approval
+2020-03-02 09:13:34,720 analysis_node 5038  loan approval INFO     Appended name in result dictionary for loan approval successfully
+2020-03-02 09:13:34,720 analysis_node 5038  loan approval INFO     Dropped sms other than loan approval
+2020-03-02 09:13:34,722 analysis_node 5038  loan INFO     Converting loan approval dataframe into json
+2020-03-02 09:13:34,722 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:13:34,722 analysis_node 5038  loan INFO     get all loan rejection messages
+2020-03-02 09:13:34,722 analysis_node 5038  loan rejection INFO     Loan rejection sms extracted successfully
+2020-03-02 09:13:34,722 analysis_node 5038  loan rejection INFO     Append name in result dictionary for loan rejction
+2020-03-02 09:13:34,723 analysis_node 5038  loan rejection INFO     Appended name in result dictionary for loan rejection successfully
+2020-03-02 09:13:34,723 analysis_node 5038  loan rejection INFO     Dropped sms other than loan rejection
+2020-03-02 09:13:34,724 analysis_node 5038  loan INFO     Converting loan rejection dataframe into json
+2020-03-02 09:13:34,725 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:13:34,725 analysis_node 5038  loan INFO     get all loan disbursed messages
+2020-03-02 09:13:34,725 analysis_node 5038  loan disbursed INFO     Loan disbursed sms extracted successfully
+2020-03-02 09:13:34,725 analysis_node 5038  loan disbursed INFO     Append name in result dictionary for loan disbursed
+2020-03-02 09:13:34,725 analysis_node 5038  loan disbursed INFO     Appended name in result dictionary for loan disbursed successfully
+2020-03-02 09:13:34,725 analysis_node 5038  loan disbursed INFO     Dropped sms other than loan disbursed
+2020-03-02 09:13:34,727 analysis_node 5038  loan INFO     Converting loan disbursed dataframe into json
+2020-03-02 09:13:34,727 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:13:34,727 analysis_node 5038  loan INFO     get all loan closed messages
+2020-03-02 09:13:34,727 analysis_node 5038  loan closed messages INFO     Loan closed sms extracted successfully
+2020-03-02 09:13:34,727 analysis_node 5038  loan closed messages INFO     Append name in result dictionary for loan closed
+2020-03-02 09:13:34,728 analysis_node 5038  loan closed messages INFO     Appended name in result dictionary for loan closed successfully
+2020-03-02 09:13:34,728 analysis_node 5038  loan closed messages INFO     Dropped sms other than loan closed
+2020-03-02 09:13:34,729 analysis_node 5038  loan INFO     Converting loan closed dataframe into json
+2020-03-02 09:13:34,730 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:13:34,730 analysis_node 5038  loan INFO     making connection with db
+2020-03-02 09:13:34,731 analysis_node 5038  loan INFO     connection success
+2020-03-02 09:13:35,420 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:13:35,496 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:13:35,573 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:13:35,655 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:13:35,731 analysis_node 5038  loan INFO     Timestamp of User updated
+2020-03-02 09:13:35,807 analysis_node 5038  Classifier INFO     Multiprocessing start for Transaction Classifier
+2020-03-02 09:13:35,808 analysis_node 5038  cleaning INFO     thread for cleaning 1 starts
+2020-03-02 09:13:35,809 analysis_node 5038  cleaning INFO     thread for cleaning 1 complete
+2020-03-02 09:13:35,812 analysis_node 5038  cleaning INFO     thread for cleaning 3 starts
+2020-03-02 09:13:35,839 analysis_node 5038  cleaning INFO     thread for cleaning 3 complete
+2020-03-02 09:13:35,877 analysis_node 5038  cleaning INFO     thread for cleaning 2 starts
+2020-03-02 09:13:35,885 analysis_node 5038  cleaning INFO     thread for cleaning 2 complete
+2020-03-02 09:13:35,885 analysis_node 5038  cleaning INFO     important loan messages saved
+2020-03-02 09:13:35,885 analysis_node 5038  cleaning INFO     Appended name in result dictionary for transaction messages successfully
+2020-03-02 09:13:35,886 analysis_node 5038  cleaning INFO     Dropped sms other than transaction
+2020-03-02 09:13:35,886 analysis_node 5038  cleaning INFO     Converting transaction messages dataframe into json
+2020-03-02 09:13:35,886 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:13:35,886 analysis_node 5038  cleaning INFO     making connection with db
+2020-03-02 09:13:35,887 analysis_node 5038  cleaning INFO     connection success
+2020-03-02 09:13:36,609 analysis_node 5038  cleaning INFO     Timestamp of User updated
+2020-03-02 09:13:36,687 analysis_node 5038  Classifier INFO     process 1 starts
+2020-03-02 09:13:36,691 analysis_node 5038  Classifier INFO     process 2 starts
+2020-03-02 09:13:36,697 analysis_node 5038  Classifier INFO     process 3 starts
+2020-03-02 09:13:36,707 analysis_node 5038  credit card INFO     Removing credit card promotional sms
+2020-03-02 09:13:36,707 analysis_node 5038  credit card INFO     Extracting Credit card sms
+2020-03-02 09:13:36,708 analysis_node 5038  cc messages INFO     Credit card sms extracted successfully
+2020-03-02 09:13:36,708 analysis_node 5038  cc messages INFO     appending name in result credit card dictionary
+2020-03-02 09:13:36,713 analysis_node 5038  cc messages INFO     Appended name in result credit card dictionary successfully
+2020-03-02 09:13:36,713 analysis_node 5038  cc messages INFO     Dropped sms other than credit card
+2020-03-02 09:13:36,718 analysis_node 5038  credit card INFO     Converting credit card dataframe into json
+2020-03-02 09:13:36,718 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:13:36,718 analysis_node 5038  credit card INFO     making connection with db
+2020-03-02 09:13:36,721 analysis_node 5038  credit card INFO     connection success
+2020-03-02 09:13:37,405 analysis_node 5038  credit card INFO     Timestamp of User updated
+2020-03-02 09:13:37,492 analysis_node 5038  Classifier INFO     process 1 complete
+2020-03-02 09:13:37,493 analysis_node 5038  Classifier INFO     process 2 complete
+2020-03-02 09:13:37,493 analysis_node 5038  Classifier INFO     process 3 complete
+2020-03-02 09:13:37,493 analysis_node 5038  Classifier INFO     extra classifier called
+2020-03-02 09:13:37,494 analysis_node 5038  extra INFO     Generating dictionary of extra sms
+2020-03-02 09:13:37,499 analysis_node 5038  convert json INFO     data converted into json successfully
+2020-03-02 09:13:37,499 analysis_node 5038  extra INFO     Converted extra sms into JSON obj
+2020-03-02 09:13:37,499 analysis_node 5038  extra INFO     making connection with db
+2020-03-02 09:13:37,502 analysis_node 5038  extra INFO     connection success
+2020-03-02 09:13:38,206 analysis_node 5038  extra INFO     Timestamp of User updated
+2020-03-02 09:13:38,291 analysis_node 5038  bl0 INFO     started making balanced sheet
+2020-03-02 09:13:38,292 analysis_node 5038  create transaction_balanced_sheet INFO     Connecting to db
+2020-03-02 09:13:39,007 analysis_node 5038  create transaction_balanced_sheet INFO     conncection successful
+2020-03-02 09:13:39,007 analysis_node 5038  create transaction_balanced_sheet INFO     Converting file to dataframe
+2020-03-02 09:13:39,010 analysis_node 5038  create transaction_balanced_sheet INFO     Conversion Successful
+2020-03-02 09:13:39,010 analysis_node 5038  create transaction_balanced_sheet INFO     Starting to process data
+2020-03-02 09:13:39,010 analysis_node 5038  process_data INFO     initializing
+2020-03-02 09:13:39,025 analysis_node 5038  process_data INFO     initialization done
+2020-03-02 09:13:39,026 analysis_node 5038  process_data INFO     starting header split
+2020-03-02 09:13:39,029 analysis_node 5038  process_data INFO     header_split complete
+2020-03-02 09:13:39,029 analysis_node 5038  process_data INFO     starting account number fetch
+2020-03-02 09:13:39,032 analysis_node 5038  process_data INFO     account number fetch complete
+2020-03-02 09:13:39,032 analysis_node 5038  process_data INFO     starting vpa fetch
+2020-03-02 09:13:39,036 analysis_node 5038  process_data INFO     vpa fetch complete
+2020-03-02 09:13:39,036 analysis_node 5038  process_data INFO     starting upi ref fetch
+2020-03-02 09:13:39,038 analysis_node 5038  process_data INFO     upi ref fetch complete
+2020-03-02 09:13:39,038 analysis_node 5038  process_data INFO     starting debit amount fetch
+2020-03-02 09:13:39,040 analysis_node 5038  process_data INFO     debit amount fetch complete
+2020-03-02 09:13:39,040 analysis_node 5038  process_data INFO     starting credit amount fetch 
+2020-03-02 09:13:39,042 analysis_node 5038  process_data INFO     credit amount fetch complete
+2020-03-02 09:13:39,042 analysis_node 5038  process_data INFO     starting neft_no fetch
+2020-03-02 09:13:39,044 analysis_node 5038  process_data INFO     neft no fetch complete
+2020-03-02 09:13:39,044 analysis_node 5038  process_data INFO     starting neft keyword fetch
+2020-03-02 09:13:39,046 analysis_node 5038  process_data INFO     neft keyword fetch complete
+2020-03-02 09:13:39,046 analysis_node 5038  process_data INFO     starting imps keyword fetch
+2020-03-02 09:13:39,047 analysis_node 5038  process_data INFO     neft keyword fetch complete
+2020-03-02 09:13:39,047 analysis_node 5038  process_data INFO     starting imps reference fetch
+2020-03-02 09:13:39,049 analysis_node 5038  process_data INFO     imps reference fetch complete
+2020-03-02 09:13:39,049 analysis_node 5038  process_data INFO     starting upi keyword fetch
+2020-03-02 09:13:39,051 analysis_node 5038  process_data INFO     upi keyword fetch complete
+2020-03-02 09:13:39,051 analysis_node 5038  process_data INFO     starting balance fetch
+2020-03-02 09:13:39,053 analysis_node 5038  process_data INFO     balance fetch complete
+2020-03-02 09:13:39,053 analysis_node 5038  process_data INFO     starting get_time fetch
+2020-03-02 09:13:39,055 analysis_node 5038  process_data INFO     get_time fetch complete
+2020-03-02 09:13:39,055 analysis_node 5038  process_data INFO     starting date time thread
+2020-03-02 09:13:39,055 analysis_node 5038  date_time_thread INFO     starting get date func
+2020-03-02 09:13:39,058 analysis_node 5038  date_time_thread INFO     starting get date func successful
+2020-03-02 09:13:39,058 analysis_node 5038  date_time_thread INFO     starting get time func
+2020-03-02 09:13:39,060 analysis_node 5038  date_time_thread INFO     starting get time func successful
+2020-03-02 09:13:39,060 analysis_node 5038  date_time_thread INFO     starting get date time func
+2020-03-02 09:13:39,063 analysis_node 5038  date_time_thread INFO     starting get date time func successful
+2020-03-02 09:13:39,063 analysis_node 5038  process_data INFO     data time threa complete
+2020-03-02 09:13:39,063 analysis_node 5038  create transaction_balanced_sheet INFO     Processing of data Successful
+2020-03-02 09:13:39,063 analysis_node 5038  create transaction_balanced_sheet INFO     Starting validation
+2020-03-02 09:13:39,063 analysis_node 5038  create transaction_balanced_sheet INFO     Checking Upi ref number
+2020-03-02 09:13:39,066 analysis_node 5038  create transaction_balanced_sheet INFO     Upi Ref Check of data Successful
+2020-03-02 09:13:39,066 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Imps Ref Check
+2020-03-02 09:13:39,068 analysis_node 5038  create transaction_balanced_sheet INFO     Imps Ref Check Successful
+2020-03-02 09:13:39,068 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Time based Checking
+2020-03-02 09:13:39,077 analysis_node 5038  create transaction_balanced_sheet INFO     Time Based Check Successful
+2020-03-02 09:13:39,078 analysis_node 5038  create transaction_balanced_sheet INFO     Starting Time Check DBS
+2020-03-02 09:13:39,079 analysis_node 5038  create transaction_balanced_sheet INFO     Time Based Check DBS Successful
+2020-03-02 09:13:39,079 analysis_node 5038  create transaction_balanced_sheet INFO     Finding Monthly Credit Sum
+2020-03-02 09:13:39,084 analysis_node 5038  create transaction_balanced_sheet INFO     Monthly credit sum successful
+2020-03-02 09:13:39,084 analysis_node 5038  create transaction_balanced_sheet INFO     Finding Monthly Debit Sum
+2020-03-02 09:13:39,087 analysis_node 5038  create transaction_balanced_sheet INFO     Monthly debit sum successful
+2020-03-02 09:13:39,669 analysis_node 5038  bl0 INFO     balanced sheet complete
+2020-03-02 09:13:39,670 analysis_node 5038  bl0 INFO     starting loan analysis
+2020-03-02 09:13:39,674 analysis_node 5038  get_customer_data INFO     Successfully established the connection with DataBase
+2020-03-02 09:13:40,633 analysis_node 5038  get_customer_data INFO     Found loan closed data
+2020-03-02 09:13:40,638 analysis_node 5038  get_customer_data INFO     Found loan disbursed data
+2020-03-02 09:13:40,641 analysis_node 5038  get_customer_data INFO     Found loan overdue data
+2020-03-02 09:13:40,644 analysis_node 5038  get_customer_data INFO     Found loan approval data
+2020-03-02 09:13:40,727 analysis_node 5038  preprocessing INFO     Data Splitted by headers
+2020-03-02 09:13:40,728 analysis_node 5038  preprocessing INFO     Data Grouped by Sender-Name
+2020-03-02 09:13:40,729 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:13:40,730 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:13:40,730 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,731 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,731 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,732 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,734 analysis_node 5038  preprocessing INFO     disbursed message found
+2020-03-02 09:13:40,735 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:13:40,735 analysis_node 5038  preprocessing INFO     due message found
+2020-03-02 09:13:40,735 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:13:40,736 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:13:40,737 analysis_node 5038  preprocessing INFO     loan closed messagge found
+2020-03-02 09:13:40,737 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:13:40,738 analysis_node 5038  preprocessing INFO     due message found
+2020-03-02 09:13:40,738 analysis_node 5038  preprocessing INFO     Looking for overdue message
+2020-03-02 09:13:40,739 analysis_node 5038  preprocessing INFO     loan closed messagge found
+2020-03-02 09:13:40,739 analysis_node 5038  preprocessing INFO     iteration in sub messages starts
+2020-03-02 09:13:40,741 analysis_node 5038  preprocessing INFO     loan closed message found
+2020-03-02 09:13:40,742 analysis_node 5038  preprocessing INFO     Loan Closed!
+2020-03-02 09:13:40,742 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,742 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,743 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,744 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:13:40,744 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:13:40,744 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:13:40,744 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:13:40,745 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,746 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,746 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:13:40,747 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,750 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,752 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,755 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,755 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,756 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,757 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,758 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,759 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,759 analysis_node 5038  preprocessing INFO     iteration in messages starts
+2020-03-02 09:13:40,760 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:13:40,761 analysis_node 5038  preprocessing INFO     iteration in groups starts
+2020-03-02 09:13:40,761 analysis_node 5038  final_output INFO     no amount detect
+2020-03-02 09:13:40,762 analysis_node 5038  final_output INFO     Successfully connect to the database
+2020-03-02 09:13:41,551 analysis_node 5038  final_output INFO     Successfully upload result to the database
+2020-03-02 09:13:41,551 analysis_node 5038  bl0 INFO     loan analysis successsful
+2020-03-02 09:13:41,551 analysis_node 5038  bl0 INFO     starting salary analysis
+2020-03-02 09:13:41,552 analysis_node 5038  Salary Analysis INFO     Salary Analysis started
+2020-03-02 09:13:41,553 analysis_node 5038  Customer Salary INFO     Checking salary status
+2020-03-02 09:13:41,554 analysis_node 5038  Merge Data INFO     Merging the Transaction and Extra SMS
+2020-03-02 09:13:41,554 analysis_node 5038  Transaction Data INFO     Collecting SMS from Transaction Collection
+2020-03-02 09:13:41,555 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:13:42,257 analysis_node 5038  Merge Data INFO     Data fetched from Transaction collection
+2020-03-02 09:13:42,258 analysis_node 5038  Extra Data INFO     Collecting SMS from Extra Collection
+2020-03-02 09:13:42,258 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:13:43,141 analysis_node 5038  Merge Data INFO     Data fetched from Extra collection
+2020-03-02 09:13:43,143 analysis_node 5038  Customer Salary INFO     Data merged successfully
+2020-03-02 09:13:43,143 analysis_node 5038  Salary Check INFO     Salary Calculation Started
+2020-03-02 09:13:43,144 analysis_node 5038  Clean Debit INFO     Cleaning text data
+2020-03-02 09:13:43,151 analysis_node 5038  Clean Debit INFO     Cleaning completed
+2020-03-02 09:13:43,152 analysis_node 5038  Get Time INFO     Convert Timestamp To Datetime
+2020-03-02 09:13:43,153 analysis_node 5038  Get Epf Amount INFO     Epf Amount Calculation starts
+2020-03-02 09:13:43,159 analysis_node 5038  Get Epf Amount INFO     epf amount calculation completed
+2020-03-02 09:13:43,160 analysis_node 5038  Epf to Salary INFO     Salary Calculation from EPF Amount starts
+2020-03-02 09:13:43,163 analysis_node 5038  Epf to Salary INFO     Salary Calculation from EPF Amount complete
+2020-03-02 09:13:43,169 analysis_node 5038  Salary Check INFO     Finding salary from EPF keyword
+2020-03-02 09:13:43,169 analysis_node 5038  Salary Check INFO     found salary from EPF keyword
+2020-03-02 09:13:43,169 analysis_node 5038  Customer Salary INFO     salary calculated
+2020-03-02 09:13:43,169 analysis_node 5038  Connection INFO     Building connection
+2020-03-02 09:13:43,882 analysis_node 5038  Salary Analysis INFO     salary updated in database
+2020-03-02 09:13:43,958 analysis_node 5038  bl0 INFO     checking result salary and loan salary output
+2020-03-02 09:13:43,958 analysis_node 5038  bl0 INFO     checking result salary and loan salary output complete
+2020-03-02 09:13:43,958 analysis_node 5038  bl0 INFO     Starting Analysis
+2020-03-02 09:13:44,036 analysis_node 5038  bl0 INFO     analysis complete
