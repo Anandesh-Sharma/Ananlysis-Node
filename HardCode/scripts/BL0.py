@@ -338,6 +338,18 @@ def bl0(**kwargs):
     result_loan['result']['CURRENT_OPEN_AMOUNT'] = g
 
     logger.info('checking result salary and loan salary output complete')
+
+    logger.info('Checking if a person has done default')
+
+    if not result_loan['result']['PAY_WITHIN_30_DAYS']:
+        logger.info('defaulter on the basis of loan')
+        r={'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id,
+                'limit': -1, 'logic': 'BL0-loan'}
+        client.analysisresult.loan_bl0.update({'_id': user_id}, r, upsert=True)
+        client.close()
+        return r
+
+    logger.info('Not a defaulter')
     logger.info('Starting Analysis')
     salary_present = False
     if float(result_salary['salary']) > 0:
