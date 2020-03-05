@@ -1,5 +1,5 @@
 # import numpy as np
-# import pandas as pd
+#import pandas as pd
 # import os
 # from pymongo import MongoClient
 from .my_modules import *
@@ -388,7 +388,7 @@ def final_output(cust_id):
         'TOTAL_LOANS': 0,
         'PAY_WITHIN_30_DAYS': True,
         'CURRENT_OPEN_AMOUNT': [],
-        'MAX_AMOUNT': '',
+        'MAX_AMOUNT': -1,
         'empty': False
     }
 
@@ -414,10 +414,9 @@ def final_output(cust_id):
                 if days < 30:
                     report['CURRENT_OPEN'] += 1
                     try:
-                        report['CURRENT_OPEN_AMOUNT'].append(a[i][j]['loan_disbursed_amount'])
-                        report['CURRENT_OPEN_AMOUNT'].append(a[i][j]['loan_due_amount'])
-                        if report['CURRENT_OPEN_AMOUNT'][-1] == '':
-                            report['CURRENT_OPEN_AMOUNT'][-1] = 0
+                        report['CURRENT_OPEN_AMOUNT'].append(float(a[i][j]['loan_disbursed_amount']))
+                        report['CURRENT_OPEN_AMOUNT'].append(float(a[i][j]['loan_due_amount']))
+                        
                     except:
                         continue
             else:
@@ -434,7 +433,7 @@ def final_output(cust_id):
         # print(a[i][j]['closed_date'])
 
     try:
-        report['MAX_AMOUNT'] = max(li)
+        report['MAX_AMOUNT'] = float(max(li))
     except:
         logger.info('no amount detect')
         report['empty'] = True
