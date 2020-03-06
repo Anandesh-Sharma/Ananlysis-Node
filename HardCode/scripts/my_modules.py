@@ -255,7 +255,7 @@ def is_due(message):
         return False
 
 def due_date_extract(message):
-    date = ''
+    date = -1
     pattern_1 = r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*repayment.*\s([0-9]+)'       # group(1) for date and group(2) for amount
     pattern_2 = r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)'    # group(1) for date and group(2) for amount 
     pattern_3 = r'.*rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+).*'         # group(1) for amount and group(2) for date 
@@ -275,13 +275,13 @@ def due_date_extract(message):
     elif matcher_4 != None:
         date = str(matcher_4.group(1))
     else:
-        date = ''
+        date = -1
     return date                     
 
 
 
 def due_amount_extract(message):
-    amount = ''
+    amount = -1
     pattern_1 = r'.*payment.*rs\.?.*?([0-9]+).*due.*'       # group(1) for amount
     pattern_2 = r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)'    # group(1) for date and group(2) for amount 
     pattern_3 = r'.*rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+).*'       # group(1) for amount and group(2) for date
@@ -303,7 +303,9 @@ def due_amount_extract(message):
     elif matcher_4 != None:
         amount = str(matcher_4.group(1))
     elif matcher_5 != None:
-        amount = str(matcher_5.group(2))                
+        amount = str(matcher_5.group(2))
+    else:
+        amount = -1                    
         return amount         
 
 
@@ -324,6 +326,7 @@ def is_overdue(message):
         return False
 
 def extract_amount_from_overdue_message(message):
+    amount = -1
     pattern_1 = r'.*loan.*overdue.*repayable\sis\srs.\s?([0-9]+)'
     pattern_2 = r'.*loan.*rs\.\s([0-9]+).*overdue.*'
     pattern_3 = r'.*loan.*overdue.*repayment.*rs\.?\s([0-9]+)'
@@ -338,13 +341,13 @@ def extract_amount_from_overdue_message(message):
     elif matcher_3 != None:
         amount = int(matcher_3.group(1))    
     else:
-        amount = 0
+        amount = -1
     return amount 
 
 
 def overdue_amount_extract(data, overdue_first_date):
     INDEX = 0
-    amount = 0
+    amount = -1
     for i in range(data.shape[0]):
         iter_date = datetime.strptime(str(data['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
         
@@ -364,7 +367,7 @@ def overdue_amount_extract(data, overdue_first_date):
 
 
 def closed_amount_extract(message):
-    amount = '0'
+    amount = -1
     pattern1 = r'\spayment\s.*?(?:(?:[Rr][sS]|INR|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
     pattern2 = r'\spayment\sof\s([0-9]+\.[0-9]+)'
     pattern3 = r'payment.*?(?:(?:[Rr][sS]|INR|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
@@ -384,5 +387,5 @@ def closed_amount_extract(message):
     elif matcher4 != None:
         amount = str(matcher4.group(1))    
     else:
-        amount = '0'
+        amount = -1
     return amount  
