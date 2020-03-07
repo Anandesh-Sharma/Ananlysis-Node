@@ -9,7 +9,26 @@ def convert_to_df(user_id, file):
     data_dict, file_found = xmlparser.xml_parser(file)
     if file_found:
         try:
-            acc_details = data_dict['INProfileResponse']['CAIS_Account']['CAIS_Account_DETAILS']
+            try:
+                acc_details = data_dict['INProfileResponse']['CAIS_Account']['CAIS_Account_DETAILS']
+                try:
+                    score = data_dict['INProfileResponse']['SCORE']
+                    credit_score = score['BureauScore']
+                except:
+                    credit_score = ''
+            except:
+                d['written_amt_total'].append('')
+                d['written_amt_principal'].append('')
+                d['credit_score'].append(credit_score)
+                d['payment_history'].append('')
+                d['payment_rating'].append('')
+                d['account_type'].append('')
+                d['account_status'].append('')
+                df = pandas.DataFrame(d)
+                message = "SUCCESS"
+                response = {'status': True, 'data': df, 'message': message}
+                return response
+
             if type(acc_details) is list:
                 for i in range(0, len(acc_details)):
                     try:
