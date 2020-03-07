@@ -96,7 +96,8 @@ def credit(df, result, user_id, max_timestamp, new):
 
     if new:
         logger.info("New user checked")
-        db.creditcard.insert_one(data_credit)
+        #db.creditcard.insert_one(data_credit)
+        db.creditcard.update({"_id": int(user_id)}, {"sms": data_credit['sms'],"timestamp":data_credit['timestamp']},upsert=True)
         logger.info("Credit card sms of new user inserted successfully")
     else:
         for i in range(len(data_credit['sms'])):
