@@ -12,14 +12,35 @@ def convert_to_df(user_id, file):
             acc_details = data_dict['INProfileResponse']['CAIS_Account']['CAIS_Account_DETAILS']
             if type(acc_details) is list:
                 for i in range(0, len(acc_details)):
-                    amt_total = acc_details[i]['Written_Off_Amt_Total']
-                    amt_principal = acc_details[i]['Written_Off_Amt_Principal']
-                    score = data_dict['INProfileResponse']['SCORE']
-                    credit_score = score['BureauScore']
-                    pay_history = acc_details[i]['Payment_History_Profile']
-                    acc_type = acc_details[i]['Account_Type']
-                    pay_rating = acc_details[i]['Payment_Rating']
-                    account_status = acc_details[i]['Account_Status']
+                    try:
+                        amt_total = acc_details[i]['Written_Off_Amt_Total']
+                    except:
+                        amt_total = ''
+                    try:
+                        amt_principal = acc_details[i]['Written_Off_Amt_Principal']
+                    except:
+                        amt_principal = ''
+                    try:
+                        score = data_dict['INProfileResponse']['SCORE']
+                        credit_score = score['BureauScore']
+                    except:
+                        credit_score = ''
+                    try:
+                        pay_history = acc_details[i]['Payment_History_Profile']
+                    except:
+                        pay_history = ''
+                    try:
+                        acc_type = acc_details[i]['Account_Type']
+                    except:
+                        acc_type = ''
+                    try:
+                        pay_rating = acc_details[i]['Payment_Rating']
+                    except:
+                        pay_rating = ''
+                    try:
+                        account_status = acc_details[i]['Account_Status']
+                    except:
+                        account_status = ''
                     d['written_amt_total'].append(amt_total)
                     d['written_amt_principal'].append(amt_principal)
                     d['credit_score'].append(credit_score)
@@ -28,14 +49,35 @@ def convert_to_df(user_id, file):
                     d['account_type'].append(acc_type)
                     d['account_status'].append(str(account_status))
             else:
-                amt_total = acc_details['Written_Off_Amt_Total']
-                amt_principal = acc_details['Written_Off_Amt_Principal']
-                score = data_dict['INProfileResponse']['SCORE']
-                credit_score = score['BureauScore']
-                pay_history = acc_details['Payment_History_Profile']
-                acc_type = acc_details['Account_Type']
-                pay_rating = acc_details['Payment_Rating']
-                account_status = acc_details['Account_Status']
+                try:
+                    amt_total = acc_details['Written_Off_Amt_Total']
+                except:
+                    amt_total = ''
+                try:
+                    amt_principal = acc_details['Written_Off_Amt_Principal']
+                except:
+                    amt_principal = ''
+                try:
+                    score = data_dict['INProfileResponse']['SCORE']
+                    credit_score = score['BureauScore']
+                except:
+                    credit_score = ''
+                try:
+                    pay_history = acc_details['Payment_History_Profile']
+                except:
+                    pay_history = ''
+                try:
+                    acc_type = acc_details['Account_Type']
+                except:
+                    acc_type = ''
+                try:
+                    pay_rating = acc_details['Payment_Rating']
+                except:
+                    pay_rating = ''
+                try:
+                    account_status = acc_details['Account_Status']
+                except:
+                    account_status = ''
                 d['written_amt_total'].append(amt_total)
                 d['written_amt_principal'].append(amt_principal)
                 d['credit_score'].append(credit_score)
