@@ -76,7 +76,8 @@ def get_cibil_analysis(request):
         response_bl0 = BL0.bl0(cibil_xml=cibil_df, cibil_score=cibil_score, sms_json=sms_json, user_id=user_id
                                , new_user=new_user, list_loans=all_loan_amount,
                                current_loan=current_loan_amount)
-    except Exception:
+    except Exception as e:
+        logger.exception(e)
         response_bl0 = Analysis.analyse(user_id=user_id, current_loan=current_loan_amount, cibil_df=cibil_df,
                                         new_user=new_user
                                         , cibil_score=cibil_score)
