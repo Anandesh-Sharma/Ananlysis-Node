@@ -1,4 +1,4 @@
-def salary_analysis_function(salary, list_loans, current_loan, user_id):
+def salary_analysis_function(salary, list_loans, current_loan, user_id,new_user):
     if 10000 < salary < 15000:
         a = 3000
     elif salary >= 15000:
@@ -7,6 +7,8 @@ def salary_analysis_function(salary, list_loans, current_loan, user_id):
         a = -1
     if a < current_loan:
         a = current_loan
+    if a>3000 and new_user:
+        a=3000
     return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
             'limit': a, 'logic': 'BL0-salary'}
 
@@ -35,6 +37,8 @@ def loan_analysis_function(loan_dict, list_loans, current_loan, user_id):
                 a = current_loan
         else:
             a = -1
+    if a>3000 and new_user:
+        a=3000
     if a == -1:
         return {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
                 'limit': a, 'logic': 'BL0-loan'}
@@ -116,6 +120,8 @@ def loan_salary_analysis_function(salary, loan_dict, list_loans, current_loan, u
             a = -1
     else:
         a = -1
+    if a>3000 and new_user:
+        a=3000
     if a == -1:
         return {'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id,
                 'limit': a, 'logic': 'BL0-loan-salary'}
