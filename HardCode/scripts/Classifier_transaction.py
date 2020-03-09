@@ -330,7 +330,8 @@ def cleaning(df, result, user_id, max_timestamp,new):
 
     if new:
         logger.info("New user checked")
-        db.transaction.insert_one(data_transaction)
+        #db.transaction.insert_one(data_transaction)
+        db.transaction.update({"_id": int(user_id)}, {'sms': data_transaction['sms'][i],"timestamp":data_transaction['timestamp']},upsert=True)
         logger.info("All transaction messages of new user inserted successfully")
     else:
         for i in range(len(data_transaction['sms'])):

@@ -361,15 +361,15 @@ def bl0(**kwargs):
 
     if salary_present and loan_present:
         result = loan_salary_analysis_function(result_salary['salary'], result_loan['result'], list_loans, current_loan,
-                                               user_id)
+                                               user_id,new_user)
         client.analysisresult.loan_salary_bl0.update({'_id': user_id}, result, upsert=True)
 
     elif loan_present:
-        result = loan_analysis_function(result_loan['result'], list_loans, current_loan, user_id)
+        result = loan_analysis_function(result_loan['result'], list_loans, current_loan, user_id,new_user)
         client.analysisresult.loan_bl0.update({'_id': user_id}, result, upsert=True)
 
     elif salary_present:
-        result = salary_analysis_function(float(result_salary['salary']), list_loans, current_loan, user_id)
+        result = salary_analysis_function(float(result_salary['salary']), list_loans, current_loan, user_id, new_user)
         client.analysisresult.salary_bl0.update({'_id': user_id}, result, upsert=True)
 
     else:

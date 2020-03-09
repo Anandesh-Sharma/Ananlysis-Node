@@ -146,7 +146,8 @@ def get_credit_amount(data):
         try:
             data['credit_amount'][i] = float(str(amount).replace(",", ""))
         except Exception as e:
-            print(e)
+            logger.exception("msg")
+           # print(e)
 
 
 def get_debit_amount(data):
@@ -269,7 +270,8 @@ def get_time_message(data):
                 time = datetime.strptime(time, '%H:%M:%S').time()
                 data['time,message'][i] = time
             except Exception as e:
-                logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher1:' + str(e))
+                logger.exception("msg")
+                #logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher1:' + str(e))
 
         elif matcher_2 is not None:
             try:
@@ -293,7 +295,8 @@ def get_time_message(data):
                 time = datetime.strptime(time, '%H:%M:%S').time()
                 data['time,message'][i] = time
             except Exception as e:
-                logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + str(e))
+                logger.exception("msg")
+                #logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + str(e))
 
         elif matcher_3 is not None:
             try:
@@ -310,7 +313,8 @@ def get_time_message(data):
                 time = datetime.strptime(time, '%H:%M:%S').time()
                 data['time,message'][i] = time
             except Exception as e:
-                logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + str(e))
+                logger.exception("msg")
+               # logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + str(e))
 
 
 def get_date_time(data):
@@ -327,7 +331,8 @@ def get_date_time(data):
         try:
             data['date_time'][i] = datetime.combine(date, time)
         except Exception as e:
-            print(e)
+            logger.exception("msg")
+            #print(e)
 
 
 def balance_check(data):
@@ -360,60 +365,60 @@ def get_time(data):
 
 def date_time_thread(data, user_id):
     logger = logger_1('date_time_thread', user_id)
-    logger.info('starting get date func')
+    #logger.info('starting get date func')
     get_date_message(data)
-    logger.info('starting get date func successful')
+    #logger.info('starting get date func successful')
 
-    logger.info('starting get time func')
+  # logger.info('starting get time func')
     get_time_message(data)
-    logger.info('starting get time func successful')
+  #  logger.info('starting get time func successful')
 
-    logger.info('starting get date time func')
+   # logger.info('starting get date time func')
     get_date_time(data)
-    logger.info('starting get date time func successful')
+   # logger.info('starting get date time func successful')
 
 
 def process_data(data, user_id):
     logger = logger_1('process_data', user_id)
     try:
-        logger.info('initializing')
+     #   logger.info('initializing')
         initialize(data)
-        logger.info('initialization done')
+     #   logger.info('initialization done')
         data.sort_values(by='timestamp', inplace=True)
         data.reset_index(drop=True, inplace=True)
-        logger.info('starting header split')
+      #  logger.info('starting header split')
         get_header_splitter(data)
-        logger.info('header_split complete')
+      #  logger.info('header_split complete')
 
-        logger.info('starting account number fetch')
+     #   logger.info('starting account number fetch')
         get_account_number(data)
-        logger.info('account number fetch complete')
+      #  logger.info('account number fetch complete')
 
-        logger.info('starting vpa fetch')
+       # logger.info('starting vpa fetch')
         get_vpa(data)
-        logger.info('vpa fetch complete')
+       # logger.info('vpa fetch complete')
 
-        logger.info('starting upi ref fetch')
+       # logger.info('starting upi ref fetch')
         get_upi_ref_no(data)
-        logger.info('upi ref fetch complete')
+       # logger.info('upi ref fetch complete')
 
-        logger.info('starting debit amount fetch')
+       # logger.info('starting debit amount fetch')
         get_debit_amount(data)
-        logger.info('debit amount fetch complete')
+       # logger.info('debit amount fetch complete')
 
-        logger.info('starting credit amount fetch ')
+       # logger.info('starting credit amount fetch ')
         get_credit_amount(data)
-        logger.info('credit amount fetch complete')
+       # logger.info('credit amount fetch complete')
 
-        logger.info('starting neft_no fetch')
+       # logger.info('starting neft_no fetch')
         get_neft_no(data)
-        logger.info('neft no fetch complete')
+       # logger.info('neft no fetch complete')
 
-        logger.info('starting neft keyword fetch')
+       # logger.info('starting neft keyword fetch')
         get_neft_keyword(data)
-        logger.info('neft keyword fetch complete')
+       # logger.info('neft keyword fetch complete')
 
-        logger.info('starting imps keyword fetch')
+       # logger.info('starting imps keyword fetch')
         get_imps_keyword(data)
         logger.info('neft keyword fetch complete')
 
