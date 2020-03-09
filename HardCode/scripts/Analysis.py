@@ -12,7 +12,7 @@ def analyse(**kwargs):
     if cibil_df['status'] == False and new_user:
         try:
             with open(f'logs/{user_id}.txt', 'w') as f:
-            f.write(f"DF failed for userid {user_id}")
+                f.write(f"DF failed for userid {user_id}")
         except Exception as e:
             print(f"XML df creation failed with error {e}")
         print(f"DF failed for userid {user_id}")
