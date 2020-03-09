@@ -97,6 +97,8 @@ def get_creditcard_promotion(data):
         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None or matcher_13 != None or \
                 matcher_14 is not None or matcher_15 is not None or matcher_16 is not None or matcher_17 is not None or matcher_18 is not None or matcher_19 is not None\
                 or matcher_20 is not None or matcher_21 is not None or matcher_22 is not None or matcher_23 is not None:
+            pass
+        else:
             credit_messages_filtered.append(i)
     return credit_messages_filtered
 
