@@ -63,13 +63,13 @@ def read_json(sms_json, user_id):
     df.reset_index(inplace=True, drop=True)
     columns_titles = ['body', 'timestamp', 'sender', 'read']
     df = df.reindex(columns=columns_titles)
-    for i in range(df.shape[0]):
+    """for i in range(df.shape[0]):
         x = df['sender'][i].split('-')
         if len(x)==2:
             df['sender'][i] = x[-1].upper()
         else:
             df['sender'][i] = x[0][2:].upper()
-    df.reset_index(drop=True,inplace=True)
+    df.reset_index(drop=True,inplace=True)"""
     max_timestamp = max(df['timestamp'])
     logger.info("update sms of existing user")
     result = update_sms(df, user_id, max_timestamp)
