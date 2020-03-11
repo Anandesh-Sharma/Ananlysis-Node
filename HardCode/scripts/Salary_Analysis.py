@@ -177,31 +177,46 @@ def salary_check(data, id):
     df_salary = data.groupby(grouper)['salary'].max()
 
    # logger.info('Finding salary from EPF keyword')
-    if df_salary[-1] != 0:
-        salary = df_salary[-1]
-        keyword = "EPF"
-        var1 = False
-       # logger.info("found salary from EPF keyword")
+    if len(df_salary)<2:
+        if df_salary[-1] != 0:
+            salary = df_salary[-1]
+            keyword = "EPF"
+            var1 = False
+        # logger.info("found salary from EPF keyword")
 
-    elif df_salary[-2] != 0:
-        salary = df_salary[-2]
-        keyword = "EPF"
-        var1 = False
-        #logger.info("found salary from EPF keyword")
+    else:
+        if df_salary[-1] != 0:
+            salary = df_salary[-1]
+            keyword = "EPF"
+            var1 = False
+        # logger.info("found salary from EPF keyword")
+
+        elif df_salary[-2] != 0:
+            salary = df_salary[-2]
+            keyword = "EPF"
+            var1 = False
+            #logger.info("found salary from EPF keyword")
 
     if var1:
         try:
            # logger.info('Finding salary from Salary keyword')
             data = get_salary(data, id)
             df_d_salary = data.groupby(grouper)['direct_sal'].max()
-            if (df_d_salary[-1] != 0):
-                salary = df_d_salary[-1]
-                keyword = "Salary"
-               # logger.info("salary found from salary keyword")
-            elif (df_d_salary[-2] != 0):
-                salary = df_d_salary[-2]
-                keyword = "Salary"
-               # logger.info("salary found from salary keyword")
+            if len(df_d_salary)<2:
+
+                if (df_d_salary[-1] != 0):
+                    salary = df_d_salary[-1]
+                    keyword = "Salary"
+
+            else:
+                if (df_d_salary[-1] != 0):
+                    salary = df_d_salary[-1]
+                    keyword = "Salary"
+                # logger.info("salary found from salary keyword")
+                elif (df_d_salary[-2] != 0):
+                    salary = df_d_salary[-2]
+                    keyword = "Salary"
+                # logger.info("salary found from salary keyword")
 
         except:
             salary = None
@@ -354,7 +369,7 @@ def customer_salary(id):
             #logger.info("salary calculated")
     except Exception as e:
         #logger.critical("salary not found")
-        logger.exception(e)
+        #logger.exception(e)
         status = False
         message = "ERROR"
         salary_status["salary"] = "0"
