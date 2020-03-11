@@ -7,6 +7,7 @@ from .Util import logger_1, conn
 # from glob import glob
 from datetime import datetime
 # import re
+import datetime
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -42,11 +43,11 @@ def get_customer_data(cust_id):
         overdue_data = db.loandueoverdue
         closed_data = db.loanclosed
         # trans_data = db.transaction
-        closed = closed_data.find_one({"_id": cust_id})
-        # trans = trans_data.find_one({"_id": cust_id})
-        disbursed = disbursed_data.find_one({"_id": cust_id})
-        approval = approval_data.find_one({"_id": cust_id})
-        overdue = overdue_data.find_one({"_id": cust_id})
+        closed = closed_data.find_one({"cust_id": cust_id})
+        # trans = trans_data.find_one({"cust_id": cust_id})
+        disbursed = disbursed_data.find_one({"cust_id": cust_id})
+        approval = approval_data.find_one({"cust_id": cust_id})
+        overdue = overdue_data.find_one({"cust_id": cust_id})
         loan_data = pd.DataFrame(columns=['sender', 'body', 'timestamp', 'read'])
         if closed != None:
             closed_df = pd.DataFrame(closed['sms'])
@@ -444,8 +445,8 @@ def final_output(cust_id):
     except Exception as e:
         logger.critical('Unable to connect to the database')
         return {'status': False, "message": e}
-
-    client.loan_analysis.loan_output.update({'_id': cust_id}, report, upsert=True)
+    report['modified_at']=datetime.datetime.now().timestamp()
+    client.loan_analysis.loan_output.update({"cust_id": cust_id}, report, upsert=True)
     client.close()
     logger.info('Successfully upload result to the database')
     script_status = {'status': True, "message": "successfull", 'result': report}

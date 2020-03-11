@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 # import json
 from pymongo import MongoClient
 from .Util import logger_1
+import datetime
 
 
 def clean_debit(data, id):
@@ -253,7 +254,7 @@ def transaction(id):
     connect = conn(id)
     transaction = connect.messagecluster.transaction
 
-    file1 = transaction.find_one({"_id": id})
+    file1 = transaction.find_one({"cust_id": id})
     if file1 == None:
         #logger.info("Transaction data not available")
         return {'status': False, 'message': "file doesn't exist"}
@@ -273,7 +274,7 @@ def extra(id):
 
     connect = conn(id)
     extra = connect.messagecluster.extra
-    file2 = extra.find_one({"_id": id})
+    file2 = extra.find_one({"cust_id": id})
     y = pd.DataFrame(file2["sms"])
 
     epf = []
@@ -375,7 +376,7 @@ def customer_salary(id):
         salary_status["salary"] = "0"
         keyword = None
 
-    salary_status["_id"] = id
+    salary_status["cust_id"] = id
     salary_status["status"] = status
     salary_status["message"] = message
     salary_status["keyword"] = keyword
@@ -399,7 +400,7 @@ def salary_analysis(id):
 
     if salary_dict['status'] == False:
         connect = conn(id)
-        key = {"_id": id}
+        key = {"cust_id": id}
         db = connect.analysis.salary
         db.update(key, salary_dict, upsert=True)
         #logger.info("salary updated in database")
@@ -407,10 +408,10 @@ def salary_analysis(id):
         return {'status': True, 'message': 'success', 'salary': 0, 'keyword': ""}
     else:
 
-        json_sal = {"_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword']}
-        salary_dict = {"_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword'],
+        json_sal = {"cust_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword']}
+        salary_dict = {"cust_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword'],
                        'status': True, 'message': salary_dict["message"]}
-        key = {"_id": id}
+        key = {"cust_id": id}
         connect = conn(id)
 
         db = connect.analysis.salary

@@ -5,6 +5,7 @@ import multiprocessing
 from .Util import conn, read_json, convert_json, logger_1
 import json
 import warnings
+import datetime
 warnings.filterwarnings("ignore")
 
 
@@ -51,15 +52,15 @@ def extra(df, user_id, result, max_timestamp, new):
     if new:
         logger.info("New user checked")
         # db.extra.insert_one(data_extra)
-        db.extra.update({"_id": int(user_id)}, {"sms": data_extra['sms'],"timestamp":data_extra['timestamp']},upsert=True)
+        db.extra.update({"cust_id": int(user_id)}, {"sms": data_extra['sms'],"timestamp":data_extra['timestamp'],'modified_at':datetime.datetime.now().timestamp()},upsert=True)
         logger.info("Extra sms of new user inserted successfully")
 
     else:
         for i in range(len(data_extra['sms'])):
             logger.info("Old User checked")
-            db.extra.update({"_id": int(user_id)}, {"$push": {"sms": data_extra['sms'][i]}})
+            db.extra.update({"cust_id": int(user_id)}, {"$push": {"sms": data_extra['sms'][i]}})
             logger.info("Extra sms of old user updated successfully")
-        db.extra.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
+        db.extra.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':datetime.datetime.now().timestamp()}}, upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
 

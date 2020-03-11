@@ -1,4 +1,5 @@
 import re
+import datetime
 import threading
 from .Util import conn, read_json, convert_json, logger_1
 import warnings
@@ -332,13 +333,13 @@ def cleaning(df, result, user_id, max_timestamp,new):
     if new:
         logger.info("New user checked")
         #db.transaction.insert_one(data_transaction)
-        db.transaction.update({"_id": int(user_id)}, {'sms': data_transaction['sms'],"timestamp":data_transaction['timestamp']},upsert=True)
+        db.transaction.update({"cust_id": int(user_id)}, {'sms': data_transaction['sms'],'modified_at':datetime.datetime.now().timestamp(),"timestamp":data_transaction['timestamp']},upsert=True)
         logger.info("All transaction messages of new user inserted successfully")
     else:
         for i in range(len(data_transaction['sms'])):
             logger.info("Old User checked")
-            db.transaction.update({"_id": int(user_id)}, {"$push": {'sms': data_transaction['sms'][i]}})
+            db.transaction.update({"cust_id": int(user_id)}, {"$push": {'sms': data_transaction['sms'][i]}})
             logger.info("transaction sms of old user updated successfully")
-        db.transaction.update_one({"_id": int(user_id)}, {"$set": {"timestamp": max_timestamp}}, upsert=True)
+        db.transaction.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':datetime.datetime.now().timestamp()}}, upsert=True)
         logger.info("Timestamp of User updated")
     client.close()

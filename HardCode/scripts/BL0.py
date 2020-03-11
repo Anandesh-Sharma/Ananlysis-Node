@@ -9,6 +9,7 @@ from .transaction_balance_sheet import create_transaction_balanced_sheet
 import warnings
 import json
 import pandas as pd
+import datetime;
 
 warnings.filterwarnings("ignore")
 
@@ -84,7 +85,8 @@ def bl0(**kwargs):
         r = {'status': False, 'message': 'current_loan not int type', 'onhold': None, 'user_id': user_id,
              'limit': None,
              'logic': 'BL0'}
-        client.analysisresult.bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.bl0.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -92,7 +94,8 @@ def bl0(**kwargs):
         logger.error('list_loan not list type')
         r = {'status': False, 'message': 'list_loan not list type', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        client.analysisresult.bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.bl0.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -101,7 +104,8 @@ def bl0(**kwargs):
             logger.error('list_loan items not int type')
             r = {'status': False, 'message': 'list_loan items not int type', 'onhold': None, 'user_id': user_id,
                  'limit': None, 'logic': 'BL0'}
-            client.analysisresult.bl0.update({'_id': user_id}, r, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.bl0.update({'cust_id': user_id}, r, upsert=True)
             client.close()
             return r
 
@@ -111,7 +115,8 @@ def bl0(**kwargs):
         logger.error('new_user not boolean type')
         r = {'status': False, 'message': 'new_user not boolean type', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        client.analysisresult.bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.bl0.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -123,11 +128,13 @@ def bl0(**kwargs):
         r = result
         if not result['status']:
             logger.debug('classification of messages failed')
-            client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
             r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                         new_user=new_user
                         , cibil_score=cibil_score)
-            client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
             client.close()
             return r
 
@@ -135,37 +142,44 @@ def bl0(**kwargs):
         logger.debug('classification of messages failed')
         r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
-        client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
     logger.info('started making balanced sheet')
     result = create_transaction_balanced_sheet(user_id)
     if not result['status']:
-        client.analysisresult.exception_bl0.update({'_id': user_id}, result, upsert=True)
+        result['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.exception_bl0.update({'cust_id': user_id}, result, upsert=True)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return result
     res = json.dumps(result)
     res = json.loads(res)
     try:
-        client.analysis.balance_sheet.update({'_id': user_id}, res, upsert=True)
+        res['modified_at']=datetime.datetime.now().timestamp()
+        client.analysis.balance_sheet.update({'cust_id': user_id}, res, upsert=True)
         logger.info('balanced sheet complete')
     except Exception as e:
         logger.critical('error in connection')
         r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
-        client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -178,22 +192,26 @@ def bl0(**kwargs):
             result_loan['user_id'] = user_id
             result_loan['limit'] = None
             result_loan['logic'] = 'BL0'
-            client.analysisresult.exception_bl0.update({'_id': user_id}, result_loan, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.exception_bl0.update({'cust_id': user_id}, result_loan, upsert=True)
             r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                         new_user=new_user
                         , cibil_score=cibil_score)
-            client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
             client.close()
             return result_loan
     except Exception as e:
         logger.debug('error in loan analysis')
         r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
-        client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -201,11 +219,13 @@ def bl0(**kwargs):
         logger.debug('error in loan analysis')
         r = {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -221,22 +241,26 @@ def bl0(**kwargs):
             result_salary['logic'] = 'BL0'
             r = {'status': True, 'message': None, 'onhold': None, 'user_id': user_id, 'limit': None,
                  'logic': 'BL0'}
-            client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
             r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                         new_user=new_user
                         , cibil_score=cibil_score)
-            client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
             client.close()
             return result_salary
     except Exception as e:
         logger.debug('error in salary analysis')
         r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
-        client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -244,11 +268,13 @@ def bl0(**kwargs):
         logger.debug('error in salary analysis')
         r = {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -264,11 +290,13 @@ def bl0(**kwargs):
             logger.debug('error occured during checking bounced cheque messages')
             r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                  'logic': 'BL0'}
-            client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
             r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                         new_user=new_user
                         , cibil_score=cibil_score)
-            client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
             client.close()
             return r
 
@@ -278,7 +306,8 @@ def bl0(**kwargs):
             a = {'_id': user_id, 'onhold': True, 'limit': -1, 'logic': 'BL0'}
             r = {'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id, 'limit': -1,
                  'logic': 'BL0'}
-            client.analysisresult.chequebounce_bl0.update({'_id': user_id}, r, upsert=True)
+            r['modified_at']=datetime.datetime.now().timestamp()
+            client.analysisresult.chequebounce_bl0.update({'cust_id': user_id}, r, upsert=True)
             client.close()
             return r
 
@@ -287,11 +316,13 @@ def bl0(**kwargs):
         logger.caution("loan dict doesn't contain loan result")
         r = {'status': False, 'message': 'result_loan not dict type', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -299,11 +330,13 @@ def bl0(**kwargs):
         logger.caution("loan dict result doesn't contain empty")
         r = {'status': False, 'message': 'empty key not present in loan dict', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        client.analysisresult.exception_bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
     try:
@@ -345,7 +378,8 @@ def bl0(**kwargs):
         logger.info('defaulter on the basis of loan')
         r={'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id,
                 'limit': -1, 'logic': 'BL0-loan'}
-        client.analysisresult.loan_bl0.update({'_id': user_id}, r, upsert=True)
+        r['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.loan_bl0.update({'cust_id': user_id}, r, upsert=True)
         client.close()
         return r
 
@@ -362,27 +396,32 @@ def bl0(**kwargs):
     if salary_present and loan_present:
         result = loan_salary_analysis_function(result_salary['salary'], result_loan['result'], list_loans, current_loan,
                                                user_id,new_user)
-        client.analysisresult.loan_salary_bl0.update({'_id': user_id}, result, upsert=True)
+        result['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.loan_salary_bl0.update({'cust_id': user_id}, result, upsert=True)
 
     elif loan_present:
         result = loan_analysis_function(result_loan['result'], list_loans, current_loan, user_id,new_user)
-        client.analysisresult.loan_bl0.update({'_id': user_id}, result, upsert=True)
+        result['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.loan_bl0.update({'cust_id': user_id}, result, upsert=True)
 
     elif salary_present:
         result = salary_analysis_function(float(result_salary['salary']), list_loans, current_loan, user_id, new_user)
-        client.analysisresult.salary_bl0.update({'_id': user_id}, result, upsert=True)
+        result['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.salary_bl0.update({'cust_id': user_id}, result, upsert=True)
 
     else:
         result = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                          new_user=new_user
                          , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, result, upsert=True)
+        result['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, result, upsert=True)
 
     if int(result['limit']) < 3000:
         result = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                          new_user=new_user
                          , cibil_score=cibil_score)
-        client.analysisresult.cibil.update({'_id': user_id}, result, upsert=True)
+        result['modified_at']=datetime.datetime.now().timestamp()
+        client.analysisresult.cibil.update({'cust_id': user_id}, result, upsert=True)
 
     logger.info("analysis complete")
     client.close()
