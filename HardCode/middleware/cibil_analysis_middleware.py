@@ -5,6 +5,7 @@ from HardCode.scripts import BL0
 from HardCode.scripts import Analysis
 from HardCode.scripts.apicreditdata import convert_to_df
 import json
+import pandas
 from analysisnode.settings import BASE_DIR
 
 @api_view(['POST'])
@@ -70,6 +71,10 @@ def get_cibil_analysis(request):
         response_parser = convert_to_df(user_id, cibil_xml)
         if response_parser["status"]:
             cibil_df = response_parser
+        else:
+            d = {'written_amt_total': [], 'written_amt_principal': [], 'credit_score': [], 'payment_rating': [],
+         'payment_history': [], 'account_type': [], 'account_status': []}
+            cibil_df = pandas.DataFrame(d)
 
     try:
 

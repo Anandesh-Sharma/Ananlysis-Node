@@ -50,7 +50,8 @@ def extra(df, user_id, result, max_timestamp, new):
 
     if new:
         logger.info("New user checked")
-        db.extra.insert_one(data_extra)
+        # db.extra.insert_one(data_extra)
+        db.extra.update({"_id": int(user_id)}, {"sms": data_extra['sms'],"timestamp":data_extra['timestamp']},upsert=True)
         logger.info("Extra sms of new user inserted successfully")
 
     else:
@@ -99,7 +100,6 @@ def classifier(sms_json, user_id):
         return result1
     df = result1['df']
     new = result1['new']
-
     max_timestamp = result1['timestamp']
     logger.info("Multiprocessing start for Credit card Classifier")
     try:
@@ -143,7 +143,6 @@ def classifier(sms_json, user_id):
         logger.debug("error in transaction classifier")
         return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
-    
     try:
         p1.join()
     except Exception as e:
