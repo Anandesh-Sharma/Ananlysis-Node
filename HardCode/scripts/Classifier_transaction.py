@@ -133,6 +133,7 @@ def cleaning(df, result, user_id, max_timestamp,new):
                                             'shoekn',
                                             'lzypay',
                                             'mobikw',
+                                            'mdlife',
                                             'notice',
                                             'payltr',
                                             'salary',
