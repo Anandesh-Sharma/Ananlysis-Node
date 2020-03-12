@@ -446,6 +446,7 @@ def final_output(cust_id):
         logger.critical('Unable to connect to the database')
         return {'status': False, "message": e}
     report['modified_at']=datetime.datetime.now().timestamp()
+    report['cust_id']=cust_id
     client.loan_analysis.loan_output.update({"cust_id": cust_id}, report, upsert=True)
     client.close()
     logger.info('Successfully upload result to the database')

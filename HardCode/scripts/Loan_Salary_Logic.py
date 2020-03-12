@@ -13,7 +13,7 @@ def salary_analysis_function(salary, list_loans, current_loan, user_id,new_user)
             'limit': a, 'logic': 'BL0-salary'}
 
 
-def loan_analysis_function(loan_dict, list_loans, current_loan, user_id):
+def loan_analysis_function(loan_dict, list_loans, current_loan, user_id,new_user):
     a = -1
     if loan_dict['PAY_WITHIN_30_DAYS']:
         max_amount = loan_dict['MAX_AMOUNT']
@@ -47,7 +47,7 @@ def loan_analysis_function(loan_dict, list_loans, current_loan, user_id):
                 'limit': a, 'logic': 'BL0-loan'}
 
 
-def loan_salary_analysis_function(salary, loan_dict, list_loans, current_loan, user_id):
+def loan_salary_analysis_function(salary, loan_dict, list_loans, current_loan, user_id,new_user):
     if loan_dict['PAY_WITHIN_30_DAYS']:
         if 10000 < float(salary) < 15000:
             max_amount = float(loan_dict['MAX_AMOUNT'])

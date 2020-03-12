@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 # from datetime import timedelta
 # import json
 from pymongo import MongoClient
-from .Util import logger_1
+from .Util import logger_1,conn
 import datetime
 
 
@@ -224,20 +224,6 @@ def salary_check(data, id):
     return {'status': True, 'message': 'success', "salary": salary, "keyword": keyword}
 
 
-def conn(id):
-    """ This function create connection with mongodb database
-    Parameters:
-      Output: Returns connection object
-     """
-
-    logger = logger_1('Connection', id)
-    # logger.info('Building connection')
-
-    connection = MongoClient(
-        "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false", maxPoolSize=200)
-    return connection
-
-
 def transaction(id):
     ''' This function connects with collection in mongodb database
       Parameters:
@@ -251,7 +237,7 @@ def transaction(id):
     logger = logger_1('Transaction Data', id)
     # logger.info('Collecting SMS from Transaction Collection')
 
-    connect = conn(id)
+    connect = conn()
     transaction = connect.messagecluster.transaction
 
     file1 = transaction.find_one({"cust_id": id})
@@ -272,7 +258,7 @@ def extra(id):
     logger = logger_1('Extra Data', id)
     # logger.info('Collecting SMS from Extra Collection')
 
-    connect = conn(id)
+    connect = conn()
     extra = connect.messagecluster.extra
     file2 = extra.find_one({"cust_id": id})
     y = pd.DataFrame(file2["sms"])
@@ -401,6 +387,7 @@ def salary_analysis(id):
     if salary_dict['status'] == False:
         connect = conn(id)
         key = {"cust_id": id}
+        salary_dict['cust_id']=id
         db = connect.analysis.salary
         db.update(key, salary_dict, upsert=True)
         # logger.info("salary updated in database")
@@ -412,9 +399,10 @@ def salary_analysis(id):
         salary_dict = {"cust_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword'],
                        'status': True, 'message': salary_dict["message"]}
         key = {"cust_id": id}
-        connect = conn(id)
+        connect = conn()
 
         db = connect.analysis.salary
+        json_sal['cust_id']=id
         db.update(key, json_sal, upsert=True)
         # logger.info("salary updated in database")
         connect.close()

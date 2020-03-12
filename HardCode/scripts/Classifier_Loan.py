@@ -276,7 +276,7 @@ def get_over_due(data, loan_messages_filtered, result, name):
 
 
 def loan(df, result, user_id, max_timestamp, new):
-    logger = logger_1("loan", user_id)
+    logger = logger_1("loan_classifier", user_id)
     logger.info("get all loan messages")
     loan_messages = get_loan_messages(df)
     logger.info("remove all loan promotional messages")
@@ -319,11 +319,11 @@ def loan(df, result, user_id, max_timestamp, new):
 
     if new:
         logger.info("New user checked")
-        db.loanclosed.update({"cust_id": int(user_id)}, {'timestamp':data_closed['timestamp'],'modified_at':datetime.datetime.now().timestamp(), "sms":data_closed['sms'] },upsert=True)
-        db.loanapproval.update({"cust_id": int(user_id)}, {'timestamp':data_approve['timestamp'],'modified_at':datetime.datetime.now().timestamp(), "sms":data_approve['sms'] },upsert=True)
-        db.loanrejection.update({"cust_id": int(user_id)}, {'timestamp':data_reject['timestamp'],'modified_at':datetime.datetime.now().timestamp() , "sms":data_reject['sms']},upsert=True)
-        db.disbursed.update({"cust_id": int(user_id)}, {'timestamp':data_disburse['timestamp'],'modified_at':datetime.datetime.now().timestamp(), "sms":data_disburse['sms'] },upsert=True)
-        db.loandueoverdue.update({"cust_id": int(user_id)}, {'timestamp':data_over_due['timestamp'],'modified_at':datetime.datetime.now().timestamp(), "sms":data_over_due['sms'] },upsert=True)
+        db.loanclosed.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_closed['timestamp'],'modified_at':datetime.datetime.now().timestamp(), "sms":data_closed['sms'] },upsert=True)
+        db.loanapproval.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_approve['timestamp'],'modified_at':datetime.datetime.now().timestamp(), "sms":data_approve['sms'] },upsert=True)
+        db.loanrejection.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_reject['timestamp'],'modified_at':datetime.datetime.now().timestamp() , "sms":data_reject['sms']},upsert=True)
+        db.disbursed.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_disburse['timestamp'],'modified_at':datetime.datetime.now().timestamp(), "sms":data_disburse['sms'] },upsert=True)
+        db.loandueoverdue.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_over_due['timestamp'],'modified_at':datetime.datetime.now().timestamp(), "sms":data_over_due['sms'] },upsert=True)
         logger.info("All loan messages of new user inserted successfully")
     else:
 

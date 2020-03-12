@@ -52,7 +52,7 @@ def extra(df, user_id, result, max_timestamp, new):
     if new:
         logger.info("New user checked")
         # db.extra.insert_one(data_extra)
-        db.extra.update({"cust_id": int(user_id)}, {"sms": data_extra['sms'],"timestamp":data_extra['timestamp'],'modified_at':datetime.datetime.now().timestamp()},upsert=True)
+        db.extra.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),"sms": data_extra['sms'],"timestamp":data_extra['timestamp'],'modified_at':datetime.datetime.now().timestamp()},upsert=True)
         logger.info("Extra sms of new user inserted successfully")
 
     else:
