@@ -6,7 +6,7 @@ from HardCode.scripts import Analysis
 from HardCode.scripts.apicreditdata import convert_to_df
 import json
 import pandas
-from analysisnode.settings import BASE_DIR
+# from analysisnode.settings import BASE_DIR
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
@@ -85,11 +85,4 @@ def get_cibil_analysis(request):
         response_bl0 = Analysis.analyse(user_id=user_id, current_loan=current_loan_amount, cibil_df=cibil_df,
                                         new_user=new_user
                                         , cibil_score=cibil_score)
-        exc = logger.exception(e)
-        
-        f=open(f"{BASE_DIR}\HardCode\scripts\elogs.txt","a")
-        f.write(str(exc))
-        f.close()
-
-
     return Response(response_bl0, 200)
