@@ -38,6 +38,7 @@ def cheque_user_inner(data, user_id):
     pattern_10 = 'auto-debit attempt failed'
     pattern_11 = 'cheque bounces'
     pattern_12 = 'cheque return charges is still unpaid'
+    pattern_13 = 'returned unpaid'
     bounce = []
     for i, row in data.iterrows():
         message = str(data['body'][i]).lower()
@@ -53,8 +54,9 @@ def cheque_user_inner(data, user_id):
         matcher_10 = re.search(pattern_10, message)
         matcher_11 = re.search(pattern_11, message)
         matcher_12 = re.search(pattern_12, message)
+        matcher_13 = re.search(pattern_13,message)
 
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None:
+        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None or matcher_13 is None:
             bounce.append((datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S').month, row['sender'][3:]))
     logger.info('cheque user inner successfully executed')
     return bounce
