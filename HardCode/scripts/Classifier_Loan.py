@@ -190,6 +190,9 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
     pattern_7 = 'low credit score'
     pattern_8 = 'declined\?'
     pattern_9 = 'not.*?approved'
+    pattern_10 = '.*regret.*'   
+    pattern_11 = 'application.*closed.*'
+    pattern_12 = '.*application.*re-apply.*'
 
     for i in range(data.shape[0]):
         if i not in loan_messages_filtered:
@@ -205,9 +208,12 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         matcher_7 = re.search(pattern_7, message)
         matcher_8 = re.search(pattern_8, message)
         matcher_9 = re.search(pattern_9, message)
+        matcher_10 = re.search(pattern_10, message)
+        matcher_11 = re.search(pattern_11, message)
+        matcher_12 = re.search(pattern_12, message)
 
-        if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_9 != None:
-            if matcher_6 == None and matcher_7 == None and matcher_8 == None and matcher_5 == None:
+        if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_9 != None or matcher_10 != None or matcher_11 != None or matcher_12 != None:
+            if matcher_6 == None and matcher_7 == None and matcher_8 == None and matcher_5 == None :
                 selected_rows.append(i)
     logger.info("Loan rejection sms extracted successfully")
 
