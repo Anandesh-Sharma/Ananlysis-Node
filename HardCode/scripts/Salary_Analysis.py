@@ -386,7 +386,7 @@ def salary_analysis(id):
         connect = conn(id)
         key = {"cust_id": id}
         salary_dict['cust_id']=id
-        salary_dict['modified_at']= str(datetime.datetime.now())
+        salary_dict['modified_at']= str(datetime.now())
         db = connect.analysis.salary
         db.update(key, salary_dict, upsert=True)
         # logger.info("salary updated in database")
@@ -401,7 +401,7 @@ def salary_analysis(id):
         connect = conn()
 
         db = connect.analysis.salary
-        json_sal['modified_at']= str(datetime.datetime.now())
+        json_sal['modified_at']= str(datetime.now())
         db.update(key, json_sal, upsert=True)
         # logger.info("salary updated in database")
         connect.close()

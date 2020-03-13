@@ -9,16 +9,13 @@ def analyse(**kwargs):
     # new cibil logic is implemented on new customers only
     # Dheeraj told to run it on 700-900 but we are giving loans to 750 < !!
     # dataframe throws error ## manually parse xml
-    print(cibil_df)
     if cibil_df['status'] == False and new_user:
-        print(222222222222)
         try:
             with open(f'logs/{user_id}.txt', 'w') as f:
                 f.write(f"DF failed for userid {user_id}")
         except Exception as e:
             print(f"XML df creation failed with error {e}")
         print(f"DF failed for userid {user_id}")
-    print(11111111111)
     if cibil_df['status'] and new_user and 700 < cibil_score < 750:
         cibil_df = cibil_df['data']
         Account_Status = dict()

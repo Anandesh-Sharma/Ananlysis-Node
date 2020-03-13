@@ -407,7 +407,7 @@ def final_output(cust_id):
                     li.append(a[i][j]['loan_due_amount'])
                 except:
                     continue
-            now = str(datetime.now())
+            now = datetime.now()
             days = (now - pd.to_datetime(a[i][j]['disbursed_date'])).days
             # print(days)
             if a[i][j]['closed_date'] == -1:
