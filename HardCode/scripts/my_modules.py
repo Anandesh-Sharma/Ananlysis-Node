@@ -92,6 +92,7 @@ def is_disbursed(message):
         return True
     else:
         return False
+
 def disbursed_amount_extract(message):
     amount = 0
     pattern_1 = r'.*loan.*approved.*rs\.?\s([0-9]+).*'
@@ -237,7 +238,7 @@ def due_amount_extract(message):
         amount = str(matcher_5.group(2))
     else:
         amount = -1                    
-        return amount         
+    return amount         
 
 
 
@@ -252,7 +253,7 @@ def is_overdue(message):
     matcher_2 = re.search(pattern_2, message)
     matcher_3 = re.search(pattern_3, message)
     if matcher_1 != None or matcher_2 != None or matcher_3 != None:
-            return True
+        return True
     else:
         return False
 
