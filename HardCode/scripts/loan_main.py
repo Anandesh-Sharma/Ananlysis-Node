@@ -447,7 +447,8 @@ def final_output(cust_id):
         return {'status': False, "message": e}
     report['modified_at']= str(timezone.localize(datetime.now()))
     report['cust_id']=cust_id
-    client.loan_analysis.loan_output.update({"cust_id": cust_id}, report, upsert=True)
+    client.loan_analysis.loan_output.insert_one(report)
+    del report['_id']
     client.close()
     logger.info('Successfully upload result to the database')
     script_status = {'status': True, "message": "successfull", 'result': report}
