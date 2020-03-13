@@ -69,12 +69,7 @@ def get_cibil_analysis(request):
     cibil_df = {'status': False, 'data': None, 'message': 'None'}
     if cibil_xml:
         response_parser = convert_to_df(user_id, cibil_xml)
-        if response_parser["status"]:
-            cibil_df = response_parser
-        else:
-            d = {'written_amt_total': [], 'written_amt_principal': [], 'credit_score': [], 'payment_rating': [],
-         'payment_history': [], 'account_type': [], 'account_status': []}
-            cibil_df = pandas.DataFrame(d)
+        cibil_df = response_parser
 
     try:
 
