@@ -407,7 +407,7 @@ def final_output(cust_id):
                     li.append(a[i][j]['loan_due_amount'])
                 except:
                     continue
-            now = datetime.now()
+            now = str(datetime.now())
             days = (now - pd.to_datetime(a[i][j]['disbursed_date'])).days
             # print(days)
             if not isinstance(a[i][j]['closed_date'], datetime):
@@ -428,7 +428,9 @@ def final_output(cust_id):
                     li.append(a[i][j]['loan_closed_amount'])
                     li.append(a[i][j]['loan_due_amount'])
                 except:
-                    continuedatetime
+                    continue
+    try:
+        report['MAX_AMOUNT']=float(max(li))
     except:
         logger.info('no amount detect')
         report['empty'] = True
@@ -439,7 +441,7 @@ def final_output(cust_id):
     except Exception as e:
         logger.critical('Unable to connect to the database')
         return {'status': False, "message": e}
-    report['modified_at']= datetime.now().timestamp()
+    report['modified_at']= str(datetime.now())
     report['cust_id']=cust_id
     client.loan_analysis.loan_output.update({"cust_id": cust_id}, report, upsert=True)
     client.close()

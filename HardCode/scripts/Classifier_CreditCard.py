@@ -1,7 +1,7 @@
 import re
 from .Util import conn, read_json, convert_json, logger_1
 import warnings
-import datetime
+from datetime import datetime
 warnings.filterwarnings("ignore")
 
 
@@ -138,13 +138,13 @@ def credit(df, result, user_id, max_timestamp, new):
     if new:
         logger.info("New user checked")
         #db.creditcard.insert_one(data_credit)
-        db.creditcard.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),"sms": data_credit['sms'],'modified_at':datetime.datetime.now().timestamp(),"timestamp":data_credit['timestamp']},upsert=True)
+        db.creditcard.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),"sms": data_credit['sms'],'modified_at':str(datetime.now()),"timestamp":data_credit['timestamp']},upsert=True)
         logger.info("Credit card sms of new user inserted successfully")
     else:
         for i in range(len(data_credit['sms'])):
             logger.info("Old User checked")
             db.creditcard.update({"cust_id": int(user_id)}, {"$push": {"sms": data_credit['sms'][i]}})
             logger.info("Credit card sms of old user updated successfully")
-        db.creditcard.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':datetime.datetime.now().timestamp()}}, upsert=True)
+        db.creditcard.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now())}}, upsert=True)
         logger.info("Timestamp of User updated")
     client.close()

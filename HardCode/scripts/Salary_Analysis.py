@@ -6,8 +6,6 @@ from datetime import datetime, timedelta
 # import json
 from pymongo import MongoClient
 from .Util import logger_1,conn
-import datetime
-
 
 def clean_debit(data, id):
     """This code drops the rows for debited messages and bhanix finance company messages.
@@ -388,6 +386,7 @@ def salary_analysis(id):
         connect = conn(id)
         key = {"cust_id": id}
         salary_dict['cust_id']=id
+        salary_dict['modified_at']= str(datetime.datetime.now())
         db = connect.analysis.salary
         db.update(key, salary_dict, upsert=True)
         # logger.info("salary updated in database")
@@ -402,7 +401,7 @@ def salary_analysis(id):
         connect = conn()
 
         db = connect.analysis.salary
-        json_sal['cust_id']=id
+        json_sal['modified_at']= str(datetime.datetime.now())
         db.update(key, json_sal, upsert=True)
         # logger.info("salary updated in database")
         connect.close()
