@@ -2,6 +2,7 @@ import pandas as pd
 # import numpy as np
 import regex as re
 from datetime import datetime, timedelta
+import pytz
 # from datetime import timedelta
 # import json
 from pymongo import MongoClient
@@ -384,11 +385,11 @@ def salary_analysis(id):
 
     if salary_dict['status'] == False:
         connect = conn(id)
-        key = {"cust_id": id}
         salary_dict['cust_id']=id
-        salary_dict['modified_at']= str(datetime.now())
+        salary_dict['modified_at']= str(datetime.now(pytz.timezone('Asia/Kolkata')))
         db = connect.analysis.salary
-        db.update(key, salary_dict, upsert=True)
+        db.insert_one(salary_dict)
+        del salary_dict['_id']
         # logger.info("salary updated in database")
         connect.close()
         return {'status': True, 'message': 'success', 'salary': 0, 'keyword': ""}
@@ -397,12 +398,12 @@ def salary_analysis(id):
         json_sal = {"cust_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword']}
         salary_dict = {"cust_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword'],
                        'status': True, 'message': salary_dict["message"]}
-        key = {"cust_id": id}
         connect = conn()
 
         db = connect.analysis.salary
-        json_sal['modified_at']= str(datetime.now())
-        db.update(key, json_sal, upsert=True)
+        json_sal['modified_at']= str(datetime.now(pytz.timezone('Asia/Kolkata')))
+        db.insert_one(json_sal)
+        del json_sal['_id']
         # logger.info("salary updated in database")
         connect.close()
 

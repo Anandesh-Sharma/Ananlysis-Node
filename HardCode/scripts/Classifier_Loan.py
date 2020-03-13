@@ -2,6 +2,7 @@ import re
 from .Util import conn, read_json, convert_json, logger_1
 import warnings
 from datetime import datetime
+import pytz
 warnings.filterwarnings("ignore")
 
 
@@ -329,11 +330,11 @@ def loan(df, result, user_id, max_timestamp, new):
 
     if new:
         logger.info("New user checked")
-        db.loanclosed.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_closed['timestamp'],'modified_at':str(datetime.now()), "sms":data_closed['sms'] },upsert=True)
-        db.loanapproval.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_approve['timestamp'],'modified_at':str(datetime.now()), "sms":data_approve['sms'] },upsert=True)
-        db.loanrejection.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_reject['timestamp'],'modified_at':str(datetime.now()) , "sms":data_reject['sms']},upsert=True)
-        db.disbursed.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_disburse['timestamp'],'modified_at':str(datetime.now()), "sms":data_disburse['sms'] },upsert=True)
-        db.loandueoverdue.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_over_due['timestamp'],'modified_at':str(datetime.now()), "sms":data_over_due['sms'] },upsert=True)
+        db.loanclosed.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_closed['timestamp'],'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))), "sms":data_closed['sms'] },upsert=True)
+        db.loanapproval.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_approve['timestamp'],'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))), "sms":data_approve['sms'] },upsert=True)
+        db.loanrejection.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_reject['timestamp'],'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))) , "sms":data_reject['sms']},upsert=True)
+        db.disbursed.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_disburse['timestamp'],'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))), "sms":data_disburse['sms'] },upsert=True)
+        db.loandueoverdue.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'timestamp':data_over_due['timestamp'],'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))), "sms":data_over_due['sms'] },upsert=True)
         logger.info("All loan messages of new user inserted successfully")
     else:
 
@@ -341,30 +342,30 @@ def loan(df, result, user_id, max_timestamp, new):
             logger.info("Old User checked")
             db.loanapproval.update({"cust_id": int(user_id)}, {"$push": {"sms": data_approve['sms'][i]}})
             logger.info("loan approval sms of old user updated successfully")
-        db.loanapproval.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now())}}, upsert=True)
+        db.loanapproval.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))}}, upsert=True)
         logger.info("Timestamp of User updated")
         for i in range(len(data_reject['sms'])):
             logger.info("Old User checked")
             db.loanrejection.update({"cust_id": int(user_id)}, {"$push": {"sms": data_reject['sms'][i]}})
             logger.info("loan rejection sms of old user updated successfully")
-        db.loanrejection.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now())}}, upsert=True)
+        db.loanrejection.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))}}, upsert=True)
         logger.info("Timestamp of User updated")
         for i in range(len(data_disburse['sms'])):
             logger.info("Old User checked")
             db.disbursed.update({"cust_id": int(user_id)}, {"$push": {"sms": data_disburse['sms'][i]}})
             logger.info("loan disbursed sms of old user updated successfully")
-        db.disbursed.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now())}}, upsert=True)
+        db.disbursed.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))}}, upsert=True)
         logger.info("Timestamp of User updated")
         for i in range(len(data_over_due['sms'])):
             logger.info("Old User checked")
             db.loandueoverdue.update({"cust_id": int(user_id)}, {"$push": {"sms": data_over_due['sms'][i]}})
             logger.info("loan due overdue sms of old user updated successfully")
-        db.loandueoverdue.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now())}}, upsert=True)
+        db.loandueoverdue.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))}}, upsert=True)
         logger.info("Timestamp of User updated")
         for i in range(len(data_closed['sms'])):
             logger.info("Old User checked")
             db.loanclosed.update({"cust_id": int(user_id)}, {"$push": {"sms": data_closed['sms'][i]}})
             logger.info("loan closed sms of old user updated successfully")
-        db.loanclosed.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now())}}, upsert=True)
+        db.loanclosed.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))}}, upsert=True)
         logger.info("Timestamp of User updated")
     client.close()

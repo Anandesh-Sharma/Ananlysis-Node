@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+import pytz
 import threading
 from .Util import conn, read_json, convert_json, logger_1
 import warnings
@@ -333,13 +334,13 @@ def cleaning(df, result, user_id, max_timestamp,new):
     if new:
         logger.info("New user checked")
         #db.transaction.insert_one(data_transaction)
-        db.transaction.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'sms': data_transaction['sms'],'modified_at':str(datetime.now()),"timestamp":data_transaction['timestamp']},upsert=True)
+        db.transaction.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'sms': data_transaction['sms'],'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))),"timestamp":data_transaction['timestamp']},upsert=True)
         logger.info("All transaction messages of new user inserted successfully")
     else:
         for i in range(len(data_transaction['sms'])):
             logger.info("Old User checked")
             db.transaction.update({"cust_id": int(user_id)}, {"$push": {'sms': data_transaction['sms'][i]}})
             logger.info("transaction sms of old user updated successfully")
-        db.transaction.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now())}}, upsert=True)
+        db.transaction.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))}}, upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
