@@ -414,7 +414,7 @@ def final_output(cust_id):
             disbursed_date = timezone.localize(pd.to_datetime(a[i][j]['disbursed_date']))
             days = (now - disbursed_date).days
             # print(days)
-            if not isinstance(a[i][j]['closed_date'], datetime):
+            if a[i][j]['closed_date'] == -1:
                 if days < 30:
                     report['CURRENT_OPEN'] += 1
                     try:

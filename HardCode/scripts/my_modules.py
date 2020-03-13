@@ -18,13 +18,11 @@ def sms_header_splitter(data):
     data['Sender-Name'] = np.nan
 
     for i in range(len(data)):
-        #x = data['sender'][i]
-        x = data['sender'][i].split('-')
-        #data['Sender-Name'][i] = x[2 : ].upper()
-        data['Sender-Name'][i] = x[-1].upper()
+        data['sender'][i] = data['sender'][i].replace('-', '')
+        data["sender"][i] = data["sender"][i][2:]
+        data['Sender-Name'][i] = data['sender'][i]
     data.drop(['sender'], axis=1, inplace=True)
-    return data
-
+    return dataa
 
 def grouping(data):
     """
@@ -62,7 +60,6 @@ def is_approval(message):
         return True
     else:
         return False
-
 
 def is_disbursed(message):
     """
@@ -109,7 +106,6 @@ def disbursed_amount_extract(message):
         amount = 0
     return amount          
     
-
 def is_closed(message):
     """
     This funtion checks if the message is of closed or not.
@@ -125,7 +121,7 @@ def is_closed(message):
     pattern_3 = r'(.*)?paid(.*)?successfully(.*)?'
     pattern_4 = r'(.*)?paid\sback(.*)?relax(.*)?'
     pattern_5 = r'payment.*?(?:(?:[Rr][sS]|INR|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
-    pattern_6 = r'.*successfully\sreceived\spayment.*rs\.\s([0-9]+).*'
+    pattern_6 = r'.*successfully\sreceived\spayment.*rs\.\s([0-9]{2,5}).**'
 
     matcher_1 = re.search(pattern_1, message)
     matcher_2 = re.search(pattern_2, message)
@@ -140,13 +136,12 @@ def is_closed(message):
     else:
         return False
 
-
 def closed_amount_extract(message):
     amount = -1
     pattern1 = r'\spayment\s.*?(?:(?:[Rr][sS]|INR|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
     pattern2 = r'\spayment\sof\s([0-9]+\.[0-9]+)'
     pattern3 = r'payment.*?(?:(?:[Rr][sS]|INR|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
-    pattern4 = r'.*successfully\sreceived\spayment.*rs\.\s([0-9]+).*'
+    pattern4 = r'.*successfully\sreceived\spayment.*rs\.\s([0-9]{2,5}).**'
 
     matcher1 = re.search(pattern1, message)
     matcher2 = re.search(pattern2, message)
@@ -165,7 +160,6 @@ def closed_amount_extract(message):
         amount = -1
     return amount          
  
-
 def is_due(message):
     pattern_1 = r'.*payment.*rs\.?.*?([0-9]+).*due.*'       # group(1) for amount
     pattern_2 = r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)'    # group(1) for date and group(2) for amount 
@@ -210,8 +204,6 @@ def due_date_extract(message):
         date = -1
     return date                     
 
-
-
 def due_amount_extract(message):
     amount = -1
     pattern_1 = r'.*payment.*rs\.?.*?([0-9]+).*due.*'       # group(1) for amount
@@ -239,8 +231,6 @@ def due_amount_extract(message):
     else:
         amount = -1                    
     return amount         
-
-
 
 def is_overdue(message):
     
