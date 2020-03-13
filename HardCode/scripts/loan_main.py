@@ -7,7 +7,6 @@ from .Util import logger_1, conn
 # from glob import glob
 from datetime import datetime
 # import re
-import datetime
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -166,7 +165,7 @@ def preprocessing(cust_id):
                     logger.info("disbursed message found")
                     individual_loan_details['disbursed_date'] = str(grp['timestamp'][i])
                     disbursed_date = datetime.strptime(str(grp['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
-                    individual_loan_details['loan_disbursed_amount'] = disbursed_amount_extract(message)
+                    individual_loan_details['loan_disbursed_amount'] = float(disbursed_amount_extract(message))
                     # individual_loan_details['loan_amount'] = amount_extract(transaction_data, disbursed_date)
                     loan_count += 1
                     j = i + 1
@@ -199,7 +198,7 @@ def preprocessing(cust_id):
                             if individual_loan_details['due_date'] == -1:
                                 individual_loan_details['due_date'] = str(grp['timestamp'][j])
                             k = j + 1
-                            individual_loan_details['loan_due_amount'] = due_amount_extract(message_new)
+                            individual_loan_details['loan_due_amount'] = float(due_amount_extract(message_new))
                             while k < len(grp):
                                 logger.info("Looking for overdue message")
                                 message_overdue = str(grp['body'][k]).lower()
@@ -216,8 +215,8 @@ def preprocessing(cust_id):
                                     logger.info("overdue message found")
                                     overdue_first_date = datetime.strptime(str(grp['timestamp'][k]),
                                                                            '%Y-%m-%d %H:%M:%S')
-                                    individual_loan_details['overdue_max_amount'] = overdue_amount_extract(grp,
-                                                                                                           overdue_first_date)
+                                    individual_loan_details['overdue_max_amount'] = float(overdue_amount_extract(grp,
+                                                                                                           overdue_first_date))
                                     m = k + 1
                                     while m < len(grp):
                                         logger.info("Looking for closed message")
@@ -240,8 +239,8 @@ def preprocessing(cust_id):
                                                                             '%Y-%m-%d %H:%M:%S')
                                             loan_duration = (closed_date - disbursed_date).days
                                             individual_loan_details['loan_duration'] = loan_duration
-                                            individual_loan_details['loan_closed_amount'] = closed_amount_extract(
-                                                message_closed)
+                                            individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(
+                                                message_closed))
                                             k = m + 1
                                             logger.info("Loan Closed!")
                                             break
@@ -266,8 +265,8 @@ def preprocessing(cust_id):
                                     closed_date = datetime.strptime(str(grp['timestamp'][k]), '%Y-%m-%d %H:%M:%S')
                                     loan_duration = (closed_date - disbursed_date).days
                                     individual_loan_details['loan_duration'] = loan_duration
-                                    individual_loan_details['loan_closed_amount'] = closed_amount_extract(
-                                        message_overdue)
+                                    individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(
+                                        message_overdue))
                                     break
                                 elif is_disbursed(message_overdue):
                                     """
@@ -293,8 +292,8 @@ def preprocessing(cust_id):
                             """
                             logger.info('overdue message found')
                             overdue_first_date = datetime.strptime(str(grp['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
-                            individual_loan_details['overdue_max_amount'] = overdue_amount_extract(grp,
-                                                                                                   overdue_first_date)
+                            individual_loan_details['overdue_max_amount'] = float(overdue_amount_extract(grp,
+                                                                                                   overdue_first_date))
                             m = j + 1
                             while m < len(grp):
                                 message_closed = str(grp['body'][m]).lower()
@@ -315,7 +314,7 @@ def preprocessing(cust_id):
                                     closed_date = datetime.strptime(str(grp['timestamp'][m]), '%Y-%m-%d %H:%M:%S')
                                     loan_duration = (closed_date - disbursed_date).days
                                     individual_loan_details['loan_duration'] = loan_duration
-                                    individual_loan_details['loan_amount'] = closed_amount_extract(message_closed)
+                                    individual_loan_details['loan_amount'] = float(closed_amount_extract(message_closed))
                                     j = m + 1
                                     logger.info("Loan Closed!")
                                     break
@@ -347,7 +346,7 @@ def preprocessing(cust_id):
                             closed_date = datetime.strptime(str(grp['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
                             loan_duration = (closed_date - disbursed_date).days
                             individual_loan_details['loan_duration'] = loan_duration
-                            individual_loan_details['loan_closed_amount'] = closed_amount_extract(message_new)
+                            individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(message_new))
                             logger.info("Loan Closed!")
                             break
                         j += 1
@@ -429,12 +428,7 @@ def final_output(cust_id):
                     li.append(a[i][j]['loan_closed_amount'])
                     li.append(a[i][j]['loan_due_amount'])
                 except:
-                    continue
-
-        # print(a[i][j]['closed_date'])
-
-    try:
-        report['MAX_AMOUNT'] = float(max(li))
+                    continuedatetime
     except:
         logger.info('no amount detect')
         report['empty'] = True
@@ -445,7 +439,7 @@ def final_output(cust_id):
     except Exception as e:
         logger.critical('Unable to connect to the database')
         return {'status': False, "message": e}
-    report['modified_at']=datetime.datetime.now().timestamp()
+    report['modified_at']= datetime.now().timestamp()
     report['cust_id']=cust_id
     client.loan_analysis.loan_output.update({"cust_id": cust_id}, report, upsert=True)
     client.close()
