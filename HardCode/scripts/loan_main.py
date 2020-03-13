@@ -6,11 +6,13 @@ from .my_modules import *
 from .Util import logger_1, conn
 # from glob import glob
 from datetime import datetime
+import pytz
 # import re
 import warnings
 
 warnings.filterwarnings('ignore')
 
+timezone = pytz.timezone('Asia/Kolkata')
 
 script_status = {}
 
@@ -379,7 +381,7 @@ def final_output(cust_id):
                 current_open_amount      :    if loan is open than amount of loan
                 total_loan               :    total loans
                 current_open             :    current open loans
-                max_amount               :    maximum loan amount in all loans    
+                max_amount               :    maximum loan amount in all loans
     '''
     a = preprocessing(cust_id)
     logger = logger_1('final_output', cust_id)
@@ -408,7 +410,9 @@ def final_output(cust_id):
                 except:
                     continue
             now = datetime.now()
-            days = (now - pd.to_datetime(a[i][j]['disbursed_date'])).days
+            now = timezone.localize(now)
+            disbursed_date = timezone.localize(pd.to_datetime(a[i][j]['disbursed_date']))
+            days = (now - disbursed_date).days
             # print(days)
             if not isinstance(a[i][j]['closed_date'], datetime):
                 if days < 30:
@@ -441,7 +445,7 @@ def final_output(cust_id):
     except Exception as e:
         logger.critical('Unable to connect to the database')
         return {'status': False, "message": e}
-    report['modified_at']= str(datetime.now())
+    report['modified_at']= str(timezone.localize(datetime.now()))
     report['cust_id']=cust_id
     client.loan_analysis.loan_output.update({"cust_id": cust_id}, report, upsert=True)
     client.close()

@@ -42,6 +42,7 @@ def cheque_user_inner(data, user_id):
     pattern_not_1 = 'please ensure.*sufficient balance'
     pattern_not_2 = 'if.*done payment'
     bounce = []
+    msg = []
     for i, row in data.iterrows():
         message = str(data['body'][i]).lower()
         matcher_1 = re.search(pattern_1, message)
@@ -63,8 +64,9 @@ def cheque_user_inner(data, user_id):
             matcher_not_2 = re.search(pattern_not_2, message)
             if matcher_not_1 is None and matcher_not_2 is None:
                 bounce.append((datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S').month, row['sender'][3:]))
+                msg.append(row['body'])
     logger.info('cheque user inner successfully executed')
-    return bounce
+    return bounce,msg
 
 
 def cheque_user_outer(df, user_id):
@@ -86,7 +88,8 @@ def cheque_user_outer(df, user_id):
     logger = logger_1('cheque user outer', user_id)
     logger.info('cheque user outer function starts')
     l = {}
-    for i in cheque_user_inner(df, user_id):
+    bounce,msg = cheque_user_inner(df, user_id)
+    for i in bounce:
         if i[0] in l.keys():
             l[i[0]].add(i[1])
         else:
@@ -95,4 +98,4 @@ def cheque_user_outer(df, user_id):
     for i in l.keys():
         count += len(l[i])
     logger.info('cheque user outer successfully executed')
-    return count
+    return count,msg

@@ -87,7 +87,7 @@ def read_json(sms_json, user_id):
 
 def convert_json(data, name, max_timestamp):
     logger = logger_1("convert json", name)
-    obj = {"_id": int(name), "timestamp": max_timestamp, "sms": []}
+    obj = {"cust_id": int(name), "timestamp": max_timestamp, "sms": []}
     for i in range(data.shape[0]):
         sms = {"sender": data['sender'][i], "body": data['body'][i], "timestamp": data['timestamp'][i],
                "read": data['read'][i]}
@@ -106,9 +106,12 @@ def update_sms(df, user_id, max_timestamp):
         return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
                 'df': df, "timestamp": max_timestamp}
     logger.info('connection success')
-
+    
     extra = client.messagecluster.extra
-    msgs = extra.find_one({"_id": int(user_id)})
+    try:
+        msgs = extra.find_one({"cust_id": int(user_id)})
+    except:
+        msgs=None
     client.close()
     if msgs is None:
         logger.info("User does not exist in mongodb")

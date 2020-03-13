@@ -10,6 +10,7 @@ import warnings
 import json
 import pandas as pd
 from datetime import datetime
+import pytz
 
 warnings.filterwarnings("ignore")
 
@@ -85,20 +86,24 @@ def bl0(**kwargs):
         r = {'status': False, 'message': 'current_loan not int type', 'onhold': None, 'user_id': user_id,
              'limit': None,
              'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']= "current loan type"
+        client.analysisresult.bl0.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     if not isinstance(list_loans, list):
         logger.error('list_loan not list type')
         r = {'status': False, 'message': 'list_loan not list type', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']= "list loan type"
+        client.analysisresult.bl0.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     for i in list_loans:
@@ -106,10 +111,12 @@ def bl0(**kwargs):
             logger.error('list_loan items not int type')
             r = {'status': False, 'message': 'list_loan items not int type', 'onhold': None, 'user_id': user_id,
                  'limit': None, 'logic': 'BL0'}
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.bl0.update({'cust_id': user_id}, r, upsert=True)
+            r['error']= "list loan's item type"
+            client.analysisresult.bl0.insert_one(r)
             client.close()
+            del r['_id']
             return r
 
     list_loans.sort()
@@ -118,10 +125,12 @@ def bl0(**kwargs):
         logger.error('new_user not boolean type')
         r = {'status': False, 'message': 'new_user not boolean type', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']= "new user type"
+        client.analysisresult.bl0.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     logger.info('checking variables finished')
@@ -132,32 +141,36 @@ def bl0(**kwargs):
         r = result
         if not result['status']:
             logger.debug('classification of messages failed')
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+            r['error']= "Classifier Function"
+            client.analysisresult.exception_bl0.insert_one(r)
             r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                         new_user=new_user
                         , cibil_score=cibil_score)
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+            client.analysisresult.cibil.insert_one(r)
             client.close()
+            del r['_id']
             return r
 
     except Exception as e:
         logger.debug('classification of messages failed')
         r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']= "Classification in BL0 "
+        client.analysisresult.exception_bl0.insert_one(r)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+        client.analysisresult.cibil.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     logger.info('started making balanced sheet')
@@ -166,19 +179,21 @@ def bl0(**kwargs):
         res = json.dumps(result)
         res = json.loads(res)
         try:
-            res['modified_at'] = str(datetime.now())
+            res['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             client.analysis.balance_sheet.update({'cust_id': user_id}, res, upsert=True)
             logger.info('balanced sheet found and saved')
         except:
             logger.critical('error in balanced sheet data upload')
             r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+            r['error']= "Balanced Sheet"
+            client.analysisresult.exception_bl0.insert_one(r)
     else:
-        result['modified_at'] = str(datetime.now())
+        result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         result['cust_id']=user_id
-        client.analysisresult.exception_bl0.update({'cust_id': user_id}, result, upsert=True)
+        r['error']= "balanced sheet function"
+        client.analysisresult.exception_bl0.insert_one(result)
 
     logger.info('starting loan analysis')
     try:
@@ -189,47 +204,53 @@ def bl0(**kwargs):
             result_loan['user_id'] = user_id
             result_loan['limit'] = None
             result_loan['logic'] = 'BL0'
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
+            r['error']= "Loan analysis initial Function"
             client.analysisresult.exception_bl0.update({'cust_id': user_id}, result_loan, upsert=True)
             r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                         new_user=new_user
                         , cibil_score=cibil_score)
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+            client.analysisresult.cibil.insert_one(r)
             client.close()
-            return result_loan
+            del r['_id']
+            return r
     except Exception as e:
         logger.debug('error in loan analysis')
         r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']= "loan analysis initial function running in BL0"
+        client.analysisresult.exception_bl0.insert_one(r)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+        client.analysisresult.cibil.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     except:
         logger.debug('error in loan analysis')
         r = {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']= "loan analysis initial function running in BL0"
+        client.analysisresult.exception_bl0.insert_one(r)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+        client.analysisresult.cibil.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     logger.info('loan analysis successsful')
@@ -244,47 +265,54 @@ def bl0(**kwargs):
             result_salary['logic'] = 'BL0'
             r = {'status': True, 'message': None, 'onhold': None, 'user_id': user_id, 'limit': None,
                  'logic': 'BL0'}
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+            r['error']= "loan analysis initial function running in BL0"
+            client.analysisresult.exception_bl0.insert_one(r)
             r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                         new_user=new_user
                         , cibil_score=cibil_score)
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+            client.analysisresult.cibil.insert_one(r)
             client.close()
-            return result_salary
+            del r['_id']
+            return r
     except Exception as e:
         logger.debug('error in salary analysis')
         r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
              'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']= "Salary analysis function"
+        client.analysisresult.exception_bl0.insert_one(r)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+        r['error']= "loan analysis initial function running in BL0"
+        client.analysisresult.cibil.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     except:
         logger.debug('error in salary analysis')
         r = {'status': False, 'message': 'unhandeled error in loan_analysis', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']= "loan analysis initial function running in BL0"
+        client.analysisresult.exception_bl0.insert_one(r)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+        client.analysisresult.cibil.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     if new_user:
@@ -294,21 +322,23 @@ def bl0(**kwargs):
                 a = 0
             else:
                 df = pd.DataFrame(file1['sms'])
-                a = cheque_user_outer(df, user_id)
-        except Exception as e:
+                a,msg = cheque_user_outer(df, user_id)
+        except :
             logger.debug('error occured during checking bounced cheque messages')
-            r = {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
+            r = {'status': False, 'message': str("error in cheque bounce"), 'onhold': None, 'user_id': user_id, 'limit': None,
                  'logic': 'BL0'}
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+            r['error']= "Error in running Cheque Bounce in BL0/Cheque Bounce"
+            client.analysisresult.exception_bl0.insert_one(r)
             r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                         new_user=new_user
                         , cibil_score=cibil_score)
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+            client.analysisresult.cibil.insert_one(r)
             client.close()
+            del r['_id']
             return r
 
         logger.info('successfully checked bounced cheque messages')
@@ -317,10 +347,12 @@ def bl0(**kwargs):
             a = {'_id': user_id, 'onhold': True, 'limit': -1, 'logic': 'BL0'}
             r = {'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id, 'limit': -1,
                  'logic': 'BL0'}
-            r['modified_at'] = str(datetime.now())
+            r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
             r['cust_id']=user_id
-            client.analysisresult.chequebounce_bl0.update({'cust_id': user_id}, r, upsert=True)
+            r['messages'] = msg
+            client.analysisresult.chequebounce_bl0.insert_one(r)
             client.close()
+            del r['_id']
             return r
 
     logger.info('checking result salary and loan salary output')
@@ -328,32 +360,36 @@ def bl0(**kwargs):
         logger.caution("loan dict doesn't contain loan result")
         r = {'status': False, 'message': 'result_loan not dict type', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']="exception in result loan output"
+        client.analysisresult.exception_bl0.insert_one(r)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+        client.analysisresult.cibil.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     if 'empty' not in result_loan['result'].keys():
         logger.caution("loan dict result doesn't contain empty")
         r = {'status': False, 'message': 'empty key not present in loan dict', 'onhold': None, 'user_id': user_id,
              'limit': None, 'logic': 'BL0'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.exception_bl0.update({'cust_id': user_id}, r, upsert=True)
+        r['error']="exception in result loan output"
+        client.analysisresult.exception_bl0.insert_one(r)
         r = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                     new_user=new_user
                     , cibil_score=cibil_score)
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.cibil.update({'cust_id': user_id}, r, upsert=True)
+        client.analysisresult.cibil.insert_one(r)
         client.close()
+        del r['_id']
         return r
     try:
         result_loan['result']['CURRENT_OPEN'] = int(result_loan['result']['CURRENT_OPEN'])
@@ -394,10 +430,11 @@ def bl0(**kwargs):
         logger.info('defaulter on the basis of loan')
         r = {'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id,
              'limit': -1, 'logic': 'BL0-loan'}
-        r['modified_at'] = str(datetime.now())
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         r['cust_id']=user_id
-        client.analysisresult.loan_bl0.update({'cust_id': user_id}, r, upsert=True)
+        client.analysisresult.loan_bl0.insert_one(r)
         client.close()
+        del r['_id']
         return r
 
     logger.info('Not a defaulter')
@@ -413,38 +450,39 @@ def bl0(**kwargs):
     if salary_present and loan_present:
         result = loan_salary_analysis_function(result_salary['salary'], result_loan['result'], list_loans, current_loan,
                                                user_id, new_user)
-        result['modified_at'] = str(datetime.now())
+        result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         result['cust_id']=user_id
-        client.analysisresult.loan_salary_bl0.update({'cust_id': user_id}, result, upsert=True)
+        client.analysisresult.loan_salary_bl0.insert_one(result)
 
     elif loan_present:
         result = loan_analysis_function(result_loan['result'], list_loans, current_loan, user_id, new_user)
-        result['modified_at'] = str(datetime.now())
+        result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         result['cust_id']=user_id
-        client.analysisresult.loan_bl0.update({'cust_id': user_id}, result, upsert=True)
+        client.analysisresult.loan_bl0.insert_one(result)
 
     elif salary_present:
         result = salary_analysis_function(float(result_salary['salary']), list_loans, current_loan, user_id, new_user)
-        result['modified_at'] = str(datetime.now())
+        result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         result['cust_id']=user_id
-        client.analysisresult.salary_bl0.update({'cust_id': user_id}, result, upsert=True)
+        client.analysisresult.salary_bl0.insert_one(result)
 
     else:
         result = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                          new_user=new_user
                          , cibil_score=cibil_score)
-        result['modified_at'] = str(datetime.now())
+        result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         result['cust_id']=user_id
-        client.analysisresult.cibil.update({'cust_id': user_id}, result, upsert=True)
+        client.analysisresult.cibil.insert_one(result)
 
     if int(result['limit']) < 3000:
         result = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df,
                          new_user=new_user
                          , cibil_score=cibil_score)
-        result['modified_at'] = str(datetime.now())
+        result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         result['cust_id']=user_id
-        client.analysisresult.cibil.update({'cust_id': user_id}, result, upsert=True)
+        client.analysisresult.cibil.insert_one(result)
 
     logger.info("analysis complete")
     client.close()
+    del result['_id']
     return result
