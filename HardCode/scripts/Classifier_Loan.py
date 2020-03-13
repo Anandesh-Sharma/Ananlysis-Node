@@ -141,9 +141,11 @@ def get_approval(data, loan_messages_filtered, result, name):
 def get_disbursed(data, loan_messages_filtered, result, name):
     logger = logger_1("loan disbursed", name)
     selected_rows = []
-    pattern_1 = '(.*)?disbursed(.*)?'
-    pattern_2 = '(.*)?disbursement(.*)?'
-    pattern_3 = '(.*)?transferred(.*)?account(.*)?'
+    pattern_1 = 'has\sbeen\sdisburse[d]?'
+    pattern_2 = 'disbursement\shas\sbeen\scredited'
+    pattern_3 = 'has\sbeen\stransferred.*account'
+    pattern_4=  'disbursement.*has\sbeen \sinitiated'
+    pattern_5=  'is\stransferred.*account'
 
 
     for i in range(data.shape[0]):
@@ -154,8 +156,10 @@ def get_disbursed(data, loan_messages_filtered, result, name):
         matcher_1 = re.search(pattern_1, message)
         matcher_2 = re.search(pattern_2, message)
         matcher_3 = re.search(pattern_3, message)
+        matcher_4 = re.search(pattern_4, message)
+        matcher_5 = re.search(pattern_5, message)
 
-        if matcher_1 != None or matcher_2 != None or matcher_3 != None:
+        if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_5 != None:
             selected_rows.append(i)
     logger.info("Loan disbursed sms extracted successfully")
 
