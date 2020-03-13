@@ -1,7 +1,7 @@
 import re
 from .Util import conn, read_json, convert_json, logger_1
 import warnings
-import datetime
+from datetime import datetime
 warnings.filterwarnings("ignore")
 
 
@@ -53,7 +53,7 @@ def get_creditcard_promotion(data):
     pattern_9 = 'cashback'
     pattern_10 = 'offer'
     pattern_11 = 'offers'
-    pattern_12 = 'won'
+    pattern_12 = 'w[o]?[i]?n'
     pattern_13 = 'features'
 
     pattern_14 = 'paperless(.*)?approval'
@@ -66,6 +66,12 @@ def get_creditcard_promotion(data):
     pattern_21 = 'instant(.*)?approval'
     pattern_22 = 'get your credit card'
     pattern_23 = 'free(.*)credit(.*)card'
+    pattern_24 = 'congrats'
+    pattern_25 = 'save.*up\s?to'
+    pattern_26 = 'can\sbe\sapproved'
+    pattern_27 = 'prevent\sfraud'
+    pattern_28 = 'now\sget'
+    pattern_29 = 'otp'
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
@@ -93,11 +99,17 @@ def get_creditcard_promotion(data):
         matcher_21 = re.search(pattern_21, message)
         matcher_22 = re.search(pattern_22, message)
         matcher_23 = re.search(pattern_23, message)
+        matcher_24 = re.search(pattern_24, message)
+        matcher_25 = re.search(pattern_25, message)
+        matcher_26 = re.search(pattern_26, message)
+        matcher_27 = re.search(pattern_27, message)
+        matcher_28 = re.search(pattern_28, message)
+        matcher_29 = re.search(pattern_29, message)
 
 
         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None or matcher_13 != None or \
                 matcher_14 is not None or matcher_15 is not None or matcher_16 is not None or matcher_17 is not None or matcher_18 is not None or matcher_19 is not None\
-                or matcher_20 is not None or matcher_21 is not None or matcher_22 is not None or matcher_23 is not None:
+                or matcher_20 is not None or matcher_21 is not None or matcher_22 is not None or matcher_23 is not None or matcher_24 is not None or matcher_25 is not None or matcher_26 is not None or matcher_27 is not None or matcher_28 is not None or matcher_29 is not None:
             pass
         else:
             credit_messages_filtered.append(i)
@@ -126,13 +138,13 @@ def credit(df, result, user_id, max_timestamp, new):
     if new:
         logger.info("New user checked")
         #db.creditcard.insert_one(data_credit)
-        db.creditcard.update({"cust_id": int(user_id)}, {"sms": data_credit['sms'],'modified_at':datetime.datetime.now().timestamp(),"timestamp":data_credit['timestamp']},upsert=True)
+        db.creditcard.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),"sms": data_credit['sms'],'modified_at':str(datetime.now()),"timestamp":data_credit['timestamp']},upsert=True)
         logger.info("Credit card sms of new user inserted successfully")
     else:
         for i in range(len(data_credit['sms'])):
             logger.info("Old User checked")
             db.creditcard.update({"cust_id": int(user_id)}, {"$push": {"sms": data_credit['sms'][i]}})
             logger.info("Credit card sms of old user updated successfully")
-        db.creditcard.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':datetime.datetime.now().timestamp()}}, upsert=True)
+        db.creditcard.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now())}}, upsert=True)
         logger.info("Timestamp of User updated")
     client.close()

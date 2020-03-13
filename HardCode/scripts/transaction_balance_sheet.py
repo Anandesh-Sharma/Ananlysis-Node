@@ -17,10 +17,10 @@ def create_transaction_balanced_sheet(user_id):
     try:
         client = conn()
         db = client.messagecluster
-        file1 = db.transaction.find_one({"_id": user_id})
-    except Exception as e:
-        logger.exception(e)
-        return {'status': False, 'message': 'Type Error:user_id not int type'}
+        file1 = db.transaction.find_one({"cust_id": user_id})
+    except:
+        logger.exception("Data for balanced sheet not found")
+        return {'status': False, 'message': 'data for balanced sheet not found'}
 
     logger.info('conncection successful')
 
