@@ -53,7 +53,7 @@ def get_creditcard_promotion(data):
     pattern_9 = 'cashback'
     pattern_10 = 'offer'
     pattern_11 = 'offers'
-    pattern_12 = 'won'
+    pattern_12 = 'w[o]?[i]?n'
     pattern_13 = 'features'
 
     pattern_14 = 'paperless(.*)?approval'
@@ -66,6 +66,12 @@ def get_creditcard_promotion(data):
     pattern_21 = 'instant(.*)?approval'
     pattern_22 = 'get your credit card'
     pattern_23 = 'free(.*)credit(.*)card'
+    pattern_24 = 'congrats'
+    pattern_25 = 'save.*up\s?to'
+    pattern_26 = 'can\sbe\sapproved'
+    pattern_27 = 'prevent\sfraud'
+    pattern_28 = 'now\sget'
+    pattern_29 = 'otp'
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
@@ -93,11 +99,17 @@ def get_creditcard_promotion(data):
         matcher_21 = re.search(pattern_21, message)
         matcher_22 = re.search(pattern_22, message)
         matcher_23 = re.search(pattern_23, message)
+        matcher_24 = re.search(pattern_24, message)
+        matcher_25 = re.search(pattern_25, message)
+        matcher_26 = re.search(pattern_26, message)
+        matcher_27 = re.search(pattern_27, message)
+        matcher_28 = re.search(pattern_28, message)
+        matcher_29 = re.search(pattern_29, message)
 
 
         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None or matcher_13 != None or \
                 matcher_14 is not None or matcher_15 is not None or matcher_16 is not None or matcher_17 is not None or matcher_18 is not None or matcher_19 is not None\
-                or matcher_20 is not None or matcher_21 is not None or matcher_22 is not None or matcher_23 is not None:
+                or matcher_20 is not None or matcher_21 is not None or matcher_22 is not None or matcher_23 is not None or matcher_24 is not None or matcher_25 is not None or matcher_26 is not None or matcher_27 is not None or matcher_28 is not None or matcher_29 is not None:
             pass
         else:
             credit_messages_filtered.append(i)
