@@ -200,7 +200,7 @@ def preprocessing(cust_id):
                             if individual_loan_details['due_date'] == -1:
                                 individual_loan_details['due_date'] = str(grp['timestamp'][j])
                             k = j + 1
-                            individual_loan_details['loan_due_amount'] = float(due_amount_extract(message_new))
+                            individual_loan_details['loan_due_amount'] = due_amount_extract(message_new)
                             while k < len(grp):
                                 logger.info("Looking for overdue message")
                                 message_overdue = str(grp['body'][k]).lower()
@@ -295,7 +295,7 @@ def preprocessing(cust_id):
                             logger.info('overdue message found')
                             overdue_first_date = datetime.strptime(str(grp['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
                             individual_loan_details['overdue_max_amount'] = float(overdue_amount_extract(grp,
-                                                                                                   overdue_first_date))
+                                                                                                overdue_first_date))
                             m = j + 1
                             while m < len(grp):
                                 message_closed = str(grp['body'][m]).lower()
@@ -447,7 +447,7 @@ def final_output(cust_id):
         return {'status': False, "message": e}
     report['modified_at']= str(timezone.localize(datetime.now()))
     report['cust_id']=cust_id
-    client.loan_analysis.loan_output.insert_one(report)
+    client.loan_analysis.loan_output.update(report)
     del report['_id']
     client.close()
     logger.info('Successfully upload result to the database')
