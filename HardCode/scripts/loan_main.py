@@ -400,15 +400,15 @@ def final_output(cust_id):
         report['TOTAL_LOANS'] = report['TOTAL_LOANS'] + len(a[i].keys())
         for j in a[i].keys():
             # print(a[i][j]['loan_duration'])
-            if a[i][j]['loan_duration'] > 30:
-                report['PAY_WITHIN_30_DAYS'] = False
-                # print(report['PAY_WITHIN_30_DAYS'])
-                try:
+            try:
                     li.append(a[i][j]['loan_disbursed_amount'])
                     li.append(a[i][j]['loan_closed_amount'])
                     li.append(a[i][j]['loan_due_amount'])
-                except:
-                    continue
+            except:
+                pass
+            if a[i][j]['loan_duration'] > 30:
+                report['PAY_WITHIN_30_DAYS'] = False
+                
             now = datetime.now()
             now = timezone.localize(now)
             disbursed_date = timezone.localize(pd.to_datetime(a[i][j]['disbursed_date']))
@@ -426,13 +426,6 @@ def final_output(cust_id):
             else:
                 continue
 
-            if a[i][j]['loan_duration'] <= 30:
-                try:
-                    li.append(a[i][j]['loan_disbursed_amount'])
-                    li.append(a[i][j]['loan_closed_amount'])
-                    li.append(a[i][j]['loan_due_amount'])
-                except:
-                    continue
     try:
         report['MAX_AMOUNT']=float(max(li))
     except:
