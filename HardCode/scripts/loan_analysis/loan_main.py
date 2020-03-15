@@ -207,7 +207,7 @@ def preprocessing(cust_id):
                                 individual_loan_details['due_date'] = str(grp['timestamp'][j])
                             k = j + 1
                             individual_loan_details['loan_due_amount'] = due_amount_extract(message_new)
-
+                            
                             while k < len(grp):
                                 logger.info("Looking for overdue message")
 
@@ -309,8 +309,7 @@ def preprocessing(cust_id):
                             """
                             logger.info('overdue message found')
                             overdue_first_date = datetime.strptime(str(grp['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
-                            individual_loan_details['overdue_max_amount'] = float(overdue_amount_extract(grp,
-                                                                                                         overdue_first_date))
+                            individual_loan_details['overdue_max_amount'] = float(overdue_amount_extract(grp, overdue_first_date))
                             m = j + 1
                             while m < len(grp):
                                 message_closed = str(grp['body'][m]).lower()
@@ -416,7 +415,6 @@ def final_output(cust_id):
     for i in a.keys():
         report['TOTAL_LOANS'] = report['TOTAL_LOANS'] + len(a[i].keys())
         for j in a[i].keys():
-
             try:
                 li.append(float(a[i][j]['loan_disbursed_amount']))
                 li.append(float(a[i][j]['loan_closed_amount']))
@@ -460,6 +458,7 @@ def final_output(cust_id):
                         continue
             else:
                 continue
+
     try:
         report['MAX_AMOUNT'] = float(max(li))
     except:
