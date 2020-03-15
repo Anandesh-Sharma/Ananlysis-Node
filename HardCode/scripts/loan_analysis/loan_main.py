@@ -152,8 +152,6 @@ def preprocessing(cust_id):
                     'overdue_max_amount' : -1
                 }
                 message = str(grp['body'][i].encode('utf-8')).lower()
-                # ******************************************************************************************************************
-                # ******************************************************************************************************************
 
                 if is_disbursed(message):
                     """
@@ -170,7 +168,7 @@ def preprocessing(cust_id):
                     individual_loan_details['disbursed_date'] = str(grp['timestamp'][i])
                     disbursed_date = datetime.strptime(str(grp['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
                     individual_loan_details['loan_disbursed_amount'] = float(disbursed_amount_extract(message))
-                    # individual_loan_details['loan_amount'] = amount_extract(transaction_data, disbursed_date)
+
                     loan_count += 1
                     j = i + 1
                     while j < len(grp):
