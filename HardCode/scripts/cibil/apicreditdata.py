@@ -1,6 +1,6 @@
 # import json
 import pandas
-from . import xmlparser
+from HardCode.scripts.cibil import xmlparser
 
 
 def convert_to_df(user_id, file):

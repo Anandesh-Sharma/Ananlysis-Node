@@ -2,11 +2,11 @@ from .Classifier_CreditCard import credit
 from .Classifier_Loan import loan
 from .Classifier_transaction import cleaning
 import multiprocessing
-from .Util import conn, read_json, convert_json, logger_1
-import json
+from HardCode.scripts.Util import conn, read_json, convert_json, logger_1
 import warnings
 from datetime import datetime
 import pytz
+
 warnings.filterwarnings("ignore")
 
 
@@ -31,7 +31,7 @@ def extra(df, user_id, result, max_timestamp, new):
          limit(int) :limiting amount of user calculated
          logic(string) :buissness logic of the process
         """
-    logger = logger_1("extra",user_id)
+    logger = logger_1("extra", user_id)
     logger.info("Generating dictionary of extra sms")
     for i in result.keys():
         df.drop(list(set(result[i])), inplace=True)
@@ -49,11 +49,12 @@ def extra(df, user_id, result, max_timestamp, new):
                 'logic': 'BL0'}
     logger.info('connection success')
 
-
     if new:
         logger.info("New user checked")
         # db.extra.insert_one(data_extra)
-        db.extra.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),"sms": data_extra['sms'],"timestamp":data_extra['timestamp'],'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))},upsert=True)
+        db.extra.update({"cust_id": int(user_id)},
+                        {"cust_id": int(user_id), "sms": data_extra['sms'], "timestamp": data_extra['timestamp'],
+                         'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}, upsert=True)
         logger.info("Extra sms of new user inserted successfully")
 
     else:
@@ -61,7 +62,9 @@ def extra(df, user_id, result, max_timestamp, new):
             logger.info("Old User checked")
             db.extra.update({"cust_id": int(user_id)}, {"$push": {"sms": data_extra['sms'][i]}})
             logger.info("Extra sms of old user updated successfully")
-        db.extra.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))}}, upsert=True)
+        db.extra.update_one({"cust_id": int(user_id)}, {
+            "$set": {"timestamp": max_timestamp, 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
+                            upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
 
@@ -90,7 +93,7 @@ def classifier(sms_json, user_id):
          logic(string) :buissness logic of the process
 
         """
-    logger = logger_1("Classifier",user_id)
+    logger = logger_1("Classifier", user_id)
     logger.info("Creating Multiprocessing Manager")
     manager = multiprocessing.Manager()
     result = manager.dict()
@@ -114,6 +117,7 @@ def classifier(sms_json, user_id):
     try:
         p2 = multiprocessing.Process(target=loan(df, result, user_id, max_timestamp, new, ))
     except Exception as e:
+
         logger.debug("error in loan classifier")
         return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
                 'logic': 'BL0'}
@@ -166,5 +170,6 @@ def classifier(sms_json, user_id):
 
     logger.info("extra classifier called")
     extra(df, user_id, result, max_timestamp, new)
-    return {'status': True, 'message': 'success in message extraction', 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    return {'status': True, 'message': 'success in message extraction', 'onhold': None, 'user_id': user_id,
+            'limit': None,
+            'logic': 'BL0'}

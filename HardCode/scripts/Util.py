@@ -1,5 +1,6 @@
 import logging
 import pandas as pd
+# import os
 from datetime import datetime
 from logging.handlers import TimedRotatingFileHandler
 from pymongo import MongoClient
@@ -10,7 +11,7 @@ warnings.filterwarnings("ignore")
 
 def conn():
     connection = MongoClient(
-        "mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false",
+        f"mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false",
         socketTimeoutMS=900000)
     return connection
 

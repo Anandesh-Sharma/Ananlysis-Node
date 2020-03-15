@@ -63,6 +63,6 @@ def analyse(**kwargs):
     else:
         r = {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
              'limit': a, 'logic': 'BL0-cibil'}
-    if r['limit']>3000 and new_user:
-        r['limit']=3000
+    if r['limit'] > 3000 and new_user:
+        r['limit'] = 3000
     return r

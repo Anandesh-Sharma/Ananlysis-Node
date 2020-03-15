@@ -2,8 +2,9 @@ import re
 from datetime import datetime
 import pytz
 import threading
-from .Util import conn, read_json, convert_json, logger_1
+from HardCode.scripts.Util import conn, convert_json, logger_1
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -11,7 +12,7 @@ def check_body_1(df, pattern):
     d = []
     for index, row in df.iterrows():
         matcher = re.search(pattern, row["body"].lower())
-        if (matcher != None):
+        if matcher != None:
             d.append(index)
     return d
 
@@ -32,7 +33,7 @@ def check_header(df, pattern, required_rows):
     for index, row in df.iterrows():
         if index not in required_rows:
             continue
-        if (pattern in row["sender"].lower()):
+        if pattern in row["sender"].lower():
             d.append(index)
     return d
 
@@ -49,7 +50,7 @@ def thread_for_cleaning_3(df, pattern, result, required_rows):
     result.append(check_header(df, pattern, required_rows))
 
 
-def cleaning(df, result, user_id, max_timestamp,new):
+def cleaning(df, result, user_id, max_timestamp, new):
     logger = logger_1("cleaning", user_id)
     transaction_patterns = ['debited', 'credited']
     thread_list = []
@@ -179,7 +180,7 @@ def cleaning(df, result, user_id, max_timestamp,new):
             continue
         matcher_1 = re.search("[Rr]egards", row["body"])
         matcher_2 = re.search(r"[a-zA-z]{2}-\d+", row["body"])
-        if matcher_1 != None:
+        if matcher_1 is not None:
             if 'DHANCO' not in row["sender"]:
                 g.append(index)
         elif matcher_2 is not None:
@@ -198,8 +199,8 @@ def cleaning(df, result, user_id, max_timestamp,new):
                                      'credited a free',
                                      'request for modifying', r'free \d* [gm]b/day', 'data pack',
                                      'request for registration',
-                                     'received by our company', 'month of', 'received a call', 'free data','welcome',
-                                     'data benefits','win real cash',
+                                     'received by our company', 'month of', 'received a call', 'free data', 'welcome',
+                                     'data benefits', 'win real cash',
                                      'received full benefit', 'payment against', 'auto debited', 'mandates',
                                      'we apologize for the incorrect sms',
                                      'coupon', 'can be credited ', 'no hassle of adding beneficiary', 'you\'re covered',
@@ -207,7 +208,8 @@ def cleaning(df, result, user_id, max_timestamp,new):
                                      'redemption request', 'number received',
                                      'your order', 'beneficiary [a-z]*? is added successfully', 'dear employee',
                                      'subscribing', 'sorry',
-                                     r'received \d*? enquiry', 'congratulations?', 'woohoo!', 'salary credited', 'hurry',
+                                     r'received \d*? enquiry', 'congratulations?', 'woohoo!', 'salary credited',
+                                     'hurry',
                                      'sign up', 'credited to your wallet', 'safe & secure!', '[gm]b is credited on',
                                      'cash reward',
                                      'remaining emi installment', 'salary amount', 'incentive amount ', 'dear investor',
@@ -230,8 +232,9 @@ def cleaning(df, result, user_id, max_timestamp,new):
                                      'added beneficiary', 'received a message', ' premium ', 'claim', 'points ',
                                      'frequency monthly', 'received a pay rise', 'cheque book',
                                      'will be', 'unpaid', 'received (for|in) clearing', 'presented for clearing',
-                                     'your application', 'to know', 'unpaid',r'\slakh\s'
-                                     'thanking you', 'redeem', 'transferred', 'available credit limit']
+                                     'your application', 'to know', 'unpaid', r'\slakh\s'
+                                                                              'thanking you', 'redeem', 'transferred',
+                                     'available credit limit']
 
     garbage_rows = []
     thread_list = []
@@ -253,15 +256,15 @@ def cleaning(df, result, user_id, max_timestamp,new):
         garbage_rows.extend(i)
 
     required_rows = list(set(required_rows) - set(garbage_rows))
-    
-    loan_messages=[]
-    for i,row in df.iterrows():
+
+    loan_messages = []
+    for i, row in df.iterrows():
         if i not in required_rows:
             continue
-        matcher=re.search("loan",row['body'].lower())
-        if matcher != None:
+        matcher = re.search("loan", row['body'].lower())
+        if matcher is not None:
             loan_messages.append(i)
-    imp_loan_messages=[]
+    imp_loan_messages = []
     pattern_0 = 'info.*?loan'
     pattern_1 = r'[\*nx]+([0-9]{3,})'
     pattern_2 = r'[a]\/c ([0-9]+)'
@@ -269,35 +272,35 @@ def cleaning(df, result, user_id, max_timestamp,new):
     pattern_4 = r'account\s?[\*nx]+([0-9]{3,})'
     pattern_unmatch = r'loan (a\/c|account)'
 
-    for i,row in df.iterrows():
+    for i, row in df.iterrows():
         if i not in loan_messages:
             continue
         message = row['body'].lower()
-        matcher_1 = re.search(pattern_1,message)
-        matcher_2 = re.search(pattern_2,message)
-        matcher_3 = re.search(pattern_3,message)
-        matcher_4 = re.search(pattern_4,message)
-        matcher_0 = re.search(pattern_0,message)
-        matcher_unmatch= re.search(pattern_unmatch,message)
-        if matcher_0!= None:
-            imp_loan_messages.append(i)    
-        
-        elif matcher_1!= None:
-            if(matcher_unmatch==None):
+        matcher_1 = re.search(pattern_1, message)
+        matcher_2 = re.search(pattern_2, message)
+        matcher_3 = re.search(pattern_3, message)
+        matcher_4 = re.search(pattern_4, message)
+        matcher_0 = re.search(pattern_0, message)
+        matcher_unmatch = re.search(pattern_unmatch, message)
+        if matcher_0 is not None:
+            imp_loan_messages.append(i)
+
+        elif matcher_1 is not None:
+            if matcher_unmatch is None:
                 imp_loan_messages.append(i)
-            
-        elif matcher_2!= None:
-            if(matcher_unmatch==None):
+
+        elif matcher_2 is not None:
+            if matcher_unmatch is None:
                 imp_loan_messages.append(i)
-            
-        elif matcher_3!= None:
-            if(matcher_unmatch==None):
+
+        elif matcher_3 is not None:
+            if matcher_unmatch is None:
                 imp_loan_messages.append(i)
-            
-        elif matcher_4!=None:
-            if(matcher_unmatch==None):
+
+        elif matcher_4 is not None:
+            if matcher_unmatch is None:
                 imp_loan_messages.append(i)
-    required_rows = list(set(required_rows)-set(loan_messages))
+    required_rows = list(set(required_rows) - set(loan_messages))
     required_rows.extend(list(set(imp_loan_messages)))
     logger.info("important loan messages saved")
 
@@ -333,14 +336,19 @@ def cleaning(df, result, user_id, max_timestamp,new):
 
     if new:
         logger.info("New user checked")
-        #db.transaction.insert_one(data_transaction)
-        db.transaction.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),'sms': data_transaction['sms'],'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))),"timestamp":data_transaction['timestamp']},upsert=True)
+        # db.transaction.insert_one(data_transaction)
+        db.transaction.update({"cust_id": int(user_id)}, {"cust_id": int(user_id), 'sms': data_transaction['sms'],
+                                                          'modified_at': str(
+                                                              datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                          "timestamp": data_transaction['timestamp']}, upsert=True)
         logger.info("All transaction messages of new user inserted successfully")
     else:
         for i in range(len(data_transaction['sms'])):
             logger.info("Old User checked")
             db.transaction.update({"cust_id": int(user_id)}, {"$push": {'sms': data_transaction['sms'][i]}})
             logger.info("transaction sms of old user updated successfully")
-        db.transaction.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))}}, upsert=True)
+        db.transaction.update_one({"cust_id": int(user_id)}, {
+            "$set": {"timestamp": max_timestamp, 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
+                                  upsert=True)
         logger.info("Timestamp of User updated")
     client.close()

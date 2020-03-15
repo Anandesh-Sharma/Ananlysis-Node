@@ -1,5 +1,5 @@
 import numpy as np
-from .Util import logger_1
+from HardCode.scripts.Util import logger_1
 
 
 def cibil_analysis(df, cibil_score, user_id):

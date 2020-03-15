@@ -5,8 +5,9 @@ from datetime import datetime, timedelta
 import pytz
 # from datetime import timedelta
 # import json
-from pymongo import MongoClient
-from .Util import logger_1,conn
+# from pymongo import MongoClient
+from HardCode.scripts.Util import logger_1, conn
+
 
 def clean_debit(data, id):
     """This code drops the rows for debited messages and bhanix finance company messages.
@@ -27,7 +28,7 @@ def clean_debit(data, id):
         y1 = re.search(pattern1, message)
         y2 = re.search(pattern2, message)
 
-        if y1 != None or y2 != None:
+        if y1 is not None or y2 is not None:
             d.append(i)
 
     data.drop(d, inplace=True)
@@ -57,9 +58,9 @@ def get_epf_amount(data, id):
 
         y1 = re.search(pattern1, m)
         y2 = re.search(pattern2, m)
-        if (y1 != None):
+        if y1 is not None:
             amount = y1.group(3)
-        elif (y2 != None):
+        elif y2 is not None:
             amount = y2.group(3)
         else:
             amount = 0
@@ -110,11 +111,11 @@ def get_salary(data, id):
         y2 = re.search(pattern2, m)
         y3 = re.search(pattern3, m)
 
-        if (y1 != None):
+        if y1 is not None:
             amount = y1.group(3)
-        elif (y2 != None):
+        elif y2 is not None:
             amount = y2.group(3)
-        elif (y3 != None):
+        elif y3 is not None:
             amount = y3.group(3)
         else:
             amount = 0
@@ -224,14 +225,14 @@ def salary_check(data, id):
 
 
 def transaction(id):
-    ''' This function connects with collection in mongodb database
+    """ This function connects with collection in mongodb database
       Parameters:
       Input : Customer Id
-      Output: Dictionary with Parameters:    status(bool):code run successfully or not , 
-                                                message(string):success/error ,  
+      Output: Dictionary with Parameters:    status(bool):code run successfully or not ,
+                                                message(string):success/error ,
                                                 df(dataframe): dataframe of transaction data
-      
-    '''
+
+    """
 
     logger = logger_1('Transaction Data', id)
     # logger.info('Collecting SMS from Transaction Collection')
@@ -342,12 +343,11 @@ def customer_salary(id):
         salary, keyword = result['salary'], result['keyword']
 
         salary_status["salary"] = salary
-        if (salary == 0) | (salary == None):
+        if (salary == 0) | (salary is None) | (salary == "nan"):
             salary_status["salary"] = "0"
             status = True
             message = "Salary Not found"
             # logger.info("not found salary")
-
 
         else:
             status = True
@@ -383,13 +383,13 @@ def salary_analysis(id):
 
     salary_dict = customer_salary(id)
 
-    if salary_dict['status'] == False:
-        connect = conn(id)
-        salary_dict['cust_id']=id
-        salary_dict['modified_at']= str(datetime.now(pytz.timezone('Asia/Kolkata')))
+    if not salary_dict['status']:
+        connect = conn()
+        salary_dict['cust_id'] = id
+        salary_dict['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
         db = connect.analysis.salary
-        db.insert_one(salary_dict)
-        del salary_dict['_id']
+        db.update({'cust_id': id},{"$set":salary_dict}, upsert = True)
+
         # logger.info("salary updated in database")
         connect.close()
         return {'status': True, 'message': 'success', 'salary': 0, 'keyword': ""}
@@ -401,9 +401,9 @@ def salary_analysis(id):
         connect = conn()
 
         db = connect.analysis.salary
-        json_sal['modified_at']= str(datetime.now(pytz.timezone('Asia/Kolkata')))
-        db.insert_one(json_sal)
-        del json_sal['_id']
+        json_sal['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
+        db.update({'cust_id': id},{"$set":json_sal}, upsert = True)
+        del json_sal['cust_id']
         # logger.info("salary updated in database")
         connect.close()
 

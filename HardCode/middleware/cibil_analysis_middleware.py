@@ -2,10 +2,11 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from HardCode.scripts import BL0
-from HardCode.scripts import Analysis
-from HardCode.scripts.apicreditdata import convert_to_df
+from HardCode.scripts.cibil import Analysis
+from HardCode.scripts.cibil.apicreditdata import convert_to_df
 import json
-import pandas
+
+
 # from analysisnode.settings import BASE_DIR
 
 @api_view(['POST'])
