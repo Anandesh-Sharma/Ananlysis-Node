@@ -12,7 +12,7 @@ warnings.filterwarnings("ignore")
 def conn():
     # Create MONGO_SUPERUSER and MONGO_SUPERPASS global varaible in local environment for MongoDB
     connection = MongoClient(
-        f"mongodb://{os.environ['MONGO_SUPERUSER']}:{os.environ['MONGO_SUPERPASS']}@localhost:27017/?authSource=admin"
+        f"mongodb://Igneous:7777@localhost:27017/?authSource=admin"
         f"&readPreference=primary&ssl=false",
         socketTimeoutMS=900000)
     return connection

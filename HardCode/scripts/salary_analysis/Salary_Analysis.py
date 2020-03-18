@@ -219,6 +219,16 @@ def salary_check(data, id):
     data = get_epf_amount(data, id)
     data = epf_to_salary(data, "epf_amount", id)
     data["salary"] = np.where(data["salary"] >= 7000, data["salary"], 0)
+    # data['salary_message'] = np.where(data["salary"] >= 7000, 1, 0)
+
+    # data_messages = pd.DataFrame(columns = ['salary_message'])
+    # data_messages['salary_message'] = data['salary_messages']
+
+    data_message = data
+    # data.drop('salary_messages', axis = 1, inplace = True)
+
+    # data['salary_message'] = np.where(data["salary"] >= 7000, 1, 0)
+
     if data.shape[0] == 0:
         return {'status': False, 'message': 'no messages found'}
     df_salary = data.groupby(grouper)['salary'].max()
@@ -312,18 +322,11 @@ def salary_check(data, id):
                             salary = (df_final_sal["neft_amount"][-1] + df_final_sal["neft_amount"][-2]) / 2
                             keyword = "Neft"
                         else:
-
-                            return
-                # else:
-                #     if df_final_sal["neft"][-1]!=0:
-                #         salary = df_final_sal["neft"][-1]
-                #         keyword="Neft"
-
-
+                            salary = None
+                            # return
         except:
             salary = None
             # logger.critical('salary not found')
-
     return {'status': True, 'message': 'success', "salary": salary, "keyword": keyword}
 
 
@@ -509,5 +512,4 @@ def salary_analysis(id):
         del json_sal['cust_id']
         # logger.info("salary updated in database")
         connect.close()
-
     return salary_dict

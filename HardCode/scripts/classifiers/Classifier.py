@@ -110,60 +110,51 @@ def classifier(sms_json, user_id):
     try:
         p1 = multiprocessing.Process(target=credit, args=(df, result, user_id, max_timestamp, new,))
     except BaseException as e:
-        print(1)
         logger.info(f"error in credit card classifier as {e}")
         return False
     logger.info("Multiprocessing start for Loan Classifier")
     try:
         p2 = multiprocessing.Process(target=loan(df, result, user_id, max_timestamp, new, ))
     except BaseException as e:
-        print(2)
         logger.info(f"error in loan classifier as {e}")
         return False
     logger.info("Multiprocessing start for Transaction Classifier")
     try:
         p3 = multiprocessing.Process(target=cleaning(df, result, user_id, max_timestamp, new, ))
     except BaseException as e:
-        print(3)
         logger.info(f"error in transaction classifier as {e}")
         return False
     logger.info("process 1 starts")
     try:
         p1.start()
     except BaseException as e:
-        print(4)
         logger.info(f"error in credit card classifier as {e}")
         return False
     logger.info("process 2 starts")
     try:
         p2.start()
     except BaseException as e:
-        print(5)
         logger.info(f"error in loan classifier as {e}")
         return False
     logger.info("process 3 starts")
     try:
         p3.start()
     except BaseException as e:
-        print(6)
         logger.info(f"error in transaction classifier {e}")
         return False
     try:
         p1.join()
     except BaseException:
-        print(7)
         return False
     logger.info("process 1 complete")
     try:
         p2.join()
     except BaseException as e:
-        print(8)
         return False
     logger.info("process 2 complete")
     try:
         p3.join()
     except BaseException as e:
-        print(9)
         return False
     logger.info("process 3 complete")
 

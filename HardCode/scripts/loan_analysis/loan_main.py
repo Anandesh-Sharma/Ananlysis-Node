@@ -136,7 +136,6 @@ def preprocessing(cust_id):
 
             if app == 'KREDTB':
                 grp = pd.DataFrame(grp)
-                grp.to_csv('temp.csv')
             while i < len(grp):
                 logger.info("iteration in messages starts")
 
@@ -404,8 +403,7 @@ def final_output(cust_id):
                 max_amount               :    maximum loan amount in all loans
     '''
     a = preprocessing(cust_id)
-    from pprint import  pprint
-    pprint(a)
+
     logger = logger_1('final_output', cust_id)
     report = {
         'CURRENT_OPEN': 0,
