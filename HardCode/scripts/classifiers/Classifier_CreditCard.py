@@ -1,8 +1,9 @@
 import re
-from .Util import conn, read_json, convert_json, logger_1
+from HardCode.scripts.Util import conn, convert_json, logger_1
 import warnings
 from datetime import datetime
 import pytz
+
 warnings.filterwarnings("ignore")
 
 
@@ -29,7 +30,6 @@ def get_cc_messages(data, data_not_needed, result, name):
         result[name] = list(index_of_messages)
     logger.info("Appended name in result credit card dictionary successfully")
 
-
     mask = []
     for i in range(data.shape[0]):
         if i in index_of_messages:
@@ -43,36 +43,35 @@ def get_cc_messages(data, data_not_needed, result, name):
 def get_creditcard_promotion(data):
     credit_messages_filtered = []
 
-    pattern_1 = 'congratulations'
-    pattern_2 = 'sale'
-    pattern_3 = 'voucher'
-    pattern_4 = 'reward(.*)points'
-    pattern_5 = 'discount'
-    pattern_6 = 'rewarding'
-    pattern_7 = 'off'
-    pattern_8 = 'flat'
-    pattern_9 = 'cashback'
-    pattern_10 = 'offer'
-    pattern_11 = 'offers'
-    pattern_12 = 'w[o]?[i]?n'
-    pattern_13 = 'features'
-
-    pattern_14 = 'paperless(.*)?approval'
-    pattern_15 = 'apply(.*)?now'
-    pattern_16 = 'apply(.*)?for'
-    pattern_17 = 'credit card approval'
-    pattern_18 = 'apply(.*)?karein'
-    pattern_19 = 'eligible(.*)?for membership'
-    pattern_20 = 'to(.*)?apply'
-    pattern_21 = 'instant(.*)?approval'
-    pattern_22 = 'get your credit card'
-    pattern_23 = 'free(.*)credit(.*)card'
-    pattern_24 = 'congrats'
-    pattern_25 = 'save.*up\s?to'
-    pattern_26 = 'can\sbe\sapproved'
-    pattern_27 = 'prevent\sfraud'
-    pattern_28 = 'now\sget'
-    pattern_29 = 'otp'
+    pattern_1 = r'congratulations'
+    pattern_2 = r'sale'
+    pattern_3 = r'voucher'
+    pattern_4 = r'reward(.*)points'
+    pattern_5 = r'discount'
+    pattern_6 = r'rewarding'
+    pattern_7 = r'off'
+    pattern_8 = r'flat'
+    pattern_9 = r'cashback'
+    pattern_10 = r'offer'
+    pattern_11 = r'offers'
+    pattern_12 = r'w[o]?[i]?n'
+    pattern_13 = r'features'
+    pattern_14 = r'paperless(.*)?approval'
+    pattern_15 = r'apply(.*)?now'
+    pattern_16 = r'apply(.*)?for'
+    pattern_17 = r'credit card approval'
+    pattern_18 = r'apply(.*)?karein'
+    pattern_19 = r'eligible(.*)?for membership'
+    pattern_20 = r'to(.*)?apply'
+    pattern_21 = r'instant(.*)?approval'
+    pattern_22 = r'get your credit card'
+    pattern_23 = r'free(.*)credit(.*)card'
+    pattern_24 = r'congrats'
+    pattern_25 = r'save.*up\s?to'
+    pattern_26 = r'can\sbe\sapproved'
+    pattern_27 = r'prevent\sfraud'
+    pattern_28 = r'now\sget'
+    pattern_29 = r'otp'
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
@@ -89,7 +88,6 @@ def get_creditcard_promotion(data):
         matcher_11 = re.search(pattern_11, message)
         matcher_12 = re.search(pattern_12, message)
         matcher_13 = re.search(pattern_13, message)
-
         matcher_14 = re.search(pattern_14, message)
         matcher_15 = re.search(pattern_15, message)
         matcher_16 = re.search(pattern_16, message)
@@ -107,10 +105,14 @@ def get_creditcard_promotion(data):
         matcher_28 = re.search(pattern_28, message)
         matcher_29 = re.search(pattern_29, message)
 
-
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None or matcher_13 != None or \
-                matcher_14 is not None or matcher_15 is not None or matcher_16 is not None or matcher_17 is not None or matcher_18 is not None or matcher_19 is not None\
-                or matcher_20 is not None or matcher_21 is not None or matcher_22 is not None or matcher_23 is not None or matcher_24 is not None or matcher_25 is not None or matcher_26 is not None or matcher_27 is not None or matcher_28 is not None or matcher_29 is not None:
+        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_4 \
+                is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 \
+                is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 \
+                is not None or matcher_13 is not None or matcher_14 is not None or matcher_15 is not None or matcher_16 \
+                is not None or matcher_17 is not None or matcher_18 is not None or matcher_19 is not None or \
+                matcher_20 is not None or matcher_21 is not None or matcher_22 is not None or matcher_23 is not None or \
+                matcher_24 is not None or matcher_25 is not None or matcher_26 is not None or matcher_27 is not None or \
+                matcher_28 is not None or matcher_29 is not None:
             pass
         else:
             credit_messages_filtered.append(i)
@@ -138,14 +140,19 @@ def credit(df, result, user_id, max_timestamp, new):
 
     if new:
         logger.info("New user checked")
-        #db.creditcard.insert_one(data_credit)
-        db.creditcard.update({"cust_id": int(user_id)}, {"cust_id": int(user_id),"sms": data_credit['sms'],'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))),"timestamp":data_credit['timestamp']},upsert=True)
+        # db.creditcard.insert_one(data_credit)
+        db.creditcard.update({"cust_id": int(user_id)}, {"cust_id": int(user_id), "sms": data_credit['sms'],
+                                                         'modified_at': str(
+                                                             datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                         "timestamp": data_credit['timestamp']}, upsert=True)
         logger.info("Credit card sms of new user inserted successfully")
     else:
         for i in range(len(data_credit['sms'])):
             logger.info("Old User checked")
             db.creditcard.update({"cust_id": int(user_id)}, {"$push": {"sms": data_credit['sms'][i]}})
             logger.info("Credit card sms of old user updated successfully")
-        db.creditcard.update_one({"cust_id": int(user_id)}, {"$set": {"timestamp": max_timestamp,'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata')))}}, upsert=True)
+        db.creditcard.update_one({"cust_id": int(user_id)}, {
+            "$set": {"timestamp": max_timestamp, 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
+                                 upsert=True)
         logger.info("Timestamp of User updated")
     client.close()

@@ -2,11 +2,10 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from HardCode.scripts import BL0
-from HardCode.scripts import Analysis
-from HardCode.scripts.apicreditdata import convert_to_df
+from HardCode.scripts.cibil.Analysis import analyse
+from HardCode.scripts.cibil.apicreditdata import convert_to_df
 import json
-import pandas
-# from analysisnode.settings import BASE_DIR
+
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
@@ -28,6 +27,7 @@ def get_cibil_analysis(request):
         if sms_json is None:
             raise Exception
     except:
+
         return Response({'status': False, 'message': 'sms_json parameter is required'}, 400)
 
     try:
@@ -40,6 +40,7 @@ def get_cibil_analysis(request):
         if cibil_score is None:
             raise Exception
     except:
+
         return Response({'status': False, 'message': 'cibil_score parameter is required'}, 400)
     try:
         current_loan_amount = request.data.get('current_loan_amount')
@@ -58,7 +59,7 @@ def get_cibil_analysis(request):
     # call parser
     try:
         all_loan_amount = list(map(lambda x: int(float(x)), all_loan_amount.split(',')))
-    except Exception as e:
+    except:
         return Response({'status': False, 'message': 'all_loan_amount values must be int convertible'}, 400)
 
     try:
@@ -68,16 +69,28 @@ def get_cibil_analysis(request):
 
     cibil_df = {'status': False, 'data': None, 'message': 'None'}
     if cibil_xml:
-        response_parser = convert_to_df(user_id, cibil_xml)
+        response_parser = convert_to_df(cibil_xml)
         cibil_df = response_parser
 
     try:
-
         response_bl0 = BL0.bl0(cibil_xml=cibil_df, cibil_score=cibil_score, sms_json=sms_json, user_id=user_id
                                , new_user=new_user, list_loans=all_loan_amount,
                                current_loan=current_loan_amount)
+        return Response(response_bl0, 200)
     except Exception as e:
-        response_bl0 = Analysis.analyse(user_id=user_id, current_loan=current_loan_amount, cibil_df=cibil_df,
-                                        new_user=new_user
-                                        , cibil_score=cibil_score)
+        print(e)
+        limit = analyse(user_id=user_id, current_loan=current_loan_amount, cibil_df=cibil_df, new_user=new_user,
+                        cibil_score=cibil_score)
+        response_bl0 = {
+            "cust_id": user_id,
+            "status": True,
+            "message": "Exception occurred, I feel lonely in middleware",
+            "result": {
+                "loan_salary": -9,
+                "loan": -9,
+                "salary": -9,
+                "cibil": limit
+            }
+        }
+
     return Response(response_bl0, 200)
