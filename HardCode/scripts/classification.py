@@ -1,5 +1,6 @@
 from HardCode.scripts.classifiers.Classifier import classifier
 from HardCode.scripts.Util import *
+import pytz
 
 
 def run_classifier(**kwargs):
@@ -19,7 +20,6 @@ def run_classifier(**kwargs):
 
     logger.info('connection success')
     logger.info("checking started")
-
     logger.info("starting classification")
 
     # >>=>> CLASSIFIERS
@@ -29,3 +29,17 @@ def run_classifier(**kwargs):
         return False
     else:
         return True
+
+def exception_feeder(**kwargs):
+    client = kwargs.get('client')
+    logger = kwargs.get('logger')
+    msg = kwargs.get('msg')
+    user_id = kwargs.get('user_id')
+
+    logger.error(msg)
+    r = {'status': False, 'message': msg, 'limit': None,
+         'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+    if client:
+        client.analysisresult.exception_bl0.insert_one(r)
+    return r
+

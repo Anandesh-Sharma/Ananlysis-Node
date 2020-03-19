@@ -93,8 +93,6 @@ def get_cibil_analysis(request):
         if (only_classifier):
             response_classifer = run_classifier(user_id=user_id, sms_json=sms_json)
             return Response(response_classifer, 200)
-        else:
-            response_classifer = True
     except BaseException as e:
         print(f"Error in classification {e}")
         response_classifer = False

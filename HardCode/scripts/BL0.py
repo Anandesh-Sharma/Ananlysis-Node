@@ -225,7 +225,11 @@ def bl0(**kwargs):
 
     if float(result_salary['salary']) > 0:
         salary_present = True
-    loan_present = result_loan['result']['empty']
+    if result_loan['result']['empty']:
+        loan_present = False
+    else:
+        loan_present = True
+
 
     if salary_present and loan_present:
         result = loan_salary_analysis_function(result_salary['salary'], result_loan['result'], list_loans, current_loan,

@@ -215,7 +215,6 @@ def salary_check(data, id):
     var2 = True
     salary = 0
     keyword = ""
-
     data = get_epf_amount(data, id)
     data = epf_to_salary(data, "epf_amount", id)
     data["salary"] = np.where(data["salary"] >= 7000, data["salary"], 0)
@@ -224,7 +223,7 @@ def salary_check(data, id):
     # data_messages = pd.DataFrame(columns = ['salary_message'])
     # data_messages['salary_message'] = data['salary_messages']
 
-    data_message = data
+    # data_message = data
     # data.drop('salary_messages', axis = 1, inplace = True)
 
     # data['salary_message'] = np.where(data["salary"] >= 7000, 1, 0)
@@ -501,8 +500,8 @@ def salary_analysis(id):
         return {'status': True, 'message': 'success', 'salary': 0, 'keyword': ""}
     else:
 
-        json_sal = {"cust_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword']}
-        salary_dict = {"cust_id": int(id), "salary": str(salary_dict['salary']), "keyword": salary_dict['keyword'],
+        json_sal = {"cust_id": int(id), "salary": float(salary_dict['salary']), "keyword": salary_dict['keyword']}
+        salary_dict = {"cust_id": int(id), "salary": float(salary_dict['salary']), "keyword": salary_dict['keyword'],
                        'status': True, 'message': salary_dict["message"]}
         connect = conn()
 

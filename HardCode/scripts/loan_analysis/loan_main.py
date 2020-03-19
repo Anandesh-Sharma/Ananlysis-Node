@@ -10,7 +10,6 @@ timezone = pytz.timezone('Asia/Kolkata')
 
 script_status = {}
 
-
 def get_customer_data(cust_id):
     """
     This function establishes a connection from the mongo database and fetches data of the user.

@@ -22,7 +22,8 @@ def loan_analysis_function(loan_dict, list_loans, current_loan, user_id, new_use
         current_open = loan_dict['CURRENT_OPEN']
         total_loan = loan_dict['TOTAL_LOANS']
 
-        if (total_loan - current_open) > 2:
+        if (total_loan - current_open) >= 2:
+            print(111)
             if sum(current_open_amount) > 0:
                 a = max_amount - sum(current_open_amount)
             else:
@@ -52,7 +53,7 @@ def loan_salary_analysis_function(salary, loan_dict, list_loans, current_loan, u
     if loan_dict['PAY_WITHIN_30_DAYS']:
         if 10000 < float(salary) < 15000:
             max_amount = float(loan_dict['MAX_AMOUNT'])
-            current_open_amount = loan_dict['CURRENT_OPEN_AMOUNT']
+            current_open_amount = loan_dict['CURRENT_OPEN_AMOUNT']  #it's an array
             current_open = int(loan_dict['CURRENT_OPEN'])
             total_loan = loan_dict['TOTAL_LOANS']
             if int(total_loan - current_open) >= 2:
