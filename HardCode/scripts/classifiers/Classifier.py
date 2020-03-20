@@ -82,7 +82,6 @@ def classifier(sms_json, user_id):
                  read(bool) :whether the message is seen
 
         user_id(string) :user's specific id
-
         Returns:
          dict :containing follwing keys
          status(bool) :whether the code worked correctly
@@ -91,7 +90,6 @@ def classifier(sms_json, user_id):
          user_id(string) :user's specific id
          limit(int) :limiting amount of user calculated
          logic(string) :buissness logic of the process
-
         """
     logger = logger_1("Classifier", user_id)
     logger.info("Creating Multiprocessing Manager")

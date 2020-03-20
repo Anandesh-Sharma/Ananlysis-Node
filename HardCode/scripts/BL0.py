@@ -33,7 +33,6 @@ def exception_feeder(**kwargs):
 def result_fetcher(**kwargs):
     user_id = kwargs.get('user_id')
     client = kwargs.get('client')
-
     loan_result = kwargs.get('result_loan')
     salary_result = kwargs.get('result_salary')
     balance_sheet = kwargs.get('balance_sheet_result')
@@ -137,13 +136,6 @@ def bl0(**kwargs):
         return exception_feeder(client=client, logger=logger, msg=f'default result not generated {e}',
                                 user_id=user_id)
 
-    # >>=>> CLASSIFIERS
-    # classifier_result = classifier(sms_json, str(user_id))
-    #
-    # if not classifier_result:  # must return bool
-    #     exception_feeder(client=client, user_id=user_id, logger=logger,
-    #                      msg="classification of messages failed")
-        # client.close()
 
     # >>=>> BALANCE SHEET
     logger.info('started making balanced sheet')
@@ -167,6 +159,8 @@ def bl0(**kwargs):
 
 
 
+
+
     # >>=>> LOAN ANALYSIS
     logger.info('starting loan analysis')
     if not classification_flag:
@@ -179,11 +173,13 @@ def bl0(**kwargs):
                              msg="Loan Analysis failed due to some reason")
         logger.info('loan analysis successsful')
 
+
     # >>=>> SALARY ANALYSIS
     logger.info('starting salary analysis')
     if not classification_flag:
         try:
             result_salary = salary_analysis(user_id)  # Returns a dictionary
+
             if result_salary['status']:
                 pass
             if not result_salary['status']:
@@ -191,10 +187,13 @@ def bl0(**kwargs):
                                  msg="Salary Analysis failed due to some reason")
 
         except BaseException as e:
+
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg=str(e))
             # -> Run BASE CIBIL logic and handle
             pass
+    else:
+        exception_feeder(client= client, user_id = user_id, logger = logger,msg = 'error in classification')
 
     # >>=>> CHEQUE BOUNCE ANALYSIS
     if not classification_flag:
@@ -221,15 +220,15 @@ def bl0(**kwargs):
         # TODO : CREATE A NEW FUNCTION THAT FINDS THE RESULT IN DB AND RETURN IT TO MIDDLEWARE
     logger.info('Not a defaulter')
     logger.info('Starting Analysis')
+
     salary_present = False
+    loan_present = False
 
     if float(result_salary['salary']) > 0:
         salary_present = True
-    if result_loan['result']['empty']:
-        loan_present = False
-    else:
-        loan_present = True
 
+    if not result_loan['result']['empty']:
+        loan_present = True
 
     if salary_present and loan_present:
         result = loan_salary_analysis_function(result_salary['salary'], result_loan['result'], list_loans, current_loan,

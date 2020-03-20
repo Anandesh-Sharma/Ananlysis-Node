@@ -37,7 +37,6 @@ def get_cibil_analysis(request):
             if sms_json is None:
                 raise Exception
     except:
-
         return Response({'status': False, 'message': 'sms_json parameter is required'}, 400)
 
     try:
@@ -76,8 +75,6 @@ def get_cibil_analysis(request):
         pass
         # return Response({'status': False, 'message': 'all_loan_amount values must be int convertible'}, 400)
 
-
-
     try:
         current_loan_amount = int(current_loan_amount)
     except:
@@ -90,13 +87,13 @@ def get_cibil_analysis(request):
         cibil_df = response_parser
 
     try:
-        if (only_classifier):
-            response_classifer = run_classifier(user_id=user_id, sms_json=sms_json)
-            return Response(response_classifer, 200)
+        if only_classifier:
+            response_classifier = run_classifier(user_id=user_id, sms_json=sms_json)
+            return Response(response_classifier, 200)
     except BaseException as e:
         print(f"Error in classification {e}")
-        response_classifer = False
-        return Response(response_classifer, 400)
+        response_classifier = False
+        return Response(response_classifier, 400)
 
     try:
         response_bl0 = BL0.bl0(cibil_xml=cibil_df, cibil_score=cibil_score, user_id=user_id

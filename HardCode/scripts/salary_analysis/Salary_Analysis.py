@@ -1,12 +1,9 @@
-
 import pandas as pd
 import numpy as np
 import regex as re
 from datetime import datetime, timedelta
 import pytz
-# from datetime import timedelta
-# import json
-# from pymongo import MongoClient
+
 from HardCode.scripts.Util import logger_1, conn
 
 
@@ -40,15 +37,12 @@ def clean_debit(data, id):
 
 def get_epf_amount(data, id):
     """This code finds the epf(employee provident fund) amount from the messages in the DataFrame.
-
           Parameters: DataFrame.
-
           Output: DataFrame.
-
     """
 
     logger = logger_1("Get Epf Amount", id)
-    # logger.info("Epf Amount Calculation starts")
+    logger.info("Epf Amount Calculation starts")
 
     data["epf_amount"] = [0] * data.shape[0]
     pattern1 = r"(?:[Ee][Pp][Ff] [Cc]ontribution of).*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
@@ -90,11 +84,8 @@ def epf_to_salary(data, column, id):
 
 def get_salary(data, id):
     """This code finds the salary from the messages if keyword 'salary' is found.
-
           Parameters: DataFrame.
-
           Output: DataFrame.
-
     """
 
     logger = logger_1('Get Salary', id)
@@ -108,14 +99,17 @@ def get_salary(data, id):
 
     for i, row in data.iterrows():
         m = row["body"].lower()
-
         y1 = re.search(pattern1, m)
         y2 = re.search(pattern2, m)
         y3 = re.search(pattern3, m)
         y4 = re.search(pattern4, m)
-
+        from pprint import pprint
+        # print("**********")
+        # pprint(m)
+        # print(amount)
         if y1 is not None:
             amount = y1.group(3)
+
         elif y2 is not None:
             amount = y2.group(3)
         elif y3 is not None:
@@ -124,6 +118,7 @@ def get_salary(data, id):
             amount = y4.group(3)
         else:
             amount = 0
+
         data["direct_sal"][i] = float(str(amount).replace(",", ""))
     # logger.info('Direct salary calculation completes')
     return data
@@ -131,11 +126,8 @@ def get_salary(data, id):
 
 def get_neft_amount(data, id):
     '''This code finds the neft amount from the messages in the DataFrame.
-
         Parameters: DataFrame.
-
         Output: DataFrame.
-
     '''
 
     data["neft_amount"] = [0] * data.shape[0]
@@ -152,13 +144,13 @@ def get_neft_amount(data, id):
         y3 = re.search(pattern3, m)
         y4 = re.search(pattern4, m)
 
-        if (y1 != None):
+        if y1 != None:
             amount = y1.group(3)
-        elif (y2 != None):
+        elif y2 != None:
             amount = y2.group(3)
-        elif (y3 != None):
+        elif y3 != None:
             amount = y3.group(3)
-        elif (y4 != None):
+        elif y4 != None:
             amount = y4.group(3)
         else:
             amount = 0
@@ -169,11 +161,8 @@ def get_neft_amount(data, id):
 def get_time(data, id):
     """
         This code converts the timestamp from unix format to datetime.
-
           Parameters: DataFrame.
-
           Output: DataFrame.
-
     """
 
     logger = logger_1("Get Time", id)
@@ -187,16 +176,13 @@ def get_time(data, id):
             logger.error("timestamp not converted")
             return {"status": False, "message": "timestamp not converted"}
 
-    return {"status": True, "message": "success", 'data': data}
+    return {'cust_id' : id,status": True, "message": "success", 'data': data}
 
 
 def salary_check(data, id):
     '''This code calls all the function to calculate salary of a user based on the messages in dataFrame.
-
           Parameters: DataFrame.
-
           Output: Salary(int),Keyword(string).
-
     '''
 
     # logger = logger_1('Salary Check', id)
@@ -218,15 +204,6 @@ def salary_check(data, id):
     data = get_epf_amount(data, id)
     data = epf_to_salary(data, "epf_amount", id)
     data["salary"] = np.where(data["salary"] >= 7000, data["salary"], 0)
-    # data['salary_message'] = np.where(data["salary"] >= 7000, 1, 0)
-
-    # data_messages = pd.DataFrame(columns = ['salary_message'])
-    # data_messages['salary_message'] = data['salary_messages']
-
-    # data_message = data
-    # data.drop('salary_messages', axis = 1, inplace = True)
-
-    # data['salary_message'] = np.where(data["salary"] >= 7000, 1, 0)
 
     if data.shape[0] == 0:
         return {'status': False, 'message': 'no messages found'}
@@ -284,7 +261,6 @@ def salary_check(data, id):
             salary = None
 
     if var2:
-
         try:
 
             # logger.info('Finding salary from neft messages')
@@ -326,7 +302,7 @@ def salary_check(data, id):
         except:
             salary = None
             # logger.critical('salary not found')
-    return {'status': True, 'message': 'success', "salary": salary, "keyword": keyword}
+    return {'cust_id': id, 'status': True, 'message': 'success', "salary": salary, "keyword": keyword}
 
 
 def transaction(id):
@@ -351,7 +327,7 @@ def transaction(id):
         return {'status': False, 'message': "file doesn't exist"}
     x = pd.DataFrame(file1["sms"])
 
-    return {'status': True, 'message': "success", "df": x}
+    return {'cust_id': id,'status': True, 'message': "success", "df": x}
 
 
 def extra(id):
@@ -406,7 +382,7 @@ def merge(id):
     total = pd.concat([tran, ext], 0)
     total = total.reset_index(drop=True)
 
-    return {'status': True, 'message': 'success', 'total': total}
+    return {'cust_id': id, 'status': True, 'message': 'success', 'total': total}
 
 
 def customer_salary(id):
@@ -497,7 +473,7 @@ def salary_analysis(id):
 
         # logger.info("salary updated in database")
         connect.close()
-        return {'status': True, 'message': 'success', 'salary': 0, 'keyword': ""}
+        return {'cust_id': id,'status': True, 'message': 'success', 'salary': 0, 'keyword': ""}
     else:
 
         json_sal = {"cust_id": int(id), "salary": float(salary_dict['salary']), "keyword": salary_dict['keyword']}

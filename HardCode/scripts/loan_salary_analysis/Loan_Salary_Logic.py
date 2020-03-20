@@ -23,7 +23,6 @@ def loan_analysis_function(loan_dict, list_loans, current_loan, user_id, new_use
         total_loan = loan_dict['TOTAL_LOANS']
 
         if (total_loan - current_open) >= 2:
-            print(111)
             if sum(current_open_amount) > 0:
                 a = max_amount - sum(current_open_amount)
             else:

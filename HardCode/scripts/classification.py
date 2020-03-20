@@ -25,10 +25,11 @@ def run_classifier(**kwargs):
     # >>=>> CLASSIFIERS
     classifier_result = classifier(sms_json, str(user_id))
 
-    if not classifier_result:  # must return bool
+    if not classifier_result: # must return bool
         return False
     else:
         return True
+
 
 def exception_feeder(**kwargs):
     client = kwargs.get('client')
@@ -42,4 +43,3 @@ def exception_feeder(**kwargs):
     if client:
         client.analysisresult.exception_bl0.insert_one(r)
     return r
-
