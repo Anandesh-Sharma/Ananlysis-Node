@@ -1,7 +1,7 @@
 from .transaction_analysis import process_data
-from .monthly_transactions import monthly_credit_sum,monthly_debit_sum
+from .monthly_transactions import monthly_credit_sum, monthly_debit_sum
 from HardCode.scripts.balance_sheet_analysis.Validation2 import *
-from HardCode.scripts.Util import conn, logger_1,convert_json_balanced_sheet,convert_json_balanced_sheet_empty
+from HardCode.scripts.Util import conn, logger_1, convert_json_balanced_sheet, convert_json_balanced_sheet_empty
 
 
 def create_transaction_balanced_sheet(user_id):
@@ -29,13 +29,12 @@ def create_transaction_balanced_sheet(user_id):
 
     logger.info('Converting file to dataframe')
     df = pd.DataFrame(file1['sms'])
-    if df.shape[0]==0:
-        r = {'status':True,'message':'success'}
-        r['df'] = convert_json_balanced_sheet_empty()
+    if df.shape[0] == 0:
+        r = {'status': True, 'message': 'success', 'df': convert_json_balanced_sheet_empty()}
         return r
     logger.info('Conversion Successful')
     logger.info('Starting to process data')
-    result = process_data(df,user_id)
+    result = process_data(df, user_id)
 
     if not result['status']:
         logger.exception(result['message'])
@@ -69,7 +68,7 @@ def create_transaction_balanced_sheet(user_id):
         logger.exception(result['message'])
         return result
     logger.info('Time Based Check Successful')
-    
+
     df = result['df']
 
     logger.info('Starting Time Check DBS')
@@ -78,7 +77,7 @@ def create_transaction_balanced_sheet(user_id):
         logger.exception(result['message'])
         return result
     logger.info('Time Based Check DBS Successful')
-    
+
     df = result['df']
 
     logger.info('Finding Monthly Credit Sum')
@@ -87,8 +86,8 @@ def create_transaction_balanced_sheet(user_id):
         logger.exception(result['message'])
         return result
     logger.info('Monthly credit sum successful')
-    r={'status':True,'message':'success'}
-    credit= result['r']
+    r = {'status': True, 'message': 'success'}
+    credit = result['r']
 
     logger.info('Finding Monthly Debit Sum')
     result = monthly_debit_sum(df)
@@ -97,8 +96,8 @@ def create_transaction_balanced_sheet(user_id):
         return result
     logger.info('Monthly debit sum successful')
     r['status'] = True
-    r['message'] ='success'
+    r['message'] = 'success'
     debit = result['r']
-    
-    r['df'] = convert_json_balanced_sheet(df,debit=debit,credit=credit)
+
+    r['df'] = convert_json_balanced_sheet(df, debit=debit, credit=credit)
     return r

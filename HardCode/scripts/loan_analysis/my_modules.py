@@ -198,8 +198,9 @@ def due_date_extract(message):
     date = -1
     pattern_1 = r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*repayment.*\s([0-9]+)'  # group(1) for date and group(2) for amount
     pattern_2 = r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)'  # group(1) for date and group(2) for amount
-    pattern_3 = r'.*rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+).*'  # group(1) for amount and group(2) for date
-    pattern_4 = r'due\s(?:on)?.*([0-9]+/[0-9]+).*'  # group(1) for date in cashbn
+    pattern_3 = r'.*rs\.?\s([0-9]+).*due\sby\s([0-9]+-[0-9]+-[0-9]+).*'  # group(1) for amount and group(2) for date
+    # pattern_4 = r'due\s(?:on)?.*([0-9]+/[0-9]+).*'  # group(1) for date in cashbn
+    pattern_4 = r'.*due\s(?:on)?\s?([0-9]+/[0-9]+).*'
 
     matcher_1 = re.search(pattern_1, message)
     matcher_2 = re.search(pattern_2, message)

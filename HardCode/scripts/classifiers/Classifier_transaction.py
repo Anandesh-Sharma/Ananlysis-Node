@@ -52,7 +52,7 @@ def thread_for_cleaning_3(df, pattern, result, required_rows):
 
 def cleaning(df, result, user_id, max_timestamp, new):
     logger = logger_1("cleaning", user_id)
-    transaction_patterns = ['debited', 'credited']
+    transaction_patterns = ['debited', 'credited', 'inft']
     thread_list = []
     results = []
     length = set(range(df.shape[0]))
@@ -179,7 +179,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
         if index not in required_rows:
             continue
         matcher_1 = re.search("[Rr]egards", row["body"])
-        matcher_2 = re.search(r"[a-zA-z]{2}-\d+", row["body"])
+        matcher_2 = re.search(r"\d", row["sender"])
         if matcher_1 is not None:
             if 'DHANCO' not in row["sender"]:
                 g.append(index)
@@ -190,14 +190,14 @@ def cleaning(df, result, user_id, max_timestamp, new):
 
     cleaning_transaction_patterns = ['request received to', 'received a request to add', 'premium receipt',
                                      'contribution',
-                                     'data benefit', 'team hr', 'free [0-9]* ?[gm]b', ' data ', 'voucher', 'data pack',
+                                     'data benefit', 'team hr', 'free [0-9]+ ?[gm]b', ' data ', 'voucher', 'data pack',
                                      'benefit of ', 'data setting', 'added/ ?modified a beneficiary',
                                      'added to your beneficiary list', 'after activation', 'new beneficiary',
                                      'refund credited', 'return request', 'received request',
                                      'documents have been received',
                                      'last day free', 'received a refund', 'will be processed shortly',
                                      'credited a free',
-                                     'request for modifying', r'free \d* [gm]b/day', 'data pack',
+                                     'request for modifying', r'free \d+ [gm]b/day', 'data pack',
                                      'request for registration',
                                      'received by our company', 'month of', 'received a call', 'free data', 'welcome',
                                      'data benefits', 'win real cash',
@@ -206,7 +206,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                      'coupon', 'can be credited ', 'no hassle of adding beneficiary', 'you\'re covered',
                                      'bank will never ask you to', 'eAadhaar', 'great news!', 'your query has',
                                      'redemption request', 'number received',
-                                     'your order', 'beneficiary [a-z]*? is added successfully', 'dear employee',
+                                     'your order', 'beneficiary [a-z]+? is added successfully', 'dear employee',
                                      'subscribing', 'sorry',
                                      r'received \d*? enquiry', 'congratulations?', 'woohoo!', 'salary credited',
                                      'hurry',
@@ -223,17 +223,16 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                      'assessment year', 'we wish to inform', 'refunded',
                                      'amendment', 'added/modified', 'kyc verification', 'is due', 'paytm postpaid',
                                      'please pay', 'flight booking', 'offer',
-                                     '(credited)?(received)? [0-9]*[gm]b', 'payment.*failed',
+                                     '(credited)?(received)? [0-9]+[gm]b', 'payment.*failed',
                                      'uber india systems pvt ltd', 'has requested money', 'on approving',
                                      'not received', 'received your', 'brand factory has credited ', 'train ticket',
-                                     'total (amt)?(amount)? due', 'redbus wallet', 'otp',
+                                     'total (amt)?(amount)? due', 'redbus wallet', '\notp\n',
                                      'due of', 'received ?a? ?bill', 'successful payments', 'response ', 'last day',
                                      'payment confirmation', 'payment sms', 'kyc',
                                      'added beneficiary', 'received a message', ' premium ', 'claim', 'points ',
                                      'frequency monthly', 'received a pay rise', 'cheque book',
                                      'will be', 'unpaid', 'received (for|in) clearing', 'presented for clearing',
-                                     'your application', 'to know', 'unpaid', r'\slakh\s'
-                                                                              'thanking you', 'redeem', 'transferred',
+                                     'your application', 'to know', 'unpaid', r'\slakh\s','thanking you', 'redeem', 'transferred',
                                      'available credit limit']
 
     garbage_rows = []

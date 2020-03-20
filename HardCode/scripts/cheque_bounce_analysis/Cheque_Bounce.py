@@ -1,8 +1,10 @@
 # import pandas as pd
-# from HardCode.scripts.Util import logger_1
+from HardCode.scripts.Util import logger_1
 import regex as re
 from datetime import datetime
-from ..Util import logger_1
+
+
+# from ..Util import logger_1
 
 
 def cheque_user_inner(data, user_id):
@@ -61,15 +63,13 @@ def cheque_user_inner(data, user_id):
         matcher_12 = re.search(pattern_12, message)
         matcher_13 = re.search(pattern_13, message)
 
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None or matcher_13 is None:
+        if matcher_1 or matcher_2 or matcher_3 or matcher_4 or matcher_5 or matcher_6 or matcher_7 or matcher_8 or matcher_9 or matcher_10 or matcher_11 or matcher_12 or matcher_13:
             matcher_not_1 = re.search(pattern_not_1, message)
             matcher_not_2 = re.search(pattern_not_2, message)
-            if matcher_not_1 is None and matcher_not_2 is None:
-
+            if matcher_not_1 and matcher_not_2:
                 bounce.append((datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S').month, row['sender'][3:]))
                 msg.append(row['body'])
     logger.info('cheque user inner successfully executed')
-
     return bounce, msg
 
 

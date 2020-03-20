@@ -147,7 +147,7 @@ def get_credit_amount(data, logger):
             data['credit_amount'][i] = float(str(amount).replace(",", ""))
         except Exception as e:
             logger.exception("msg")
-
+        # print(e)
 
 
 def get_debit_amount(data):
@@ -331,7 +331,7 @@ def get_date_time(data, logger):
             data['date_time'][i] = datetime.combine(date, time)
         except Exception as e:
             logger.exception("msg")
-
+            # print(e)
 
 
 def balance_check(data):

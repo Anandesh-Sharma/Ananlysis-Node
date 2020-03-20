@@ -1,17 +1,20 @@
 import logging
 import pandas as pd
-# import os
+import os
 from datetime import datetime
 from logging.handlers import TimedRotatingFileHandler
 from pymongo import MongoClient
 import warnings
-
+import urllib
 warnings.filterwarnings("ignore")
 
 
 def conn():
+    # Create MONGO_SUPERUSER and MONGO_SUPERPASS global varaible in local environment for MongoDB
+
     connection = MongoClient(
-        f"mongodb://god:rock0004@localhost:27017/?authSource=admin&readPreference=primary&ssl=false",
+        f"mongodb://{os.environ['MONGOUSER']}:" + urllib.parse.quote(os.environ['MONGOPASS']) +"@localhost:27017/?authSource=admin"
+        f"&readPreference=primary&ssl=false",
         socketTimeoutMS=900000)
     return connection
 
@@ -42,8 +45,8 @@ def read_json(sms_json, user_id):
             df = pd.DataFrame.from_dict(sms_json, orient='index')
 
     except Exception as e:
-        logger.debug("dataframe not converted successfully")
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
+        logger.info(f"dataframe not converted successfully as {e}")
+        return False
     df['timestamp'] = [0] * df.shape[0]
     df['temp'] = df.index
 
@@ -52,8 +55,8 @@ def read_json(sms_json, user_id):
         for i in range(df.shape[0]):
             df['timestamp'][i] = datetime.utcfromtimestamp(int(df['temp'][i]) / 1000).strftime('%Y-%m-%d %H:%M:%S')
     except Exception as e:
-        logger.debug("timestamp not converted successfully")
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0'}
+        logger.info(f"timestamp not converted successfully as {e}")
+        return False
     df.reset_index(inplace=True, drop=True)
     list_idx = []
     for i in range(df.shape[0]):
@@ -107,12 +110,12 @@ def update_sms(df, user_id, max_timestamp):
         return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
                 'df': df, "timestamp": max_timestamp}
     logger.info('connection success')
-    
+
     extra = client.messagecluster.extra
     try:
         msgs = extra.find_one({"cust_id": int(user_id)})
     except:
-        msgs=None
+        msgs = None
     client.close()
     if msgs is None:
         logger.info("User does not exist in mongodb")

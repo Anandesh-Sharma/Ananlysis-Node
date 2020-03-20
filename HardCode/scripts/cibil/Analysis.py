@@ -9,7 +9,7 @@ def analyse(**kwargs):
     # new cibil logic is implemented on new customers only
     # Dheeraj told to run it on 700-900 but we are giving loans to 750 < !!
     # dataframe throws error ## manually parse xml
-    if cibil_df['status'] == False and new_user:
+    if not cibil_df['status'] and new_user:
         try:
             with open(f'logs/{user_id}.txt', 'w') as f:
                 f.write(f"DF failed for userid {user_id}")
@@ -58,11 +58,13 @@ def analyse(**kwargs):
 
     # returning result
     if a == -1:
-        r = {'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id,
-             'limit': a, 'logic': 'BL0-cibil'}
+        limit = -1
+        # r = {'status': True, 'message': 'success', 'onhold': True, 'user_id': user_id,
+        #      'limit': a, 'logic': 'BL0-cibil'}
     else:
-        r = {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
-             'limit': a, 'logic': 'BL0-cibil'}
-    if r['limit'] > 3000 and new_user:
-        r['limit'] = 3000
-    return r
+        limit = a
+        # r = {'status': True, 'message': 'success', 'onhold': False, 'user_id': user_id,
+        #      'limit': a, 'logic': 'BL0-cibil'}
+    if limit > 3000 and new_user:
+        limit = 3000
+    return limit

@@ -82,7 +82,6 @@ def classifier(sms_json, user_id):
                  read(bool) :whether the message is seen
 
         user_id(string) :user's specific id
-
         Returns:
          dict :containing follwing keys
          status(bool) :whether the code worked correctly
@@ -91,7 +90,6 @@ def classifier(sms_json, user_id):
          user_id(string) :user's specific id
          limit(int) :limiting amount of user calculated
          logic(string) :buissness logic of the process
-
         """
     logger = logger_1("Classifier", user_id)
     logger.info("Creating Multiprocessing Manager")
@@ -100,7 +98,7 @@ def classifier(sms_json, user_id):
 
     logger.info("Read sms json object")
     result1 = read_json(sms_json, user_id)
-    if not result1['status']:
+    if not result1:
         logger.error("JSON not read successfully")
         return result1
     df = result1['df']
@@ -109,67 +107,55 @@ def classifier(sms_json, user_id):
     logger.info("Multiprocessing start for Credit card Classifier")
     try:
         p1 = multiprocessing.Process(target=credit, args=(df, result, user_id, max_timestamp, new,))
-    except Exception as e:
-        logger.debug("error in credit card classifier")
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    except BaseException as e:
+        logger.info(f"error in credit card classifier as {e}")
+        return False
     logger.info("Multiprocessing start for Loan Classifier")
     try:
         p2 = multiprocessing.Process(target=loan(df, result, user_id, max_timestamp, new, ))
-    except Exception as e:
-
-        logger.debug("error in loan classifier")
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    except BaseException as e:
+        logger.info(f"error in loan classifier as {e}")
+        return False
     logger.info("Multiprocessing start for Transaction Classifier")
     try:
         p3 = multiprocessing.Process(target=cleaning(df, result, user_id, max_timestamp, new, ))
-    except Exception as e:
-        logger.debug("error in transaction classifier")
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    except BaseException as e:
+        logger.info(f"error in transaction classifier as {e}")
+        return False
     logger.info("process 1 starts")
     try:
         p1.start()
-    except Exception as e:
-        logger.debug("error in credit card classifier")
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    except BaseException as e:
+        logger.info(f"error in credit card classifier as {e}")
+        return False
     logger.info("process 2 starts")
     try:
         p2.start()
-    except Exception as e:
-        logger.debug("error in loan classifier")
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    except BaseException as e:
+        logger.info(f"error in loan classifier as {e}")
+        return False
     logger.info("process 3 starts")
     try:
         p3.start()
-    except Exception as e:
-        logger.debug("error in transaction classifier")
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    except BaseException as e:
+        logger.info(f"error in transaction classifier {e}")
+        return False
     try:
         p1.join()
-    except Exception as e:
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    except BaseException:
+        return False
     logger.info("process 1 complete")
     try:
         p2.join()
-    except Exception as e:
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    except BaseException as e:
+        return False
     logger.info("process 2 complete")
     try:
         p3.join()
-    except Exception as e:
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    except BaseException as e:
+        return False
     logger.info("process 3 complete")
 
     logger.info("extra classifier called")
     extra(df, user_id, result, max_timestamp, new)
-    return {'status': True, 'message': 'success in message extraction', 'onhold': None, 'user_id': user_id,
-            'limit': None,
-            'logic': 'BL0'}
+    return True
