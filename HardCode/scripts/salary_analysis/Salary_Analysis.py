@@ -176,7 +176,7 @@ def get_time(data, id):
             logger.error("timestamp not converted")
             return {"status": False, "message": "timestamp not converted"}
 
-    return {'cust_id' : id,status": True, "message": "success", 'data': data}
+    return {'cust_id' : id,"status": True, "message": "success", 'data': data}
 
 
 def salary_check(data, id):
