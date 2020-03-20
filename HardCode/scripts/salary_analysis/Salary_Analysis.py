@@ -270,7 +270,6 @@ def salary_check(data, id):
             df_credit = data.groupby(grouper)['neft_amount'].max()
 
             df_final_sal = pd.DataFrame(df_credit.tail())
-
             if df_final_sal.shape[0] > 1:
                 if ((df_final_sal["neft_amount"][-1] != 0) and (df_final_sal["neft_amount"][-2] != 0)):
 

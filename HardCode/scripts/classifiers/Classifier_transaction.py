@@ -31,6 +31,7 @@ def check_body_2(df, pattern, required_rows):
 def check_header(df, pattern, required_rows):
     d = []
     for index, row in df.iterrows():
+
         if index not in required_rows:
             continue
         if pattern in row["sender"].lower():
@@ -120,8 +121,8 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                             'muthut',
                                             'mytsky',
                                             'lenkrt',
-                                            'flpkrt',
                                             'epfoho',
+                                            'flpkrt',
                                             'flasho',
                                             'grofrs',
                                             'hdfcsl',
