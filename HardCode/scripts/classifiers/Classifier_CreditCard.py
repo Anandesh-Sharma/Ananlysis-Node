@@ -7,18 +7,16 @@ import pytz
 warnings.filterwarnings("ignore")
 
 
-def get_cc_messages(data, data_not_needed, result, name):
+def get_cc_messages(data, data_needed, result, name):
     logger = logger_1("cc messages", name)
     index_of_messages = []
-    pattern = '(.*)?credit card(.*)?'
+    pattern = '.*credit card.*'
     for i in range(data.shape[0]):
-        if i in data_not_needed:
-            continue
-        message = str(data['body'][i]).lower()
-        matcher = re.search(pattern, message)
-
-        if matcher is not None:
-            index_of_messages.append(i)
+        if i in data_needed:
+            message = str(data['body'][i]).lower()
+            matcher = re.search(pattern, message)
+            if matcher is not None:
+                index_of_messages.append(i)
     logger.info("Credit card sms extracted successfully")
 
     logger.info("appending name in result credit card dictionary")
@@ -39,7 +37,7 @@ def get_cc_messages(data, data_not_needed, result, name):
     logger.info("Dropped sms other than credit card")
     return data.copy()[mask].reset_index(drop=True)
 
-
+'''
 def get_creditcard_promotion(data):
     credit_messages_filtered = []
 
@@ -117,14 +115,72 @@ def get_creditcard_promotion(data):
         else:
             credit_messages_filtered.append(i)
     return credit_messages_filtered
+'''
+
+def get_confirm_cc_messages(data):
+    cc_confirm_index_list = []
+    pattern_1 = r'.*sbi\scardholder.*payment.*rs\.?\s?([0-9.?]+).*credit\scard.*successfully.*'   # grp(1) for amount
+    pattern_6 = r'.*approve\stransaction.*rs\.?\s?([0-9.?]+).*a/c\sno\.?.*credit\scard.*'
+    pattern_7 = r'(?:rs|inr)\.?\s?\s?([0-9.?]+).*debited.*credit\scard.*'
+    pattern_9 = r'.*inr\s?([0-9.?]+).*paytm.*credit\scard.*'
+    pattern_11 = r'.*txn\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*credit\scard.*'
+    pattern_12 = r'.*refund.*(?:rs\.?|inr)\s?([0-9.?]+).*credited.*credit\scard.*'
+    pattern_13 = r'.*spent\s(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard.*'
+    pattern_15 = r'.*payment\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*received.*credit\scard.*'
+    pattern_17 = r'.*received.*payment.*(?:for|of)*(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard.*'
+    # will try to make 15 and 17 a single regex
+    
+    # due
+    pattern_2 = r'.*e-stmt.*sbi\scard.*total\samt\sdue:\srs\.?\s?([0-9.?]+).*min\samt\sdue:\srs\.?\s?([0-9.?]+)\sis\spayable.*'  # grp(1) for total amt grp(2) for min amt
+    pattern_14 = r'.*payment.*credit\scard.*is\sdue.*total\samount\sdue.*rs\.?\s?([0-9.?]+).*minimum\samount\sdue.*rs\.?\s?([0-9.?]+).*'   # grp(1) for total grp(2) for min
+    pattern_16 = r'.*stmt.*total\s(?:amt|amount)\sdue.*credit\scard.*(?:inr|rs\.?)\s?([0-9.,?]+).*(?:minimum|min)\s(?:amt|amount)\sdue.*(?:inr|rs\.?)\s?([0-9.,?]+).*payable.*'
+    # will try to make 14 and 16 a single regex 
+    
+    # overdue
+    pattern_3 = r'.*unable.*overdue\s(?:payment|pymt).*rs\.?\s?([0-9.?]+).*credit\scard.*'   # grp(1) for overdue amt 
+
+    # reject/declined
+    pattern_4 = r'.*regret\sto\sinform.*unable\sto\s(?:issue|sanction).*credit\scard.*'
+    pattern_5 = r'.*application.*credit\scard[s]?.*(?:reject[e]?[d]?|declined).*'
+    pattern_8 = r'.*regret\sto\sinform.*review[e]?[d]?.*application.*unable\sto\sgrant.*credit\scard.*'
+    pattern_10 = r'.*txn.*credit\scard.*(?:rs\.?|inr)\s?([0-9.?]+).*declined.*'
+
+    for i in range(data.shape[0]):
+        message = str(data['body'][i]).lower()
+        matcher_1 = re.search(pattern_1, message)
+        matcher_2 = re.search(pattern_2, message)
+        matcher_3 = re.search(pattern_3, message)
+        matcher_4 = re.search(pattern_4, message)
+        matcher_5 = re.search(pattern_5, message)
+        matcher_6 = re.search(pattern_6, message)
+        matcher_7 = re.search(pattern_7, message)
+        matcher_8 = re.search(pattern_8, message)
+        matcher_9 = re.search(pattern_9, message)
+        matcher_10 = re.search(pattern_10, message)
+        matcher_11 = re.search(pattern_11, message)
+        matcher_12 = re.search(pattern_12, message)
+        matcher_13 = re.search(pattern_13, message)
+        matcher_14 = re.search(pattern_14, message)
+        matcher_15 = re.search(pattern_15, message)
+        matcher_16 = re.search(pattern_16, message)
+        matcher_17 = re.search(pattern_17, message)
+
+        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None\
+        or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None\
+        or matcher_11 is not None or matcher_12 is not None or matcher_13 is not None or matcher_14 is not None or matcher_15 is not None\
+        or matcher_16 is not None or matcher_17 is not None:
+            cc_confirm_index_list.append(i)
+
+    return cc_confirm_index_list
 
 
 def credit(df, result, user_id, max_timestamp, new):
     logger = logger_1("credit card", user_id)
-    logger.info("Removing credit card promotional sms")
-    data_not_needed = get_creditcard_promotion(df)
+    #logger.info("Removing credit card promotional sms")
+    #data_not_needed = get_creditcard_promotion(df)
     logger.info("Extracting Credit card sms")
-    data = get_cc_messages(df, data_not_needed, result, user_id)
+    data_needed = get_confirm_cc_messages(df)
+    data = get_cc_messages(df, data_needed, result, user_id)
     logger.info("Converting credit card dataframe into json")
     data_credit = convert_json(data, user_id, max_timestamp)
 
