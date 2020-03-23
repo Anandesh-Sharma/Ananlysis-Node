@@ -119,31 +119,31 @@ def get_creditcard_promotion(data):
 
 def get_confirm_cc_messages(data):
     cc_confirm_index_list = []
-    pattern_1 = r'.*sbi\scardholder.*payment.*rs\.?\s?([0-9.?]+).*credit\scard.*successfully.*'   # grp(1) for amount
-    pattern_6 = r'.*approve\stransaction.*rs\.?\s?([0-9.?]+).*a/c\sno\.?.*credit\scard.*'
-    pattern_7 = r'(?:rs|inr)\.?\s?\s?([0-9.?]+).*debited.*credit\scard.*'
-    pattern_9 = r'.*inr\s?([0-9.?]+).*paytm.*credit\scard.*'
-    pattern_11 = r'.*txn\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*credit\scard.*'
-    pattern_12 = r'.*refund.*(?:rs\.?|inr)\s?([0-9.?]+).*credited.*credit\scard.*'
-    pattern_13 = r'.*spent\s(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard.*'
-    pattern_15 = r'.*payment\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*received.*credit\scard.*'
-    pattern_17 = r'.*received.*payment.*(?:for|of)*(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard.*'
+    pattern_1 = r'sbi\scardholder.*payment.*rs\.?\s?([0-9.?]+).*credit\scard.*successfully'   # grp(1) for amount
+    pattern_6 = r'approve\stransaction.*rs\.?\s?([0-9.?]+).*a/c\sno\.?.*credit\scard'
+    pattern_7 = r'(?:rs|inr)\.?\s?\s?([0-9.?]+).*debited.*credit\scard'
+    pattern_9 = r'inr\s?([0-9.?]+).*paytm.*credit\scard'
+    pattern_11 = r'txn\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*credit\scard'
+    pattern_12 = r'refund.*(?:rs\.?|inr)\s?([0-9.?]+).*credited.*credit\scard'
+    pattern_13 = r'spent\s(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard'
+    pattern_15 = r'payment\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*received.*credit\scard'
+    pattern_17 = r'received.*payment.*(?:for|of)*(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard'
     # will try to make 15 and 17 a single regex
     
     # due
-    pattern_2 = r'.*e-stmt.*sbi\scard.*total\samt\sdue:\srs\.?\s?([0-9.?]+).*min\samt\sdue:\srs\.?\s?([0-9.?]+)\sis\spayable.*'  # grp(1) for total amt grp(2) for min amt
-    pattern_14 = r'.*payment.*credit\scard.*is\sdue.*total\samount\sdue.*rs\.?\s?([0-9.?]+).*minimum\samount\sdue.*rs\.?\s?([0-9.?]+).*'   # grp(1) for total grp(2) for min
-    pattern_16 = r'.*stmt.*total\s(?:amt|amount)\sdue.*credit\scard.*(?:inr|rs\.?)\s?([0-9.,?]+).*(?:minimum|min)\s(?:amt|amount)\sdue.*(?:inr|rs\.?)\s?([0-9.,?]+).*payable.*'
+    pattern_2 = r'e-stmt.*sbi\scard.*total\samt\sdue:\srs\.?\s?([0-9.?]+).*min\samt\sdue:\srs\.?\s?([0-9.?]+)\sis\spayable'  # grp(1) for total amt grp(2) for min amt
+    pattern_14 = r'payment.*credit\scard.*is\sdue.*total\samount\sdue.*rs\.?\s?([0-9.?]+).*minimum\samount\sdue.*rs\.?\s?([0-9.?]+)'   # grp(1) for total grp(2) for min
+    pattern_16 = r'stmt.*total\s(?:amt|amount)\sdue.*credit\scard.*(?:inr|rs\.?)\s?([0-9.,?]+).*(?:minimum|min)\s(?:amt|amount)\sdue.*(?:inr|rs\.?)\s?([0-9.,?]+).*payable'
     # will try to make 14 and 16 a single regex 
     
     # overdue
-    pattern_3 = r'.*unable.*overdue\s(?:payment|pymt).*rs\.?\s?([0-9.?]+).*credit\scard.*'   # grp(1) for overdue amt 
+    pattern_3 = r'unable.*overdue\s(?:payment|pymt).*rs\.?\s?([0-9.?]+).*credit\scard'   # grp(1) for overdue amt 
 
     # reject/declined
-    pattern_4 = r'.*regret\sto\sinform.*unable\sto\s(?:issue|sanction).*credit\scard.*'
-    pattern_5 = r'.*application.*credit\scard[s]?.*(?:reject[e]?[d]?|declined).*'
-    pattern_8 = r'.*regret\sto\sinform.*review[e]?[d]?.*application.*unable\sto\sgrant.*credit\scard.*'
-    pattern_10 = r'.*txn.*credit\scard.*(?:rs\.?|inr)\s?([0-9.?]+).*declined.*'
+    pattern_4 = r'regret\sto\sinform.*unable\sto\s(?:issue|sanction).*credit\scard'
+    pattern_5 = r'application.*credit\scard[s]?.*(?:reject[e]?[d]?|declined)'
+    pattern_8 = r'regret\sto\sinform.*review[e]?[d]?.*application.*unable\sto\sgrant.*credit\scard'
+    pattern_10 = r'txn.*credit\scard.*(?:rs\.?|inr)\s?([0-9.?]+).*declined'
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
