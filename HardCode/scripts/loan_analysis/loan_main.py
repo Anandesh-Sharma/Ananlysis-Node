@@ -10,6 +10,7 @@ timezone = pytz.timezone('Asia/Kolkata')
 
 script_status = {}
 
+
 def get_customer_data(cust_id):
     """
     This function establishes a connection from the mongo database and fetches data of the user.
@@ -43,7 +44,7 @@ def get_customer_data(cust_id):
         approval = approval_data.find_one({"cust_id": cust_id})
         overdue = overdue_data.find_one({"cust_id": cust_id})
         loan_data = pd.DataFrame(columns=['sender', 'body', 'timestamp', 'read'])
-        if closed is not None:
+        if len(closed['sms']) != 0:
             closed_df = pd.DataFrame(closed['sms'])
             loan_data = loan_data.append(closed_df)
             logger.info("Found loan closed data")
@@ -55,21 +56,21 @@ def get_customer_data(cust_id):
         else:
             raise Exception'''
 
-        if disbursed is not None:
+        if len(disbursed['sms']) != 0:
             disbursed_df = pd.DataFrame(disbursed['sms'])
             loan_data = loan_data.append(disbursed_df)
             logger.info("Found loan disbursed data")
         else:
             logger.error("loan disbursed data not found")
 
-        if overdue is not None:
+        if len(overdue['sms']) != 0:
             overdue_df = pd.DataFrame(overdue['sms'])
             loan_data = loan_data.append(overdue_df)
             logger.info("Found loan overdue data")
         else:
             logger.error("loan overdue data not found")
 
-        if approval is not None:
+        if len(approval['sms']) != 0:
             approval_df = pd.DataFrame(approval['sms'])
             loan_data = loan_data.append(approval_df)
             logger.info("Found loan approval data")
