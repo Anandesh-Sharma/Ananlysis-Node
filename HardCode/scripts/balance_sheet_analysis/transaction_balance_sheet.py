@@ -40,13 +40,11 @@ def create_transaction_balanced_sheet(user_id):
                 index = i + 1
                 p = False
                 break
-        print(index)
         if p:
             index = 0
         df = df.loc[index:]
-        print(df.shape[0])
-    if df.shape[0]==0:
-        return {"upto_date":True,'status':True,'message':'success','new':False} # do something
+    if df.shape[0] == 0:
+        return {"upto_date": True, 'status': True, 'message': 'success', 'new': False}  # do something
     # doing something
     logger.info('Converting file to dataframe')
     if df.shape[0] == 0:
@@ -120,11 +118,11 @@ def create_transaction_balanced_sheet(user_id):
     debit = result['r']
 
     r['df'] = convert_json_balanced_sheet(df, debit=debit, credit=credit)
-    r['max_timestamp']=str(df['timestamp'][df.shape[0]-1])
-    r['new']=new
-    r['upto_date']=False
+    r['max_timestamp'] = str(df['timestamp'][df.shape[0] - 1])
+    r['new'] = new
+    r['upto_date'] = False
     if not new:
-        r['old_credit']=old_balance_sheet['df']['credit'][-1]
-        r['old_debit']=old_balance_sheet['df']['debit'][-1]
-        r['len_credit']=len(old_balance_sheet['df']['debit'])
+        r['old_credit'] = old_balance_sheet['df']['credit'][-1]
+        r['old_debit'] = old_balance_sheet['df']['debit'][-1]
+        r['len_credit'] = len(old_balance_sheet['df']['debit'])
     return r

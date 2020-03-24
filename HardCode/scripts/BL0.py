@@ -1,6 +1,6 @@
-from HardCode.scripts.classifiers.Classifier import classifier
+# from HardCode.scripts.classifiers.Classifier import classifier
 from HardCode.scripts.loan_analysis.loan_main import final_output
-from HardCode.scripts.salary_analysis.Salary_Analysis import salary_analysis
+from HardCode.scripts.salary_analysis.monthly_salary_analysis import main
 from HardCode.scripts.cheque_bounce_analysis.Cheque_Bounce import cheque_user_outer
 from HardCode.scripts.loan_salary_analysis.Loan_Salary_Logic import *
 from HardCode.scripts.cibil.Analysis import analyse
@@ -229,28 +229,25 @@ def bl0(**kwargs):
     logger.info('starting rejection check')
     if not classification_flag:
         result_rejection = check_rejection(user_id)  # returns a dictionary
-
         if result_rejection['status']:
             pass
         if not result_rejection['status']:
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg="rejection check failed due to some reason")
         logger.info('rejection check successful')
-
     # >>=>> SALARY ANALYSIS
     logger.info('starting salary analysis')
     if not classification_flag:
         try:
-            result_salary = salary_analysis(user_id)  # Returns a dictionary
-
+            result_salary = main(user_id)  # Returns a dictionary
+            # print(result_salary)
+            # print("yeah")
             if result_salary['status']:
                 pass
             if not result_salary['status']:
                 exception_feeder(client=client, user_id=user_id, logger=logger,
                                  msg="Salary Analysis failed due to some reason")
-
         except BaseException as e:
-
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg=str(e))
             # -> Run BASE CIBIL logic and handle
@@ -326,5 +323,6 @@ def bl0(**kwargs):
     logger.info("analysis complete")
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
                                 balance_sheet_result=balance_sheet_result, result_rejection=result_rejection)
+
     client.close()
     return end_result
