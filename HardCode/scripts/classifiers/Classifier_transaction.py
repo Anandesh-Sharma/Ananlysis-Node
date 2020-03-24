@@ -31,6 +31,7 @@ def check_body_2(df, pattern, required_rows):
 def check_header(df, pattern, required_rows):
     d = []
     for index, row in df.iterrows():
+
         if index not in required_rows:
             continue
         if pattern in row["sender"].lower():
@@ -52,7 +53,7 @@ def thread_for_cleaning_3(df, pattern, result, required_rows):
 
 def cleaning(df, result, user_id, max_timestamp, new):
     logger = logger_1("cleaning", user_id)
-    transaction_patterns = ['debited', 'credited', 'inft']
+    transaction_patterns = ['debited', 'credited']
     thread_list = []
     results = []
     length = set(range(df.shape[0]))
@@ -120,8 +121,8 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                             'muthut',
                                             'mytsky',
                                             'lenkrt',
-                                            'flpkrt',
                                             'epfoho',
+                                            'flpkrt',
                                             'flasho',
                                             'grofrs',
                                             'hdfcsl',
@@ -156,24 +157,14 @@ def cleaning(df, result, user_id, max_timestamp, new):
     garbage_header_rows = []
     thread_list = []
     results = []
-
-    for pattern in cleaning_transaction_patterns_header:
-        thread = threading.Thread(target=thread_for_cleaning_3, args=(df, pattern, results, required_rows))
-        thread_list.append(thread)
-
-    logger.info("thread for cleaning 3 starts")
-    for thread in thread_list:
-        thread.start()
-
-    for thread in thread_list:
-        thread.join()
-    logger.info("thread for cleaning 3 complete")
-
-    for i in results:
-        garbage_header_rows.extend(i)
+    for i, row in df.iterrows():
+        if i in required_rows:
+            for pattern in cleaning_transaction_patterns_header:
+                if pattern in row["sender"].lower():
+                    garbage_header_rows.append(i)
+                    break
 
     required_rows = list(set(required_rows) - set(garbage_header_rows))
-
     g = []
     for index, row in df.iterrows():
         if index not in required_rows:
@@ -232,27 +223,22 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                      'added beneficiary', 'received a message', ' premium ', 'claim', 'points ',
                                      'frequency monthly', 'received a pay rise', 'cheque book',
                                      'will be', 'unpaid', 'received (for|in) clearing', 'presented for clearing',
-                                     'your application', 'to know', 'unpaid', r'\slakh\s','thanking you', 'redeem', 'transferred',
+                                     'your application', 'to know', 'unpaid', r'\slakh\s', 'thanking you', 'redeem',
+                                     'transferred',
                                      'available credit limit']
 
     garbage_rows = []
     thread_list = []
     results = []
 
-    for pattern in cleaning_transaction_patterns:
-        thread = threading.Thread(target=thread_for_cleaning_2, args=(df, pattern, results, required_rows))
-        thread_list.append(thread)
-
-    logger.info("thread for cleaning 2 starts")
-    for thread in thread_list:
-        thread.start()
-
-    for thread in thread_list:
-        thread.join()
-    logger.info("thread for cleaning 2 complete")
-
-    for i in results:
-        garbage_rows.extend(i)
+    for i, row in df.iterrows():
+        if i in required_rows:
+            message = row["body"].lower()
+            for pattern in cleaning_transaction_patterns:
+                matcher = re.search(pattern, message)
+                if matcher:
+                    garbage_rows.append(i)
+                    break
 
     required_rows = list(set(required_rows) - set(garbage_rows))
 

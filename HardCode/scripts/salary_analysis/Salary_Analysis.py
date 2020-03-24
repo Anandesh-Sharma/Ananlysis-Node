@@ -14,6 +14,7 @@ def clean_debit(data, id):
 
         Output: DataFrame.
 
+
     """
     logger = logger_1("Clean Debit", id)
     # logger.info("Cleaning text data")
@@ -103,10 +104,6 @@ def get_salary(data, id):
         y2 = re.search(pattern2, m)
         y3 = re.search(pattern3, m)
         y4 = re.search(pattern4, m)
-        from pprint import pprint
-        # print("**********")
-        # pprint(m)
-        # print(amount)
         if y1 is not None:
             amount = y1.group(3)
 
@@ -176,7 +173,7 @@ def get_time(data, id):
             logger.error("timestamp not converted")
             return {"status": False, "message": "timestamp not converted"}
 
-    return {'cust_id' : id,"status": True, "message": "success", 'data': data}
+    return {'cust_id': id, "status": True, "message": "success", 'data': data}
 
 
 def salary_check(data, id):
@@ -204,15 +201,16 @@ def salary_check(data, id):
     data = get_epf_amount(data, id)
     data = epf_to_salary(data, "epf_amount", id)
     data["salary"] = np.where(data["salary"] >= 7000, data["salary"], 0)
-
     if data.shape[0] == 0:
         return {'status': False, 'message': 'no messages found'}
     df_salary = data.groupby(grouper)['salary'].max()
 
+    df_salary.fillna(0, inplace=True)
     # logger.info('Finding salary from EPF keyword')
     if len(df_salary) < 2:
         if df_salary[-1] != 0:
             salary = df_salary[-1]
+
             keyword = "EPF"
             var1 = False
             var2 = False
@@ -228,6 +226,7 @@ def salary_check(data, id):
 
         elif df_salary[-2] != 0:
             salary = df_salary[-2]
+
             keyword = "EPF"
             var1 = False
             var2 = False
@@ -238,15 +237,17 @@ def salary_check(data, id):
             # logger.info('Finding salary from Salary keyword')
             data = get_salary(data, id)
             df_d_salary = data.groupby(grouper)['direct_sal'].max()
+
+            df_d_salary.fillna(0, inplace=True)
             if len(df_d_salary) < 2:
 
-                if (df_d_salary[-1] != 0):
+                if df_d_salary[-1] != 0:
                     salary = df_d_salary[-1]
                     keyword = "Salary"
                     var2 = False
 
             else:
-                if (df_d_salary[-1] != 0):
+                if df_d_salary[-1] != 0:
                     salary = df_d_salary[-1]
                     keyword = "Salary"
                     var2 = False
@@ -269,10 +270,10 @@ def salary_check(data, id):
             data["neft_amount"] = np.where(data["neft_amount"] >= 7000, data["neft_amount"], 0)
             df_credit = data.groupby(grouper)['neft_amount'].max()
 
+            df_credit.fillna(0, inplace=True)
             df_final_sal = pd.DataFrame(df_credit.tail())
-
             if df_final_sal.shape[0] > 1:
-                if ((df_final_sal["neft_amount"][-1] != 0) and (df_final_sal["neft_amount"][-2] != 0)):
+                if (df_final_sal["neft_amount"][-1] != 0) and (df_final_sal["neft_amount"][-2] != 0):
 
                     real_money = list(df_final_sal['neft_amount'])[::-1]
 
@@ -291,9 +292,9 @@ def salary_check(data, id):
                     val1 = df_final_sal["neft_amount"][-1] + df_final_sal["neft_amount"][-1] / 5
                     val2 = df_final_sal["neft_amount"][-1] - df_final_sal["neft_amount"][-1] / 5
 
-                    if (time2 < list_date[1] < time1):
+                    if time2 < list_date[1] < time1:
 
-                        if (val2 < df_final_sal["neft_amount"][-2] < val1):
+                        if val2 < df_final_sal["neft_amount"][-2] < val1:
                             salary = (df_final_sal["neft_amount"][-1] + df_final_sal["neft_amount"][-2]) / 2
                             keyword = "Neft"
                         else:
@@ -327,7 +328,7 @@ def transaction(id):
         return {'status': False, 'message': "file doesn't exist"}
     x = pd.DataFrame(file1["sms"])
 
-    return {'cust_id': id,'status': True, 'message': "success", "df": x}
+    return {'cust_id': id, 'status': True, 'message': "success", "df": x}
 
 
 def extra(id):
@@ -424,7 +425,8 @@ def customer_salary(id):
         salary, keyword = result['salary'], result['keyword']
 
         salary_status["salary"] = salary
-        if (salary == 0) | (salary is None) | (salary == "nan"):
+
+        if (salary == 0) | (salary is None):
             salary_status["salary"] = "0"
             status = True
             message = "Salary Not found"
@@ -473,7 +475,7 @@ def salary_analysis(id):
 
         # logger.info("salary updated in database")
         connect.close()
-        return {'cust_id': id,'status': True, 'message': 'success', 'salary': 0, 'keyword': ""}
+        return {'cust_id': id, 'status': True, 'message': 'success', 'salary': 0, 'keyword': ""}
     else:
 
         json_sal = {"cust_id": int(id), "salary": float(salary_dict['salary']), "keyword": salary_dict['keyword']}

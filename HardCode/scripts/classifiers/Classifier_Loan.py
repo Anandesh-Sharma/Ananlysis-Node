@@ -1,6 +1,6 @@
-import re
 from HardCode.scripts.Util import conn, convert_json, logger_1
 import warnings
+import re
 from datetime import datetime
 import pytz
 
@@ -10,24 +10,37 @@ warnings.filterwarnings("ignore")
 def get_loan_closed_messages(data, loan_messages_filtered, result, name):
     logger = logger_1("loan closed messages", name)
     selected_rows = []
-    pattern_1 = r'(.*)?loan(.*)?closed(.*)?'
-    pattern_2 = r'(.*)?closed(.*)?successfully(.*)?'
-    pattern_3 = r'successfully\sreceived\spayment'
-    pattern_4 = r'loan.*?paid\sback'
+    all_patterns = [
+        r'.*?loan.*?closed.*?',
+        r'.*?closed.*?successfully.*?',
+        r'successfully\sreceived\spayment.*rs\.\s[0-9]{3,6}',
+        r'loan.*?paid\sback',
+        r'making\spayment.*?home\scredit\sloan',
+        r'bhugta+n\skarne\ske\sliye\sdhanya?wad',
+        r'payment.*?was\ssuccessful',
+        r'payment\sof.*?received.*?loan',
+        r'payment\sof.*?agreement.*?received',
+        r'received.*?payment\s(of|rs).*?loan',
+        r'rcvd\spayment\s(of|rs).*?loan',
+        r'thank\syou\sfor\spayment.*?towards.*?loan',
+        r'acknowledge\sreceipt.*?emi\sof.*?(against|towards).*?loan',
+        r'your\sfirst\sloan.*?paid\ssuccessfully',
+        r'you\sjust\spaid.*?towards\sloan',
+        r'thanks\sfor\spayment.*?for\sloan',
+        r'payment\sreceived\sfor.*?loan',
+        r'received.*\n\n.*towards\syour\sloan'
+    ]
 
     for i in range(data.shape[0]):
         if i not in loan_messages_filtered:
             continue
 
         message = str(data['body'][i]).lower()
-
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
-        matcher_4 = re.search(pattern_4, message)
-
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None:
-            selected_rows.append(i)
+        for pattern in all_patterns:
+            matcher = re.search(pattern, message)
+            if matcher:
+                selected_rows.append(i)
+                break
     logger.info("Loan closed sms extracted successfully")
 
     logger.info("Append name in result dictionary for loan closed")
@@ -48,99 +61,165 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
     logger.info("Dropped sms other than loan closed")
     return data.copy()[mask].reset_index(drop=True)
 
+
 def replace_parenthesis(message):
-    # this was done as in some cases cmount was written in a bracket due to which garbage value was detected by the regex
+    # this was done as in some cases cmount was written in a bracket due to which garbage value was detected by the
+    # regex
     message = message.replace('(', '')
     message = message.replace(')', '')
     return message
 
+
+# def get_loan_messages(data):
+#     loan_messages = []
+#     pattern_1 = '(.*)?loan(.*)?'
+#     pattern_2 = 'kreditbee'
+#     pattern_3 = 'cashbean'
+#     pattern_4 = 'loanfront'
+#     pattern_5 = 'loanapp'
+#     pattern_6 = 'kissht'
+#     pattern_7 = 'gotocash'
+#     pattern_8 = 'cashmama'
+#
+#     data['body'] = data['body'].apply(lambda m: replace_parenthesis(m) )
+#     for i in range(data.shape[0]):
+#         message = str(data['body'][i]).lower()
+#
+#         matcher_1 = re.search(pattern_1, message)
+#         matcher_2 = re.search(pattern_2, message)
+#         matcher_3 = re.search(pattern_3, message)
+#         matcher_4 = re.search(pattern_4, message)
+#         matcher_5 = re.search(pattern_5, message)
+#         matcher_6 = re.search(pattern_6, message)
+#         matcher_7 = re.search(pattern_7, message)
+#         matcher_8 = re.search(pattern_8, message)
+#
+#         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None:
+#             loan_messages.append(i)
+#     return loan_messages
+
 def get_loan_messages(data):
     loan_messages = []
-    pattern_1 = '(.*)?loan(.*)?'
-    pattern_2 = 'kreditbee'
-    pattern_3 = 'cashbean'
-    pattern_4 = 'loanfront'
-    pattern_5 = 'loanapp'
-    pattern_6 = 'kissht'
-    pattern_7 = 'gotocash'
-    pattern_8 = 'cashmama'
+    all_patterns = [
+        'loan',
+        'kreditbee',
+        'cashbean',
+        'loanfront',
+        'loanapp',
+        'kissht',
+        'gotocash',
+        'cashmama'
+    ]
+    header = ['kredtb', 'idfcfb', 'cashbn', 'lnfrnt', 'cshmma', 'kredtz', 'rrloan',
+              'frloan', 'wfcash', 'bajajf', 'flasho', 'kissht', 'gtcash', 'bajafn', 'monvew', 'mpockt',
+              'mpokkt', 'montap', 'mnytap']
 
-    data['body'] = data['body'].apply(lambda m: replace_parenthesis(m) )
+    data['body'] = data['body'].apply(lambda m: replace_parenthesis(m))
     for i in range(data.shape[0]):
-        message = str(data['body'][i]).lower()
-
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
-        matcher_4 = re.search(pattern_4, message)
-        matcher_5 = re.search(pattern_5, message)
-        matcher_6 = re.search(pattern_6, message)
-        matcher_7 = re.search(pattern_7, message)
-        matcher_8 = re.search(pattern_8, message)
-
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None:
+        head = str(data['sender'][i]).lower()
+        if head[2:] in header or head[3:] in header:
             loan_messages.append(i)
+            continue
+        else:
+            for pattern in all_patterns:
+                message = str(data['body'][i]).lower()
+                matcher = re.search(pattern, message)
+                if matcher:
+                    loan_messages.append(i)
+                    break
     return loan_messages
 
 
+# def get_loan_messages_promotional_removed(data, loan_messages):
+#     loan_messages_filtered = []
+#
+#     pattern_1 = r'(.*)?apply(.*)?'
+#     pattern_2 = r'(.*)?offer(.*)?'
+#     pattern_3 = r'(.*)?offers(.*)?'
+#     pattern_4 = r'(.*)?avail(.*)?'
+#     pattern_5 = r'(.*)?instant(.*)?'
+#     pattern_6 = r'(.*)?instantly(.*)?'
+#     pattern_7 = r'(.*)?cashback(.*)?'
+#     pattern_8 = r'(.*)?voucher(.*)?'
+#     pattern_9 = r'(.*)?discount(.*)?'
+#     pattern_10 = r'(.*)?hurry(.*)?'
+#     pattern_11 = r'(.*)?get(.*)loan(.*)?'
+#
+#     for i in range(data.shape[0]):
+#         if i not in loan_messages:
+#             continue
+#         message = str(data['body'][i]).lower()
+#         matcher_1 = re.search(pattern_1, message)
+#         matcher_2 = re.search(pattern_2, message)
+#         matcher_3 = re.search(pattern_3, message)
+#         matcher_4 = re.search(pattern_4, message)
+#         matcher_5 = re.search(pattern_5, message)
+#         matcher_6 = re.search(pattern_6, message)
+#         matcher_7 = re.search(pattern_7, message)
+#         matcher_8 = re.search(pattern_8, message)
+#         matcher_9 = re.search(pattern_9, message)
+#         matcher_10 = re.search(pattern_10, message)
+#         matcher_11 = re.search(pattern_11, message)
+#
+#         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None:
+#             pass
+#         else:
+#             loan_messages_filtered.append(i)
+#
+#     return loan_messages_filtered
+
 def get_loan_messages_promotional_removed(data, loan_messages):
     loan_messages_filtered = []
-
-    pattern_1 = r'(.*)?apply(.*)?'
-    pattern_2 = r'(.*)?offer(.*)?'
-    pattern_3 = r'(.*)?offers(.*)?'
-    pattern_4 = r'(.*)?avail(.*)?'
-    pattern_5 = r'(.*)?instant(.*)?'
-    pattern_6 = r'(.*)?instantly(.*)?'
-    pattern_7 = r'(.*)?cashback(.*)?'
-    pattern_8 = r'(.*)?voucher(.*)?'
-    pattern_9 = r'(.*)?discount(.*)?'
-    pattern_10 = r'(.*)?hurry(.*)?'
-    pattern_11 = r'(.*)?get(.*)loan(.*)?'
-
+    not_needed = []
+    all_patterns = [
+        r'kyc',
+        r'sbi\scard',
+        r'credited\sto\syour\swallet',
+        r'spice\smoney',
+        r'sign\sthe\selectronic\scontract',
+        r'golden\slightning',
+        r'gold\scash',
+        r'after\syour\sconfirmation',
+        r'your\spersonalised\sloan\soffer',
+        r'emi\scard|credit\scard',
+        r'\se-?sign\s',
+        r'claim\sbonus',
+        r'icredit|rupeeplus',
+        r'good\snews',
+        r'confirm\snow'
+    ]
     for i in range(data.shape[0]):
         if i not in loan_messages:
             continue
         message = str(data['body'][i]).lower()
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
-        matcher_4 = re.search(pattern_4, message)
-        matcher_5 = re.search(pattern_5, message)
-        matcher_6 = re.search(pattern_6, message)
-        matcher_7 = re.search(pattern_7, message)
-        matcher_8 = re.search(pattern_8, message)
-        matcher_9 = re.search(pattern_9, message)
-        matcher_10 = re.search(pattern_10, message)
-        matcher_11 = re.search(pattern_11, message)
-
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None:
-            pass
-        else:
-            loan_messages_filtered.append(i)
-
-
+        for pattern in all_patterns:
+            matcher = re.search(pattern, message)
+            if matcher:
+                not_needed.append(i)
+                break
+    loan_messages_filtered = list(set(loan_messages) - set(not_needed))
     return loan_messages_filtered
 
 
 def get_approval(data, loan_messages_filtered, result, name):
     logger = logger_1("loan approval", name)
     selected_rows = []
-    pattern_1 = r'[^pre-]approved(.*)?'
-    pattern_2 = r'succesfully(.*)?approved'
-    pattern_3 = r'(.*)?has(.*)?been(.*)?approved'
+    all_patterns = [
+        r'successfully\sapproved',
+        r'has\sbeen\sapproved',
+        r'documents\shas\sbeen\ssuccessfully\sverified'
+    ]
 
     for i in range(data.shape[0]):
         if i not in loan_messages_filtered:
             continue
         message = str(data['body'][i]).lower()
 
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
-
-        if matcher_1 != None or matcher_2 != None or matcher_3 != None:
-            selected_rows.append(i)
+        for pattern in all_patterns:
+            matcher = re.search(pattern, message)
+            if matcher:
+                selected_rows.append(i)
+                break
     logger.info("Loan approval sms extracted successfully")
 
     logger.info("Append name in result dictionary for loan approval")
@@ -165,25 +244,42 @@ def get_approval(data, loan_messages_filtered, result, name):
 def get_disbursed(data, loan_messages_filtered, result, name):
     logger = logger_1("loan disbursed", name)
     selected_rows = []
-    pattern_1 = r'has\sbeen\sdisburse[d]?'
-    pattern_2 = r'disbursement\shas\sbeen\scredited'
-    pattern_3 = r'has\sbeen\stransferred.*account'
-    pattern_4 = r'disbursement.*has\sbeen \sinitiated'
-    pattern_5 = r'is\stransferred.*account'
+    all_patterns = [
+        r'has\sbeen\sdisburse[d]?',
+        r'disbursement\shas\sbeen\scredited',
+        r'has\sbeen\stransferred.*account',
+        r'disburse?ment.*has\sbeen\sinitiated',
+        r'is\stransferred.*account',
+        r'loan\sapplication.*?successfully\ssubmitted.*?bank',
+        r'you.*?received.*?loan\samount',
+        r'your.*?loan.*?made\ssuccessfully.*?loan\samount',
+        r'loan\srs.*?disbursed',
+        r'loan\shas\sbeen\sreleased\sto.*?bank',
+        r'rs.*?credited\sto\sloan\sa\/c',
+        r'disbursed.*?loan.*?to\syour\sbank',
+        r'amount\sfinanced\sfor\sloan.*?rs',
+        r'personal\sloan.*?transferred\ssuccessfully',
+        r'your\sloan\sdisbursement\swas\ssuccess',
+        r'loan.*?approved.*?cash.*?issued\sto.*?bank\saccount',
+        r'loan.*?approved.*?will\stransfer.*?funds.*bank\saccount',
+        r'loan.*approved.*fund[s]?\swill\sbe\stransferred.*bank\saccount',
+        r'loan.*approved.*disbursed\sinto\syour\saccount',
+        r'loan.*approved.*will\srelease.*loan\sto.*account',
+        r'loan.*approved.*sent\srs.*to\syour\saccount',
+        r'loan.*approved.*will\sbe\sdisbursed',
+        r'loan.*approved.*credit\sto.*?bank\saccount'
+    ]
 
     for i in range(data.shape[0]):
         if i not in loan_messages_filtered:
             continue
         message = str(data['body'][i]).lower()
+        for pattern in all_patterns:
+            matcher = re.search(pattern, message)
 
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
-        matcher_4 = re.search(pattern_4, message)
-        matcher_5 = re.search(pattern_5, message)
-
-        if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_5 != None:
-            selected_rows.append(i)
+            if matcher:
+                selected_rows.append(i)
+                break
     logger.info("Loan disbursed sms extracted successfully")
 
     logger.info("Append name in result dictionary for loan disbursed")
@@ -208,40 +304,44 @@ def get_disbursed(data, loan_messages_filtered, result, name):
 def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
     logger = logger_1("loan rejection", name)
     selected_rows = []
-    pattern_1 = r'(.*)?rejected(.*)?'
-    pattern_2 = r'(.*)?reject(.*)?'
-    pattern_3 = r'Declined[^\?]'
-    pattern_4 = r'(.*)?decline(.*)?'
-    pattern_5 = r'(.*)?not-approved(.*)?'
-    pattern_6 = r'(.*)?low cibil score(.*)?'
-    pattern_7 = r'low credit score'
-    pattern_8 = r'declined\?'
-    pattern_9 = r'not.*?approved'
-    pattern_10 = r'.*regret.*'
-    pattern_11 = r'application.*closed.*'
-    pattern_12 = r'.*application.*re-apply.*'
+    all_patterns_1 = [
+        r'loan\sapplication.*?is\srejected',
+        r'loan\sapplication.*?got\srejected',
+        r'loan.*paysense\sis\srejected',
+        r'has\sbeen.*?rejected',
+        r'is\sdeclined',
+        r'has\sbeen\sdeclined',
+        r'has\snot\sbeen\sapproved',
+        r'was\snot\sapproved',
+        r'was\sbeen\srejected',
+        r'could\snot\sget\sapproved',
+        r"sorry.*?couldn't.*?eligible.*?loan",
+        r'credit.*rejected.*loan.*application'
+    ]
+    all_patterns_2 = [
+        r'low\scibil\sscore',
+        r'low\scredit\sscore',
+        r'is\sdue',
+        r'network\scard'
+    ]
 
     for i in range(data.shape[0]):
         if i not in loan_messages_filtered:
             continue
         message = str(data['body'][i]).lower()
-
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
-        matcher_4 = re.search(pattern_4, message)
-        matcher_5 = re.search(pattern_5, message)
-        matcher_6 = re.search(pattern_6, message)
-        matcher_7 = re.search(pattern_7, message)
-        matcher_8 = re.search(pattern_8, message)
-        matcher_9 = re.search(pattern_9, message)
-        matcher_10 = re.search(pattern_10, message)
-        matcher_11 = re.search(pattern_11, message)
-        matcher_12 = re.search(pattern_12, message)
-
-        if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_9 != None or matcher_10 != None or matcher_11 != None or matcher_12 != None:
-            if matcher_6 == None and matcher_7 == None and matcher_8 == None and matcher_5 == None:
+        for pattern in all_patterns_1:
+            matcher = re.search(pattern, message)
+            if matcher:
+                match = False
+                for pattern_2 in all_patterns_2:
+                    matcher = re.search(pattern_2, message)
+                    if matcher is not None:
+                        match = True
+                        break
+                if match:
+                    break
                 selected_rows.append(i)
+                break
     logger.info("Loan rejection sms extracted successfully")
 
     logger.info("Append name in result dictionary for loan rejction")
@@ -266,48 +366,72 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
 def get_over_due(data, loan_messages_filtered, result, name):
     logger = logger_1("loan due overdue", name)
     selected_rows = []
-    pattern_1 = r'(.*)?immediate(.*)payment(.*)'
-    pattern_2 = r'(.*)?delinquent(.*)?'
-    # pattern_3 = r'(.*)?has(.*)?bounced(.*)?'
-    pattern_4 = r'missed(.*)?payments'
-    pattern_5 = r'(.*)?due(.*)?'
-    pattern_6 = r'\sover-?due\s'
-    # overdue
-    pattern_7 = r'.*loan.*overdue.*repayable\sis\srs.\s?([0-9]+)'
-    pattern_8 = r'.*loan.*rs\.\s([0-9]+).*overdue.*'
-    pattern_9 = r'.*loan.*overdue.*repayment.*rs\.?\s([0-9]+)'
+    # pattern_1 = r'(.*)?immediate(.*)payment(.*)'
+    # pattern_2 = r'(.*)?delinquent(.*)?'
+    # # pattern_3 = r'(.*)?has(.*)?bounced(.*)?'
+    # pattern_4 = r'missed(.*)?payments'
+    # pattern_5 = r'(.*)?due(.*)?'
+    # pattern_6 = r'\sover-?due\
+    all_patterns = [
+        r'immediate\spayment',
+        r'delinquent',
+        r'missed\spayments',
+        r'is\sdue',
+        r'is\soverdue',
+        r'loan\sis\sdue',
+        r'due\sdate',
+        r'due\shai',
+        r'overdue\shai',
+        r'\sover-?due',
+        r'loan\sis\son\sdue',
+        r'emi\sof.*?was\sdue\son',
+        r'loan.*?emi\srs.*?due\son',
+        r'payment\sof.*?against.*?loan.*?bounced',
+        r"you\sstill\shaven['o]t\spaid.*?loan",
+        r'you\shave\smissed.*?payment.*?loan',
+        r'loan\sof\srs.*?disbursed\sfrom.*?a\/c',
+        r'repay\syour\semi\samount\sdue\son',
+        r'loan.*?borrowed.*?will\sbe\sdue\son',
+        r'k[io]\sdey\shai',
+        r'pay.*?loan\sof\srs.*?by',
+        r'charges\sof\srs.*?in\syour\sloan',
+        r'your\srepayment\sdate.*?repayment\samount',
+        r'loan.*?bakaya\shai',
+        r'earlysalary.*?requested\spayment',
+        r'missed\syour\spayment\son.*?loan',
+        r'not\spaid\semi.*?against\syour\sloan',
+        r'emi.*?dhani\sloan\sis\sstill\sdue',
+        r'last\sday\sfor.*?loan\srepayment',
+        r'payment\sis\sdelayed\sby\sweeks',
+        r'do\snot\sforget\sto\spay.*?loan',
+        r'your\sloan\sis\sstill\sunpaid',
+        r'promised\sto\spay\srs.*?loan',
+        r'emi.*?will\sbe\s(auto-)?debited',
+        r'instalment\sis\sunpaid',
+        r'dues\sof\srs.*?outstanding.*?for\sloan',
+        r'.*loan.*overdue.*repayable\sis\srs.\s?([0-9]+)',
+        r'.*loan.*rs\.\s([0-9]+).*overdue.*',
+        r'.*loan.*overdue.*repayment.*rs\.?\s([0-9]+)',
 
-    # due
-    pattern_10 = r'.*payment.*rs\.?.*?([0-9]+).*due.*'  # group(1) for amount
-    pattern_11 = r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)'  # group(1) for date and group(2) for amount
-    pattern_12 = r'.*rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+).*'  # group(1) for amount and group(2) for date
-    pattern_13 = r'due\s(?:on)?.*([0-9]+/[0-9]+).*'  # group(1) for date in cashbn
-    pattern_14 = r'.*loan.*rs\.?.*?([0-9]+).*due.*'  # group(1) for loan amount
-    pattern_15 = r'.*payment.*due.*'
+        # due
+        r'.*payment.*rs\.?.*?([0-9]+).*due.*',  # group(1) for amount
+        r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)',  # group(1) for date and group(2) for amount
+        r'.*rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+).*',  # group(1) for amount and group(2) for date
+        r'due\s(?:on)?.*([0-9]+/[0-9]+).*',  # group(1) for date in cashbn
+        r'.*loan.*rs\.?.*?([0-9]+).*due.*',  # group(1) for loan amount
+        r'.*payment.*due.*'
+    ]
 
     for i in range(data.shape[0]):
         if i not in loan_messages_filtered:
             continue
         message = str(data['body'][i]).lower()
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        # matcher_3 = re.search(pattern_3, message)
-        matcher_4 = re.search(pattern_4, message)
-        matcher_5 = re.search(pattern_5, message)
-        matcher_6 = re.search(pattern_6, message)
+        for pattern in all_patterns:
+            matcher = re.search(pattern, message)
 
-        matcher_7 = re.search(pattern_7, message)
-        matcher_8 = re.search(pattern_8, message)
-        matcher_9 = re.search(pattern_9, message)
-        matcher_10 = re.search(pattern_10, message)
-        matcher_11 = re.search(pattern_11, message)
-        matcher_12 = re.search(pattern_12, message)
-        matcher_13 = re.search(pattern_13, message)
-        matcher_14= re.search(pattern_14, message)
-        matcher_15 = re.search(pattern_15, message)
-
-        if matcher_1 is not None or matcher_2 is not None or matcher_4 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 is not None or matcher_13 is not None or matcher_14 is not None or matcher_15 is not None :
-            selected_rows.append(i)
+            if matcher:
+                selected_rows.append(i)
+                break
 
     logger.info("Loan due overdue sms extracted successfully")
 
@@ -331,36 +455,68 @@ def get_over_due(data, loan_messages_filtered, result, name):
 
 
 def loan(df, result, user_id, max_timestamp, new):
+    # logger = logger_1("loan_classifier", user_id)
+    # logger.info("get all loan messages")
+    # loan_messages = get_loan_messages(df)
+    # logger.info("remove all loan promotional messages")
+    # loan_messages_filtered = get_loan_messages_promotional_removed(df, loan_messages)
+    #
+    # logger.info("get all loan due overdue messages")
+    # data = get_over_due(df, loan_messages_filtered, result, user_id)
+    # logger.info("Converting loan due overdue dataframe into json")
+    # data_over_due = convert_json(data, user_id, max_timestamp)
+    #
+    # logger.info("get all loan approval messages")
+    # data = get_approval(df, loan_messages_filtered, result, user_id)
+    # logger.info("Converting loan approval dataframe into json")
+    # data_approve = convert_json(data, user_id, max_timestamp)
+    #
+    # logger.info("get all loan rejection messages")
+    # data = get_loan_rejected_messages(df, loan_messages_filtered, result, user_id)
+    # logger.info("Converting loan rejection dataframe into json")
+    # data_reject = convert_json(data, user_id, max_timestamp)
+    #
+    # logger.info("get all loan disbursed messages")
+    # data = get_disbursed(df, loan_messages_filtered, result, user_id)
+    # logger.info("Converting loan disbursed dataframe into json")
+    # data_disburse = convert_json(data, user_id, max_timestamp)
+    #
+    # logger.info("get all loan closed messages")
+    # data = get_loan_closed_messages(df, loan_messages_filtered, result, user_id)
+    # logger.info("Converting loan closed dataframe into json")
+    # data_closed = convert_json(data, user_id, max_timestamp)
+
     logger = logger_1("loan_classifier", user_id)
     logger.info("get all loan messages")
     loan_messages = get_loan_messages(df)
+
     logger.info("remove all loan promotional messages")
     loan_messages_filtered = get_loan_messages_promotional_removed(df, loan_messages)
+    logger.info("get all loan disbursed messages")
+
+    data = get_disbursed(df, loan_messages_filtered, result, user_id)
+    logger.info("Converting loan disbursed dataframe into json")
+    data_disburse = convert_json(data, user_id, max_timestamp)
 
     logger.info("get all loan due overdue messages")
     data = get_over_due(df, loan_messages_filtered, result, user_id)
     logger.info("Converting loan due overdue dataframe into json")
     data_over_due = convert_json(data, user_id, max_timestamp)
 
-    logger.info("get all loan approval messages")
-    data = get_approval(df, loan_messages_filtered, result, user_id)
-    logger.info("Converting loan approval dataframe into json")
-    data_approve = convert_json(data, user_id, max_timestamp)
+    logger.info("get all loan closed messages")
+    data = get_loan_closed_messages(df, loan_messages_filtered, result, user_id)
+    logger.info("Converting loan closed dataframe into json")
+    data_closed = convert_json(data, user_id, max_timestamp)
 
     logger.info("get all loan rejection messages")
     data = get_loan_rejected_messages(df, loan_messages_filtered, result, user_id)
     logger.info("Converting loan rejection dataframe into json")
     data_reject = convert_json(data, user_id, max_timestamp)
 
-    logger.info("get all loan disbursed messages")
-    data = get_disbursed(df, loan_messages_filtered, result, user_id)
-    logger.info("Converting loan disbursed dataframe into json")
-    data_disburse = convert_json(data, user_id, max_timestamp)
-
-    logger.info("get all loan closed messages")
-    data = get_loan_closed_messages(df, loan_messages_filtered, result, user_id)
-    logger.info("Converting loan closed dataframe into json")
-    data_closed = convert_json(data, user_id, max_timestamp)
+    logger.info("get all loan approval messages")
+    data = get_approval(df, loan_messages_filtered, result, user_id)
+    logger.info("Converting loan approval dataframe into json")
+    data_approve = convert_json(data, user_id, max_timestamp)
 
     try:
         logger.info('making connection with db')

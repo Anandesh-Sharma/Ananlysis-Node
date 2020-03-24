@@ -138,6 +138,7 @@ def update_sms(df, user_id, max_timestamp):
 
 def convert_json_balanced_sheet(data, credit, debit):
     obj = {"sheet": []}
+    obj['final_credit']=str(credit[-1][0])
     for i in range(len(credit)):
         credit[i] = (credit[i][0], int(credit[i][1]))
     for i in range(len(debit)):

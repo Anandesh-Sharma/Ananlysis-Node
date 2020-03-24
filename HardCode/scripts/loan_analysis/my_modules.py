@@ -59,7 +59,7 @@ def is_approval(message):
     # matcher_3 = re.search(pattern_3,message)
     # matcher_4 = re.search(pattern_4, message)
 
-    if matcher_2 != None:
+    if matcher_2:
         return True
     else:
         return False
@@ -89,7 +89,7 @@ def is_disbursed(message):
     matcher_5 = re.search(pattern_5, message)
     matcher_6 = re.search(pattern_6, message)
 
-    if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_5 != None or matcher_6 != None:
+    if matcher_1 or matcher_2 or matcher_3 or matcher_4 or matcher_5 or matcher_6:
         return True
     else:
         return False
@@ -105,11 +105,11 @@ def disbursed_amount_extract(message):
     matcher_2 = re.search(pattern_2, message)
     matcher_3 = re.search(pattern_3, message)
 
-    if matcher_1 != None:
+    if matcher_1:
         amount = int(matcher_1.group(1))
-    elif matcher_2 != None:
+    elif matcher_2:
         amount = int(matcher_2.group(1))
-    elif matcher_3 != None:
+    elif matcher_3:
         amount = int(matcher_3.group(2))
     else:
         amount = -1
@@ -141,7 +141,7 @@ def is_closed(message):
     matcher_5 = re.search(pattern_5, message)
     matcher_6 = re.search(pattern_6, message)
 
-    if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_5 != None or matcher_6 != None:
+    if matcher_1 or matcher_2 or matcher_3 or matcher_4 or matcher_5 or matcher_6:
         return True
 
     else:
@@ -160,17 +160,17 @@ def closed_amount_extract(message):
     matcher3 = re.search(pattern3, message)
     matcher4 = re.search(pattern4, message)
 
-    if matcher1 != None:
+    if matcher1:
         amount = str(matcher1.group(1))
-    elif matcher2 != None:
+    elif matcher2:
         amount = str(matcher2.group(1))
-    elif matcher3 != None:
+    elif matcher3:
         amount = str(matcher3.group(1))
-    elif matcher4 != None:
+    elif matcher4:
         amount = str(matcher4.group(1))
     else:
         amount = -1
-    return amount
+    return float(amount)
 
 
 def is_due(message):
@@ -188,7 +188,7 @@ def is_due(message):
     matcher_5 = re.search(pattern_5, message)
     matcher_6 = re.search(pattern_6, message)
 
-    if matcher_1 != None or matcher_2 != None or matcher_3 != None or matcher_4 != None or matcher_5 != None or matcher_6 != None:
+    if matcher_1 or matcher_2 or matcher_3 or matcher_4 or matcher_5 or matcher_6:
         return True
     else:
         return False
@@ -207,13 +207,13 @@ def due_date_extract(message):
     matcher_3 = re.search(pattern_3, message)
     matcher_4 = re.search(pattern_4, message)
 
-    if matcher_1 != None:
+    if matcher_1:
         date = str(matcher_1.group(1))
-    elif matcher_2 != None:
+    elif matcher_2:
         date = str(matcher_2.group(1))
-    elif matcher_3 != None:
+    elif matcher_3:
         date = str(matcher_3.group(2))
-    elif matcher_4 != None:
+    elif matcher_4:
         date = str(matcher_4.group(1))
     else:
         date = -1
@@ -234,19 +234,19 @@ def due_amount_extract(message):
     matcher_4 = re.search(pattern_4, message)
     matcher_5 = re.search(pattern_5, message)
 
-    if matcher_1 != None:
+    if matcher_1:
         amount = str(matcher_1.group(1))
-    elif matcher_2 != None:
+    elif matcher_2:
         amount = str(matcher_2.group(2))
-    elif matcher_3 != None:
+    elif matcher_3:
         amount = str(matcher_3.group(1))
-    elif matcher_4 != None:
+    elif matcher_4:
         amount = str(matcher_4.group(1))
-    elif matcher_5 != None:
+    elif matcher_5:
         amount = str(matcher_5.group(2))
     else:
         amount = -1
-    return amount
+    return float(amount)
 
 
 def is_overdue(message):
@@ -257,7 +257,7 @@ def is_overdue(message):
     matcher_1 = re.search(pattern_1, message)
     matcher_2 = re.search(pattern_2, message)
     matcher_3 = re.search(pattern_3, message)
-    if matcher_1 != None or matcher_2 != None or matcher_3 != None:
+    if matcher_1 or matcher_2 or matcher_3:
         return True
     else:
         return False
@@ -272,15 +272,15 @@ def extract_amount_from_overdue_message(message):
     matcher_1 = re.search(pattern_1, message)
     matcher_2 = re.search(pattern_2, message)
     matcher_3 = re.search(pattern_3, message)
-    if matcher_1 != None:
+    if matcher_1:
         amount = int(matcher_1.group(1))
-    elif matcher_2 != None:
+    elif matcher_2:
         amount = int(matcher_2.group(1))
-    elif matcher_3 != None:
+    elif matcher_3:
         amount = int(matcher_3.group(1))
     else:
         amount = -1
-    return amount
+    return float(amount)
 
 
 def overdue_amount_extract(data, overdue_first_date):
@@ -301,6 +301,3 @@ def overdue_amount_extract(data, overdue_first_date):
         else:
             break
     return max(overdue_amount_list)
-
-
-
