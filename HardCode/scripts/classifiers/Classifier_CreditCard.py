@@ -150,6 +150,7 @@ def get_confirm_cc_messages(data):
     
     # overdue
     pattern_3 = r'unable.*overdue\s(?:payment|pymt).*rs\.?\s?([0-9.?]+).*credit\scard'   # grp(1) for overdue amt 
+    pattern_22 = r'.*payment.*overdue.*credit\scard.*(?:pl|please|pls)\spay.*total\s(?:amt|amount).*due.*(?:rs\.?|inr)\s?([0-9.,?]+).*min.*(?:amt|amount).*(?:rs\.?|inr)\s?([0-9.,?]+).*'
     pattern_24 = r'.*overdue\samount.*(?:rs\.?|inr)\s?([0-9.,?]+).*credit\scard.*'
     pattern_25 = r'.*payment.*credit\scard.*is\s(due|overdue).*total\samount\s(?:due|overdue:|outstanding).*(?:rs)\.?\s?\s?([0-9.?]+).*minimum\samount\s(?:due|due:).*(?:rs)\.?\s?\s?([0-9.?]+).*'
     # will try to make 14, 16 and 25 a single regex
@@ -210,7 +211,7 @@ def get_confirm_cc_messages(data):
         matcher_37 = re.search(pattern_37, message)
         matcher_38 = re.search(pattern_38, message)
         matcher_39 = re.search(pattern_39, message)
-        
+
         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_5 is not None\
         or matcher_6 is not None or matcher_7 is not None or matcher_8 is not None or matcher_9 is not None or matcher_10 is not None\
         or matcher_11 is not None or matcher_12 is not None or matcher_13 is not None or matcher_14 is not None or matcher_15 is not None\
