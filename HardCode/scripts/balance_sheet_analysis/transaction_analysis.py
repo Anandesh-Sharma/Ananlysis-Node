@@ -339,10 +339,10 @@ def get_date_time(data, logger):
 
 
 def balance_check(data):
-    pattern_1 = r'(?i)(?:a\/?c|avbl|avl|available|total) (?:bal|balance) ?:?-?\.? ?(?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,' \
-                r'\d+)?(\.\d{1,2})?) '
+    pattern_1 = r'(?i)(?:a\/?c|avbl|avl|available|total|avlbl) (?:bal|balance) ?:?-?\.? ?(?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,' \
+                r'\d+)?(\.\d{1,2})?)'
     pattern_2 = r'(?i)(?:updated|available|avbl|abl)(?: account)? (?:balance|bal)(?: is)?(?: paytm wallet)? ?(?:(' \
-                r'?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?) '
+                r'?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
 
     pattern_3 = r"(?:bal|balance) is (?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
 
