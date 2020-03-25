@@ -8,11 +8,8 @@ from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import cr
 from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.Util import *
 import warnings
-import json
 import pandas as pd
-from datetime import datetime
 import pytz
-
 warnings.filterwarnings("ignore")
 
 
@@ -143,75 +140,14 @@ def bl0(**kwargs):
     # >>=>> BALANCE SHEET
     logger.info('started making balanced sheet')
     if not classification_flag:
-        balance_sheet_result = create_transaction_balanced_sheet(user_id)
-        if balance_sheet_result['status']:
-            if balance_sheet_result['new']:
-                bs_res = json.dumps(balance_sheet_result)
-                bs_res = json.loads(bs_res)
-                bs_res['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
-                bs_res['cust_id'] = user_id
-                try:
-                    client.analysis.balance_sheet.update({'cust_id': user_id}, {"$set": bs_res}, upsert=True)
-                    logger.info('balanced sheet found and saved')
-                except BaseException as e:
-                    logger.critical(f'error in balanced sheet data upload as {e}')
-                    exception_feeder(client=client, user_id=user_id, logger=logger,
-                                     msg="Balance sheet error")
-            else:
-                logger.info("Old User updation balance_sheet")
-                if not balance_sheet_result['upto_date']:
-                    try:
-                        for i in range(len(balance_sheet_result['df']['sheet'])):
-                            client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
-                                "$push": {"df.sheet": balance_sheet_result['df']['sheet'][i]}})
-
-                        credit = balance_sheet_result['old_credit']
-                        debit = balance_sheet_result['old_debit']
-                        if balance_sheet_result['df']['credit'][0][0] in credit[0]:
-                            client.analysis.balance_sheet.update_one({"cust_id": int(user_id)}, {
-                                "$set": {
-                                    'df.credit.' + str(balance_sheet_result['len_credit'] - 1) + ".1": credit[1] +
-                                                                                                       balance_sheet_result[
-                                                                                                           'df'][
-                                                                                                           'credit'][0][
-                                                                                                           1],
-                                    'df.debit.' + str(balance_sheet_result['len_credit'] - 1) + ".1": debit[1] +
-                                                                                                      balance_sheet_result[
-                                                                                                          'df'][
-                                                                                                          'debit'][0][1]
-                                }}, upsert=True)
-                            for i in range(len(balance_sheet_result['df']['credit']) - 1):
-                                client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
-                                    "$push": {"df.credit": balance_sheet_result['df']['credit'][i + 1]}})
-
-                            for i in range(len(balance_sheet_result['df']['debit']) - 1):
-                                client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
-                                    "$push": {"df.debit": balance_sheet_result['df']['debit'][i + 1]}})
-
-                        else:
-                            for i in range(len(balance_sheet_result['df']['credit'])):
-                                client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
-                                    "$push": {"df.credit": balance_sheet_result['df']['credit'][i]}})
-
-                            for i in range(len(balance_sheet_result['df']['debit'])):
-                                client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
-                                    "$push": {"df.debit": balance_sheet_result['df']['debit'][i]}})
-
-                        logger.info("balanced sheet sms of old user updated successfully")
-                        client.analysis.balance_sheet.update_one({"cust_id": int(user_id)}, {
-                            "$set": {"timestamp": balance_sheet_result['max_timestamp'],
-                                     'df.final_credit': balance_sheet_result['df']['final_credit'],
-                                     'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
-                                                                 upsert=True)
-                    except BaseException as e:
-                        logger.critical(f'error in balanced sheet data upload as {e}')
-                        exception_feeder(client=client, user_id=user_id, logger=logger,
-                                         msg="Balance sheet error-" + str(e))
-                else:
-                    logger.info("transaction messages upto date")
-        else:
-            exception_feeder(client=client, user_id=user_id, logger=logger,
-                             msg="Balance sheet error")
+        try:
+            balance_sheet_result = create_transaction_balanced_sheet(user_id)
+            if not balance_sheet_result['status']:
+                exception_feeder(client=client, user_id=user_id, logger=logger,
+                                msg="Balance sheet error-"+str(balance_sheet_result['message']))
+        except BaseException as e:
+            exception_feeder(client=client, logger=logger, msg=f'unhandeled error in balanced sheet {e}',
+                                user_id=user_id)
 
     # >>=>> LOAN ANALYSIS
     logger.info('starting loan analysis')
@@ -242,8 +178,6 @@ def bl0(**kwargs):
             result_salary = main(user_id)  # Returns a dictionary
             # print(result_salary)
             # print("yeah")
-            if result_salary['status']:
-                pass
             if not result_salary['status']:
                 exception_feeder(client=client, user_id=user_id, logger=logger,
                                  msg="Salary Analysis failed due to some reason")
