@@ -178,14 +178,13 @@ def bl0(**kwargs):
 
     # >>=>> reference verification
     logger.info('starting reference verification')
-    if not classification_flag:
-        result_verification = validate(user_id)  # returns a dictionary
-        if result_verification['status']:
-            pass
-        if not result_verification['status']:
-            exception_feeder(client=client, user_id=user_id, logger=logger,
-                             msg="reference verification failed due to some reason")
-        logger.info('reference verification complete')
+    result_verification = validate(user_id)  # returns a dictionary
+    if result_verification['status']:
+        pass
+    if not result_verification['status']:
+        exception_feeder(client=client, user_id=user_id, logger=logger,
+                         msg="reference verification failed due to some reason")
+    logger.info('reference verification complete')
 
     # >>=>> SALARY ANALYSIS
     logger.info('starting salary analysis')

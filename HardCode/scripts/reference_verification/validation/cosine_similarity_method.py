@@ -11,8 +11,7 @@ def cos_sim(**kwargs):
     father_syns = []
     mother_syns = []
 
-
-    if relation == "Father":
+    if relation == "father":
         for word in syns.father:
             father_syns.append(word)
         for w, s in enumerate(father_syns):

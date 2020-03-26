@@ -13,8 +13,8 @@ def validate(user_id):
     msg = ''
     try:
         if reference_number and reference_relation and contacts_data:
-            # print(reference_number, reference_relation)
             # pprint(contacts_data)
+            # print(reference_number,reference_relation)
             # ==> currently validating only when the relation is either father or mother
 
             if reference_relation.lower() == 'mother' or reference_relation.lower() == 'father':
@@ -22,6 +22,7 @@ def validate(user_id):
                                             contacts=contacts_data)
 
                 similarity = [float(i[0]) for i in cosine_similarity]
+                # pprint(similarity)
                 max_similarity = max(similarity)
                 if max_similarity > 0.80:
                     validated = True
