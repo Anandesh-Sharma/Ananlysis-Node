@@ -90,7 +90,7 @@ warnings.filterwarnings("ignore")
 def get_confirm_cc_messages(data):
     cc_confirm_index_list = []
     all_patterns = [
-        r'sbi\scardholder.*payment.*rs\.?\s?([0-9.?]+).*credit\scard.*successfully',  # grp(1) for amount
+        r'cardholder.*payment.*rs\.?\s?([0-9.?]+).*credit\scard.*successfully',  # grp(1) for amount
         r'approve\stransaction.*rs\.?\s?([0-9.?]+).*a/c\sno\.?.*credit\scard',
         r'(?:rs|inr)\.?\s?\s?([0-9.?]+).*debited.*credit\scard',
         r'inr\s?([0-9.?]+).*paytm.*credit\scard',
@@ -99,13 +99,14 @@ def get_confirm_cc_messages(data):
         r'spent\s(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
         r'payment\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*received.*credit\scard',
         r'received.*payment.*(?:for|of)*(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
+        r'(?:inr|rs\.?)\s?([0-9,.]+).*spent.*card'
 
         # will try to make 15 and 17 a single regex
         r'.*charge\sof\s(?:rs\.?|inr)\s?([0-9.?]+).*initiated.*credit\scard.*',
         r'.*internet\spayment.*(?:rs\.?|inr)\s?([0-9.,?]+).*credit\scard.*',
 
         # due
-        r'e-stmt.*sbi\scard.*total\samt\sdue:\srs\.?\s?([0-9.?]+).*min\samt\sdue:\srs\.?\s?([0-9.?]+)\sis\spayable',
+        r'e-stmt.*card.*total\samt\sdue:\srs\.?\s?([0-9.?]+).*min\samt\sdue:\srs\.?\s?([0-9.?]+)\sis\spayable',
         r'payment.*credit\scard.*is\sdue.*total\samount\s(?:due|overdue:).*(?:rs|\s)\.?\s?(['
         r'0-9.?]+).*minimum\samount\s(?:due|due:).*(?:rs|\s)\.?\s?([0-9.?]+)',
         r'stmt.*total\s(?:amt|amount)\sdue.*credit\scard.*(?:inr|rs\.?)\s?([0-9.,?]+).*(?:minimum|min)\s('
