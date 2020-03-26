@@ -30,7 +30,7 @@ def cos_sim(**kwargs):
     for key in contacts.keys():
         if int(key) == ref_no:
             for contact_name in contacts[key]:
-                contact_name = contact_name.replace(' ', '').lower()
+                contact_name = contact_name.lower()
                 Ref_name.append(contact_name)
 
     similarity = []

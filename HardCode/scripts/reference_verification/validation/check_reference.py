@@ -1,7 +1,7 @@
 from HardCode.scripts.reference_verification.data_extraction.data import get_reference_details, get_contacts_data
 from HardCode.scripts.reference_verification.validation.cosine_similarity_method import cos_sim
 from HardCode.scripts.Util import conn
-from pprint import pprint
+# from pprint import pprint
 
 
 def validate(user_id):
@@ -13,6 +13,8 @@ def validate(user_id):
     msg = ''
     try:
         if reference_number and reference_relation and contacts_data:
+            # print(reference_number, reference_relation)
+            # pprint(contacts_data)
             # ==> currently validating only when the relation is either father or mother
 
             if reference_relation.lower() == 'mother' or reference_relation.lower() == 'father':
@@ -21,7 +23,6 @@ def validate(user_id):
 
                 similarity = [float(i[0]) for i in cosine_similarity]
                 max_similarity = max(similarity)
-
                 if max_similarity > 0.80:
                     validated = True
                 msg = 'validation successful'
