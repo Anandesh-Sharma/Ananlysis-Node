@@ -366,7 +366,7 @@ def main(id):
                                 df = get_neft_amount(df, id)
                                 df['neft_amount'] = np.where(df["neft_amount"] >= 7000, df["neft_amount"], 0)
                                 neft = df['neft_amount'].max()
-                                month = i.month_name(locale='English')
+                                month = i.month_name()
                                 if neft != 0:
                                     for j, row in df.iterrows():
                                         if row["neft_amount"] == neft:
@@ -418,8 +418,7 @@ def main(id):
 
                 else:
                     continue
-
-        last_month = next(reversed(result['salary']))
+        last_month = list(result['salary'].keys())[-1]
         salary = result['salary'][last_month]['salary']
 
         return {'status': True, 'message': 'Success', 'cust_id': int(id), 'result': result['salary'],
