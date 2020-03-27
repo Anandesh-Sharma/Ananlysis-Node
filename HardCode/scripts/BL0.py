@@ -5,7 +5,8 @@ from HardCode.scripts.loan_salary_analysis.Loan_Salary_Logic import *
 from HardCode.scripts.cibil.Analysis import analyse
 from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import create_transaction_balanced_sheet
 from HardCode.scripts.rejection.rejected import check_rejection
-from HardCode.scripts.reference_verification.validation.check_reference import validate
+from HardCode.scripts.classifiers.Classifier import classifier
+# from HardCode.scripts.reference_verification.validation.check_reference import validate
 from HardCode.scripts.Util import *
 import warnings
 import pandas as pd
@@ -36,7 +37,6 @@ def result_fetcher(**kwargs):
     salary_result = kwargs.get('result_salary')
     balance_sheet = kwargs.get('balance_sheet_result')
     rejection = kwargs.get('result_rejection')
-    verification = kwargs.get('result_verification')
 
     output_flag = kwargs.get('output_flag', 'cibil')
     test_final_result = client.analysisresult.bl0.find_one({'cust_id': user_id})
@@ -50,14 +50,12 @@ def result_fetcher(**kwargs):
     del loan_result['result']['cust_id']
     del salary_result['cust_id']
     del rejection['cust_id']
-    del verification['cust_id']
 
     analysis = {
         'salary': salary_result,
         'loan': loan_result,
         'balance_sheet': balance_sheet,
-        'rejection_check': rejection,
-        'reference_verification': verification
+        'rejection_check': rejection
 
     }
     response = {
@@ -80,7 +78,7 @@ def bl0(**kwargs):
     list_loans = kwargs.get('list_loans')
     current_loan = kwargs.get('current_loan')
     cibil_df = kwargs.get('cibil_xml')
-    classification_flag = kwargs.get('classification_flag')
+    sms_json = kwargs.get('sms_json')
 
     logger = logger_1('bl0', user_id)
     if not isinstance(user_id, int):
@@ -141,81 +139,84 @@ def bl0(**kwargs):
         return exception_feeder(client=client, logger=logger, msg=f'default result not generated {e}',
                                 user_id=user_id)
 
+    # >>==>> Classification
+    logger.info('starting classification')
+
+    classifier_result = classifier(sms_json, str(user_id))
+    if not classifier_result:   # returns a bool
+        exception_feeder(client=client, user_id=user_id, logger=logger, msg='error in classification')
+
+    logger.info('classification completes')
+
     # >>=>> BALANCE SHEET
     logger.info('started making balanced sheet')
-    if not classification_flag:
-        try:
-            balance_sheet_result = create_transaction_balanced_sheet(user_id)
-            if not balance_sheet_result['status']:
-                exception_feeder(client=client, user_id=user_id, logger=logger,
-                                 msg="Balance sheet error-" + str(balance_sheet_result['message']))
-        except BaseException as e:
-            exception_feeder(client=client, logger=logger, msg=f'unhandeled error in balanced sheet {e}',
-                             user_id=user_id)
+    try:
+        balance_sheet_result = create_transaction_balanced_sheet(user_id)
+        if not balance_sheet_result['status']:
+            exception_feeder(client=client, user_id=user_id, logger=logger,
+                             msg="Balance sheet error-" + str(balance_sheet_result['message']))
+    except BaseException as e:
+        exception_feeder(client=client, logger=logger, msg=f'unhandeled error in balanced sheet {e}',
+                         user_id=user_id)
 
     # >>=>> LOAN ANALYSIS
     logger.info('starting loan analysis')
-    if not classification_flag:
-        result_loan = final_output(user_id)  # returns a dictionary
+    result_loan = final_output(user_id)  # returns a dictionary
 
-        if result_loan['status']:
-            pass
-        if not result_loan['status']:
-            exception_feeder(client=client, user_id=user_id, logger=logger,
-                             msg="Loan Analysis failed due to some reason")
-        logger.info('loan analysis successful')
+    if result_loan['status']:
+        pass
+    if not result_loan['status']:
+        exception_feeder(client=client, user_id=user_id, logger=logger,
+                         msg="Loan Analysis failed due to some reason")
+    logger.info('loan analysis successful')
 
     # >>=>> Rejection check
     logger.info('starting rejection check')
-    if not classification_flag:
-        result_rejection = check_rejection(user_id)  # returns a dictionary
-        if result_rejection['status']:
-            pass
-        if not result_rejection['status']:
-            exception_feeder(client=client, user_id=user_id, logger=logger,
-                             msg="rejection check failed due to some reason")
-        logger.info('rejection check complete')
+    result_rejection = check_rejection(user_id)  # returns a dictionary
+    if result_rejection['status']:
+        pass
+    if not result_rejection['status']:
+        exception_feeder(client=client, user_id=user_id, logger=logger,
+                         msg="rejection check failed due to some reason")
+    logger.info('rejection check complete')
 
     # >>=>> reference verification
-    logger.info('starting reference verification')
-    result_verification = validate(user_id)  # returns a dictionary
-    if result_verification['status']:
-        pass
-    if not result_verification['status']:
-        exception_feeder(client=client, user_id=user_id, logger=logger,
-                         msg="reference verification failed due to some reason")
-    logger.info('reference verification complete')
+
+    # logger.info('starting reference verification')
+    # result_verification = validate(user_id)  # returns a dictionary
+    # if result_verification['status']:
+    #     pass
+    # if not result_verification['status']:
+    #     exception_feeder(client=client, user_id=user_id, logger=logger,
+    #                      msg="reference verification failed due to some reason")
+    # logger.info('reference verification complete')
 
     # >>=>> SALARY ANALYSIS
     logger.info('starting salary analysis')
-    if not classification_flag:
-        try:
-            result_salary = main(user_id)  # Returns a dictionary
-            if not result_salary['status']:
-                exception_feeder(client=client, user_id=user_id, logger=logger,
-                                 msg="Salary Analysis failed due to some reason")
-        except BaseException as e:
+    try:
+        result_salary = main(user_id)  # Returns a dictionary
+        if not result_salary['status']:
             exception_feeder(client=client, user_id=user_id, logger=logger,
-                             msg=str(e))
-            # -> Run BASE CIBIL logic and handle
-            pass
-    else:
-        exception_feeder(client=client, user_id=user_id, logger=logger, msg='error in classification')
+                             msg="Salary Analysis failed due to some reason")
+    except BaseException as e:
+        exception_feeder(client=client, user_id=user_id, logger=logger,
+                         msg=str(e))
+        # -> Run BASE CIBIL logic and handle
+        pass
 
     # >>=>> CHEQUE BOUNCE ANALYSIS
-    if not classification_flag:
-        if new_user:
-            file1 = client.messagecluster.extra.find_one({"cust_id": user_id})
-            if file1 is None:
-                a = 0
-            else:
-                df = pd.DataFrame(file1['sms'])
-                a, msg = cheque_user_outer(df, user_id)  # corrected BAWASEER BUG
-            logger.info('successfully checked bounced cheque messages')
-            if a > 0:
-                logger.info('user has bounced cheques exiting')
-                analysis_result['cheque_bounce'] = True
-                # TODO : CREATE A NEW FUNCTION THAT FINDS THE RESULT IN DB AND RETURN IT TO MIDDLEWARE
+    if new_user:
+        file1 = client.messagecluster.extra.find_one({"cust_id": user_id})
+        if file1 is None:
+            a = 0
+        else:
+            df = pd.DataFrame(file1['sms'])
+            a, msg = cheque_user_outer(df, user_id)  # corrected BAWASEER BUG
+        logger.info('successfully checked bounced cheque messages')
+        if a > 0:
+            logger.info('user has bounced cheques exiting')
+            analysis_result['cheque_bounce'] = True
+            # TODO : CREATE A NEW FUNCTION THAT FINDS THE RESULT IN DB AND RETURN IT TO MIDDLEWARE
 
     # >>=>> UTILIZING LOAN ANALYSIS
     # TODO : Change the logic for loan
@@ -269,8 +270,7 @@ def bl0(**kwargs):
     client.analysisresult.bl0.update({'cust_id': user_id}, {'$push': {'result': analysis_result}})
     logger.info("analysis complete")
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
-                                balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,
-                                result_verification=result_verification)
+                                balance_sheet_result=balance_sheet_result, result_rejection=result_rejection, )
 
     client.close()
     return end_result

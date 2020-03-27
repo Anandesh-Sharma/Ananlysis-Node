@@ -8,48 +8,34 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def check_body_1(df, pattern):
-    d = []
-    for index, row in df.iterrows():
-        matcher = re.search(pattern, row["body"].lower())
-        if matcher != None:
-            d.append(index)
-    return d 
-
-def thread_for_cleaning_1(df, pattern, result):
-    result.append(check_body_1(df, pattern))
-
-
 def cleaning(df, result, user_id, max_timestamp, new):
     logger = logger_1("cleaning", user_id)
-    transaction_patterns = ['debited', 'credited']
-    thread_list = []
-    results = []
-    length = set(range(df.shape[0]))
-    required_rows = set(range(df.shape[0]))
-    for pattern in transaction_patterns:
-        thread = threading.Thread(target=thread_for_cleaning_1, args=(df, pattern, results))
-        thread_list.append(thread)
+    transaction_patterns = ['debited', 'credited', "inft"]
 
-    logger.info("thread for cleaning 1 starts")
-    for thread in thread_list:
-        thread.start()
-
-    for thread in thread_list:
-        thread.join()
-    logger.info("thread for cleaning 1 complete")
-
-    for i in results:
-        length = length - set(i)
-
-    required_rows = list(set(required_rows) - set(length))
+    required_rows = []
+    internet_banking = []
+    pattern_inb_wd = [" inb txn ", "w/d@", "w/d at"]
+    for index, row in df.iterrows():
+        body = row["body"].lower()
+        match = True
+        for pattern in transaction_patterns:
+            matcher = re.search(pattern, body)
+            if matcher:
+                required_rows.append(index)
+                match = False
+                break
+        if match:
+            for pat in pattern_inb_wd:
+                matcher = re.search(pat, body)
+                if matcher:
+                    internet_banking.append(index)
+                    break
 
     cleaning_transaction_patterns_header = ['vfcare',
                                             'oyorms',
                                             'payzap',
                                             'rummy',
                                             'polbaz',
-                                            '600010',
                                             'rummyc',
                                             'rupmax',
                                             'ftcash',
@@ -101,7 +87,6 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                             'oxymny',
                                             'jionet',
                                             'kissht',
-                                            '155400',  # m-pesa
                                             'kredtb',
                                             'shoekn',
                                             'lzypay',
@@ -124,8 +109,6 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                             'zestmo',
                                             'smart']
     garbage_header_rows = []
-    thread_list = []
-    results = []
     for i, row in df.iterrows():
         if i in required_rows:
             for pattern in cleaning_transaction_patterns_header:
@@ -197,9 +180,6 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                      'available credit limit']
 
     garbage_rows = []
-    thread_list = []
-    results = []
-
     for i, row in df.iterrows():
         if i in required_rows:
             message = row["body"].lower()
@@ -257,7 +237,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
     required_rows = list(set(required_rows) - set(loan_messages))
     required_rows.extend(list(set(imp_loan_messages)))
     logger.info("important loan messages saved")
-
+    required_rows.extend(internet_banking)
     if user_id in result.keys():
         a = result[user_id]
         a.extend(list(required_rows))
