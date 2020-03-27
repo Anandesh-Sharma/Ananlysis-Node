@@ -180,7 +180,6 @@ def get_upi_keyword(data):
         else:
             data['upi'][i] = 0
 
-
 def get_imps_keyword(data):
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
@@ -203,6 +202,7 @@ def get_neft_keyword(data):
 
 
 def get_neft_no(data):
+    pattern_0 = r"neft.*?(\d{12})"
     pattern_1 = r'neft ?(?:no|number|cr)?[\.\: \-]{0,3}(\w{0,5}\d{6,12})'
     pattern_2 = r'utr[- ]?(?:ref)?[ \-\:]{0,3}(\w{10,16})'
     pattern_3 = r'neft ?(?:transaction with)? ?(?:ref|reference) (?:no|number)?[\.\-\:]? ?(\w{0,5}\d{6,12})'
@@ -210,12 +210,16 @@ def get_neft_no(data):
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
+        matcher_0 = re.search(pattern_0, message)
         matcher_1 = re.search(pattern_1, message)
         matcher_2 = re.search(pattern_2, message)
         matcher_3 = re.search(pattern_3, message)
         matcher_4 = re.search(pattern_4, message)
 
-        if matcher_1 is not None:
+        if matcher_0:
+            data['neft no'][i] = matcher_0.group(1)
+
+        elif matcher_1 is not None:
             data['neft no'][i] = matcher_1.group(1)
 
         elif matcher_2 is not None:
@@ -335,21 +339,27 @@ def get_date_time(data, logger):
 
 
 def balance_check(data):
-    pattern_1 = r'(?i)(?:a\/c|avbl|avl|available) (?:bal|balance) ?:? ?(?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,' \
-                r'\d+)?(\.\d{1,2})?) '
+    pattern_1 = r'(?i)(?:a\/?c|avbl|avl|available|total|avlbl) (?:bal|balance) ?:?-?\.? ?(?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,' \
+                r'\d+)?(\.\d{1,2})?)'
     pattern_2 = r'(?i)(?:updated|available|avbl|abl)(?: account)? (?:balance|bal)(?: is)?(?: paytm wallet)? ?(?:(' \
-                r'?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?) '
+                r'?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
+
+    pattern_3 = r"(?:bal|balance) is (?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
         matcher_1 = re.search(pattern_1, message)
         matcher_2 = re.search(pattern_2, message)
+        matcher_3 = re.search(pattern_3, message)
         amount = 0
         if matcher_1 is not None:
             amount = matcher_1.group(1)
 
         elif matcher_2 is not None:
             amount = matcher_2.group(1)
+        
+        elif matcher_3 is not None:
+            amount = matcher_3.group(1)
 
         else:
             amount = 0

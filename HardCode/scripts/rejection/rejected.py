@@ -20,16 +20,19 @@ def check_rejection(user_id):
             df_rejected = remove_unwanted_headers_and_sort(df_rejected, headers)
 
             if df_rejected.shape[0] != 0 and df_approved.shape[0] != 0:
-
+                idx_to_delete = []
                 for i in range(df_rejected.shape[0]):
+                    time_rejected = datetime.strptime(str(df_rejected['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
+                    sender = df_rejected['sender'][i]
                     for j in range(df_approved.shape[0]):
-                        time_rejected = datetime.strptime(str(df_rejected['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
                         time_approved = datetime.strptime(str(df_approved['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
                         diff = (time_approved - time_rejected).days
-                        if df_rejected['sender'][i] == df_approved['sender'][j] and diff < 3:
-                            df_rejected.drop([i], axis=0, inplace=True)
+                        if (sender == df_approved['sender'][j]) and diff < 3:
+                            idx_to_delete.append(i)
+                            break
 
-                df_rejected.reset_index(drop=True)
+                df_rejected.drop(idx_to_delete, axis=0, inplace=True)
+                df_rejected.reset_index(drop=True, inplace=True)
 
                 df_rejected_grouped = df_rejected.groupby(by='sender')
                 result = {}
@@ -41,7 +44,6 @@ def check_rejection(user_id):
                     }
                     i = 0
                     while i < grp.shape[0]:
-                        # print(f"I : {i}")
                         time_1 = datetime.strptime(str(grp['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
                         j = i + 1
                         count_dict['count'] += 1
@@ -71,7 +73,6 @@ def check_rejection(user_id):
                 }
                 i = 0
                 while i < grp.shape[0]:
-                    # print(f"I : {i}")
                     time_1 = datetime.strptime(str(grp['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
                     j = i + 1
                     count_dict['count'] += 1
@@ -88,11 +89,9 @@ def check_rejection(user_id):
             }
     except BaseException as e:
         status = False
-        print(e)
     finally:
         rejection_result = {'cust_id': user_id, 'status': status, 'result': res}
         connect = conn()
         db = connect.analysis.rejection
-        print()
-        db.update({'cust_id': user_id}, {'$set': rejection_result}, upsert = True)
+        db.update({'cust_id': user_id}, {'$set': rejection_result}, upsert=True)
         return rejection_result

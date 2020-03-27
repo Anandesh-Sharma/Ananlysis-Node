@@ -1,6 +1,9 @@
 from .transaction_analysis import process_data
 from .monthly_transactions import monthly_credit_sum, monthly_debit_sum
 from HardCode.scripts.balance_sheet_analysis.Validation2 import *
+from datetime import datetime 
+import pytz
+import json
 from HardCode.scripts.Util import conn, logger_1, convert_json_balanced_sheet, convert_json_balanced_sheet_empty
 
 
@@ -44,7 +47,7 @@ def create_transaction_balanced_sheet(user_id):
             index = 0
         df = df.loc[index:]
     if df.shape[0] == 0:
-        return {"upto_date": True, 'status': True, 'message': 'success', 'new': False}  # do something
+        return {'status': True, 'message': 'success'}  # do something
     # doing something
     logger.info('Converting file to dataframe')
     if df.shape[0] == 0:
@@ -113,16 +116,56 @@ def create_transaction_balanced_sheet(user_id):
         logger.exception(result['message'])
         return result
     logger.info('Monthly debit sum successful')
-    r['status'] = True
-    r['message'] = 'success'
     debit = result['r']
+    df_result = convert_json_balanced_sheet(df, debit=debit, credit=credit)
+    max_timestamp = str(df['timestamp'][df.shape[0] - 1])
 
-    r['df'] = convert_json_balanced_sheet(df, debit=debit, credit=credit)
-    r['max_timestamp'] = str(df['timestamp'][df.shape[0] - 1])
-    r['new'] = new
-    r['upto_date'] = False
-    if not new:
-        r['old_credit'] = old_balance_sheet['df']['credit'][-1]
-        r['old_debit'] = old_balance_sheet['df']['debit'][-1]
-        r['len_credit'] = len(old_balance_sheet['df']['debit'])
-    return r
+    if new:
+        bs_res = json.dumps(df_result)
+        bs_res = json.loads(bs_res)
+        bs_res['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
+        bs_res['cust_id'] = user_id
+        bs_res['max_timestamp']=max_timestamp
+        try:
+            client.analysis.balance_sheet.update({'cust_id': user_id}, {"$set": bs_res}, upsert=True)
+            logger.info('balanced sheet found and saved')
+            return {'status':True,'message':'success'}
+        except BaseException as e:
+            return {'status':False,'message':str(e)}
+    else:
+        logger.info("Old User updation balance_sheet")
+        old_credit = old_balance_sheet['credit'][-1]
+        old_debit = old_balance_sheet['debit'][-1]
+        len_credit = len(old_balance_sheet['debit'])
+        try:
+            client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
+                "$push": {"sheet":{"$each": df_result['sheet']}}})
+            if df_result['credit'][0][0] in old_credit[0]:
+                client.analysis.balance_sheet.update_one({"cust_id": int(user_id)}, {
+                    "$set": {
+                        'credit.' + str(len_credit - 1) + ".1": old_credit[1] +
+                                                                df_result['credit'][0][1],
+                        'debit.' + str(len_credit - 1) + ".1": old_debit[1] +
+                                                                df_result['debit'][0][1]
+                    }
+                }, upsert=True)
+                client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
+                    "$push": {"credit":{"$each": df_result['credit'][1:]}}})
+                client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
+                    "$push": {"debit": {"$each":df_result['debit'][1:]}}})
+            else:
+                client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
+                    "$push": {"credit": {"$each":df_result['credit']}}}),
+
+                client.analysis.balance_sheet.update({"cust_id": int(user_id)}, {
+                    "$push": {"debit": {"$each":df_result['debit']}}})
+
+            logger.info("balanced sheet sms of old user updated successfully")
+            client.analysis.balance_sheet.update_one({"cust_id": int(user_id)}, {
+                "$set": {"timestamp": max_timestamp,'final_credit': df_result['final_credit'],
+                            'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
+                                                        upsert=True)
+            return {"status":True,"message":"success"}
+        except BaseException as e:
+            logger.critical(f'error in balanced sheet data upload as {e}')
+            return {"status":False,"message":str(e)}

@@ -2,10 +2,12 @@ import logging
 import pandas as pd
 import os
 from datetime import datetime
+from datetime import timedelta
 from logging.handlers import TimedRotatingFileHandler
 from pymongo import MongoClient
 import warnings
 import urllib
+
 warnings.filterwarnings("ignore")
 
 
@@ -13,8 +15,9 @@ def conn():
     # Create MONGO_SUPERUSER and MONGO_SUPERPASS global varaible in local environment for MongoDB
 
     connection = MongoClient(
-        f"mongodb://{os.environ['MONGOUSER']}:" + urllib.parse.quote(os.environ['MONGOPASS']) +"@localhost:27017/?authSource=admin"
-        f"&readPreference=primary&ssl=false",
+        f"mongodb://{os.environ['MONGOUSER']}:" + urllib.parse.quote(
+            os.environ['MONGOPASS']) + "@localhost:27017/?authSource=admin"
+                                       f"&readPreference=primary&ssl=false",
         socketTimeoutMS=900000)
     return connection
 
@@ -76,6 +79,13 @@ def read_json(sms_json, user_id):
             df['sender'][i] = x[0][2:].upper()
     df.reset_index(drop=True,inplace=True)"""
     max_timestamp = max(df['timestamp'])
+
+    # ==> this section keeps only those messages which are within 1 year of max timestamp
+    max_time = datetime.strptime(str(max_timestamp), '%Y-%m-%d %H:%M:%S')
+    required_time = max_time - timedelta(days=365)
+    df = df[df['timestamp'] > str(required_time)]
+    df = df.reset_index(drop=True)
+
     logger.info("update sms of existing user")
     result = update_sms(df, user_id, max_timestamp)
     if not result['status']:
@@ -138,7 +148,7 @@ def update_sms(df, user_id, max_timestamp):
 
 def convert_json_balanced_sheet(data, credit, debit):
     obj = {"sheet": []}
-    obj['final_credit']=str(credit[-1][0])
+    obj['final_credit'] = str(credit[-1][0])
     for i in range(len(credit)):
         credit[i] = (credit[i][0], int(credit[i][1]))
     for i in range(len(debit)):

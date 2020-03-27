@@ -14,41 +14,10 @@ def check_body_1(df, pattern):
         matcher = re.search(pattern, row["body"].lower())
         if matcher != None:
             d.append(index)
-    return d
-
-
-def check_body_2(df, pattern, required_rows):
-    d = []
-    for index, row in df.iterrows():
-        if index not in required_rows:
-            continue
-        matcher = re.search(pattern, row["body"].lower())
-        if matcher is not None:
-            d.append(index)
-    return d
-
-
-def check_header(df, pattern, required_rows):
-    d = []
-    for index, row in df.iterrows():
-
-        if index not in required_rows:
-            continue
-        if pattern in row["sender"].lower():
-            d.append(index)
-    return d
-
+    return d 
 
 def thread_for_cleaning_1(df, pattern, result):
     result.append(check_body_1(df, pattern))
-
-
-def thread_for_cleaning_2(df, pattern, result, required_rows):
-    result.append(check_body_2(df, pattern, required_rows))
-
-
-def thread_for_cleaning_3(df, pattern, result, required_rows):
-    result.append(check_header(df, pattern, required_rows))
 
 
 def cleaning(df, result, user_id, max_timestamp, new):
