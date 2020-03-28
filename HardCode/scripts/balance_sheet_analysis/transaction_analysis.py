@@ -461,8 +461,7 @@ def process_data(data, user_id):
 
         logger.info('starting date time thread')
         date_time_thread(data, user_id)
-        logger.info('data time threa complete')
-        data.to_csv("1.csv")
+        logger.info('data time thread complete')
     except Exception as e:
         return {'status': False, 'message': e}
     return {'status': True, 'message': 'success', 'df': data}
