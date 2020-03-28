@@ -7,6 +7,19 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+def check_account_number(message):
+    all_patterns = [
+    r'[\*nx]+([0-9]{3,})',
+    r'[a]\/c ([0-9]+)',
+    r'[\.]{3,}([0-9]+)',
+    r'account(.*)?\[([0-9]+)\]'
+    ]
+
+    for pat in all_patterns:
+        matcher = re.search(pat, message)    
+        if matcher:
+            return True
+    return False
 
 def cleaning(df, result, user_id, max_timestamp, new):
     logger = logger_1("cleaning", user_id)
@@ -14,6 +27,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
 
     required_rows = []
     internet_banking = []
+    withdraw = []
     pattern_inb_wd = [" inb txn ", "w/d@", "w/d at"]
     for index, row in df.iterrows():
         body = row["body"].lower()
@@ -24,12 +38,19 @@ def cleaning(df, result, user_id, max_timestamp, new):
                 required_rows.append(index)
                 match = False
                 break
+        with_match = False
         if match:
             for pat in pattern_inb_wd:
                 matcher = re.search(pat, body)
                 if matcher:
                     internet_banking.append(index)
+                    with_match = True
                     break
+        if match and with_match:
+            matcher = re.search("withdraw", body)
+            if matcher:
+                if check_account_number(body):
+                    withdraw.append(index)
 
     cleaning_transaction_patterns_header = ['vfcare',
                                             'oyorms',
@@ -238,6 +259,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
     required_rows.extend(list(set(imp_loan_messages)))
     logger.info("important loan messages saved")
     required_rows.extend(internet_banking)
+    required_rows.extend(withdraw)
     if user_id in result.keys():
         a = result[user_id]
         a.extend(list(required_rows))

@@ -11,16 +11,16 @@ def upi_ref_check(data):
             if data['UPI Ref no'][i] == 0:
                 continue
             for j in range(i + 1, data.shape[0]):
-                if data['UPI Ref no'][i] == 0:
+                if data['UPI Ref no'][j] == 0:
                     continue
                 if data['UPI Ref no'][i] == data['UPI Ref no'][j]:
-                    if data['credit_amount'][i] != 0 or data['credit_amount'][i] != '0':
-                        if data['credit_amount'][j] != 0 or data['credit_amount'][j] != '0':
+                    if data['credit_amount'][i] != 0 :
+                        if data['credit_amount'][j] != 0:
                             if data['credit_amount'][i] == data['credit_amount'][j]:
                                 fault.append(i)
                                 break
-                    elif data['debit_amount'][i] != 0 or data['debit_amount'][i] != '0':
-                        if data['debit_amount'][j] != 0 or data['debit_amount'][j] != '0':
+                    elif data['debit_amount'][i] != 0:
+                        if data['debit_amount'][j] != 0:
                             if data['debit_amount'][i] == data['debit_amount'][j]:
                                 fault.append(i)
                                 break
@@ -39,16 +39,16 @@ def imps_ref_check(data):
             if data['IMPS Ref no'][i] == 0:
                 continue
             for j in range(i + 1, data.shape[0]):
-                if data['IMPS Ref no'][i] == 0:
+                if data['IMPS Ref no'][j] == 0:
                     continue
                 if data['IMPS Ref no'][i] == data['IMPS Ref no'][j]:
-                    if data['credit_amount'][i] != 0 or data['credit_amount'][i] != '0':
-                        if data['credit_amount'][j] != 0 or data['credit_amount'][j] != '0':
+                    if data['credit_amount'][i] != 0:
+                        if data['credit_amount'][j] != 0:
                             if data['credit_amount'][i] == data['credit_amount'][j]:
                                 fault.append(i)
                                 break
-                    elif data['debit_amount'][i] != 0 or data['debit_amount'][i] != '0':
-                        if data['debit_amount'][j] != 0 or data['debit_amount'][j] != '0':
+                    elif data['debit_amount'][i] != 0:
+                        if data['debit_amount'][j] != 0:
                             if data['debit_amount'][i] == data['debit_amount'][j]:
                                 fault.append(i)
                                 break

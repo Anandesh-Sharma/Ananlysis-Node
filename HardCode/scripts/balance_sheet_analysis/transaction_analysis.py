@@ -153,16 +153,26 @@ def get_credit_amount(data, logger):
 def get_debit_amount(data):
     pattern_2 = r'(?i)debited.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
     pattern_1 = r'(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?debited'
+    pattern_3 = r' inb txn of (?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
+    pattern_4 = r'(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?) ?w/d'
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
         matcher_1 = re.search(pattern_1, message)
         matcher_2 = re.search(pattern_2, message)
+        matcher_3 = re.search(pattern_3, message)
+        matcher_4 = re.search(pattern_4, message)
         if matcher_1 is not None:
             amount = matcher_1.group(1)
 
         elif matcher_2 is not None:
             amount = matcher_2.group(1)
+        
+        elif matcher_3 is not None:
+            amount = matcher_3.group(1)
+        
+        elif matcher_4 is not None:
+            amount = matcher_4.group(1)
 
         else:
             amount = 0
@@ -452,6 +462,7 @@ def process_data(data, user_id):
         logger.info('starting date time thread')
         date_time_thread(data, user_id)
         logger.info('data time threa complete')
+        data.to_csv("1.csv")
     except Exception as e:
         return {'status': False, 'message': e}
     return {'status': True, 'message': 'success', 'df': data}
