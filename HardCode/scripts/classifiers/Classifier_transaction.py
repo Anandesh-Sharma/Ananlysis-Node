@@ -49,8 +49,9 @@ def cleaning(df, result, user_id, max_timestamp, new):
         if match and with_match:
             matcher = re.search("withdraw", body)
             if matcher:
-                if check_account_number(body):
-                    withdraw.append(index)
+                if re.search("failed",body) is None:
+                    if check_account_number(body):
+                        withdraw.append(index)
 
     cleaning_transaction_patterns_header = ['vfcare',
                                             'oyorms',
@@ -179,14 +180,14 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                      'remaining emi installment', 'salary amount', 'incentive amount ', 'dear investor',
                                      'verification code', 'outstanding dues', 'congrat(ulation)?s', 'available limit ',
                                      'oyo money credited',
-                                     'reminder', 'card ?((holder)|(member))', 'login request', 'cashback',
+                                     'reminder', 'card ?((holder)|(member))', 'login request', ' cashback ',
                                      'electricity bill', 'data pack activation',
                                      'paytm postpaid bill', 'failed', 'declined', 'cardmember', 'credit ?card',
                                      ' porting ', 'lenskart',
                                      'activated for fund transfer', 'biocon', 'updated wallet balance', 'recharging',
                                      'assessment year', 'we wish to inform', 'refunded',
                                      'amendment', 'added/modified', 'kyc verification', 'is due', 'paytm postpaid',
-                                     'please pay', 'flight booking', 'offer',
+                                     'please pay', 'flight booking',
                                      '(credited)?(received)? [0-9]+[gm]b', 'payment.*failed',
                                      'uber india systems pvt ltd', 'has requested money', 'on approving',
                                      'not received', 'received your', 'brand factory has credited ', 'train ticket',
@@ -204,11 +205,18 @@ def cleaning(df, result, user_id, max_timestamp, new):
     for i, row in df.iterrows():
         if i in required_rows:
             message = row["body"].lower()
+            match = True
             for pattern in cleaning_transaction_patterns:
                 matcher = re.search(pattern, message)
                 if matcher:
                     garbage_rows.append(i)
+                    match = False
                     break
+            if match:
+                matcher = re.search("offer", message)
+                if matcher:
+                    if not check_account_number(message):
+                        garbage_rows.append(i)
 
     required_rows = list(set(required_rows) - set(garbage_rows))
 
