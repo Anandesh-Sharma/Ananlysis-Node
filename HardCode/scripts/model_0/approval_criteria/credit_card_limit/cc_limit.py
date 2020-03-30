@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import re
-from tqdm import tqdm
 import os
 from glob import glob
 from pymongo import MongoClient
@@ -11,6 +10,7 @@ pd.options.mode.chained_assignment = None
 
 
 def get_extracted_data(data):
+    df = pd.DataFrame(columns=['transaction_amt', 'total_card_limit', 'available_card_limit', 'current_outstanding_amt','minimum_due_amt', 'total_due_amt', 'pymt_due_date', 'bank_name'])
     df['total_due_amt'] = [0] * data.shape[0]
     df['minimum_due_amt'] = [0] * data.shape[0]
     df['pymt_due_date'] = ["0"] * data.shape[0]
@@ -37,7 +37,7 @@ def get_extracted_data(data):
        'BNKBZR', 'INDUSB', 'RBLCRD', 'HDFCBK', 'RBLBNK', 'INDIAL',
        'HDFCCC', 'AXISBK', 'AIRTEL', 'DIAL']'''
 
-    for i in tqdm(range(data.shape[0])):
+    for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
         sender = str(data['Sender-Name'][i]).lower()
         if sender == 'icicib':
@@ -132,16 +132,12 @@ def get_cc_limit(id):
         db = connect.messagecluster.creditcard
         file1 = db.find_one({"cust_id": id})
         data = pd.DataFrame(file1["sms"])
-        data = sms_header_splitter(data)
+        sms_header_splitter(data)
 
-        df = pd.DataFrame(
-            columns=['transaction_amt', 'total_card_limit', 'available_card_limit', 'current_outstanding_amt',
-                     'minimum_due_amt', 'total_due_amt', 'pymt_due_date', 'bank_name'])
         final_df = get_extracted_data(data)
         bank = final_df.groupby('bank_name')
         x = bank['available_card_limit'].max()
         x = x.to_dict()
-        print(x)
         result = x
     except BaseException as e:
         print(f"error in credit card limit check: {e}")

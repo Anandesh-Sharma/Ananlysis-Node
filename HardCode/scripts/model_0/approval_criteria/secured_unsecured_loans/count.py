@@ -2,7 +2,7 @@ import pandas
 from datetime import datetime
 from HardCode.scripts.cibil.xmlparser import xml_parser
 from collections import OrderedDict
-from pprint import pprint
+# from pprint import pprint
 
 
 def secure_unsecured_loan(user_id, cibil_file):
@@ -43,6 +43,6 @@ def secure_unsecured_loan(user_id, cibil_file):
 
         return response
     else:
-        response = {'status': False, 'secured_loan': 0, 'unsecured_loan': 0, 'message': 'None', 'cust_id': user_id}
+        response = {'status': False, 'secured_loan': 0, 'unsecured_loan': 0, 'message': 'None'}
         return response
 

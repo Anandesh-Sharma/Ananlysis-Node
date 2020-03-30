@@ -16,6 +16,7 @@ def get_parameters(user_id,cibil_file):
 
     reference = validate(user_id)
     rejection_result = check_rejection(user_id)
+    del rejection_result['cust_id']
 
     cc_limit = get_cc_limit(user_id)
     secured_unsecured = secure_unsecured_loan(user_id, cibil_file)

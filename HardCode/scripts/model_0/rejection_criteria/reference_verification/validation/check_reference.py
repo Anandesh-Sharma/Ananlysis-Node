@@ -36,4 +36,4 @@ def validate(user_id):
     finally:
         res = {'verification': validated, 'similarity_score': max_similarity, 'message': msg}
 
-        return {'cust_id': user_id, 'status': status, 'result': res}
+        return {'status': status, 'result': res}
