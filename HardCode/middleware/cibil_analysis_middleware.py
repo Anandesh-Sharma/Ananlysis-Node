@@ -102,8 +102,10 @@ def get_cibil_analysis(request):
         return Response(response_bl0, 200)
     except Exception as e:
         print(f"error in middleware {e}")
+        import traceback
+        traceback.print_tb(e.__traceback__)
         limit = analyse(user_id=user_id, current_loan=current_loan_amount, cibil_df=cibil_df, new_user=new_user,
-                        cibil_score=cibil_score)
+                        cibil_score=cibil_score,cibil_file =cibil_xml )
         response_bl0 = {
             "cust_id": user_id,
             "status": True,

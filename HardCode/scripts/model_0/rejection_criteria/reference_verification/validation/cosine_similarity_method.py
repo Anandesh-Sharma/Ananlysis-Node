@@ -1,6 +1,6 @@
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
-from HardCode.scripts.reference_verification.corpus import synonymns as syns
+from HardCode.scripts.model_0.rejection_criteria.reference_verification.corpus import synonymns as syns
 import pandas as pd
 
 

@@ -7,6 +7,7 @@ from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import cr
 from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.classifiers.Classifier import classifier
 # from HardCode.scripts.reference_verification.validation.check_reference import validate
+from HardCode.scripts.model_0.score import get_score
 from HardCode.scripts.Util import *
 import warnings
 import pandas as pd
@@ -79,7 +80,7 @@ def bl0(**kwargs):
     current_loan = kwargs.get('current_loan')
     cibil_df = kwargs.get('cibil_xml')
     sms_json = kwargs.get('sms_json')
-
+    cibil_file = kwargs.get('cibil_file')
     logger = logger_1('bl0', user_id)
     if not isinstance(user_id, int):
         return exception_feeder(user_id=user_id, msg='user_id not int type', logger=logger)
@@ -218,6 +219,11 @@ def bl0(**kwargs):
             logger.info('user has bounced cheques exiting')
             analysis_result['cheque_bounce'] = True
             # TODO : CREATE A NEW FUNCTION THAT FINDS THE RESULT IN DB AND RETURN IT TO MIDDLEWARE
+    # >>==>> Scoring Model
+
+    logger.info("Scoring Model starts")
+    result_score = get_score(user_id,cibil_file)
+
 
     # >>=>> UTILIZING LOAN ANALYSIS
     # TODO : Change the logic for loan
