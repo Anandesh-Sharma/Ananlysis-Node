@@ -18,9 +18,20 @@ def get_parameters(user_id,cibil_file):
     rejection_result = check_rejection(user_id)
 
     cc_limit = get_cc_limit(user_id)
-
-    print("*********************************************************")
     secured_unsecured = secure_unsecured_loan(user_id, cibil_file)
+
+    values = {
+        'monthly_balance' : monthly_balance,
+        'max_loan_limit' : max_loan_limit,
+        'loan_app_count_percentage' : loan_app_count_percentage,
+        'reference' : reference,
+        'rejection_result' : rejection_result,
+        'cc_limit' : cc_limit,
+        'secured_unsecured' : secured_unsecured
+
+    }
+    print("*********************************************************")
+
     print("monthly balance")
     pprint(monthly_balance)
     print('max loan limit')
@@ -81,5 +92,5 @@ def get_parameters(user_id,cibil_file):
 
     }
 
-    return variables
+    return variables, values
 # 280018

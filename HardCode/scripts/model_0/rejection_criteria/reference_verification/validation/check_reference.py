@@ -1,5 +1,7 @@
-from HardCode.scripts.model_0.rejection_criteria.reference_verification.data_extraction.data import get_reference_details, get_contacts_data
-from HardCode.scripts.model_0.rejection_criteria.reference_verification.validation.cosine_similarity_method import cos_sim
+from HardCode.scripts.model_0.rejection_criteria.reference_verification.data_extraction.data import \
+    get_reference_details, get_contacts_data
+from HardCode.scripts.model_0.rejection_criteria.reference_verification.validation.cosine_similarity_method import \
+    cos_sim
 from HardCode.scripts.Util import conn
 
 
@@ -19,8 +21,8 @@ def validate(user_id):
                                             contacts=contacts_data)
 
                 similarity = [float(i[0]) for i in cosine_similarity]
-                max_similarity = max(similarity)
-                if max_similarity > 0.80:
+                max_similarity = round(max(similarity), 2)
+                if max_similarity >= 0.80:
                     validated = True
                 msg = 'validation successful'
         else:
@@ -34,6 +36,4 @@ def validate(user_id):
     finally:
         res = {'verification': validated, 'similarity_score': max_similarity, 'message': msg}
 
-        return {'cust_id' : user_id, 'status' : status, 'result' : res}
-
-
+        return {'cust_id': user_id, 'status': status, 'result': res}

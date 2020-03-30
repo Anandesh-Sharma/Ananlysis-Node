@@ -2,11 +2,10 @@ from HardCode.scripts.Util import conn
 
 
 def average_monthly_balance(user_id) -> bool:
-
     connect = conn()
     bal = connect.analysis.balance_sheet.find_one({'cust_id': user_id})
     avg = []
-    
+
     avg_balance = None
     try:
 
@@ -22,4 +21,4 @@ def average_monthly_balance(user_id) -> bool:
         print(f"Error in balance check : {e}")
 
     finally:
-        return avg_balance
+        return round(avg_balance, 2)

@@ -2,13 +2,14 @@ import pandas
 from datetime import datetime
 from HardCode.scripts.cibil.xmlparser import xml_parser
 from collections import OrderedDict
+from pprint import pprint
 
 
 def secure_unsecured_loan(user_id, cibil_file):
     secured_loan = 0
     unsecured_loan = 0
-
     data_dict, file_found = xml_parser(cibil_file)
+
     if file_found:
         try:
             acc_details = data_dict['INProfileResponse']['CAPS']['CAPS_Application_Details']

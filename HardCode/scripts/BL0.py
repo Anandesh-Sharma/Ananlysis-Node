@@ -6,7 +6,6 @@ from HardCode.scripts.cibil.Analysis import analyse
 from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import create_transaction_balanced_sheet
 from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.classifiers.Classifier import classifier
-# from HardCode.scripts.reference_verification.validation.check_reference import validate
 from HardCode.scripts.model_0.score import get_score
 from HardCode.scripts.Util import *
 import warnings
@@ -38,6 +37,7 @@ def result_fetcher(**kwargs):
     salary_result = kwargs.get('result_salary')
     balance_sheet = kwargs.get('balance_sheet_result')
     rejection = kwargs.get('result_rejection')
+    score = kwargs.get('result_score')
 
     output_flag = kwargs.get('output_flag', 'cibil')
     test_final_result = client.analysisresult.bl0.find_one({'cust_id': user_id})
@@ -51,6 +51,7 @@ def result_fetcher(**kwargs):
     del loan_result['result']['cust_id']
     del salary_result['cust_id']
     del rejection['cust_id']
+    del score['cust_id']
 
     analysis = {
         'salary': salary_result,
@@ -66,14 +67,15 @@ def result_fetcher(**kwargs):
         'user_id': user_id,
 
     }
+    test_final_result['Model_0'] = score
     test_final_result['analysis'] = analysis
     return test_final_result
 
 
 def bl0(**kwargs):
     # cibil_score, sms_json, user_id, new_user, list_loans, current_loan
+
     cibil_score = kwargs.get('cibil_score')
-    # sms_json = kwargs.get('sms_json')
     user_id = kwargs.get('user_id')
     new_user = kwargs.get('new_user')
     list_loans = kwargs.get('list_loans')
@@ -81,7 +83,9 @@ def bl0(**kwargs):
     cibil_df = kwargs.get('cibil_xml')
     sms_json = kwargs.get('sms_json')
     cibil_file = kwargs.get('cibil_file')
+
     logger = logger_1('bl0', user_id)
+
     if not isinstance(user_id, int):
         return exception_feeder(user_id=user_id, msg='user_id not int type', logger=logger)
 
@@ -144,7 +148,7 @@ def bl0(**kwargs):
     logger.info('starting classification')
 
     classifier_result = classifier(sms_json, str(user_id))
-    if not classifier_result:   # returns a bool
+    if not classifier_result:  # returns a bool
         exception_feeder(client=client, user_id=user_id, logger=logger, msg='error in classification')
 
     logger.info('classification completes')
@@ -181,16 +185,6 @@ def bl0(**kwargs):
                          msg="rejection check failed due to some reason")
     logger.info('rejection check complete')
 
-    # >>=>> reference verification
-
-    # logger.info('starting reference verification')
-    # result_verification = validate(user_id)  # returns a dictionary
-    # if result_verification['status']:
-    #     pass
-    # if not result_verification['status']:
-    #     exception_feeder(client=client, user_id=user_id, logger=logger,
-    #                      msg="reference verification failed due to some reason")
-    # logger.info('reference verification complete')
 
     # >>=>> SALARY ANALYSIS
     logger.info('starting salary analysis')
@@ -222,9 +216,19 @@ def bl0(**kwargs):
     # >>==>> Scoring Model
 
     logger.info("Scoring Model starts")
-    result_score = get_score(user_id,cibil_file)
 
+    try:
 
+        result_score = get_score(user_id, cibil_file)  # Returns a dictionary
+        if not result_score['status']:
+            exception_feeder(client=client, user_id=user_id, logger=logger,
+                             msg="scoring model failed due to some reason")
+    except BaseException as e:
+        print(f"Error : {e}")
+        exception_feeder(client=client, user_id=user_id, logger=logger,
+                         msg=str(e))
+
+    logger.info('scoring completed successfully')
     # >>=>> UTILIZING LOAN ANALYSIS
     # TODO : Change the logic for loan
     logger.info('Checking if a person has done default')
@@ -277,7 +281,7 @@ def bl0(**kwargs):
     client.analysisresult.bl0.update({'cust_id': user_id}, {'$push': {'result': analysis_result}})
     logger.info("analysis complete")
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
-                                balance_sheet_result=balance_sheet_result, result_rejection=result_rejection, )
+                                balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,result_score = result_score )
 
     client.close()
     return end_result

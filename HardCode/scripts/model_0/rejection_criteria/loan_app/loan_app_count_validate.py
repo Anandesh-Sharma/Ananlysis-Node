@@ -20,4 +20,4 @@ def loan_app_count(user_id) -> bool:
         print(f"Error in loan app count validation : {e}")
 
     finally:
-        return percentage_of_loan_apps
+        return round(percentage_of_loan_apps, 2)
