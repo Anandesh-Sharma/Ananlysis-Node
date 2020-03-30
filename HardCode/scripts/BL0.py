@@ -199,6 +199,7 @@ def bl0(**kwargs):
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg="Salary Analysis failed due to some reason")
     except BaseException as e:
+        print(f"Error : {e}")
         exception_feeder(client=client, user_id=user_id, logger=logger,
                          msg=str(e))
         # -> Run BASE CIBIL logic and handle
