@@ -155,6 +155,7 @@ def get_debit_amount(data):
     pattern_1 = r'(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?).*?debited'
     pattern_3 = r' inb txn of (?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
     pattern_4 = r'(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?) ?w/d'
+    pattern_5 = r'sbidrcard.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)'
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
@@ -162,17 +163,21 @@ def get_debit_amount(data):
         matcher_2 = re.search(pattern_2, message)
         matcher_3 = re.search(pattern_3, message)
         matcher_4 = re.search(pattern_4, message)
-        if matcher_1 is not None:
+        matcher_5 = re.search(pattern_5, message)
+        if matcher_1:
             amount = matcher_1.group(1)
 
-        elif matcher_2 is not None:
+        elif matcher_2:
             amount = matcher_2.group(1)
         
-        elif matcher_3 is not None:
+        elif matcher_3:
             amount = matcher_3.group(1)
         
-        elif matcher_4 is not None:
+        elif matcher_4:
             amount = matcher_4.group(1)
+
+        elif matcher_5:
+            amount = matcher_5.group(1)
 
         else:
             amount = 0
