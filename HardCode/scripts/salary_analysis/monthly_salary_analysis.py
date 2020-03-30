@@ -162,9 +162,6 @@ def get_neft_amount(data, id):
     return data
 
 
-
-
-
 def transaction(id):
     global no_tr_msgs
     """ This function connects with collection in mongodb database
@@ -249,20 +246,19 @@ def data(id):
     else:
         data = data1['total']
         data = clean_debit(data, id)
-
-
-        data.sort(key = lambda x:x['timestamp']) 
-        dfs = []
-        key = lambda datum: datum['timestamp'].rsplit('-', 1)[0]
         if data:
+            data.sort(key = lambda x:x['timestamp']) 
+            dfs = []
+            key = lambda datum: datum['timestamp'].rsplit('-', 1)[0]
+
             for key, group in itertools.groupby(data, key):
 
                 dfs.append({'time':key,'data':list(group)})
-        else:
-            dfs = None
-           
 
-    return {'status': True, 'message': 'Success', 'df': dfs}
+            return {'status': True, 'message': 'Success', 'df': dfs}
+    
+        else:
+            return {'status': True, 'message': 'No data found', 'df': None}    
 
 
 def main(id):
@@ -279,7 +275,10 @@ def main(id):
         return df_data
     if not df_data['status']:
         return df_data
-    df_salary = df_data['df'][-3:]
+    if df_data['df']:
+        df_salary = df_data['df'][-6:]
+    else:
+        return {'status':True,'message':'No data Found','salary':0, 'cust_id': int(id)}
 
     salary_dict = {}
     result = {}
