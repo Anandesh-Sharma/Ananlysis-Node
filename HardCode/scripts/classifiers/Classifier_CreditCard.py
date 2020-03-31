@@ -12,7 +12,7 @@ warnings.filterwarnings("ignore")
 def get_confirm_cc_messages(data):
     cc_confirm_index_list = []
     all_patterns = [
-        r'cardholder.*payment.*rs\.?\s?([0-9.?]+).*credit\scard.*successfully',  # grp(1) for amount
+        r'cardholder.*payment.*rs\.?\s?([0-9.?]+).*credit\scard.*successfully',
         r'approve\stransaction.*rs\.?\s?([0-9.?]+).*a/c\sno\.?.*credit\scard',
         r'(?:rs|inr)\.?\s?\s?([0-9.?]+).*debited.*credit\scard',
         r'inr\s?([0-9.?]+).*paytm.*credit\scard',
@@ -21,69 +21,59 @@ def get_confirm_cc_messages(data):
         r'spent\s(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
         r'payment\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*received.*credit\scard',
         r'received.*payment.*(?:for|of)*(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
-        r'(?:inr|rs\.?)\s?([0-9,.]+).*spent.*card.*(?:available|avl\.?).*(?:limit|lim\.?).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*'
-
-        # will try to make 15 and 17 a single regex
+        r'(?:inr|rs\.?)\s?([0-9,.]+).*spent.*card.*(?:available|avl\.?).*(?:limit|lim\.?).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*',
         r'.*charge\sof\s(?:rs\.?|inr)\s?([0-9.?]+).*initiated.*credit\scard.*',
         r'.*internet\spayment.*(?:rs\.?|inr)\s?([0-9.,?]+).*credit\scard.*',
-
-        # due
         r'e-stmt.*card.*total\samt\sdue:\srs\.?\s?([0-9.?]+).*min\samt\sdue:\srs\.?\s?([0-9.?]+)\sis\spayable',
-        r'payment.*due.*total\samount\s(?:due|overdue:).*(?:rs|\s)\.?\s?([0-9.?]+).*minimum\samount\s(?:due|due:).*(?:rs|\s)\.?\s?([0-9.?]+)',
+        r'payment.*credit\scard.*is\sdue.*total\samount\s(?:due|overdue:).*(?:rs|\s)\.?\s?([0-9.?]+).*minimum\samount\s(?:due|due:).*(?:rs|\s)\.?\s?([0-9.?]+)',
         r'stmt.*total\s(?:amt|amount)\sdue.*credit\scard.*(?:inr|rs\.?)\s?([0-9.,?]+).*(?:minimum|min)\s(?:amt|amount)\sdue.*(?:inr|rs\.?)\s?([0-9.,?]+).*payable',
-
-        # will try to make 14 and 16 a single regex
-        r'.*(?:statement|stmt).*credit\scard.*total\s(?:amount|amt).*(?:rs\.?|inr)\s?([0-9.,?]+).*min.*(?:amount|amt).*(?:rs\.?|inr)\s?([0-9.,?]+).*due.*',
+        r'.*(?:statement|stmt).*credit\scard.*total\s(?:amount|amt).*(?:rs\.?|inr)\s?([0-9.,?]+).*min.*('
+        r'?:amount|amt).*(?:rs\.?|inr)\s?([0-9.,?]+).*due.*',
         r'.*total\samount\sdue.*credit\scard.*(?:rs\.?|inr)\s?([0-9.,?]+).*',
         r'.*payment.*credit\scard.*due.*(?:minimum|min).*rs\.?\s?\s?([0-9.,?]+).*total.*rs\.?\s?\s?([0-9.,?]+).*',
         r'.*forward.*receiving\s?rs\.?\s?([0-9.,?]+).*credit\scard.*',
         r'.*credit\scard.*payment.*rs\.?\s?([0-9.,?]+).*due.*min.*rs\.?\s?([0-9.,?]+).*',
-        r'.*credit\scard.*(?:statement|stmt).*rs\.?\s?([0-9.,?]+).*due.*min.*rs\.?\s?([0-9,]+[.]?[0-9]+).*',
+        r'.*credit\scard.*(?:statement|stmt).*rs\.?\s?([0-9.,?]+).*due.*min.*rs\.?\s?([0-9.,?]+).*',
         r'.*payment.*credit\scard.*due.*(?:minimum|min).*rs\.?\s?([0-9]+[.,]?).*',
         r'.*not\sreceived\spayment.*credit\scard.*rs\.?\s?([0-9]+).*',
         r'.*necessary.*payment.*rs\.?\s?([0-9]+[.,]?).*credit\scard.*',
         r'.*credit\scard\sdues.*unpaid.*rs\.?\s?([0-9]+[.,]?).*',
-
-        # overdue
         r'unable.*overdue\s(?:payment|pymt).*rs\.?\s?([0-9.?]+).*credit\scard',
-        r'.*payment.*overdue.*credit\scard.*(?:pl|please|pls)\spay.*total\s(?:amt|amount).*due.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*min.*(?:amt|amount).*(?:rs\.?|inr)\s?([0-9.,?]+).*',
+        r'.*payment.*overdue.*credit\scard.*(?:pl|please|pls)\spay.*total\s(?:amt|amount).*due.*(?:rs\.?|inr)\s?([0-9.,?]+).*min.*(?:amt|amount).*(?:rs\.?|inr)\s?([0-9.,?]+).*',
         r'.*overdue\samount.*(?:rs\.?|inr)\s?([0-9.,?]+).*credit\scard.*',
-        r'.*payment.*credit\scard.*is\s(due|overdue).*total\samount\s(?:due|overdue:|outstanding).*(?:rs)\.?\s?\s?([0-9,]+[.]?[0-9]+).*minimum\samount\s(?:due|due:).*(?:rs)\.?\s?\s?([0-9.?]+).*',
-
-        # will try to make 14, 16 and 25 a single regex
+        r'.*payment.*credit\scard.*is\s(due|overdue).*total\samount\s(?:due|overdue:|outstanding).*(?:rs)\.?\s?\s?([0-9.?]+).*minimum\samount\s(?:due|due:).*(?:rs)\.?\s?\s?([0-9.?]+).*',
         r'.*account.*rs\.?\s?([0-9.,?]+).*overdue.*credit\scard.*',
         r'.*credit\scard.*rs\.?\s?\s?([0-9.,?]+).*overdue.*minimum.*(?:due|payment).*rs\.?\s?\s?([0-9.,?]+).*',
         r'.*repeated\sreminders.*credit\scard.*overdue.*pay\.?\s?\s?([0-9]+[.,]?).*immediately.*',
-
-        # reject/declined
         r'regret\sto\sinform.*unable\sto\s(?:issue|sanction).*credit\scard',
         r'application.*credit\scard[s]?.*(?:reject[e]?[d]?|declined)',
         r'regret\sto\sinform.*review[e]?[d]?.*application.*unable\sto\sgrant.*credit\scard',
         r'txn.*credit\scard.*(?:rs\.?|inr)\s?([0-9.?]+).*declined',
         r'.*(?:transaction|trxn|txn).*credit\scard.*(?:rs\.?|inr)\s?([0-9.?]+).*not\sapprove[d]?.*',
         r'.*(?:txn|trxn).*rs\.?\s?([0-9.,?]+).*credit\scard.*.*declined.*',
-
-        # blocked
         r'.*credit\scard.*blocked.*total.*rs\.?\s?([0-9.,?]+).*minimum.*rs\.?\s?([0-9.,?]+).*',
         r'.*credit\scard.*blocked.*immediate.*',
     ]
+    cc_list = []
     credit_card_pattern_1 = "credit card"
     credit_card_pattern_2 = "sbi card"
     credit_card_pattern_3 = "rbl supercard"
-    #credit_card_patterns = ["credit card", "sbi card", "rbl supercard"]
     for i in range(data.shape[0]):
-        for pattern in all_patterns:
-            message = str(data['body'][i]).lower()
-            matcher = re.search(pattern, message)
+        message = str(data['body'][i]).lower()
+        matcher_1 = re.search(credit_card_pattern_1, message)
+        matcher_2 = re.search(credit_card_pattern_2, message)
+        matcher_3 = re.search(credit_card_pattern_3, message)
+        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None:
+            cc_list.append(i)  
+    for i in range(data.shape[0]):
+        if i in cc_list:
+            for pattern in all_patterns:
+                message = str(data['body'][i]).lower()
+                matcher = re.search(pattern, message)
 
-            if matcher is not None:
-                matcher_1 = re.search(credit_card_pattern_1, message)
-                matcher_2 = re.search(credit_card_pattern_2, message)
-                matcher_3 = re.search(credit_card_pattern_3, message)
-                if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None:
+                if matcher is not None:
                     cc_confirm_index_list.append(i)
-                break
-
+                    break
     return cc_confirm_index_list
 
 
