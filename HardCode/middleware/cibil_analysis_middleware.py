@@ -17,7 +17,7 @@ def get_cibil_analysis(request):
     except:
         return Response({'status': False, 'message': 'user_id parameter is required'}, 400)
     try:
-        new_user = request.data.get('new_user', 'True')
+        new_user = request.data.get('new_user', '1')
         if new_user is None:
             raise Exception
         new_user = bool(int(new_user))
