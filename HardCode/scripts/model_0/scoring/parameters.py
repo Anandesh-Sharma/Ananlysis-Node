@@ -9,45 +9,12 @@ from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.model_0.approval_criteria.secured_unsecured_loans.count import secure_unsecured_loan
 
 
-def get_parameters(user_id, cibil_df):
+def get_rejection_parameters(user_id):
     monthly_balance = average_monthly_balance(user_id)
-    max_loan_limit = loan_limit(user_id)
     loan_app_count_percentage = loan_app_count(user_id)
-
     reference = validate(user_id)
     rejection_result = check_rejection(user_id)
     del rejection_result['cust_id']
-
-    cc_limit = get_cc_limit(user_id)
-    secured_unsecured = secure_unsecured_loan(user_id, cibil_df)
-
-    values = {
-        'monthly_balance': monthly_balance,
-        'max_loan_limit': max_loan_limit,
-        'loan_app_count_percentage': loan_app_count_percentage,
-        'reference': reference,
-        'rejection_result': rejection_result,
-        'cc_limit': cc_limit,
-        'secured_unsecured': secured_unsecured
-
-    }
-    print("*********************************************************")
-
-    print("monthly balance")
-    pprint(monthly_balance)
-    print('max loan limit')
-    pprint(max_loan_limit)
-    print('loan app percentage')
-    pprint(loan_app_count_percentage)
-    print('reference')
-    pprint(reference)
-    print('loan rejection')
-    pprint(rejection_result)
-    print('cc_limit')
-    pprint(cc_limit)
-    print("Secured Unsecured")
-    pprint(secured_unsecured)
-    print("*********************************************************")
 
     # >>==>> loan app count
     loan_app_count_check = True
@@ -70,11 +37,6 @@ def get_parameters(user_id, cibil_df):
         if rejection_result['result']['rejected_loan_apps']:
             rejection_check = False
 
-    # >>==>> loan limit
-    loan_limit_check = False
-    if max_loan_limit >= 4500:
-        loan_limit_check = True
-
     rejection_variables = {
         'loan_app_count_check': loan_app_count_check,
         'monthly_balance_check': monthly_balance_check,
@@ -82,16 +44,55 @@ def get_parameters(user_id, cibil_df):
         'rejection_check': rejection_check
 
     }
+    values_rejection = {
+
+        'monthly_balance': monthly_balance,
+        'loan_app_count_percentage': loan_app_count_percentage,
+        'reference': reference,
+        'rejection_result': rejection_result,
+    }
+
+    return rejection_variables, values_rejection
+
+
+def get_approval_parameters(user_id, cibil_df):
+    max_loan_limit = loan_limit(user_id)
+    cc_limit = get_cc_limit(user_id)
+    secured_unsecured = secure_unsecured_loan(user_id, cibil_df)
+
+    values_approval = {
+
+        'max_loan_limit': max_loan_limit,
+        'secured_unsecured': secured_unsecured
+    }
+
+    # >>==>> loan limit
+    loan_limit_check = False
+    if max_loan_limit >= 4500:
+        loan_limit_check = True
 
     approval_variables = {
         'loan_limit_check': loan_limit_check
     }
 
+    return approval_variables, values_approval
+
+
+def get_parameters(user_id, cibil_df):
+    approval_variables, values_approval = get_approval_parameters(user_id, cibil_df)
+    rejection_variables, values_rejection = get_rejection_parameters(user_id)
+
     variables = {
         'approval_variables': approval_variables,
         'rejection_variables': rejection_variables
-
+    }
+    values = {
+        'approval_parameters': values_approval,
+        'rejection_parameters': values_rejection
     }
 
+    print("*********************************************************")
+    pprint(values)
+    print("*********************************************************")
+
     return variables, values
-# 280018
