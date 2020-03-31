@@ -17,7 +17,7 @@ def get_cibil_analysis(request):
     except:
         return Response({'status': False, 'message': 'user_id parameter is required'}, 400)
     try:
-        new_user = request.data.get('new_user')
+        new_user = request.data.get('new_user', 'True')
         if new_user is None:
             raise Exception
         new_user = bool(int(new_user))
@@ -46,14 +46,14 @@ def get_cibil_analysis(request):
         # return Response({'status': False, 'message': 'cibil_xml parameter is required'}, 400)
 
     try:
-        cibil_score = request.data.get('cibil_score')
+        cibil_score = request.data.get('cibil_score', 600)
         if cibil_score is None:
             raise Exception
     except:
         pass
         # return Response({'status': False, 'message': 'cibil_score parameter is required'}, 400)
     try:
-        current_loan_amount = request.data.get('current_loan_amount')
+        current_loan_amount = request.data.get('current_loan_amount', 0)
         if current_loan_amount is None:
             raise Exception
     except:
@@ -61,7 +61,7 @@ def get_cibil_analysis(request):
         # return Response({'status': False, 'message': 'current_loan_amount parameter is required'}, 400)
 
     try:
-        all_loan_amount = request.data.get('all_loan_amount')
+        all_loan_amount = request.data.get('all_loan_amount', '1000,2000,3000,4000')
         if all_loan_amount is None:
             raise Exception
     except:
