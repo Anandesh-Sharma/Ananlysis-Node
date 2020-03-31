@@ -2,13 +2,13 @@ from HardCode.scripts.model_0.scoring.parameters import get_parameters
 from pprint import pprint
 
 
-def get_score(user_id, cibil_file):
+def get_score(user_id, cibil_df):
     status = True
     score = 1000
     values = {}
     try:
-        variables, values = get_parameters(user_id, cibil_file)
-        
+        variables, values = get_parameters(user_id, cibil_df)
+
         loan_app_count_check = variables['rejection_variables']['loan_app_count_check']
         monthly_balance_check = variables['rejection_variables']['monthly_balance_check']
         reference_check = variables['rejection_variables']['reference_check']

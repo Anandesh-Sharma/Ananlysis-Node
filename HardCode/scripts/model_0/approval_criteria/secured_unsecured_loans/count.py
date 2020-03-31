@@ -5,7 +5,7 @@ from collections import OrderedDict
 # from pprint import pprint
 
 
-def secure_unsecured_loan(user_id, cibil_file):
+def secure_unsecured_loan(user_id, cibil_df):
     secured_loan = 0
     unsecured_loan = 0
     data_dict, file_found = xml_parser(cibil_file)

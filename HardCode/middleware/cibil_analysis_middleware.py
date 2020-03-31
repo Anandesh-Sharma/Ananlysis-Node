@@ -75,7 +75,7 @@ def get_cibil_analysis(request):
     try:
         response_bl0 = BL0.bl0(cibil_xml=cibil_df, cibil_score=cibil_score, user_id=user_id
                                , new_user=new_user, list_loans=all_loan_amount,
-                               current_loan=current_loan_amount, sms_json=sms_json,cibil_file=cibil_xml)
+                               current_loan=current_loan_amount, sms_json=sms_json)
         return Response(response_bl0, 200)
     except Exception as e:
         print(f"error in middleware {e}")

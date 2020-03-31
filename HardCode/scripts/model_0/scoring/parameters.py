@@ -9,7 +9,7 @@ from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.model_0.approval_criteria.secured_unsecured_loans.count import secure_unsecured_loan
 
 
-def get_parameters(user_id,cibil_file):
+def get_parameters(user_id, cibil_df):
     monthly_balance = average_monthly_balance(user_id)
     max_loan_limit = loan_limit(user_id)
     loan_app_count_percentage = loan_app_count(user_id)
@@ -19,16 +19,16 @@ def get_parameters(user_id,cibil_file):
     del rejection_result['cust_id']
 
     cc_limit = get_cc_limit(user_id)
-    secured_unsecured = secure_unsecured_loan(user_id, cibil_file)
+    secured_unsecured = secure_unsecured_loan(user_id, cibil_df)
 
     values = {
-        'monthly_balance' : monthly_balance,
-        'max_loan_limit' : max_loan_limit,
-        'loan_app_count_percentage' : loan_app_count_percentage,
-        'reference' : reference,
-        'rejection_result' : rejection_result,
-        'cc_limit' : cc_limit,
-        'secured_unsecured' : secured_unsecured
+        'monthly_balance': monthly_balance,
+        'max_loan_limit': max_loan_limit,
+        'loan_app_count_percentage': loan_app_count_percentage,
+        'reference': reference,
+        'rejection_result': rejection_result,
+        'cc_limit': cc_limit,
+        'secured_unsecured': secured_unsecured
 
     }
     print("*********************************************************")

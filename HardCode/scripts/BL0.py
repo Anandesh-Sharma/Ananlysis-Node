@@ -82,7 +82,7 @@ def bl0(**kwargs):
     current_loan = kwargs.get('current_loan')
     cibil_df = kwargs.get('cibil_xml')
     sms_json = kwargs.get('sms_json')
-    cibil_file = kwargs.get('cibil_file')
+
 
     logger = logger_1('bl0', user_id)
 
@@ -219,7 +219,7 @@ def bl0(**kwargs):
 
     try:
 
-        result_score = get_score(user_id, cibil_file)  # Returns a dictionary
+        result_score = get_score(user_id, cibil_df)  # Returns a dictionary
         if not result_score['status']:
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg="scoring model failed due to some reason")
