@@ -1,7 +1,6 @@
 import json
 import os
 import warnings
-
 import requests
 from HardCode.scripts.testing.execute.get_sms_json import get_sms
 
@@ -18,7 +17,6 @@ def generate_access_token():
     res = requests.post(url=url, data=credentials, verify=False)
     res = res.json()
     return res['access']
-
 
 
 def execute_bl0(**kwargs):
@@ -48,7 +46,7 @@ def execute_bl0(**kwargs):
     files = [('sms_json', sms_json), ('cibil_xml', cibil_xml)]
     result = requests.post(url=url, data=payload, files=files, headers={'Authorization': Auth})
     result = result.json()
-    if not os.path.exists('result'):
+    if not os.path.exists('../result'):
         os.mkdir('result')
 
     with open(os.path.join('../result', str(user_id) + '.json'), 'w', encoding='utf-8') as fp:
@@ -56,7 +54,7 @@ def execute_bl0(**kwargs):
 
 
 def testing(user_id):
-    if not os.path.exists(os.path.join('../input_data', 'sms_data' + str(user_id) + '.json')):
+    if not os.path.exists(os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json')):
         get_sms(user_id=user_id)
 
     try:
@@ -80,22 +78,4 @@ def testing(user_id):
         print(f"the following error occurred : {e}")
 
 
-testing(347737)
-
-
-# def main(**kwargs):
-#     defaulters = kwargs.get('defaulters')
-#     non_defaulters = kwargs.get('non_defaulters')
-#     try:
-#         # ==> defaulters data
-#         # for user_id in tqdm(defaulters):
-#         #     testing(user_id=user_id)
-#
-#         # ==> non defaulters data
-#         for user_id in tqdm(non_defaulters):
-#             get_sms(user_id=user_id)
-#
-#     except BaseException as e:
-#         print(f"Error : {e}")
-
-
+testing(user_id=347737)

@@ -39,7 +39,7 @@ def get_sms_data(user_id, access_token):
     else:
         sms = sms_data.json()
 
-    if not os.path.exists('input_data'):
+    if not os.path.exists('../input_data'):
         os.makedirs('input_data')
 
     sms_path = os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json')
