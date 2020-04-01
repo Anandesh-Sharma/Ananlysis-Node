@@ -55,58 +55,41 @@ def get_confirm_cc_messages(data):
         r'.*credit\scard.*blocked.*immediate.*',
     ]
     cc_list = []
-    credit_card_pattern_1 = "credit card"
-    credit_card_pattern_2 = "sbi card"
-    credit_card_pattern_3 = "rbl supercard"
-    for i in range(data.shape[0]):
-        message = str(data['body'][i]).lower()
-        matcher_1 = re.search(credit_card_pattern_1, message)
-        matcher_2 = re.search(credit_card_pattern_2, message)
-        matcher_3 = re.search(credit_card_pattern_3, message)
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None:
-            cc_list.append(i)  
-    for i in range(data.shape[0]):
-        if i in cc_list:
-            for pattern in all_patterns:
-                message = str(data['body'][i]).lower()
-                matcher = re.search(pattern, message)
+    mask_needed = []
+    credit_card_patterns = ["credit card", "sbi card", "rbl supercard"]
+    for i,row in data.iterrows():
+        message = str(row['body']).lower()
+        k =False
+        for pattern in credit_card_patterns:
+            matcher = re.search(pattern, message)
+            if matcher:
+                for pattern in all_patterns:
+                    matcher = re.search(pattern, message)
+                    if matcher:
+                        mask_needed.append(True)
+                        k = True
+                        cc_confirm_index_list.append(i)
+                        break
+            if k:
+                break
+        if not k:
+            mask_needed.append(False)
+    return cc_confirm_index_list,mask_needed
 
-                if matcher is not None:
-                    cc_confirm_index_list.append(i)
-                    break
-    return cc_confirm_index_list
-
-
-def credit(df, result, user_id, max_timestamp, new):
+def credit(df, user_id, max_timestamp, new):
     logger = logger_1("credit card", user_id)
     # logger.info("Removing credit card promotional sms")
     # data_not_needed = get_creditcard_promotion(df)
     logger.info("Extracting Credit card sms")
-    data_needed = get_confirm_cc_messages(df)
-    if user_id in result.keys():
-        a = result[user_id]
-        a.extend(list(data_needed))
-        result[user_id] = a
-    else:
-        result[user_id] = list(data_needed)
-    mask_needed = []
-    for i in range(df.shape[0]):
-        if i in data_needed:
-            mask_needed.append(True)
-        else:
-            mask_needed.append(False)
+    data_needed,mask_needed = get_confirm_cc_messages(df)
+    
     data = df.copy()[mask_needed].reset_index(drop=True)
     logger.info("Converting credit card dataframe into json")
     data_credit = convert_json(data, user_id, max_timestamp)
 
-    try:
-        logger.info('making connection with db')
-        client = conn()
-        db = client.messagecluster
-    except Exception as e:
-        logger.critical('error in connection')
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+    logger.info('making connection with db')
+    client = conn()
+    db = client.messagecluster
     logger.info('connection success')
 
     if new:
@@ -127,3 +110,4 @@ def credit(df, result, user_id, max_timestamp, new):
                                  upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
+    return df.drop(data_needed).reset_index(drop=True)
