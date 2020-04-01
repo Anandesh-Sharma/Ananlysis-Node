@@ -83,7 +83,6 @@ def bl0(**kwargs):
     cibil_df = kwargs.get('cibil_xml')
     sms_json = kwargs.get('sms_json')
 
-
     logger = logger_1('bl0', user_id)
 
     if not isinstance(user_id, int):
@@ -185,7 +184,6 @@ def bl0(**kwargs):
                          msg="rejection check failed due to some reason")
     logger.info('rejection check complete')
 
-
     # >>=>> SALARY ANALYSIS
     logger.info('starting salary analysis')
     try:
@@ -213,8 +211,8 @@ def bl0(**kwargs):
             logger.info('user has bounced cheques exiting')
             analysis_result['cheque_bounce'] = True
             # TODO : CREATE A NEW FUNCTION THAT FINDS THE RESULT IN DB AND RETURN IT TO MIDDLEWARE
-    # >>==>> Scoring Model
 
+    # >>==>> Scoring Model
     logger.info("Scoring Model starts")
 
     try:
@@ -281,7 +279,8 @@ def bl0(**kwargs):
     client.analysisresult.bl0.update({'cust_id': user_id}, {'$push': {'result': analysis_result}})
     logger.info("analysis complete")
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
-                                balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,result_score = result_score )
+                                balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,
+                                result_score=result_score)
 
     client.close()
     return end_result
