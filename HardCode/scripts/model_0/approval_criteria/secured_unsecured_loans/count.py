@@ -1,49 +1,16 @@
 import pandas
-from datetime import datetime
-from HardCode.scripts.cibil.xmlparser import xml_parser
-from collections import OrderedDict
-# from pprint import pprint
 
 
-def secure_unsecured_loan(user_id, cibil_df):
+def secure_unsecured_loan(cibil_df):
+    """
+    :param cibil_df
+    :returns the count of secured and unsecured loans calculated from the cibil dataframe
+    :rtype: int
+    """
     secured_loan = 0
     unsecured_loan = 0
-    response = {'status': False, 'secured_loan': 0, 'unsecured_loan': 0, 'message': 'None'}
-    return response
+    if cibil_df:
+        secured_loan = cibil_df['data']['secured_loan'].iloc[-1]
+        unsecured_loan = cibil_df['data']['unsecured_loan'].iloc[-1]
 
-
-    # if file_found:
-    #     try:
-    #         acc_details = data_dict['INProfileResponse']['CAPS']['CAPS_Application_Details']
-    #
-    #     except Exception as e:
-    #
-    #         response = {'status': True, 'secured_loan': 0, 'unsecured_loan': 0, 'message': e, 'cust_id': user_id}
-    #         return response
-    #
-    #     if type(acc_details) is list:
-    #         for acc in acc_details:
-    #             try:
-    #                 if acc['Enquiry_Reason'] == '2':
-    #                     secured_loan += 1
-    #                 elif acc['Enquiry_Reason'] == '4':
-    #                     secured_loan += 1
-    #                 elif acc['Enquiry_Reason'] == '8':
-    #                     secured_loan += 1
-    #                 elif acc['Enquiry_Reason'] == '10':
-    #                     secured_loan += 1
-    #                 elif acc['Enquiry_Reason'] == '14':
-    #                     secured_loan += 1
-    #                 else:
-    #                     unsecured_loan += 1
-    #             except:
-    #                 message = "No Enquiry reason"
-
-    #     message = "SUCCESS"
-    #     response = {'status': True, 'secured_loan': secured_loan, 'unsecured_loan': unsecured_loan, 'message': message,
-    #                 'cust_id': user_id}
-    #
-    #     return response
-    # else:
-
-
+    return secured_loan, unsecured_loan

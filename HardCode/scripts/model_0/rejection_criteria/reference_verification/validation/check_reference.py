@@ -6,6 +6,10 @@ from HardCode.scripts.Util import conn
 
 
 def validate(user_id):
+    """
+    :returns True/False if the reference of mother/father verifies from the contact list
+    :rtype: dict
+    """
     status = True
     reference_relation, reference_number = get_reference_details(user_id)
     contacts_data = get_contacts_data(user_id)
@@ -25,6 +29,8 @@ def validate(user_id):
                 if max_similarity >= 0.80:
                     validated = True
                 msg = 'validation successful'
+            else:
+                status = False
         else:
             status = False
             msg = 'no data fetched from api'

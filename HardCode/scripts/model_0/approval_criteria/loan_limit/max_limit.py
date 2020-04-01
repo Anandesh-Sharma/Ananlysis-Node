@@ -1,8 +1,11 @@
 from HardCode.scripts.Util import conn
 
 
-def loan_limit(user_id) -> bool:
-
+def loan_limit(user_id):
+    """
+    :returns max loan sanctioned by other loan apps, -1 implies amount is not detected
+    :rtype: float
+    """
     connect = conn()
     loan_analysis_result = connect.analysis.loan.find_one({'cust_id': user_id})
 

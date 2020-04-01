@@ -125,7 +125,7 @@ def preprocessing(cust_id):
 
     for app, grp in loan_data_grouped:
         logger.info("iteration in groups starts")
-        if app == 'CASHBN' or app == 'KREDTB' or app == 'KREDTZ' or app == 'LNFRNT' or app == 'RRLOAN' or app == 'LOANAP' or app == 'KISSHT' or app == 'GTCASH' or app == 'FLASHO' or app == 'CSHMMA' or app == 'ZPLOAN' or app == 'FRLOAN':
+        if app == 'CASHBN' or app == 'KREDTB' or app == 'KREDTZ' or app == 'LNFRNT' or app == 'RRLOAN' or app == 'LOANAP' or app == 'KISSHT' or app == 'GTCASH' or app == 'FLASHO' or app == 'CSHMMA' or app == 'ZPLOAN' or app == 'FRLOAN' or app == 'SALARY':
 
             grp = grp.sort_values(by='timestamp')
             grp = grp.reset_index(drop=True)

@@ -1,7 +1,11 @@
 from HardCode.scripts.Util import conn
 
 
-def average_monthly_balance(user_id) -> bool:
+def average_monthly_balance(user_id):
+    """
+    :return average monthly balance maintained by the user
+    :rtype: float
+    """
     connect = conn()
     bal = connect.analysis.balance_sheet.find_one({'cust_id': user_id})
     avg = []

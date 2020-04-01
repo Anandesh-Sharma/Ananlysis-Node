@@ -1,41 +1,54 @@
 import numpy as np
+import os
 import pandas as pd
 import re
-import os
 from glob import glob
 from pymongo import MongoClient
+
 from HardCode.scripts.Util import conn
 
 pd.options.mode.chained_assignment = None
 
+df = pd.DataFrame(columns=['amount', 'status', 'total_card_limit', 'available_card_limit', 'current_outstanding_amt',
+                           'minimum_due_amt', 'total_due_amt', 'bank_name'])
+
 
 def get_extracted_data(data):
-    df = pd.DataFrame(columns=['transaction_amt', 'total_card_limit', 'available_card_limit', 'current_outstanding_amt','minimum_due_amt', 'total_due_amt', 'pymt_due_date', 'bank_name'])
     df['total_due_amt'] = [0] * data.shape[0]
     df['minimum_due_amt'] = [0] * data.shape[0]
-    df['pymt_due_date'] = ["0"] * data.shape[0]
-    df['current_statement'] = [0] * data.shape[0]
     df['available_card_limit'] = [0] * data.shape[0]
-    df['transaction_amt'] = [0] * data.shape[0]
-    pattern_1 = r'(?:total|tot)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+).*(?:minimum|min\.?)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+)'
-    pattern_2 = r'(?:minimum|min\.?)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9.,]+).*(?:total|tot)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+)'
+    df['amount'] = [0] * data.shape[0]
+    df['status'] = "not defined"
+    pattern_1 = r'(?:total|tot)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+).*(?:minimum|min\.?)\s(?:amt|amount).*(' \
+                r'?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+) '
+    pattern_2 = r'(?:minimum|min\.?)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9.,]+).*(?:total|tot)\s(?:amt|amount).*(' \
+                r'?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+) '
     pattern_3 = r'(?:total|tot)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+)'
     pattern_4 = r'(?:minimum|min\.?)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+)'
     pattern_5 = r'.*forward.*receiving\s?rs\.?\s?([0-9,?]+[.]?[0-9]+).*credit\scard.*'
     pattern_6 = r'.*not\sreceived\spayment.*credit\scard.*rs\.?\s?([0-9,]+[.]?[][0-9]+).*'
     pattern_7 = r'.*unable.*overdue\s(?:payment|pymt).*rs\.?\s?([0-9,]+[.]?[0-9]+).*credit\scard.*'
-    pattern_8 = r'.*outstanding.*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+).*(?:minimum|min).*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+)'
-    pattern_9 = r'.*(?:statement|stmt).*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+).*due\sdate\s([0-9]{1,2}[-](?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[-][0-9]{1,2}).*(?:minimum|min\.?).*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]).*'
-    pattern_10 = r'(?:payment|pymt|pymnt|transaction|trxn|txn|charge).*(?:rs\.?|inr\.?)\s?\s?([0-9.,]+).*(?:available|avl).*(?:limit|lmt\.?).*[(rs\.?|inr)]?\s([-]?[0-9,]+[.]?[0-9]+)'
-    pattern_11 = r'.*spent\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:available|avl)\s(?:balance|bal).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:current|curr).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*'
+    pattern_8 = r'.*outstanding.*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+).*(?:minimum|min).*(?:rs\.?|inr)\s?\s?([0-9]+[' \
+                r'.]?[0-9]+) '
+    pattern_9 = r'.*(?:statement|stmt).*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+).*due\sdate\s([0-9]{1,' \
+                r'2}[-](?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[-][0-9]{1,2}).*(?:minimum|min\.?).*(' \
+                r'?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]).* '
+    pattern_10 = r'(?:payment|pymt|pymnt|transaction|trxn|txn|charge).*(?:rs\.?|inr\.?)\s?\s?([0-9,]+[.]?[0-9]+).*(' \
+                 r'?:available|avl)\s(?:limit|lmt).*(?:rs\.?|inr\.?)\s?\s?([-]?[0-9,]+[.]?[0-9]+) '
+    pattern_11 = r'.*spent\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:available|avl)\s(?:balance|bal).*(' \
+                 r'?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:current|curr).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).* '
     # trans, avl, curr out stmt
-    pattern_12 = r'(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*debited.*(?:available|avbl).*(?:limit|lmt).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'
-    pattern_13 = r'(?:inr|rs\.?)\s?([0-9,.]+).*spent.*card.*(?:available|avl\.?).*(?:limit|lim\.?|bal\.?|balance).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*'
-    pattern_14 = r'(?:payment|pymt|trnx|transaction|txn)\sof\s(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*received.*'
+    pattern_12 = r'(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*debited.*(?:available|avbl).*(?:limit|lmt).*(?:rs\.?|inr)\s?(' \
+                 r'[0-9,]+[.]?[0-9]+) '
     # trans, avl bal
-    '''['ICICIB', 'SBICRD', 'CMNTRI', 'SBIINB', 'KBANKT', 'KOTAKB',
-       'BNKBZR', 'INDUSB', 'RBLCRD', 'HDFCBK', 'RBLBNK', 'INDIAL',
-       'HDFCCC', 'AXISBK', 'AIRTEL', 'DIAL']'''
+    pattern_13 = r'(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*spent.*card.*(?:available|avl\.?).*(' \
+                 r'?:limit|lim\.?|bal\.?|balance).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).* '
+    pattern_14 = r'(?:payment|pymt|pymnt|transaction|trxn|txn|charge).*(?:rs\.?|inr)\s?\s?([0-9,' \
+                 r']+[.]?[0-9]+).*received.*(?:available|avl).*(?:limit|lmt\.?).*(?:rs\.?)\s?\s?([-]?[0-9,' \
+                 r']+[.]?[0-9]+) '
+    pattern_15 = r'(?:payment|pymt|trxn|txn|transaction)\sof\s(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*due.*(' \
+                 r'?:minimum|min\.?).*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+) '
+    pattern_16 = r'(?:payment|pymt|trnx|transaction|txn)\sof\s(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]?).*received.*'
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
@@ -70,46 +83,69 @@ def get_extracted_data(data):
         matcher_12 = re.search(pattern_12, message)
         matcher_13 = re.search(pattern_13, message)
         matcher_14 = re.search(pattern_14, message)
+        matcher_15 = re.search(pattern_15, message)
+        matcher_16 = re.search(pattern_16, message)
 
         if matcher_1 is not None:
             df['total_due_amt'][i] = float(str(matcher_1.group(1)).replace(",", ""))
             df['minimum_due_amt'][i] = float(str(matcher_1.group(2)).replace(",", ""))
+            df['status'][i] = "due"
         elif matcher_2 is not None:
             df['total_due_amt'][i] = float(str(matcher_2.group(2)).replace(",", ""))
             df['minimum_due_amt'][i] = float(str(matcher_2.group(1)).replace(",", ""))
+            df['status'][i] = "due"
         elif matcher_3 is not None:
             df['total_due_amt'][i] = float(str(matcher_3.group(1)).replace(",", ""))
+            df['status'][i] = "due"
         elif matcher_4 is not None:
             df['minimum_due_amt'][i] = float(str(matcher_4.group(1)).replace(",", ""))
+            df['status'][i] = "due"
         elif matcher_5 is not None:
             df['minimum_due_amt'][i] = float(str(matcher_5.group(1)).replace(",", ""))
+            df['status'][i] = "due"
         elif matcher_6 is not None:
             df['minimum_due_amt'][i] = float(str(matcher_6.group(1)).replace(",", ""))
+            df['status'][i] = "due"
         elif matcher_7 is not None:
             df['total_due_amt'][i] = float(str(matcher_7.group(1)).replace(",", ""))
+            df['status'][i] = "due"
         elif matcher_8 is not None:
             df['total_due_amt'][i] = float(str(matcher_8.group(1)).replace(",", ""))
             df['minimum_due_amt'][i] = float(str(matcher_8.group(2)).replace(",", ""))
+            df['status'][i] = "due"
         elif matcher_9 is not None:
-            df['current_statement'][i] = float(str(matcher_9.group(1)).replace(",", ""))
+            df['amount'][i] = float(str(matcher_9.group(1)).replace(",", ""))
             df['pymt_due_date'][i] = str(matcher_9.group(2))
             df['minimum_due_amt'][i] = float(str(matcher_9.group(3)).replace(",", ""))
+            df['status'][i] = "due"
         elif matcher_10 is not None:
-            df['transaction_amt'][i] = float(str(matcher_10.group(1)).replace(",", ""))
+            df['amount'][i] = float(str(matcher_10.group(1)).replace(",", ""))
             df['available_card_limit'][i] = float(str(matcher_10.group(2)).replace(",", ""))
+            df['status'][i] = 'transaction'
         elif matcher_11 is not None:
-            df['transaction_amt'][i] = float(str(matcher_11.group(1)).replace(",", ""))
+            df['amount'][i] = float(str(matcher_11.group(1)).replace(",", ""))
             df['available_card_limit'][i] = float(str(matcher_11.group(2)).replace(",", ""))
             df['current_outstanding_amt'][i] = float(str(matcher_11.group(3)).replace(",", ""))
+            df['status'][i] = 'transaction'
         elif matcher_12 is not None:
-            df['transaction_amt'][i] = float(str(matcher_12.group(1)).replace(",", ""))
+            df['amount'][i] = float(str(matcher_12.group(1)).replace(",", ""))
             df['available_card_limit'][i] = float(str(matcher_12.group(2)).replace(",", ""))
+            df['status'][i] = "transaction"
         elif matcher_13 is not None:
-            df['transaction_amt'][i] = float(str(matcher_13.group(1)).replace(",", ""))
+            df['amount'][i] = float(str(matcher_13.group(1)).replace(",", ""))
             df['available_card_limit'][i] = float(str(matcher_13.group(2)).replace(",", ""))
+            df['status'][i] = "transaction"
         elif matcher_14 is not None:
-            df['transaction_amt'][i] = float(str(matcher_14.group(1)).replace(",", ""))
-
+            df['amount'][i] = float(str(matcher_14.group(1)).replace(",", ""))
+            df['available_card_limit'][i] = float(str(matcher_14.group(2)).replace(",", ""))
+            df['status'][i] = "transaction"
+        elif matcher_15 is not None:
+            df['amount'][i] = float(str(matcher_15.group(1)).replace(",", ""))
+            df['minimum_due_amt'][i] = float(str(matcher_15.group(2)).replace(",", ""))
+            df['status'][i] = "due"
+        elif matcher_16 is not None:
+            df['amount'][i] = float(str(matcher_16.group(1)).replace(",", ""))
+            df['status'][i] = "transaction"
         else:
             pass
     return df
@@ -131,18 +167,22 @@ def get_cc_limit(id):
         connect = conn()
         db = connect.messagecluster.creditcard
         file1 = db.find_one({"cust_id": id})
-        data = pd.DataFrame(file1["sms"])
-        sms_header_splitter(data)
+        if len(file1['sms']) != 0:
+            data = pd.DataFrame(file1["sms"])
+            sms_header_splitter(data)
 
-        final_df = get_extracted_data(data)
-        bank = final_df.groupby('bank_name')
-        x = bank['available_card_limit'].max()
-        x = x.to_dict()
-        result = x
+            final_df = get_extracted_data(data)
+            bank = final_df.groupby('bank_name')
+            x = bank['available_card_limit'].max()
+            x = x.to_dict()
+            delete = [key for key in x if key == 'not mentioned']
+            for key in delete:
+                del x[key]
+            result = x
     except BaseException as e:
+        print(11111)
+        import traceback
+        traceback.print_tb(e.__traceback__)
         print(f"error in credit card limit check: {e}")
     finally:
         return result
-
-
-# get_cc_limit(160910)
