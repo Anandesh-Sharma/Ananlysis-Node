@@ -95,6 +95,7 @@ def read_json(sms_json, user_id):
         return result
     df = result['df']
     df.reset_index(inplace=True, drop=True)
+
     return {'status': True, 'message': 'success', 'onhold': None, 'user_id': user_id, 'limit': None, 'logic': 'BL0',
             'df': df, "timestamp": max_timestamp, 'new': False}
 

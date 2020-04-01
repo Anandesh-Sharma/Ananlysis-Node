@@ -12,11 +12,13 @@
             "parameters": {
                 "approval_parameters": {
                     "max_loan_limit": -1,
-                    "secured_unsecured": {
-                        "status": false,
-                        "secured_loan": 0,
-                        "unsecured_loan": 0,
-                        "message": "None"
+                    "secured_unsecured_loans_count": {
+                        "secured": 1,
+                        "unsecured_count": 10
+                    },
+                    "age_of_oldest_trade": 13,
+                    "credit_card_limit": {
+                        "sbi": 0
                     }
                 },
                 "rejection_parameters": {
@@ -35,10 +37,14 @@
                         "result": {
                             "rejected_loan_apps": []
                         }
-                    }
+                    },
+                    "email_id": "sanchitgupta1802@gmail.com",
+                    "due_days": 90,
+                    "account_type_default": true,
+                    "relative_contact_verification": {}
                 }
             },
-            "score": 1000
+            "score": 800
         },
         "status": true
     },
@@ -85,7 +91,7 @@
                 "CURRENT_OPEN_AMOUNT": [],
                 "MAX_AMOUNT": -1,
                 "empty": true,
-                "modified_at": "2020-04-01 06:54:04.700621+05:30",
+                "modified_at": "2020-04-01 16:11:44.966286+05:30",
                 "complete_info": {}
             }
         },

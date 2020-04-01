@@ -25,7 +25,6 @@ def execute_bl0(**kwargs):
     cibil_xml = kwargs.get('cibil_file')
 
     cibil_xml = open(os.path.join('../input_data', cibil_xml), 'r')
-
     sms_json = open(os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json'), 'rb')
 
     new_user = 1
@@ -78,4 +77,5 @@ def testing(user_id):
         print(f"the following error occurred : {e}")
 
 
-testing(user_id=347737)
+user_id = input('enter user id: ')
+testing(user_id=user_id)
