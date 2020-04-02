@@ -20,34 +20,32 @@ def get_extracted_data(data):
     df['amount'] = [0] * data.shape[0]
     df['status'] = "not defined"
     pattern_1 = r'(?:total|tot)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+).*(?:minimum|min\.?)\s(?:amt|amount).*(' \
-                r'?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+) '
+                r'?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+)'
     pattern_2 = r'(?:minimum|min\.?)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9.,]+).*(?:total|tot)\s(?:amt|amount).*(' \
-                r'?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+) '
+                r'?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+)'
     pattern_3 = r'(?:total|tot)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+)'
     pattern_4 = r'(?:minimum|min\.?)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+)'
     pattern_5 = r'.*forward.*receiving\s?rs\.?\s?([0-9,?]+[.]?[0-9]+).*credit\scard.*'
     pattern_6 = r'.*not\sreceived\spayment.*credit\scard.*rs\.?\s?([0-9,]+[.]?[][0-9]+).*'
     pattern_7 = r'.*unable.*overdue\s(?:payment|pymt).*rs\.?\s?([0-9,]+[.]?[0-9]+).*credit\scard.*'
     pattern_8 = r'.*outstanding.*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+).*(?:minimum|min).*(?:rs\.?|inr)\s?\s?([0-9]+[' \
-                r'.]?[0-9]+) '
+                r'.]?[0-9]+)'
     pattern_9 = r'.*(?:statement|stmt).*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+).*due\sdate\s([0-9]{1,' \
                 r'2}[-](?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[-][0-9]{1,2}).*(?:minimum|min\.?).*(' \
-                r'?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]).* '
+                r'?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]).*'
     pattern_10 = r'(?:payment|pymt|pymnt|transaction|trxn|txn|charge).*(?:rs\.?|inr\.?)\s?\s?([0-9,]+[.]?[0-9]+).*(' \
-                 r'?:available|avl)\s(?:limit|lmt).*(?:rs\.?|inr\.?)\s?\s?([-]?[0-9,]+[.]?[0-9]+) '
+                 r'?:available|avl)\s(?:limit|lmt).*(?:rs\.?|inr\.?)\s?\s?([-]?[0-9,]+[.]?[0-9]+)'
     pattern_11 = r'.*spent\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:available|avl)\s(?:balance|bal).*(' \
-                 r'?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:current|curr).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).* '
-    # trans, avl, curr out stmt
+                 r'?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:current|curr).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*'
     pattern_12 = r'(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*debited.*(?:available|avbl).*(?:limit|lmt).*(?:rs\.?|inr)\s?(' \
-                 r'[0-9,]+[.]?[0-9]+) '
-    # trans, avl bal
+                 r'[0-9,]+[.]?[0-9]+)'
     pattern_13 = r'(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*spent.*card.*(?:available|avl\.?).*(' \
-                 r'?:limit|lim\.?|bal\.?|balance).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).* '
+                 r'?:limit|lim\.?|bal\.?|balance).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'
     pattern_14 = r'(?:payment|pymt|pymnt|transaction|trxn|txn|charge).*(?:rs\.?|inr)\s?\s?([0-9,' \
                  r']+[.]?[0-9]+).*received.*(?:available|avl).*(?:limit|lmt\.?).*(?:rs\.?)\s?\s?([-]?[0-9,' \
-                 r']+[.]?[0-9]+) '
+                 r']+[.]?[0-9]+)'
     pattern_15 = r'(?:payment|pymt|trxn|txn|transaction)\sof\s(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*due.*(' \
-                 r'?:minimum|min\.?).*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+) '
+                 r'?:minimum|min\.?).*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+)'
     pattern_16 = r'(?:payment|pymt|trnx|transaction|txn)\sof\s(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]?).*received.*'
 
     for i in range(data.shape[0]):
@@ -169,7 +167,7 @@ def get_cc_limit(id):
         file1 = db.find_one({"cust_id": id})
         if len(file1['sms']) != 0:
             data = pd.DataFrame(file1["sms"])
-            sms_header_splitter(data)
+            sms_header_splitter(data)  
 
             final_df = get_extracted_data(data)
             bank = final_df.groupby('bank_name')
@@ -179,6 +177,8 @@ def get_cc_limit(id):
             for key in delete:
                 del x[key]
             result = x
+        else:
+            print("data not found")
     except BaseException as e:
         print(11111)
         import traceback
