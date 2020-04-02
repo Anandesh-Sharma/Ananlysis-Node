@@ -7,7 +7,7 @@ def loan_app_count(user_id):
     :rtype: float
     """
     app_data = get_reference_details(user_id)
-    percentage_of_loan_apps = 200
+    percentage_of_loan_apps = 0
     try:
 
         if app_data:
