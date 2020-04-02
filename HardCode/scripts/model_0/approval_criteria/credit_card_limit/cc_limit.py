@@ -9,16 +9,19 @@ from HardCode.scripts.Util import conn
 
 pd.options.mode.chained_assignment = None
 
-df = pd.DataFrame(columns=['amount', 'status', 'total_card_limit', 'available_card_limit', 'current_outstanding_amt',
-                           'minimum_due_amt', 'total_due_amt', 'bank_name'])
-
 
 def get_extracted_data(data):
+
+    df = pd.DataFrame(columns=['amount', 'status', 'available_card_limit', 'current_outstanding_amt',
+                           'minimum_due_amt', 'total_due_amt', 'bank_name'])
+                           
     df['total_due_amt'] = [0] * data.shape[0]
     df['minimum_due_amt'] = [0] * data.shape[0]
     df['available_card_limit'] = [0] * data.shape[0]
     df['amount'] = [0] * data.shape[0]
-    df['status'] = "not defined"
+    df['current_outstanding_amt'] = [0] * data.shape[0]
+    df['status'] = ["not defined"] * data.shape[0]
+
     pattern_1 = r'(?:total|tot)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9,]+).*(?:minimum|min\.?)\s(?:amt|amount).*(' \
                 r'?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+)'
     pattern_2 = r'(?:minimum|min\.?)\s(?:amt|amount).*(?:rs\.?|inr)\s?\s?([0-9.,]+).*(?:total|tot)\s(?:amt|amount).*(' \
@@ -67,6 +70,7 @@ def get_extracted_data(data):
             df['bank_name'][i] = 'axis'
         else:
             df['bank_name'][i] = 'not mentioned'
+
         matcher_1 = re.search(pattern_1, message)
         matcher_2 = re.search(pattern_2, message)
         matcher_3 = re.search(pattern_3, message)
@@ -113,7 +117,6 @@ def get_extracted_data(data):
             df['status'][i] = "due"
         elif matcher_9 is not None:
             df['amount'][i] = float(str(matcher_9.group(1)).replace(",", ""))
-            df['pymt_due_date'][i] = str(matcher_9.group(2))
             df['minimum_due_amt'][i] = float(str(matcher_9.group(3)).replace(",", ""))
             df['status'][i] = "due"
         elif matcher_10 is not None:
