@@ -17,9 +17,9 @@ def get_confirm_cc_messages(data):
         r'txn\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*credit\scard',
         r'refund.*(?:rs\.?|inr)\s?([0-9.?]+).*credited.*credit\scard',
         r'spent\s(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
-        r'payment\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*received.*credit\scard',
+        r'payment.*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*received',
         r'received.*payment.*(?:for|of)*(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
-        r'(?:inr|rs\.?)\s?([0-9,.]+).*spent.*card.*(?:available|avl\.?).*(?:limit|lim\.?).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*',
+        r'(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*spent.*card.*(?:available|avl\.?).*(?:limit|lim\.?).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).',
         r'.*charge\sof\s(?:rs\.?|inr)\s?([0-9.?]+).*initiated.*credit\scard.*',
         r'.*internet\spayment.*(?:rs\.?|inr)\s?([0-9.,?]+).*credit\scard.*',
         r'e-stmt.*card.*total\samt\sdue:\srs\.?\s?([0-9.?]+).*min\samt\sdue:\srs\.?\s?([0-9.?]+)\sis\spayable',
@@ -51,6 +51,9 @@ def get_confirm_cc_messages(data):
         r'.*(?:txn|trxn).*rs\.?\s?([0-9.,?]+).*credit\scard.*.*declined.*',
         r'.*credit\scard.*blocked.*total.*rs\.?\s?([0-9.,?]+).*minimum.*rs\.?\s?([0-9.,?]+).*',
         r'.*credit\scard.*blocked.*immediate.*',
+        r'request\sto\sincrease.*credit\slimit.*initiated',
+        r'convert.*(?:transaction|trxn|txn)\sof\s(?:rs\.?|inr)\s?([0-9]+[.]?[0-9]+).*into.*emi[s]?',
+        r'transfer.*outstanding\scredit\scard.*personal\sloan',
     ]
     cc_list = []
     credit_card_pattern_1 = "credit card"
