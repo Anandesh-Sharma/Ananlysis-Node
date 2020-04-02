@@ -10,7 +10,7 @@ def average_monthly_balance(user_id):
     bal = connect.analysis.balance_sheet.find_one({'cust_id': user_id})
     avg = []
 
-    avg_balance = None
+    avg_balance = 0
     try:
 
         if bal:
