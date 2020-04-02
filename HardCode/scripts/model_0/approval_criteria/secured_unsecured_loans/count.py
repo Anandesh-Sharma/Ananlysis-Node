@@ -10,7 +10,7 @@ def secure_unsecured_loan(cibil_df):
     secured_loan = 0
     unsecured_loan = 0
     if cibil_df:
-        secured_loan = cibil_df['data']['secured_loan'].iloc[-1]
-        unsecured_loan = cibil_df['data']['unsecured_loan'].iloc[-1]
+        secured_loan = int(cibil_df['data']['secured_loan'].iloc[-1])
+        unsecured_loan = int(cibil_df['data']['unsecured_loan'].iloc[-1])
 
     return secured_loan, unsecured_loan
