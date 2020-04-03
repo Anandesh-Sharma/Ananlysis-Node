@@ -1,5 +1,4 @@
 from HardCode.scripts.model_0.scoring.parameters.all_params import get_parameters
-from pprint import pprint
 
 
 def scoring_rejection(rejection_variables):
@@ -15,27 +14,21 @@ def scoring_rejection(rejection_variables):
 
     # >>==>> rejection criteria
     if not loan_app_count_check:
-        print(1)
         score -= 200
 
     if not monthly_balance_check:
-        print(2)
         score -= 200
 
     if not reference_check:
-        print(3)
         score -= 300
 
     if not rejection_check:
-        print(4)
         score -= 200
 
     if not email_check:
-        print(5)
         score -= 50
 
     if not due_days_check:
-        print(6)
         score -= 300
     if not account_status_check:
         score -= 400

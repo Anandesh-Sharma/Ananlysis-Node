@@ -11,8 +11,6 @@ from operator import itemgetter
 
 warnings.filterwarnings('ignore')
 
-no_tr_msgs = False
-
 
 
 def clean_debit(data, id):
@@ -96,7 +94,6 @@ def get_salary(data, id):
     # logger = logger_1('Get Salary', id)
     # logger.info('Direct Salary Amount Calculation starts')
 
-  
     pattern1 = r"credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
     pattern2 = r"salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*credited"
     pattern3 = r"(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*?imps\/salary"
@@ -133,8 +130,6 @@ def get_neft_amount(data, id):
         Output: List of Dictionary.
 
     '''
-
-   
 
     pattern1 = "(?:credited).*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*?neft"
     pattern2 = "(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*?credited.*?neft"
@@ -234,7 +229,6 @@ def merge(id):
 
     total = tran + ext
 
-
     return {'cust_id': id, 'status': True, 'message': 'success', 'total': total}
 
 
@@ -247,22 +241,20 @@ def data(id):
         data = data1['total']
         data = clean_debit(data, id)
         if data:
-            data.sort(key = lambda x:x['timestamp']) 
+            data.sort(key=lambda x: x['timestamp'])
             dfs = []
             key = lambda datum: datum['timestamp'].rsplit('-', 1)[0]
 
             for key, group in itertools.groupby(data, key):
-
-                dfs.append({'time':key,'data':list(group)})
+                dfs.append({'time': key, 'data': list(group)})
 
             return {'status': True, 'message': 'Success', 'df': dfs}
-    
+
         else:
-            return {'status': True, 'message': 'No data found', 'df': None}    
+            return {'status': True, 'message': 'No data found', 'df': None}
 
 
 def main(id):
-    
     '''This code calls all the function to calculate salary of a user based on the messages in dataFrame.
           Input: id(int).
           Output: dictionary with Parameters: status(bool), message(string): Success/exception,
@@ -270,6 +262,8 @@ def main(id):
                                             salary(float):salary of last month.
     '''
     global no_tr_msgs
+    no_tr_msgs = False
+
     df_data = data(id)
     if no_tr_msgs:
         return df_data
@@ -278,7 +272,7 @@ def main(id):
     if df_data['df']:
         df_salary = df_data['df'][-6:]
     else:
-        return {'status':True,'message':'No data Found','salary':0, 'cust_id': int(id)}
+        return {'status': True, 'message': 'No data Found', 'salary': 0, 'cust_id': int(id)}
 
     salary_dict = {}
     result = {}
@@ -286,11 +280,9 @@ def main(id):
     flag = False
     neft_amt = 0
     neft_time = 0
- 
+
     connect = conn()
     db = connect.analysis.salary
-   
-       
 
     try:
         for df in df_salary:
@@ -300,9 +292,8 @@ def main(id):
             df = epf_to_salary(df, id)
             vals = []
             for i in df:
-                if i['salary']>=7000:
+                if i['salary'] >= 7000:
                     vals.append(i['salary'])
-
 
             if len(vals) != 0:
                 epf = max(vals)
@@ -310,27 +301,27 @@ def main(id):
                     if i["salary"] == epf:
                         msg = {'body': i["body"], 'sender': i["sender"], 'timestamp': str(i["timestamp"])}
 
-                salary_dict = {'salary': round(float(epf),2), 'keyword': 'epf', 'message': msg}
+                salary_dict = {'salary': round(float(epf), 2), 'keyword': 'epf', 'message': msg}
                 monthwise[month] = salary_dict
                 result['cust_id'] = id
                 result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
                 result['salary'] = monthwise
                 db.update({'cust_id': id}, {"$set": result}, upsert=True)
-  
+
 
             else:
                 df = get_salary(df, id)
                 sal = []
                 for i in df:
-                    if i['direct_sal'] !=0:
+                    if i['direct_sal'] != 0:
                         sal.append(i["direct_sal"])
-                
+
                 if len(sal) != 0:
                     sal = max(sal)
                     for i in df:
                         if i["direct_sal"] == sal:
                             msg = {'body': i["body"], 'sender': i["sender"],
-                                    'timestamp': str(i["timestamp"])}
+                                   'timestamp': str(i["timestamp"])}
                     connect = conn()
                     salary_dict = {'salary': float(sal), 'keyword': 'salary', 'message': msg}
                     monthwise[month] = salary_dict
@@ -346,7 +337,7 @@ def main(id):
                     df = get_neft_amount(df, id)
                     amnt = []
                     for i in df:
-                        if i['neft_amount']>=7000:
+                        if i['neft_amount'] >= 7000:
                             amnt.append(i['neft_amount'])
 
                     if len(amnt) != 0:
@@ -354,7 +345,7 @@ def main(id):
                         for i in df:
                             if i["neft_amount"] == neft:
                                 msg = {'body': i["body"], 'sender': i["sender"],
-                                        'timestamp': str(i["timestamp"])}
+                                       'timestamp': str(i["timestamp"])}
                         val1 = neft + neft / 5
                         val2 = neft - neft / 5
                         t1 = datetime.strptime(msg['timestamp'], "%Y-%m-%d %H:%M:%S") - timedelta(days=24)
@@ -382,7 +373,8 @@ def main(id):
                                     result['salary'] = monthwise
                                     db.update({'cust_id': id}, {"$set": result}, upsert=True)
                                     neft_amt = salary_dict['salary']
-                                    neft_time= datetime.strptime(salary_dict['message']['timestamp'], "%Y-%m-%d %H:%M:%S")
+                                    neft_time = datetime.strptime(salary_dict['message']['timestamp'],
+                                                                  "%Y-%m-%d %H:%M:%S")
                                     flag = True
 
                                     # del r['salary'][next(iter(r['salary']))]
@@ -396,8 +388,6 @@ def main(id):
                         result['salary'] = monthwise
                         db.update({'cust_id': id}, {"$set": result}, upsert=True)
 
-
-
         last_month = list(result['salary'].keys())[-1]
         salary = result['salary'][last_month]['salary']
 
@@ -405,4 +395,3 @@ def main(id):
                 'salary': float(salary)}
     except Exception as e:
         return {'status': False, 'message': str(e), 'cust_id': int(id), 'salary': 0}
-

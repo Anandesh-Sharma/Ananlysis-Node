@@ -2,7 +2,6 @@ import numpy as np
 import os
 import pandas as pd
 import re
-from glob import glob
 from pymongo import MongoClient
 
 from HardCode.scripts.Util import conn
@@ -180,12 +179,7 @@ def get_cc_limit(id):
             for key in delete:
                 del x[key]
             result = x
-        else:
-            print("data not found")
     except BaseException as e:
-        print(11111)
-        import traceback
-        traceback.print_tb(e.__traceback__)
         print(f"error in credit card limit check: {e}")
     finally:
         return result
