@@ -47,11 +47,48 @@ def get_sms_data(user_id, access_token):
         json.dump(sms, f, ensure_ascii=False, indent=4)
 
 
+def get_cibil_data(user_id, access_token):
+    URL = 'https://admin.credicxotech.com/UserInfo/' + str(user_id) + '/experian_cibil.xml'
+    Auth = 'Bearer ' + access_token
+
+    cibil_data = re.get(url=URL, headers={'Authorization': Auth})
+
+    if cibil_data.status_code == 404:
+        print("Cibil does not exist")
+        return -1
+    elif cibil_data.status_code == 401:
+        access_token = generate_access_token()
+        Auth = 'Bearer ' + access_token
+        cibil_data = re.get(url=URL, headers={'Authorization': Auth})
+        if cibil_data.status_code == 404:
+            print("Cibil does not exist")
+            return -1
+        else:
+            cibil = cibil_data.text
+
+    else:
+        cibil = cibil_data.text
+
+    cibil_path = os.path.join('../input_data', 'cibil_data_' + str(user_id) + '.xml')
+    with open(cibil_path, 'w') as f:
+        f.write(cibil)
+
+
 def get_sms(user_id):
     access_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTg0MjU4NTM0LCJqdGkiOiI3N2JjOTE1Yjc3ZTY0MGRhOGI4ZDAxMmQ1NGI2Yjk2MCIsInVzZXJfaWQiOjE3LCJjdXJyZW50X3N0ZXAiOjEsImRlc2lnbmF0aW9uIjpbInN1cGVydXNlcl9zdXBlcnVzZXIiXSwibmFtZSI6IlN1cmFqIEJvaGFyYSIsImVtYWlsIjoic3VyYWouYm9oYXJhLjU4OUBnbWFpbC5jb20ifQ.nt6c0vETWzhdV45eaY-SBEb92zJBuTGPusWExED729Y'
 
     try:
         get_sms_data(user_id, access_token)
+    except BaseException as e:
+        print("Error: ", str(e))
+        print("cust_id: ", user_id)
+
+
+def get_cibil(user_id):
+    access_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTg0MjU4NTM0LCJqdGkiOiI3N2JjOTE1Yjc3ZTY0MGRhOGI4ZDAxMmQ1NGI2Yjk2MCIsInVzZXJfaWQiOjE3LCJjdXJyZW50X3N0ZXAiOjEsImRlc2lnbmF0aW9uIjpbInN1cGVydXNlcl9zdXBlcnVzZXIiXSwibmFtZSI6IlN1cmFqIEJvaGFyYSIsImVtYWlsIjoic3VyYWouYm9oYXJhLjU4OUBnbWFpbC5jb20ifQ.nt6c0vETWzhdV45eaY-SBEb92zJBuTGPusWExED729Y'
+
+    try:
+        get_cibil_data(user_id, access_token)
     except BaseException as e:
         print("Error: ", str(e))
         print("cust_id: ", user_id)

@@ -67,7 +67,7 @@ def result_fetcher(**kwargs):
         'user_id': user_id,
 
     }
-    test_final_result['Model_0'] = score
+    test_final_result['Model_0'] = score['Model_0']
     test_final_result['analysis'] = analysis
     return test_final_result
 
@@ -82,7 +82,6 @@ def bl0(**kwargs):
     current_loan = kwargs.get('current_loan')
     cibil_df = kwargs.get('cibil_xml')
     sms_json = kwargs.get('sms_json')
-
     logger = logger_1('bl0', user_id)
 
     if not isinstance(user_id, int):

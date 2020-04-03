@@ -5,7 +5,7 @@ def max_due_days(cibil_df):
     :rtype: int
     """
     due_days = 0
-    if cibil_df:
+    if cibil_df['data'].empty:
         due_days = (cibil_df['data']['Days_Past_Due'].astype(int)).max()
 
     return due_days

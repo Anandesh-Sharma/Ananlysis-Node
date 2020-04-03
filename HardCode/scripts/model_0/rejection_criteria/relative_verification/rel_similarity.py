@@ -4,7 +4,6 @@ from HardCode.scripts.model_0.rejection_criteria.relative_verification import re
 from HardCode.scripts.model_0.rejection_criteria.reference_verification.validation.cosine_similarity_method import \
     get_similarity
 import pandas as pd
-from tqdm import tqdm
 
 
 def rel_cos_sim(**kwargs):

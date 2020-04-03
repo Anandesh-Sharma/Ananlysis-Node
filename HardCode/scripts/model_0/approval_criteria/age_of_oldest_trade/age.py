@@ -6,7 +6,7 @@ def age_oldest_trade(cibil_df):
     :rtype: int
     """
     age_of_oldest_trade = 0
-    if cibil_df:
+    if cibil_df['data'].empty:
         age_of_oldest_trade = int(cibil_df['data']['age_of_oldest_trade'].iloc[-1])
         age_of_oldest_trade = round(age_of_oldest_trade / 30)
 

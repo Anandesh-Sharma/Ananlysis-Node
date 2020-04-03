@@ -6,6 +6,7 @@ def loan_limit(user_id):
     :returns max loan sanctioned by other loan apps, -1 implies amount is not detected
     :rtype: float
     """
+    max_limit = -1
     connect = conn()
     loan_analysis_result = connect.analysis.loan.find_one({'cust_id': user_id})
 

@@ -38,7 +38,7 @@ def convert_to_df(file):
                 d['account_type'].append('0')
                 d['account_status'].append('0')
                 d['secured_loan'].append('0')
-                d['unsecured'].append('0')
+                d['unsecured_loan'].append('0')
                 d['Days_Past_Due'].append('0')
                 d['age_of_oldest_trade'].append('0')
                 d['acc_type'].append('0')

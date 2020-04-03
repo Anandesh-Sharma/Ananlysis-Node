@@ -8,7 +8,7 @@ def get_acc_status(cibil_df):
     :rtype: bool
     """
     account_status = True
-    if cibil_df:
+    if cibil_df['data'].empty:
         account = cibil_df['data']['account_type']
         for acc in account:
             for c in acc_types.keys():

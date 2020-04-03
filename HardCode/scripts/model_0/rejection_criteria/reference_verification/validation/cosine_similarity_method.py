@@ -25,9 +25,8 @@ def cos_sim(**kwargs):
     # ==> matching reference name in contact list
 
     Ref_name = []
-
     for key in contacts.keys():
-        if int(key) == ref_no:
+        if str(key[-10:]) == ref_no[-10:]:
             for contact_name in contacts[key]:
                 contact_name = contact_name.lower()
                 Ref_name.append(contact_name)
@@ -54,7 +53,6 @@ def get_similarity(l):
     vec = vectorizer.toarray()
     vecx = vec[0].reshape(1, -1)
     vecy = vec[1].reshape(1, -1)
-    sim = []
-    sim.append(cosine_similarity(vecx, vecy))
+    sim = [cosine_similarity(vecx, vecy)]
 
     return sim[0][0]

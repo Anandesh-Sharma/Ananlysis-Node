@@ -2,9 +2,11 @@ import json
 import os
 import warnings
 import requests
-from HardCode.scripts.testing.execute.get_sms_json import get_sms
+from HardCode.scripts.testing.execute.data_fetch import get_sms, get_cibil
+from HardCode.scripts.testing.user_ids import *
 
 warnings.filterwarnings('ignore')
+from tqdm import tqdm
 
 
 def generate_access_token():
@@ -22,9 +24,12 @@ def generate_access_token():
 def execute_bl0(**kwargs):
     user_id = kwargs.get('user_id')
     cibil_score = kwargs.get('cibil_score')
-    cibil_xml = kwargs.get('cibil_file')
+    # cibil_xml = kwargs.get('cibil_file')
 
-    cibil_xml = open(os.path.join('../input_data', cibil_xml), 'r')
+    if os.path.exists(os.path.join('../input_data', 'cibil_data_' + str(user_id) + '.xml')):
+        cibil_xml = open(os.path.join('../input_data', 'cibil_data_' + str(user_id) + '.xml'))
+    else:
+        cibil_xml = None
     sms_json = open(os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json'), 'rb')
 
     new_user = 1
@@ -56,14 +61,16 @@ def testing(user_id):
     if not os.path.exists(os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json')):
         get_sms(user_id=user_id)
 
+    if not os.path.exists(os.path.join('../input_data', 'cibil_data_' + str(user_id) + '.xml')):
+        get_cibil(user_id=user_id)
+
     try:
         if str(user_id).isdigit():
             if os.path.exists(os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json')):
 
                 # ==> cibil score is passed 807 by default
 
-                execute_bl0(user_id=int(user_id), cibil_score=807,
-                            cibil_file='cibil_data.xml')
+                execute_bl0(user_id=int(user_id), cibil_score=807)
 
                 print(f"result generated successfully : {user_id}")
             else:
@@ -77,5 +84,16 @@ def testing(user_id):
         print(f"the following error occurred : {e}")
 
 
-user_id = input('enter user id: ')
-testing(user_id=user_id)
+# user_id = input('enter user id: ')
+# testing(user_id=user_id)
+
+l = non_defaulters
+l.sort(reverse=True)
+print(len(l))
+print(l)
+
+for i in tqdm(l[130:200]):
+    try:
+        testing(i)
+    except BaseException as e:
+        print(f"Error : {e}")

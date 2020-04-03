@@ -21,7 +21,7 @@ def validate(user_id):
 
             # ==> currently validating only when the relation is either father or mother
             if reference_relation.lower() == 'mother' or reference_relation.lower() == 'father':
-                cosine_similarity = cos_sim(relation=reference_relation, ref_no=reference_number,
+                cosine_similarity = cos_sim(relation=reference_relation, ref_no=str(reference_number),
                                             contacts=contacts_data)
 
                 similarity = [float(i[0]) for i in cosine_similarity]
