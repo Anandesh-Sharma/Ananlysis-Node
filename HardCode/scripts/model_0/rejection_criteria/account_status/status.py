@@ -8,12 +8,13 @@ def get_acc_status(cibil_df):
     :rtype: bool
     """
     account_status = True
-    if cibil_df['data'].empty:
-        account = cibil_df['data']['account_type']
-        for acc in account:
-            for c in acc_types.keys():
-                if str(acc) == c:
-                    account_status = False
-                    return account_status
+    if cibil_df['data']: # ==>> this check is added cause in case cibil file is not uploaded
+        if cibil_df['data'].empty: # ==> dataframe is returned as None instead of an empty df
+            account = cibil_df['data']['account_type']
+            for acc in account:
+                for c in acc_types.keys():
+                    if str(acc) == c:
+                        account_status = False
+                        return account_status
 
     return account_status

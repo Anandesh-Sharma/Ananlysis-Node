@@ -84,16 +84,16 @@ def testing(user_id):
         print(f"the following error occurred : {e}")
 
 
-# user_id = input('enter user id: ')
-# testing(user_id=user_id)
+user_id = input('enter user id: ')
+testing(user_id=user_id)
 
-l = non_defaulters
-l.sort(reverse=True)
-print(len(l))
-print(l)
-
-for i in tqdm(l[130:200]):
-    try:
-        testing(i)
-    except BaseException as e:
-        print(f"Error : {e}")
+# l = npa_ids
+# l.sort(reverse=True)
+# print(len(l))
+# print(l)
+#
+# for i in tqdm(l):
+#     try:
+#         testing(i)
+#     except BaseException as e:
+#         print(f"Error : {e}")
