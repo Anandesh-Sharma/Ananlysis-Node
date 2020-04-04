@@ -8,6 +8,7 @@
 *.pyc
 *.DS_Store
 *.json
+*.xml
 __pycache__/
 local_settings.py
 db.sqlite3
