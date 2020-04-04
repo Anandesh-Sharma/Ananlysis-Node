@@ -123,16 +123,20 @@ def preprocessing(cust_id):
     logger.info("Data Grouped by Sender-Name")
     loan_details_of_all_apps = {}
 
+    app_list = [
+        'CASHBN', 'KREDTB', 'KREDTZ', 'LNFRNT', 'RRLOAN', 'LOANAP', 'KISSHT', 'GTCASH', 'FLASHO', 'CSHMMA', 'ZPLOAN', 'FRLOAN'
+        ]
+
     for app, grp in loan_data_grouped:
         logger.info("iteration in groups starts")
-        if app == 'CASHBN' or app == 'KREDTB' or app == 'KREDTZ' or app == 'LNFRNT' or app == 'RRLOAN' or app == 'LOANAP' or app == 'KISSHT' or app == 'GTCASH' or app == 'FLASHO' or app == 'CSHMMA' or app == 'ZPLOAN' or app == 'FRLOAN' or app == 'SALARY':
-
+        if app in app_list:
             grp = grp.sort_values(by='timestamp')
             grp = grp.reset_index(drop=True)
 
             loan_count = 0
             loan_details_individual_app = {}
             i = 0
+            FLAG = False 
 
             if app == 'KREDTB':
                 grp = pd.DataFrame(grp)
@@ -372,6 +376,53 @@ def preprocessing(cust_id):
                             break
                         j += 1
                     loan_details_individual_app[str(loan_count)] = individual_loan_details
+
+                elif is_due(message):
+                    individual_loan_details['due_date'] = str(due_date_extract(message))
+                    if individual_loan_details['due_date'] == -1:
+                        individual_loan_details['due_date'] = str(grp['timestamp'][i])
+                    individual_loan_details['loan_due_amount'] = float(due_amount_extract(message))
+                    due_date = datetime.strptime(str(grp['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
+                    individual_loan_details['messages'].append(str(grp['body'][i]))
+                    loan_count += 1
+                    j = i + 1
+
+                    while j < len(grp):
+                        message_new = str(grp['body'][j].encode("utf-8")).lower()
+                        if is_due(message_new):
+                            continue
+                        elif is_overdue(message_new):
+                            overdue_first_date = datetime.strptime(str(grp['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
+                            individual_loan_details['overdue_max_amount'] = float(overdue_amount_extract(grp, overdue_first_date))
+                            individual_loan_details['messages'].append(str(grp['body'][j]))
+                            k =  j + 1
+
+                            while k < len(grp):
+                                message_closed = str(grp['body'][k].encode("utf-8")).lower()
+                                if is_closed(message_closed):
+                                    individual_loan_details['closed_date'] = str(grp['timestamp'][k])
+                                    closed_date = datetime.strptime(str(grp['timestamp'][k]), '%Y-%m-%d %H:%M:%S')
+                                    approx_loan_duration = (closed_date - due_date).days
+                                    #individual_loan_details['loan_duration'] = loan_duration
+                                    individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(message_closed))
+                                    individual_loan_details['messages'].append(str(grp['body'][k]))
+                                    i = k + 1
+                                    FLAG = True
+                                    break
+                            if  FLAG == True:
+                                break
+                        elif is_closed(message_new):
+                            individual_loan_details['closed_date'] = str(grp['timestamp'][j])
+                            closed_date = datetime.strptime(str(grp['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
+                            approx_loan_duration = (closed_date - due_date).days
+                            individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(message_new))
+                            individual_loan_details['messages'].append(str(grp['body'][j]))
+                            i = j + 1
+                            break 
+                        j += 1
+                    loan_details_individual_app[str(loan_count)] = individual_loan_details
+                else:
+                    pass 
 
                 i += 1
 
