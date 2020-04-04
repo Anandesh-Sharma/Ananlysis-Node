@@ -1,31 +1,34 @@
 import re
 from datetime import datetime
 import pytz
-import threading
+# import threading
 from HardCode.scripts.Util import conn, convert_json, logger_1
 import warnings
 
 warnings.filterwarnings("ignore")
 
+
 def check_account_number(message):
     all_patterns = [
-    r'[\*nx]+([0-9]{3,})',
-    r'[a]\/c ([0-9]+)',
-    r'[\.]{3,}([0-9]+)',
-    r'account(.*)?\[([0-9]+)\]'
+        r'[\*nx]+([0-9]{3,})',
+        r'[a]\/c ([0-9]+)',
+        r'[\.]{3,}([0-9]+)',
+        r'account(.*)?\[([0-9]+)\]'
     ]
 
     for pat in all_patterns:
-        matcher = re.search(pat, message)    
+        matcher = re.search(pat, message)
         if matcher:
             return True
     return False
 
+
 def check_amount(message):
-    matcher = re.search(r"(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)", message)    
+    matcher = re.search(r"(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)", message)
     if matcher:
         return True
     return False
+
 
 def cleaning(df, result, user_id, max_timestamp, new):
     logger = logger_1("cleaning", user_id)
@@ -34,7 +37,8 @@ def cleaning(df, result, user_id, max_timestamp, new):
     required_rows = []
     internet_banking = []
     withdraw = []
-    pattern_inb_wd = [" inb txn ", "w/d@", "w/d at",r"sbidrcard.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"]
+    pattern_inb_wd = [" inb txn ", "w/d@", "w/d at",
+                      r"sbidrcard.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"]
     for index, row in df.iterrows():
         body = row["body"].lower()
         match = True
@@ -57,7 +61,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
         if match and with_match:
             matcher = re.search("withdraw", body)
             if matcher:
-                if re.search("failed",body) is None:
+                if re.search("failed", body) is None:
                     if check_account_number(body):
                         withdraw.append(index)
     # --> old patterns
@@ -235,7 +239,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                      'activated for fund transfer', 'biocon', 'updated wallet balance', 'recharging',
                                      'assessment year', 'we wish to inform', 'refunded',
                                      'amendment', 'added/modified', 'kyc verification', 'is due', 'paytm postpaid',
-                                     'please pay', 'flight booking','to be credited',
+                                     'please pay', 'flight booking', 'to be credited',
                                      '(credited)?(received)? [0-9]+[gm]b', 'payment.*failed',
                                      'uber india systems pvt ltd', 'has requested money', 'on approving',
                                      'not received', 'received your', 'brand factory has credited ', 'train ticket',
@@ -247,7 +251,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                      'will be', 'unpaid', 'received (for|in) clearing', 'presented for clearing',
                                      'your application', 'to know', 'unpaid', r'\slakh\s', 'thanking you', 'redeem',
                                      'available credit limit']
-    #-->New Cleaning Patterns
+    # -->New Cleaning Patterns
 
     # cleaning_transaction_patterns =['can be credited ',
     #                                 'will be',
