@@ -9,6 +9,7 @@ from HardCode.scripts.classifiers.Classifier import classifier
 # from HardCode.scripts.reference_verification.validation.check_reference import validate
 from HardCode.scripts.Util import *
 import warnings
+import multiprocessing
 import pandas as pd
 import pytz
 
@@ -141,10 +142,18 @@ def bl0(**kwargs):
 
     # >>==>> Classification
     logger.info('starting classification')
-
-    classifier_result = classifier(sms_json, str(user_id))
-    if not classifier_result:   # returns a bool
-        exception_feeder(client=client, user_id=user_id, logger=logger, msg='error in classification')
+    p = multiprocessing.Process(target=classifier, args=(sms_json, str(user_id),))
+    try:
+        p.start()
+    except Exception as e:
+        print(e)
+    try:
+        p.join()
+    except Exception as e:
+        print(e)
+    # classifier_result = classifier(sms_json, str(user_id))
+    # if not classifier_result:   # returns a bool
+    #     exception_feeder(client=client, user_id=user_id, logger=logger, msg='error in classification')
 
     logger.info('classification completes')
 
