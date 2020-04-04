@@ -87,13 +87,16 @@ def testing(user_id):
 user_id = input('enter user id: ')
 testing(user_id=user_id)
 
-# l = npa_ids
+# l = non_defaulters
 # l.sort(reverse=True)
 # print(len(l))
 # print(l)
-#
-# for i in tqdm(l):
-#     try:
-#         testing(i)
-#     except BaseException as e:
-#         print(f"Error : {e}")
+
+# from concurrent.futures import ThreadPoolExecutor
+
+# with ThreadPoolExecutor() as exc:
+#     exc.map(testing,(i for i in l))
+
+# #
+# for i in tqdm(l[:10]):
+#     testing(i)

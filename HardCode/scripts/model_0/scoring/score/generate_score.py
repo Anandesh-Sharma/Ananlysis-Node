@@ -1,4 +1,9 @@
 from HardCode.scripts.model_0.scoring.parameters.all_params import get_parameters
+from HardCode.scripts.Util import conn
+from datetime import datetime
+import pytz
+
+timezone = pytz.timezone('Asia/Kolkata')
 
 
 def scoring_rejection(rejection_variables):
@@ -35,7 +40,6 @@ def scoring_rejection(rejection_variables):
 
 
 def scoring_approval(approval_variables):
-
     global score
     loan_limit_check = approval_variables['loan_limit_check']
     secured_unsecured_check = approval_variables['secured_unsecured_check']
@@ -56,7 +60,6 @@ def scoring_approval(approval_variables):
 
 
 def get_score(user_id, cibil_df):
-
     global score
     score = 1000
     status = True
@@ -67,11 +70,20 @@ def get_score(user_id, cibil_df):
         scoring_approval(variables['approval_variables'])
 
     except BaseException as e:
+        import traceback
+        traceback.print_tb(e.__traceback__)
         print(f"Error in scoring model : {e}")
         status = False
     finally:
         model_0 = {
             'parameters': values,
-            'score': score
+            'score': score,
+            'modified_at': str(timezone.localize(datetime.now()))
         }
-        return {'cust_id': user_id, 'Model_0': model_0, 'status': status}
+        client = conn()
+
+        result = {'cust_id': user_id, 'Model_0': model_0, 'status': status}
+
+        client.analysis.scoring_model.update({'cust_id': user_id}, {'$push': {'result': model_0}}, upsert=True)
+        client.close()
+        return result
