@@ -32,16 +32,17 @@ def cos_sim(**kwargs):
                 Ref_name.append(contact_name)
 
     similarity = []
-    if len(father_syns) != 0:
-        for i in Ref_name:
-            for j in father_syns:
-                sim = get_similarity([i, j])
-                similarity.append(sim)
-    else:
-        for i in Ref_name:
-            for j in mother_syns:
-                sim = get_similarity([i, j])
-                similarity.append(sim)
+    if len(Ref_name) != 0:         # ==> this check is added to handle the case in which the contact number
+        if len(father_syns) != 0:  # is not present in the contact list
+            for i in Ref_name:
+                for j in father_syns:
+                    sim = get_similarity([i, j])
+                    similarity.append(sim)
+        else:
+            for i in Ref_name:
+                for j in mother_syns:
+                    sim = get_similarity([i, j])
+                    similarity.append(sim)
 
     return similarity
 
