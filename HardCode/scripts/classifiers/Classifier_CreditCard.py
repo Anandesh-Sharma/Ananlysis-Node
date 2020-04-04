@@ -21,7 +21,7 @@ def get_confirm_cc_messages(data):
         r'payment.*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*received',
         r'payment.*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*successfully\sprocessed',
         r'received.*payment.*(?:for|of)*(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
-        r'(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*spent.*card.*(?:available|avl\.?).*(?:limit|lim\.?).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).',
+        r'(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*spent.*card.*',
         r'.*charge\sof\s(?:rs\.?|inr)\s?([0-9.?]+).*initiated.*credit\scard.*',
         r'.*internet\spayment.*(?:rs\.?|inr)\s?([0-9.,?]+).*credit\scard.*',
         r'e-stmt.*card.*total\samt\sdue:\srs\.?\s?([0-9.?]+).*min\samt\sdue:\srs\.?\s?([0-9.?]+)\sis\spayable',
