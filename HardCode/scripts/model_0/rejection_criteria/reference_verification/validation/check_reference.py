@@ -25,10 +25,14 @@ def validate(user_id):
                                             contacts=contacts_data)
 
                 similarity = [float(i[0]) for i in cosine_similarity]
-                max_similarity = round(max(similarity), 2)
-                if max_similarity >= 0.80:
-                    validated = True
-                msg = 'validation successful'
+                if len(similarity) != 0:   # ==> this check is added to handle the case in which the contact number
+                    max_similarity = round(max(similarity), 2)  # is not present in the contact list
+                    if max_similarity >= 0.80:
+                        validated = True
+                    msg = 'validation successful'
+                else:
+                    msg = 'given contact number is not present in contact list'
+
             else:
                 status = False
         else:
