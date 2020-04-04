@@ -8,6 +8,7 @@ from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.classifiers.Classifier import classifier
 # from HardCode.scripts.reference_verification.validation.check_reference import validate
 from HardCode.scripts.Util import *
+from HardCode.scripts.model_0.scoring.score.generate_score import get_score
 import warnings
 import multiprocessing
 import pandas as pd
@@ -38,7 +39,7 @@ def result_fetcher(**kwargs):
     salary_result = kwargs.get('result_salary')
     balance_sheet = kwargs.get('balance_sheet_result')
     rejection = kwargs.get('result_rejection')
-
+    score = kwargs.get('result_score')
     output_flag = kwargs.get('output_flag', 'cibil')
     test_final_result = client.analysisresult.bl0.find_one({'cust_id': user_id})
     final_result = test_final_result['result'][-1:][0]
@@ -47,7 +48,7 @@ def result_fetcher(**kwargs):
     del test_final_result['result']
     test_final_result['result'] = final_result
     del test_final_result['_id']
-
+    del score['cust_id']
     del loan_result['result']['cust_id']
     del salary_result['cust_id']
     del rejection['cust_id']
@@ -66,6 +67,7 @@ def result_fetcher(**kwargs):
         'user_id': user_id,
 
     }
+    test_final_result['Model_0'] = score['Model_0']
     test_final_result['analysis'] = analysis
     return test_final_result
 
@@ -238,6 +240,18 @@ def bl0(**kwargs):
     logger.info('Not a defaulter')
     logger.info('Starting Analysis')
 
+    logger.info("Scoring Model starts")
+    try:
+
+        result_score = get_score(user_id, cibil_df)  # Returns a dictionary
+        if not result_score['status']:
+            exception_feeder(client=client, user_id=user_id, logger=logger,
+                             msg="scoring model failed due to some reason")
+    except BaseException as e:
+        print(f"Error : {e}")
+        exception_feeder(client=client, user_id=user_id, logger=logger,
+                         msg=str(e))
+
     salary_present = False
     loan_present = False
 
@@ -279,7 +293,8 @@ def bl0(**kwargs):
     client.analysisresult.bl0.update({'cust_id': user_id}, {'$push': {'result': analysis_result}})
     logger.info("analysis complete")
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
-                                balance_sheet_result=balance_sheet_result, result_rejection=result_rejection, )
+                                balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,
+                                result_score=result_score)
 
     client.close()
     return end_result

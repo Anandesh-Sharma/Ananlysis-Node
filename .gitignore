@@ -26,6 +26,10 @@ xmlapi3
 # C extensions
 *.so
 
+# analysis node scratch files
+*.json
+*.xml
+*.DS_Store
 
 # Distribution / packaging
 .Python
