@@ -12,12 +12,14 @@ def get_confirm_cc_messages(data):
     all_patterns = [
         r'cardholder.*payment.*rs\.?\s?([0-9.?]+).*credit\scard.*successfully',
         r'approve\stransaction.*rs\.?\s?([0-9.?]+).*a/c\sno\.?.*credit\scard',
-        r'(?:rs|inr)\.?\s?\s?([0-9.?]+).*debited.*credit\scard',
+        r'(?:rs|inr)\.?\s?\s?([0-9,]+[.]?[0-9]+).*debited.*(?:available|avbl).*(?:limit|lmt\.?).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
+        r'(?:rs|inr)\.?\s?\s?([0-9,]+[.]?[0-9]+).*debited.*',
         r'inr\s?([0-9.?]+).*paytm.*credit\scard',
         r'txn\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*credit\scard',
         r'refund.*(?:rs\.?|inr)\s?([0-9.?]+).*credited.*credit\scard',
         r'spent\s(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
         r'payment.*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*received',
+        r'payment.*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*successfully\sprocessed',
         r'received.*payment.*(?:for|of)*(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
         r'(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*spent.*card.*(?:available|avl\.?).*(?:limit|lim\.?).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).',
         r'.*charge\sof\s(?:rs\.?|inr)\s?([0-9.?]+).*initiated.*credit\scard.*',
@@ -36,6 +38,7 @@ def get_confirm_cc_messages(data):
         r'.*not\sreceived\spayment.*credit\scard.*rs\.?\s?([0-9]+).*',
         r'.*necessary.*payment.*rs\.?\s?([0-9]+[.,]?).*credit\scard.*',
         r'.*credit\scard\sdues.*unpaid.*rs\.?\s?([0-9]+[.,]?).*',
+        r'.*received.*payment.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:available|avl\.?).*(?:limit|lmt\.?).*(rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
         r'unable.*overdue\s(?:payment|pymt).*rs\.?\s?([0-9.?]+).*credit\scard',
         r'.*payment.*overdue.*credit\scard.*(?:pl|please|pls)\spay.*total\s(?:amt|amount).*due.*(?:rs\.?|inr)\s?([0-9.,?]+).*min.*(?:amt|amount).*(?:rs\.?|inr)\s?([0-9.,?]+).*',
         r'.*overdue\samount.*(?:rs\.?|inr)\s?([0-9.,?]+).*credit\scard.*',
@@ -59,12 +62,14 @@ def get_confirm_cc_messages(data):
     credit_card_pattern_1 = "credit card"
     credit_card_pattern_2 = "sbi card"
     credit_card_pattern_3 = "rbl supercard"
+    credit_card_pattern_4 = 'sbi cardholder'
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
         matcher_1 = re.search(credit_card_pattern_1, message)
         matcher_2 = re.search(credit_card_pattern_2, message)
         matcher_3 = re.search(credit_card_pattern_3, message)
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None:
+        matcher_4 = re.search(credit_card_pattern_4, message)
+        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None:
             cc_list.append(i)
     for i in range(data.shape[0]):
         if i in cc_list:
