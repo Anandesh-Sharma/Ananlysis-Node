@@ -128,7 +128,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+CRONJOBS = [
+        ('*/5 * * * *', 'HardCode.cron.process_user_records', '>' + BASE_DIR + '/process_user_records.log'),
+    ]
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
