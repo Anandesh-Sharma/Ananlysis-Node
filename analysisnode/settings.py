@@ -34,21 +34,20 @@ ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
-    ]
+    'rest_framework',
+    'django_crontab'
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -148,10 +147,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-}
+
+CHECKSUM_KEY = 'NUG2EDIWi3%khpfw'
 
 # Static files (CSS, JavaScript, Images)`
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -166,3 +163,6 @@ STATIC_URL = '/static/'
 #
 # from mongoengine import connect
 # connect(MONGO_DATABASE_NAME)
+
+PROCESSING_DOCS = BASE_DIR + '/PROCESSING_DOCS/'
+FINAL_RESULT = BASE_DIR + '/FINAL_RESULT/'
