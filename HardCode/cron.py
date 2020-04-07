@@ -39,9 +39,6 @@ def process_user_records():
             except FileExistsError:
                 pass
 
-            with open(FINAL_RESULT + str(user_id) + '/user_data.json', 'w') as json_file:
-                json.dump(response_bl0, json_file, ensure_ascii=True, indent=4)
-
         except Exception as e:
             print(f"error in middleware {e}")
             limit = analyse(user_id=user_id, current_loan=current_loan_amount, cibil_df=cibil_df, new_user=new_user,
@@ -57,5 +54,7 @@ def process_user_records():
                     "cibil": limit
                 }
             }
+        with open(FINAL_RESULT + str(user_id) + '/user_data.json', 'w') as json_file:
+            json.dump(response_bl0, json_file, ensure_ascii=True, indent=4)
         print(requests.post(API_ENDPOINT, data=response_bl0,
                             headers={'CHECKSUMHASH': Checksum.generate_checksum(response_bl0, CHECKSUM_KEY)}).json())

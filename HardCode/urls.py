@@ -4,4 +4,5 @@ from HardCode.views import CibilAnalysis
 
 urlpatterns = [
     path('bl0/', csrf_exempt(CibilAnalysis.as_view())),
+    path('bl0/status/', csrf_exempt(CibilAnalysis.as_view())),
 ]
