@@ -14,7 +14,7 @@ def get_cibil_analysis_status(request):
         if not verify_checksum(response, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
             raise ValueError
     except (AttributeError, ValueError, KeyError):
-        return Response({'error': 'INVALID CHECKSUMH!!!'}, 400)
+        return Response({'error': 'INVALID CHECKSUM!!!'}, 400)
     user_id = request.data.get('user_id')
     try:
         return Response(json.load(open(FINAL_RESULT + str(user_id) + '/user_data.json')))
