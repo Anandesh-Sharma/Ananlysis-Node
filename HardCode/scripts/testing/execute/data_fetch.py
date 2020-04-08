@@ -39,10 +39,10 @@ def get_sms_data(user_id, access_token):
     else:
         sms = sms_data.json()
 
-    if not os.path.exists('../input_data'):
+    if not os.path.exists('..\input_data'):
         os.makedirs('input_data')
 
-    sms_path = os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json')
+    sms_path = os.path.join('..\input_data', 'sms_data_' + str(user_id) + '.json')
     with open(sms_path, 'a', encoding='utf-8') as f:
         json.dump(sms, f, ensure_ascii=False, indent=4)
 
@@ -69,7 +69,7 @@ def get_cibil_data(user_id, access_token):
     else:
         cibil = cibil_data.text
 
-    cibil_path = os.path.join('../input_data', 'cibil_data_' + str(user_id) + '.xml')
+    cibil_path = os.path.join('..\input_data', 'cibil_data_' + str(user_id) + '.xml')
     with open(cibil_path, 'w') as f:
         f.write(cibil)
 

@@ -14,7 +14,7 @@ def generate_access_token():
 
     url = 'http://localhost:8888/api/token/'
 
-    credentials = {'username': 'root', 'password': 'root@123'}
+    credentials = {'username': 'root', 'password': 'root'}
 
     res = requests.post(url=url, data=credentials, verify=False)
     res = res.json()
@@ -26,11 +26,11 @@ def execute_bl0(**kwargs):
     cibil_score = kwargs.get('cibil_score')
     # cibil_xml = kwargs.get('cibil_file')
 
-    if os.path.exists(os.path.join('../input_data', 'cibil_data_' + str(user_id) + '.xml')):
-        cibil_xml = open(os.path.join('../input_data', 'cibil_data_' + str(user_id) + '.xml'))
+    if os.path.exists(os.path.join('..\input_data', 'cibil_data_' + str(user_id) + '.xml')):
+        cibil_xml = open(os.path.join('..\input_data', 'cibil_data_' + str(user_id) + '.xml'))
     else:
         cibil_xml = None
-    sms_json = open(os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json'), 'rb')
+    sms_json = open(os.path.join('..\input_data', 'sms_data_' + str(user_id) + '.json'), 'rb')
 
     new_user = 1
     all_loan_amount = [1000, 2000, 3000, 4000]
@@ -50,23 +50,23 @@ def execute_bl0(**kwargs):
     files = [('sms_json', sms_json), ('cibil_xml', cibil_xml)]
     result = requests.post(url=url, data=payload, files=files, headers={'Authorization': Auth})
     result = result.json()
-    if not os.path.exists('../result'):
-        os.mkdir('result')
+    # if not os.path.exists('../result'):
+    #     os.mkdir('result')
 
-    with open(os.path.join('../result', str(user_id) + '.json'), 'w', encoding='utf-8') as fp:
+    with open(str(user_id) + '.json', 'w', encoding='utf-8') as fp:
         json.dump(result, fp, ensure_ascii=False, indent=4)
 
 
 def testing(user_id):
-    if not os.path.exists(os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json')):
+    if not os.path.exists(os.path.join('..\input_data', 'sms_data_' + str(user_id) + '.json')):
         get_sms(user_id=user_id)
 
-    if not os.path.exists(os.path.join('../input_data', 'cibil_data_' + str(user_id) + '.xml')):
+    if not os.path.exists(os.path.join('..\input_data', 'cibil_data_' + str(user_id) + '.xml')):
         get_cibil(user_id=user_id)
 
     try:
         if str(user_id).isdigit():
-            if os.path.exists(os.path.join('../input_data', 'sms_data_' + str(user_id) + '.json')):
+            if os.path.exists(os.path.join('..\input_data', 'sms_data_' + str(user_id) + '.json')):
 
                 # ==> cibil score is passed 807 by default
 
@@ -86,7 +86,7 @@ def testing(user_id):
 
 user_id = input('enter user id: ')
 testing(user_id=user_id)
-
+#
 # l = non_defaulters
 # l.sort(reverse=True)
 # print(len(l))

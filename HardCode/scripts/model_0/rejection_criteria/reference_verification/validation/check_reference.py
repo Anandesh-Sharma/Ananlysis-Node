@@ -32,7 +32,7 @@ def validate(user_id):
                     msg = 'validation successful'
                 else:
                     msg = 'given contact number is not present in contact list'
-             else:
+            else:
                 status = False
         else:
             status = False

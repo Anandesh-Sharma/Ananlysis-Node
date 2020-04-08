@@ -6,7 +6,8 @@ def max_due_days(cibil_df):
     """
     due_days = 0
     if cibil_df['data'] is not None:  # ==>> this check is added cause in case cibil file is not uploaded
-        if cibil_df['data'].empty:  # ==> dataframe is returned as None instead of an empty df
+        if not cibil_df['data'].empty:  # ==> dataframe is returned as None instead of an empty df
             due_days = (cibil_df['data']['Days_Past_Due'].astype(int)).max()
+            due_days = int(due_days)
 
     return due_days

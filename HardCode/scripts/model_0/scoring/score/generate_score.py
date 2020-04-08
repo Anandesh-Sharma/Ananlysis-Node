@@ -45,6 +45,7 @@ def scoring_approval(approval_variables):
     secured_unsecured_check = approval_variables['secured_unsecured_check']
     age_of_oldest_trade_check = approval_variables['age_of_oldest_trade_check']
     cc_limit_check = approval_variables['cc_limit_check']
+    active_close_check = approval_variables['active_close_check']
 
     if loan_limit_check:
         score += 200
@@ -58,6 +59,10 @@ def scoring_approval(approval_variables):
     if cc_limit_check:
         score += 200
 
+    if active_close_check:
+        score +=100
+
+
 
 def get_score(user_id, cibil_df):
     global score
@@ -70,8 +75,6 @@ def get_score(user_id, cibil_df):
         scoring_approval(variables['approval_variables'])
 
     except BaseException as e:
-        import traceback
-        traceback.print_tb(e.__traceback__)
         print(f"Error in scoring model : {e}")
         status = False
     finally:
@@ -83,7 +86,6 @@ def get_score(user_id, cibil_df):
         client = conn()
 
         result = {'cust_id': user_id, 'Model_0': model_0, 'status': status}
-
         client.analysis.scoring_model.update({'cust_id': user_id}, {'$push': {'result': model_0}}, upsert=True)
         client.close()
         return result

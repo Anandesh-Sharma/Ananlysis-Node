@@ -216,12 +216,14 @@ def bl0(**kwargs):
 
     try:
 
-        result_score = get_score(user_id, cibil_df)  # Returns a dictionary
+        result_score = get_score(user_id, cibil_df)# Returns a dictionary
         if not result_score['status']:
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg="scoring model failed due to some reason")
     except BaseException as e:
         print(f"Error : {e}")
+        import traceback
+        traceback.print_tb(e.__traceback__)
         exception_feeder(client=client, user_id=user_id, logger=logger,
                          msg=str(e))
 
