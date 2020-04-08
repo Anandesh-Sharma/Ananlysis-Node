@@ -261,4 +261,4 @@ fabric.properties
 # Pyre type checker
 
 # End of https://www.gitignore.io/api/django,python,pycharm
-/HardCode/scripts/model_0/approval_criteria/
+
