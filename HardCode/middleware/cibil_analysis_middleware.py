@@ -14,11 +14,15 @@ def get_cibil_analysis(request):
     try:
         response = request.data
         try:
-            del (response['sms_json'])
+            del response['sms_json']
         except:
             pass
         try:
-            del (response['cibil_xml'])
+            del response['cibil_xml']
+        except:
+            pass
+        try:
+            del response['all_loan_amount']
         except:
             pass
         if not verify_checksum(response, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
