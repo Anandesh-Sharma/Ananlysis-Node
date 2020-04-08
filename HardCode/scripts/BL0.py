@@ -222,8 +222,6 @@ def bl0(**kwargs):
                              msg="scoring model failed due to some reason")
     except BaseException as e:
         print(f"Error : {e}")
-        import traceback
-        traceback.print_tb(e.__traceback__)
         exception_feeder(client=client, user_id=user_id, logger=logger,
                          msg=str(e))
 
