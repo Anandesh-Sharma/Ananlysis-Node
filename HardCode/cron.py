@@ -1,15 +1,15 @@
 import json
 import os
 import requests
-from concurrent.futures import ProcessPoolExecutor
 import shutil
 from HardCode.scripts import BL0
 from HardCode.scripts.cibil.Analysis import analyse
 from HardCode.scripts.cibil.apicreditdata import convert_to_df
 from analysisnode import Checksum
 from analysisnode.settings import PROCESSING_DOCS, CHECKSUM_KEY, FINAL_RESULT
+from threadedprocess import ThreadedProcessPoolExecutor
 
-API_ENDPOINT = 'https://testing.credicxotech.com/api/ml_analysis/callback/'
+API_ENDPOINT = 'https://api.credicxotech.com/api/ml_analysis/callback/'
 
 
 def parallel_proccess_user_records(user_id):
@@ -55,5 +55,5 @@ def parallel_proccess_user_records(user_id):
 def process_user_records():
     directories = os.listdir(PROCESSING_DOCS)
     user_ids = [user_id for user_id in directories]
-    with ProcessPoolExecutor(max_workers=8) as p:
+    with ThreadedProcessPoolExecutor(max_processes=8, max_threads=16) as p:
         p.map(parallel_proccess_user_records, user_ids)
