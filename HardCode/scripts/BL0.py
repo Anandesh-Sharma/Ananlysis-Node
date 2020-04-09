@@ -72,6 +72,11 @@ def result_fetcher(**kwargs):
     return test_final_result
 
 
+def set_processing_bool(user_id, status):
+    client = conn()
+    client.user_process.bl0.update_one({'cust_id': user_id}, {'$set': {'processing': status}}, upsert=True)
+
+
 def bl0(**kwargs):
     # cibil_score, sms_json, user_id, new_user, list_loans, current_loan
     cibil_score = kwargs.get('cibil_score')
@@ -95,6 +100,16 @@ def bl0(**kwargs):
         return exception_feeder(user_id=user_id, msg=str(e), logger=logger)
 
     logger.info('connection success')
+
+    # CHECK IF THE USER_ID is already processing or just got a new hit !!!
+    user_process_bool = client.user_process.bl0.find_one({'cust_id': user_id})
+    if not user_process_bool:
+        set_processing_bool(user_id, True)
+    elif user_process_bool['processing']:
+        return
+    else:
+        set_processing_bool(user_id, True)
+
     logger.info("checking started")
 
     # typechecking current_loan
@@ -295,6 +310,6 @@ def bl0(**kwargs):
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
                                 balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,
                                 result_score=result_score)
-
+    set_processing_bool(user_id, False)
     client.close()
     return end_result
