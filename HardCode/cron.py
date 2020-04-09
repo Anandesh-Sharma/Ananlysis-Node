@@ -1,7 +1,7 @@
 import json
 import os
 import requests
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 import shutil
 from HardCode.scripts import BL0
 from HardCode.scripts.cibil.Analysis import analyse
@@ -55,5 +55,5 @@ def parallel_proccess_user_records(user_id):
 def process_user_records():
     directories = os.listdir(PROCESSING_DOCS)
     user_ids = [user_id for user_id in directories]
-    with ThreadPoolExecutor(max_workers=8) as p:
+    with ProcessPoolExecutor(max_workers=8) as p:
         p.map(parallel_proccess_user_records, user_ids)
