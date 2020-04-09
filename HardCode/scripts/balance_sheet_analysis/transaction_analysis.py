@@ -322,15 +322,23 @@ def get_time_message(data, logger):
                     time = matcher_3.group(1) + ':' + matcher_3.group(2) + ':00'
                 elif matcher_3.group(3) == 'am':
                     time = matcher_3.group(1) + ':' + matcher_3.group(2) + ':00'
+                    if matcher_3.group(1) == '12':
+                        time = '00:' + matcher_3.group(2) + ':00'
                 else:
                     if matcher_3.group(1) == '12':
                         time = matcher_3.group(1) + ':' + matcher_3.group(2) + ':00'
+                    if matcher_3.group(1) < '12':
+                        time = str(int(matcher_3.group(1))) + ':' + matcher_3.group(2) + ':00'
                     else:
                         time = str(int(matcher_3.group(1)) + 12) + ':' + matcher_3.group(2) + ':00'
-
+                time = datetime.strptime(time, '%H:%M:%S').time()
+                data['time,message'][i] = time
+            except ValueError:
+                time = str(int(matcher_3.group(1))) + ':' + matcher_3.group(2) + ':00'
                 time = datetime.strptime(time, '%H:%M:%S').time()
                 data['time,message'][i] = time
             except Exception as e:
+                print(message)
                 logger.exception("msg")
             # logging.exception('transaction_balance_sheet/transaction_analysis/get_time_message/matcher2:' + str(e))
 
@@ -468,5 +476,6 @@ def process_data(data, user_id):
         date_time_thread(data, user_id)
         logger.info('data time thread complete')
     except Exception as e:
+        print(data)
         return {'status': False, 'message': e}
     return {'status': True, 'message': 'success', 'df': data}
