@@ -125,6 +125,7 @@ def preprocessing(cust_id):
 
     for app, grp in loan_data_grouped:
         logger.info("iteration in groups starts")
+        
         if app == 'CASHBN' or app == 'KREDTB' or app == 'KREDTZ' or app == 'LNFRNT' or app == 'RRLOAN' or app == 'LOANAP' or app == 'KISSHT' or app == 'GTCASH' or app == 'FLASHO' or app == 'CSHMMA' or app == 'ZPLOAN' or app == 'FRLOAN' or app == 'SALARY':
 
             grp = grp.sort_values(by='timestamp')
@@ -389,7 +390,7 @@ def preprocessing(cust_id):
                     loan_details_individual_app[str(loan_count)] = individual_loan_details
 
                 i += 1
-
+    
             loan_details_of_all_apps[str(app)] = loan_details_individual_app
 
     return loan_details_of_all_apps
@@ -422,6 +423,7 @@ def final_output(cust_id):
     logger = logger_1('final_output', cust_id)
     report = {
         'TOTAL_LOAN_APPS' : 0,
+        'LOAN_APP_LIST' : [],
         'CURRENT_OPEN': 0,
         'TOTAL_LOANS': 0,
         'PAY_WITHIN_30_DAYS': True,
@@ -438,6 +440,7 @@ def final_output(cust_id):
         report['TOTAL_LOANS'] = report['TOTAL_LOANS'] + len(a[i].keys())
         try:       
             report['TOTAL_LOAN_APPS'] = len(a.keys())
+            report['LOAN_APP_LIST'].append(str(a[i]))
         except:
             logger.info("no loan apps")
         for j in a[i].keys():
