@@ -15,7 +15,7 @@ def payment_rating_check(cibil_df):
     due_days_check3 = False
     due_days_check4 = False
 
-    if not payment_rating['pay_rating']:
+    if payment_rating['pay_rating']:
         if not payment_rating['status']:
             pay_rating_check4 = True
 
