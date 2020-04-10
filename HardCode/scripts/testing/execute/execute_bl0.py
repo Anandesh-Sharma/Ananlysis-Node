@@ -50,6 +50,7 @@ def execute_bl0(**kwargs):
     files = [('sms_json', sms_json), ('cibil_xml', cibil_xml)]
     result = requests.post(url=url, data=payload, files=files, headers={'Authorization': Auth})
     result = result.json()
+    print(result['Model_0']['score'])
     # if not os.path.exists('../result'):
     #     os.mkdir('result')
 
@@ -84,13 +85,13 @@ def testing(user_id):
         print(f"the following error occurred : {e}")
 
 
-user_id = input('enter user id: ')
-testing(user_id=user_id)
-#
-# l = non_defaulters
-# l.sort(reverse=True)
-# print(len(l))
-# print(l)
+# user_id = input('enter user id: ')
+# testing(user_id=user_id)
+# #
+l = non_defaulters
+l.sort(reverse=True)
+print(len(l))
+print(l)
 
 # from concurrent.futures import ThreadPoolExecutor
 
@@ -98,5 +99,5 @@ testing(user_id=user_id)
 #     exc.map(testing,(i for i in l))
 
 # #
-# for i in tqdm(l[:10]):
-#     testing(i)
+for i in tqdm(l[:10]):
+    testing(i)

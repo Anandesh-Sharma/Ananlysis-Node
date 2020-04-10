@@ -1,6 +1,6 @@
 from HardCode.scripts.Util import conn
 
-def list_salary(id):
+def salary(id):
     """
 
     :param : id

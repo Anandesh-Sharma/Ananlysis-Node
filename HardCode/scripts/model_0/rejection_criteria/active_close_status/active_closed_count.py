@@ -1,4 +1,4 @@
-from HardCode.scripts.model_0.approval_criteria.active_close_status.account_type import closed , active
+from HardCode.scripts.model_0.rejection_criteria.active_close_status.account_type import closed , active
 
 def get_active_closed(cibil_df):
     """
@@ -22,8 +22,6 @@ def get_active_closed(cibil_df):
                         if str(st) == b:
                             count_active += 1
 
-    print(type(count_closed))
-    print(type(count_active))
-    print("********************************")
+
     return count_closed, count_active
 
