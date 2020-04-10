@@ -133,9 +133,8 @@ def preprocessing(cust_id):
             loan_count = 0
             loan_details_individual_app = {}
             i = 0
+            FLAG = False
 
-            if app == 'KREDTB':
-                grp = pd.DataFrame(grp)
             while i < len(grp):
                 logger.info("iteration in messages starts")
 
@@ -147,6 +146,7 @@ def preprocessing(cust_id):
                     'loan_disbursed_amount': -1,
                     'loan_due_amount': -1,
                     'overdue_max_amount': -1,
+                    'overdue_days' : -1,
                     'messages': []
                 }
                 message = str(grp['body'][i].encode('utf-8')).lower()
@@ -248,17 +248,24 @@ def preprocessing(cust_id):
                                             closed_date = datetime.strptime(str(grp['timestamp'][m]),
                                                                             '%Y-%m-%d %H:%M:%S')
                                             loan_duration = (closed_date - disbursed_date).days
+                                            if loan_duration > 15:
+                                                individual_loan_details['overdue_days'] = int(loan_duration - 15)
                                             individual_loan_details['loan_duration'] = loan_duration
                                             individual_loan_details['loan_closed_amount'] = float(
                                                 closed_amount_extract(message_closed))
                                             individual_loan_details['messages'].append(str(grp['body'][m]))
                                             k = m + 1
+                                            FLAG = True
                                             logger.info("Loan Closed!")
                                             break
                                         elif is_disbursed(message_closed):
                                             k = m
+                                            FLAG = True
                                             break
                                         m += 1
+                                if FLAG == True:
+                                    i = j
+                                    break
                                 elif is_closed(message_overdue):
 
                                     """
@@ -276,6 +283,8 @@ def preprocessing(cust_id):
                                     individual_loan_details['closed_date'] = str(grp['timestamp'][k])
                                     closed_date = datetime.strptime(str(grp['timestamp'][k]), '%Y-%m-%d %H:%M:%S')
                                     loan_duration = (closed_date - disbursed_date).days
+                                    if loan_duration > 15:
+                                        individual_loan_details['overdue_days'] = int(loan_duration - 15)
                                     individual_loan_details['loan_duration'] = loan_duration
                                     individual_loan_details['loan_closed_amount'] = float(
                                         closed_amount_extract(message_overdue))
@@ -294,7 +303,9 @@ def preprocessing(cust_id):
                                     break
 
                                 k += 1
-
+                        if FLAG  == True:
+                            j = k
+                            break
                         elif is_overdue(message_new):
 
                             """
@@ -330,6 +341,8 @@ def preprocessing(cust_id):
                                     individual_loan_details['closed_date'] = str(grp['timestamp'][m])
                                     closed_date = datetime.strptime(str(grp['timestamp'][m]), '%Y-%m-%d %H:%M:%S')
                                     loan_duration = (closed_date - disbursed_date).days
+                                    if loan_duration > 15:
+                                        individual_loan_details['overdue_days'] = int(loan_duration - 15)
                                     individual_loan_details['loan_duration'] = loan_duration
                                     individual_loan_details['loan_closed_amount'] = float(
                                         closed_amount_extract(message_closed))
@@ -365,6 +378,8 @@ def preprocessing(cust_id):
                             individual_loan_details['closed_date'] = str(grp['timestamp'][j])
                             closed_date = datetime.strptime(str(grp['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
                             loan_duration = (closed_date - disbursed_date).days
+                            if loan_duration > 15:
+                                individual_loan_details['overdue_days'] = int(loan_duration - 15)
                             individual_loan_details['loan_duration'] = loan_duration
                             individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(message_new))
                             individual_loan_details['messages'].append(str(grp['body'][j]))
@@ -406,9 +421,11 @@ def final_output(cust_id):
 
     logger = logger_1('final_output', cust_id)
     report = {
+        'TOTAL_LOAN_APPS' : 0,
         'CURRENT_OPEN': 0,
         'TOTAL_LOANS': 0,
         'PAY_WITHIN_30_DAYS': True,
+        'OVERDUE_DAYS' : -1,
         'CURRENT_OPEN_AMOUNT': [],
         'MAX_AMOUNT': -1,
         'empty': False
@@ -416,9 +433,18 @@ def final_output(cust_id):
 
     # final output
     li = []
+    li_ovrdue = []
     for i in a.keys():
         report['TOTAL_LOANS'] = report['TOTAL_LOANS'] + len(a[i].keys())
+        try:       
+            report['TOTAL_LOAN_APPS'] = len(a.keys())
+        except:
+            logger.info("no loan apps")
         for j in a[i].keys():
+            try:
+                li_ovrdue.append(int(a[i][j]['overdue_days']))
+            except:
+                pass    
             try:
                 li.append(float(a[i][j]['loan_disbursed_amount']))
                 li.append(float(a[i][j]['loan_closed_amount']))
@@ -462,7 +488,11 @@ def final_output(cust_id):
                         continue
             else:
                 continue
-
+    
+    try:
+        report['OVERDUE_DAYS'] = max(li_ovrdue)
+    except:
+        pass     
     try:
         report['MAX_AMOUNT'] = float(max(li))
     except:
