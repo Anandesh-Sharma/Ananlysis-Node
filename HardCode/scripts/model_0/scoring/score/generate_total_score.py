@@ -20,6 +20,7 @@ def get_score(user_id, cibil_df):
 
         variables, values = get_parameters(user_id, cibil_df)
         # >>==>> channel 2
+
         score1, weights1 = deduction_score(variables['deduction_variables'])
 
         # >>==>> channel 3

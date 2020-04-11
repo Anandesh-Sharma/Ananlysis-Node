@@ -1,7 +1,7 @@
 from HardCode.scripts.model_0.rejection_criteria.monthly_balance.balance import average_monthly_balance
 
 def monthly_bal_check(user_id):
-    monthly_balance = average_monthly_balance(user_id)
+    monthly_balance , status = average_monthly_balance(user_id)
 
 
     # >>==>> average monthly balance
@@ -10,6 +10,7 @@ def monthly_bal_check(user_id):
     monthly_balance_check3 = False
     monthly_balance_check4 = False
     monthly_balance_check5 = False
+
     if monthly_balance >= 3000:
         monthly_balance_check1 = True
 

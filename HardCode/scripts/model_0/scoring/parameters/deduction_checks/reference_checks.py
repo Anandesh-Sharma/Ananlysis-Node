@@ -6,11 +6,15 @@ def reference_check(user_id):
 
     # >>==>> reference_check
     reference_check = True
+    reference_check1 = True
     if reference['status']:
         reference_check = reference['result']['verification']
+    else:
+        reference_check1 = True
 
     variables = {
-        'reference_check':reference_check
+        'reference_check':reference_check,
+        'reference_check1': reference_check1
     }
     values = {
         'reference': reference

@@ -41,6 +41,7 @@ def get_ecs_bounce(cust_id):
 def get_count_ecs(cust_id):
     ecs = get_ecs_bounce(cust_id)
     count = 0
+    status = False
     if not ecs.empty:
         i = 0
 
@@ -56,11 +57,12 @@ def get_count_ecs(cust_id):
                 else:
                     i=j
                     count +=1
+                    status = True
                     break
                 j=j+1
             i=i+1
 
-    return count
+    return count , status
 
 
 

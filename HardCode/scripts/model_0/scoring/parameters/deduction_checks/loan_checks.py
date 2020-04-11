@@ -10,6 +10,7 @@ def loan_check(user_id):
     loan_limit_check4 = False
     loan_limit_check5 = False
     loan_limit_check6 = False
+    loan_limit_check = False
     if max_limit != -1:
         if max_limit >= 6000:
             loan_limit_check1 = True
@@ -24,12 +25,17 @@ def loan_check(user_id):
         if 2000 > max_limit > 1000:
             loan_limit_check2 = True
 
+    if max_limit == -1:
+        loan_limit_check = True
+
     # >>==>> due days
     loan_due_check1 = False
     loan_due_check2 = False
     loan_due_check3 = False
     loan_due_check4 = False
     loan_due_check5 = False
+    loan_due_check = False
+
     if  due_days != -1:
         if due_days == 0:
             loan_due_check1 = True
@@ -42,11 +48,15 @@ def loan_check(user_id):
         if due_days >= 9:
             loan_due_check5 = True
 
+    if due_days == -1:
+        loan_due_check = True
+
     # >>==>> no. of loan apps
     loan_app_no_check1 = False
     loan_app_no_check2 = False
     loan_app_no_check3 = False
     loan_app_no_check4 = False
+    loan_app_no_check = False
 
     if no_of_loan_apps >= 4:
         loan_app_no_check1 = True
@@ -56,10 +66,13 @@ def loan_check(user_id):
         loan_app_no_check3 = True
     if no_of_loan_apps == 1:
         loan_app_no_check4 = True
+    if no_of_loan_apps == 0:
+        loan_app_no_check = True
 
      #>>==>> premium apps
     apps = ['MONEYTAP','EARLYSALARY','NIRAFIN','PAYSENSE','PAYMEINDIA','SHUBH LOAN','FLEXSALARY','QUBERA','IAVAIL']
     premium_apps_check = False
+
     for ap in premium_apps:
         for aps in apps:
             if str(ap) == aps:
@@ -72,15 +85,18 @@ def loan_check(user_id):
         'loan_limit_check4': loan_limit_check4,
         'loan_limit_check5': loan_limit_check5,
         'loan_limit_check6': loan_limit_check6,
+        'loan_limit_check': loan_limit_check,
         'loan_due_check1': loan_due_check1,
         'loan_due_check2': loan_due_check2,
         'loan_due_check3': loan_due_check3,
         'loan_due_check4': loan_due_check4,
         'loan_due_check5': loan_due_check5,
+        'loan_due_check': loan_due_check,
         'loan_app_no_check1': loan_app_no_check1,
         'loan_app_no_check2': loan_app_no_check2,
         'loan_app_no_check3': loan_app_no_check3,
         'loan_app_no_check4': loan_app_no_check4,
+        'loan_app_no_check': loan_app_no_check,
         'premium_apps_check' :premium_apps_check
 
     }

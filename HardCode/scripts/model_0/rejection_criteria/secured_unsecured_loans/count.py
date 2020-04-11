@@ -9,9 +9,11 @@ def secure_unsecured_loan(cibil_df):
     """
     secured_loan = 0
     unsecured_loan = 0
+    status = False
     if cibil_df['data'] is not None:  # ==>> this check is added cause in case cibil file is not uploaded
         if not cibil_df['data'].empty:  # ==> dataframe is returned as None instead of an empty df
             secured_loan = int(cibil_df['data']['secured_loan'].iloc[-1])
             unsecured_loan = int(cibil_df['data']['unsecured_loan'].iloc[-1])
+            status =True
 
-    return secured_loan, unsecured_loan
+    return secured_loan, unsecured_loan , status

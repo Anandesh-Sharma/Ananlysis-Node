@@ -8,7 +8,9 @@ def get_parameters(user_id, cibil_df):
     :rtype: dict
     """
     approval_variables, approval_values = get_approval_parameters(user_id)
+
     deduction_variables, deduction_values = get_deduction_parameters(user_id,cibil_df)
+
 
     variables = {
         'approval_variables': approval_variables,

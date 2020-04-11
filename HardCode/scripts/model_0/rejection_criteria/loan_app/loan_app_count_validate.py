@@ -8,6 +8,7 @@ def loan_app_count(user_id):
     """
     app_data = get_reference_details(user_id)
     percentage_of_loan_apps = 0
+    status = False
     try:
 
         if app_data:
@@ -20,9 +21,10 @@ def loan_app_count(user_id):
                     d.append(i)
 
             percentage_of_loan_apps = (len(d) / len(app_data))
+            status = True
 
     except BaseException as e:
         print(f"Error in loan app count validation : {e}")
 
     finally:
-        return round(percentage_of_loan_apps, 2)
+        return round(percentage_of_loan_apps, 2) , status

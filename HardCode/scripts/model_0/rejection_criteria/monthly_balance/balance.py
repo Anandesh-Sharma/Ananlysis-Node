@@ -9,7 +9,7 @@ def average_monthly_balance(user_id):
     connect = conn()
     bal = connect.analysis.balance_sheet.find_one({'cust_id': user_id})
     avg = []
-
+    status = False
     avg_balance = 0
     try:
 
@@ -19,9 +19,10 @@ def average_monthly_balance(user_id):
                 a = credit[i][1] - bal['debit'][i][1]
                 avg.append(a)
             avg_balance = sum(avg) / len(avg)
+            status = True
             
     except BaseException as e:
         print(f"Error in balance check : {e}")
 
     finally:
-        return round(avg_balance, 2)
+        return round(avg_balance, 2) , status
