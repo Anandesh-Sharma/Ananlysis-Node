@@ -440,7 +440,7 @@ def final_output(cust_id):
         report['TOTAL_LOANS'] = report['TOTAL_LOANS'] + len(a[i].keys())
         try:       
             report['TOTAL_LOAN_APPS'] = len(a.keys())
-            report['LOAN_APP_LIST'].append(str(a[i]))
+            report['LOAN_APP_LIST'].append(str(i)
         except:
             logger.info("no loan apps")
         for j in a[i].keys():
