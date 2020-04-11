@@ -3,7 +3,7 @@ from HardCode.scripts.model_0.rejection_criteria.reference_verification.data_ext
 from HardCode.scripts.model_0.rejection_criteria.reference_verification.validation.cosine_similarity_method import \
     cos_sim
 from HardCode.scripts.Util import conn
-
+from pprint import pprint
 
 def validate(user_id):
     """
@@ -16,6 +16,8 @@ def validate(user_id):
     validated = False
     max_similarity = -9
     msg = ''
+
+
     try:
         if reference_number and reference_relation and contacts_data:
 

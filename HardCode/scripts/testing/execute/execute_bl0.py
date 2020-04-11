@@ -7,6 +7,7 @@ from HardCode.scripts.testing.user_ids import *
 
 warnings.filterwarnings('ignore')
 from tqdm import tqdm
+import pandas as pd
 
 
 def generate_access_token():
@@ -25,6 +26,7 @@ def execute_bl0(**kwargs):
     user_id = kwargs.get('user_id')
     cibil_score = kwargs.get('cibil_score')
     # cibil_xml = kwargs.get('cibil_file')
+
 
     if os.path.exists(os.path.join('..\input_data', 'cibil_data_' + str(user_id) + '.xml')):
         cibil_xml = open(os.path.join('..\input_data', 'cibil_data_' + str(user_id) + '.xml'))
@@ -50,7 +52,7 @@ def execute_bl0(**kwargs):
     files = [('sms_json', sms_json), ('cibil_xml', cibil_xml)]
     result = requests.post(url=url, data=payload, files=files, headers={'Authorization': Auth})
     result = result.json()
-    print(result['Model_0']['score'])
+
     # if not os.path.exists('../result'):
     #     os.mkdir('result')
 
@@ -99,5 +101,5 @@ print(l)
 #     exc.map(testing,(i for i in l))
 
 # #
-for i in tqdm(l[:10]):
+for i in tqdm(l[:50]):
     testing(i)

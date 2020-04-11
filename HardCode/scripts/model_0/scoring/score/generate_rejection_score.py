@@ -48,6 +48,29 @@ def deduction_score(deduction_variables):
     due_days_check3 = deduction_variables['payment_rating_var']['due_days_check3']
     due_days_check4 = deduction_variables['payment_rating_var']['due_days_check4']
 
+    loan_limit_check1 = deduction_variables['loan_var']['loan_limit_check1']
+    loan_limit_check2 = deduction_variables['loan_var']['loan_limit_check2']
+    loan_limit_check3 = deduction_variables['loan_var']['loan_limit_check3']
+    loan_limit_check4 = deduction_variables['loan_var']['loan_limit_check4']
+    loan_limit_check5 = deduction_variables['loan_var']['loan_limit_check5']
+    loan_limit_check6 = deduction_variables['loan_var']['loan_limit_check6']
+
+    loan_due_check1 = deduction_variables['loan_var']['loan_due_check1']
+    loan_due_check2 = deduction_variables['loan_var']['loan_due_check2']
+    loan_due_check3 = deduction_variables['loan_var']['loan_due_check3']
+    loan_due_check4 = deduction_variables['loan_var']['loan_due_check4']
+    loan_due_check5 = deduction_variables['loan_var']['loan_due_check5']
+
+    loan_app_no_check1 = deduction_variables['loan_var']['loan_app_no_check1']
+    loan_app_no_check2 = deduction_variables['loan_var']['loan_app_no_check2']
+    loan_app_no_check3 = deduction_variables['loan_var']['loan_app_no_check3']
+    loan_app_no_check4 = deduction_variables['loan_var']['loan_app_no_check4']
+
+    premium_apps_check = deduction_variables['loan_var']['premium_apps_check']
+
+    ecs_check1 = deduction_variables['ecs_var']['ecs_check1']
+    ecs_check2 = deduction_variables['ecs_var']['ecs_check2']
+    ecs_check3 = deduction_variables['ecs_var']['ecs_check3']
 
 
 
@@ -165,5 +188,69 @@ def deduction_score(deduction_variables):
     if payment_rating_check4 or due_days_check4:
         score -= 60
         weights['due_days/payment_rating'] = '-60'
+
+    if loan_limit_check2:
+        score -= 40
+        weights['loan_limit'] = '-40'
+
+    if loan_limit_check3:
+        score -= 60
+        weights['loan_limit'] = '-60'
+
+    if loan_limit_check4:
+        score -= 80
+        weights['loan_limit'] = '-80'
+
+    if loan_limit_check5:
+        score -= 100
+        weights['loan_limit'] = '-100'
+
+    if loan_limit_check6:
+        score -= 130
+        weights['loan_limit'] = '-130'
+
+    if loan_due_check2:
+        score -= 20
+        weights['loan_due_days'] = '-20'
+
+    if loan_due_check3:
+        score -= 40
+        weights['loan_due_days'] = '-40'
+
+    if loan_due_check4:
+        score -= 80
+        weights['loan_due_days'] = '-80'
+
+    if loan_due_check5:
+        score -= 100
+        weights['loan_due_days'] = '-100'
+
+    if loan_app_no_check2:
+        score -= 40
+        weights['loan_apps_count'] = '-40'
+
+    if loan_app_no_check3:
+        score -= 60
+        weights['loan_apps_count'] = '-60'
+
+    if loan_app_no_check4:
+        score -= 80
+        weights['loan_apps_count'] = '-80'
+
+    if not premium_apps_check:
+        score -= 50
+        weights['premium_apps'] = '-50'
+
+    if ecs_check1:
+        score -= 20
+        weights['ecs_count'] = '-20'
+
+    if ecs_check2:
+        score -= 40
+        weights['ecs_count'] = '-40'
+
+    if ecs_check3:
+        score -= 60
+        weights['ecs_count'] = '-60'
 
     return score ,weights

@@ -17,7 +17,8 @@ def conn():
     connection = MongoClient(
         f"mongodb://{os.environ['MONGOUSER']}:" + urllib.parse.quote(
             os.environ['MONGOPASS']) + "@localhost:27017/?authSource=admin"
-                                       f"&readPreference=primary&ssl=false",
+                                       f"&readPreference=primary&ssl=false"
+,
         socketTimeoutMS=900000)
     return connection
 

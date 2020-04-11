@@ -4,6 +4,8 @@ from HardCode.scripts.model_0.rejection_criteria.reference_verification.validati
 from HardCode.scripts.model_0.rejection_criteria.payment_rating.pay_rating import get_payment_rating
 from HardCode.scripts.model_0.rejection_criteria.due_days.max_days import max_due_days
 from HardCode.scripts.rejection.rejected import check_rejection
+from HardCode.scripts.model_0.rejection_criteria.ecs_bounce.ecs_bounce import get_count_ecs
+from HardCode.scripts.model_0.rejection_criteria.loan_limit.loan_info import loan_limit
 
 def rejecting_parameters(user_id,cibil_df):
 
@@ -13,6 +15,10 @@ def rejecting_parameters(user_id,cibil_df):
     payment_rating = get_payment_rating(cibil_df)
     due_days = max_due_days(cibil_df)
     rejection_app = check_rejection(user_id)
+    ecs_count = get_count_ecs(user_id)
+    max_limit, loan_due_days, no_of_loan_apps, premium_apps = loan_limit(user_id)
+
+
     rejection_reasons = []
     if loan_app >= 0.70:
         msg = "the number of loan apps were greater than 70% of total apps"
@@ -37,6 +43,14 @@ def rejecting_parameters(user_id,cibil_df):
 
     if rejection_app:
         msg = "rejected from other apps as well"
+        rejection_reasons.append(msg)
+
+    if ecs_count >= 4 :
+        msg = "rejected as there are more than 4 ecs related msgs"
+        rejection_reasons.append(msg)
+
+    if loan_due_days >= 9:
+        msg = "rejected as due days for a loan are more than 9 days"
         rejection_reasons.append(msg)
 
 
