@@ -1,11 +1,11 @@
 import logging
 import pandas as pd
-import os
 from datetime import datetime
 from datetime import timedelta
 from logging.handlers import TimedRotatingFileHandler
 from pymongo import MongoClient
 import warnings
+from analysisnode.settings import MONGOUSER, MONGOPASS
 import urllib
 
 warnings.filterwarnings("ignore")
@@ -13,12 +13,9 @@ warnings.filterwarnings("ignore")
 
 def conn():
     # Create MONGO_SUPERUSER and MONGO_SUPERPASS global varaible in local environment for MongoDB
-
-    connection = MongoClient(
-        f"mongodb://{os.environ['MONGOUSER']}:" + urllib.parse.quote(
-            os.environ['MONGOPASS']) + "@localhost:27017/?authSource=admin"
-                                       f"&readPreference=primary&ssl=false",
-        socketTimeoutMS=900000)
+    print(MONGOUSER, MONGOPASS)
+    connection = MongoClient(f"mongodb://{(urllib.parse.quote(MONGOUSER))}:{urllib.parse.quote(MONGOPASS)}@localhost"
+                             f":27017/?authSource=admin&readPreference=primary&ssl=false", socketTimeoutMS=900000)
     return connection
 
 

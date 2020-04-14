@@ -15,12 +15,13 @@ def request_main(user_id):
     print(headers, temp)
     print(requests.post(API_ENDPOINT, data=temp, headers=headers,
                         files={
-                            'sms_json': open(f'/home/iam/Documents/Users Data for AN/{user_id}/sms_data.json')}).text)
+                            'sms_json': open(f'/home/iam/Downloads/credicxo-projects/Users Data for AN/{user_id}/sms_data.json')}).text)
 
 
 if __name__ == "__main__":
-    os.chdir("/home/iam/Documents/Users Data for AN/")
+    os.chdir("/home/iam/Downloads/credicxo-projects/Users Data for AN/")
     user_ids = list(map(int, glob("*")))
     print(user_ids)
     for user_id in user_ids:
         request_main(user_id)
+
