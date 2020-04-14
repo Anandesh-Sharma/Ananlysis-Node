@@ -412,14 +412,12 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'.*loan.*overdue.*repayable\sis\srs.\s?([0-9]+)',
         r'.*loan.*rs\.\s([0-9]+).*overdue.*',
         r'.*loan.*overdue.*repayment.*rs\.?\s([0-9]+)',
-        r'despite\sseveral\sreminders.*over[-]?\s?due.*legal\saction'
-
-        # due
-        r'.*payment.*rs\.?.*?([0-9]+).*due.*',  # group(1) for amount
-        r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)',  # group(1) for date and group(2) for amount
-        r'.*rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+).*',  # group(1) for amount and group(2) for date
-        r'due\s(?:on)?.*([0-9]+/[0-9]+).*',  # group(1) for date in cashbn
-        r'.*loan.*rs\.?.*?([0-9]+).*due.*',  # group(1) for loan amount
+        r'despite\sseveral\sreminders.*over[-]?\s?due.*legal\saction',
+        r'.*payment.*rs\.?.*?([0-9]+).*due.*',  
+        r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)',  
+        r'.*rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+).*',  
+        r'due\s(?:on)?.*([0-9]+/[0-9]+).*',  
+        r'.*loan.*rs\.?.*?([0-9]+).*due.*',
         r'.*payment.*due.*'
     ]
 
