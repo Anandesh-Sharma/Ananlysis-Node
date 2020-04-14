@@ -1,5 +1,6 @@
 from HardCode.scripts.model_0.parameters.additional_parameters.credit_card_limit.cc_limit import get_cc_limit
 from HardCode.scripts.model_0.parameters.additional_parameters.salary.salary_count import salary
+from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
 
 
 
@@ -11,6 +12,7 @@ def get_additional_parameters(user_id):
 
     cc_limit = get_cc_limit(user_id)
     salary_dict = salary(user_id)
+    max_limit, due_days, no_of_loan_apps, premium_apps = loan_limit(user_id)
 
 
     # >>==>> salary
@@ -59,6 +61,14 @@ def get_additional_parameters(user_id):
             cc_limit_check5 = True
 
 
+     #>>==>> premium apps
+    apps = ['MNYTAP','SALARY','NIRAFN','PAYSNS','PAYMEI','SUBHLN','VIVIFI','QUBERA','IAVAIL']
+    premium_apps_check = False
+
+    for ap in premium_apps:
+        for aps in apps:
+            if str(ap) == aps:
+                premium_apps_check = True
 
 
 
@@ -72,14 +82,16 @@ def get_additional_parameters(user_id):
         'salary_check2': salary_check2,
         'salary_check3': salary_check3,
         'salary_check4': salary_check4,
-        'salary_check5': salary_check5
+        'salary_check5': salary_check5,
+        'premium_check': premium_apps_check
 
 
     }
 
     approval_values = {
         'credit_card_limit': cc_limit,
-        'salary': salary_dict
+        'salary': salary_dict,
+        'premium_apps': premium_apps
 
     }
 

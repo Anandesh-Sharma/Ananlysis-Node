@@ -7,6 +7,9 @@ def loan_limit(user_id):
     :rtype: float
     """
     max_limit = -1
+    due_days = -1
+    no_of_loan_apps = 0
+    premium_apps = []
     connect = conn()
     loan_analysis_result = connect.analysis.loan.find_one({'cust_id': user_id})
 

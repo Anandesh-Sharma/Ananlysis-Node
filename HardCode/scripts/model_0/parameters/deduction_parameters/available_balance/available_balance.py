@@ -5,17 +5,8 @@ import pandas as pd
 import csv
 from pprint import pprint
 from pymongo import MongoClient
+from HardCode.scripts.Util import conn
 
-
-def conn():
-    # Create MONGO_SUPERUSER and MONGO_SUPERPASS global varaible in local environment for MongoDB
-
-    connection = MongoClient(
-        f"mongodb://root:root123@localhost:27017/?authSource=admin"
-                                       f"&readPreference=primary&ssl=false"
-,
-        socketTimeoutMS=900000)
-    return connection
 
 def month_balance(value,prev_month,prev_year,sec_mon,sec_yr,third_mon,third_yr,all_timestamps,sms_info_df,ac_no,tz_info):
     last_month_bal = int(value['last_month_available_balance'])
@@ -218,7 +209,7 @@ def find_info(loan_date_time,id):
                                 tz_info)
 
 
-        csv_dict.update({'balanace_on_loan_date':latest_avail_bal,'last_month_bal':bal_list[0],
+        csv_dict.update({'balance_on_loan_date':latest_avail_bal,'last_month_bal':bal_list[0],
                          'second_last_month_bal':bal_list[1],
                          'third_last_month_bal':bal_list[2]})
         list_to_return.append(csv_dict)
@@ -229,10 +220,10 @@ def find_info(loan_date_time,id):
         # wr.writerow(csv_dict)
 
 
-
-loan_date_time = datetime.now()
-list_user = [355628, 360092, 356935, 359537]
-for user in list_user:
-    pprint(find_info(loan_date_time,user))
+#
+# loan_date_time = datetime.now()
+# list_user = [355628, 360092, 356935, 359537]
+# for user in list_user:
+#     pprint(find_info(loan_date_time,user))
 
 

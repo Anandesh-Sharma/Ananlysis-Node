@@ -5,9 +5,12 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.payment_rating.pay
 from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.model_0.parameters.deduction_parameters.ecs_bounce.ecs_bounce import get_count_ecs
 from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
+from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.total_rejection_msg import get_defaulter
+from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.available_balance import find_info
+from datetime import datetime
 
 def rejecting_parameters(user_id,cibil_df):
-
+    date = datetime.now()
     loan_app , loan_status = loan_app_count(user_id)
     account_status_value , ac_status = get_acc_status(cibil_df)
     reference = validate(user_id)
@@ -15,7 +18,8 @@ def rejecting_parameters(user_id,cibil_df):
     rejection_app = check_rejection(user_id)
     ecs_count , ecs_status = get_count_ecs(user_id)
     max_limit, loan_due_days, no_of_loan_apps, premium_apps = loan_limit(user_id)
-
+    rejection_msg = get_defaulter(user_id)
+    # available_bal = find_info(date,user_id)
 
     rejection_reasons = []
     if loan_app >= 0.70:
@@ -37,9 +41,9 @@ def rejecting_parameters(user_id,cibil_df):
             rejection_reasons.append(msg)
 
 
-    if len(rejection_app['result']['rejected_loan_apps']) >= 4:
-        msg = "rejected from other apps as well"
-        rejection_reasons.append(msg)
+    # if len(rejection_app['result']['rejected_loan_apps']) >= 4:
+    #     msg = "rejected from other apps as well"
+    #     rejection_reasons.append(msg)
 
     if ecs_count >= 4 :
         msg = "rejected as there are more than 4 ecs related msgs"
@@ -49,6 +53,13 @@ def rejecting_parameters(user_id,cibil_df):
         msg = "rejected as due days for a loan are more than 9 days"
         rejection_reasons.append(msg)
 
+    if rejection_msg:
+        msg = "user has critical rejection msgs in data"
+        rejection_reasons.append(msg)
+
+    # if available_bal['balance_on_loan_date'] > 20000 | available_bal['balance_on_loan_date'] < 0:
+    #     msg = "available balance not in the desired range"
+    #     rejection_reasons.append(msg)
 
     return rejection_reasons
 

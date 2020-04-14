@@ -1,7 +1,7 @@
 
 
 def deduction_score(deduction_variables):
-    score = 1000
+    score = 900
     weights = {}
 
     #secured_unsecured_check1 = deduction_variables['secured_unsecured_var']['secured_unsecured_check1']
@@ -28,12 +28,6 @@ def deduction_score(deduction_variables):
     active_close_check5 = deduction_variables['active_close_var']['active_close_check5']
     active_close_check = deduction_variables['active_close_var']['active_close_check']
 
-    #monthly_balance_check1 = deduction_variables["monthly_bal_check1"]
-    # monthly_balance_check2 = deduction_variables['monthly_balance_var']["monthly_bal_check2"]
-    # monthly_balance_check3 = deduction_variables['monthly_balance_var']["monthly_bal_check3"]
-    # monthly_balance_check4 = deduction_variables['monthly_balance_var']["monthly_bal_check4"]
-    # monthly_balance_check5 = deduction_variables['monthly_balance_var']["monthly_bal_check5"]
-    # monthly_balance_check = deduction_variables['monthly_balance_var']["monthly_bal_check"]
 
     reference_check = deduction_variables['reference_var']['reference_check']
     reference_check1 = deduction_variables['reference_var']['reference_check1']
@@ -70,7 +64,7 @@ def deduction_score(deduction_variables):
     loan_app_no_check4 = deduction_variables['loan_var']['loan_app_no_check4']
     loan_app_no_check = deduction_variables['loan_var']['loan_app_no_check']
 
-    premium_apps_check = deduction_variables['loan_var']['premium_apps_check']
+
 
     ecs_check1 = deduction_variables['ecs_var']['ecs_check1']
     ecs_check2 = deduction_variables['ecs_var']['ecs_check2']
@@ -153,21 +147,6 @@ def deduction_score(deduction_variables):
 
 
 
-    # if monthly_balance_check2:
-    #     score -= 30
-    #     weights['monthly_balance'] = '-30'
-    #
-    # if monthly_balance_check3:
-    #     score -= 50
-    #     weights['monthly_balance'] = '-50'
-    #
-    # if monthly_balance_check4:
-    #     score -= 70
-    #     weights['monthly_balance'] = '-70'
-    #
-    # if monthly_balance_check5:
-    #     score -= 100
-    #     weights['monthly_balance'] = '-100'
 
     if not reference_check or reference_check1:
         score -= 100
@@ -189,16 +168,16 @@ def deduction_score(deduction_variables):
 
 
     if payment_rating_check2:
-        score -= 20
-        weights['payment_rating'] = '-20'
-
-    if payment_rating_check3:
         score -= 40
         weights['payment_rating'] = '-40'
 
-    if payment_rating_check4 or payment_rating_check:
+    if payment_rating_check3:
         score -= 60
         weights['payment_rating'] = '-60'
+
+    if payment_rating_check4 or payment_rating_check:
+        score -= 100
+        weights['payment_rating'] = '-100'
 
     if loan_limit_check2:
         score -= 40
@@ -256,9 +235,7 @@ def deduction_score(deduction_variables):
         score -= 100
         weights['loan_apps_count'] = '-100'
 
-    # if not premium_apps_check:
-    #     score -= 50
-    #     weights['premium_apps'] = '-50'
+
 
     if ecs_check1:
         score -= 20

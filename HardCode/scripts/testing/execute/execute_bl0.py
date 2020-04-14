@@ -52,7 +52,7 @@ def execute_bl0(**kwargs):
     files = [('sms_json', sms_json), ('cibil_xml', cibil_xml)]
     result = requests.post(url=url, data=payload, files=files, headers={'Authorization': Auth})
     result = result.json()
-    print(result['Model_0']['score'])
+
 
     # if not os.path.exists('../result'):
     #     os.mkdir('result')
@@ -91,7 +91,7 @@ def testing(user_id):
 # user_id = input('enter user id: ')
 # testing(user_id=user_id)
 # #
-l = npa_ids
+l = npa_ids1
 l.sort(reverse=True)
 print(len(l))
 print(l)
@@ -102,5 +102,5 @@ print(l)
 #     exc.map(testing,(i for i in l))
 
 # #
-for i in tqdm(l[:10]):
+for i in tqdm(l[:150]):
     testing(i)

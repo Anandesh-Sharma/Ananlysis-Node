@@ -14,6 +14,7 @@ def additional_score(additional_variables):
     salary_check3 = additional_variables['salary_check3']
     salary_check4 = additional_variables['salary_check4']
     salary_check5 = additional_variables['salary_check5']
+    premium_apps_check = additional_variables['premium_check']
 
 
     if cc_limit_check1:
@@ -55,6 +56,10 @@ def additional_score(additional_variables):
     if salary_check5:
         score += 10
         weights['salary'] = '+10'
+
+    if premium_apps_check:
+        score += 20
+        weights['premium_apps'] = '+50'
 
     return score, weights
 

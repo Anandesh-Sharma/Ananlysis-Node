@@ -17,6 +17,9 @@ def get_score(user_id, cibil_df):
     try:
         # >>==>> channel 1
         rejection_reasons = rejecting_parameters(user_id,cibil_df)
+        if len(rejection_reasons) > 0:
+            print("user rejected")
+
 
         variables, values = get_parameters(user_id, cibil_df)
         # >>==>> channel 2

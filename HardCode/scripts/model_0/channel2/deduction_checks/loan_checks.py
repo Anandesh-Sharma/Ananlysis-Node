@@ -69,14 +69,7 @@ def loan_check(user_id):
     if no_of_loan_apps == 0:
         loan_app_no_check = True
 
-     #>>==>> premium apps
-    apps = ['MONEYTAP','EARLYSALARY','NIRAFIN','PAYSENSE','PAYMEINDIA','SHUBH LOAN','FLEXSALARY','QUBERA','IAVAIL']
-    premium_apps_check = False
 
-    for ap in premium_apps:
-        for aps in apps:
-            if str(ap) == aps:
-                premium_apps_check = True
 
     variables = {
         'loan_limit_check1': loan_limit_check1,
@@ -97,7 +90,7 @@ def loan_check(user_id):
         'loan_app_no_check3': loan_app_no_check3,
         'loan_app_no_check4': loan_app_no_check4,
         'loan_app_no_check': loan_app_no_check,
-        'premium_apps_check' :premium_apps_check
+
 
     }
 
@@ -105,7 +98,7 @@ def loan_check(user_id):
         'max_limit' : max_limit,
         'due_days': due_days,
         'no_of_loan_apps': no_of_loan_apps,
-        'premium_apps' : premium_apps
+
     }
 
     return variables,values
