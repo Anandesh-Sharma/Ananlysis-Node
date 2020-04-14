@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from analysisnode.Checksum import verify_checksum
 from analysisnode.settings import CHECKSUM_KEY, FINAL_RESULT
-from HardCode.scripts.fetch_results_mdb import fetch_user
+from HardCode.scripts.fetch_results.fetch_results_mdb import fetch_user
 
 
 @api_view(['POST'])
