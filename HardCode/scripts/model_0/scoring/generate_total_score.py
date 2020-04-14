@@ -6,6 +6,7 @@ from HardCode.scripts.Util import conn
 from datetime import datetime
 import pytz
 
+
 timezone = pytz.timezone('Asia/Kolkata')
 
 
@@ -43,6 +44,7 @@ def get_score(user_id, cibil_df):
             'score': score,
             'modified_at': str(timezone.localize(datetime.now()))
         }
+
         client = conn()
 
         result = {'cust_id': user_id, 'Model_0': model_0, 'status': status}

@@ -64,10 +64,11 @@ def get_additional_parameters(user_id):
      #>>==>> premium apps
     apps = ['MNYTAP','SALARY','NIRAFN','PAYSNS','PAYMEI','SUBHLN','VIVIFI','QUBERA','IAVAIL']
     premium_apps_check = False
-
+    list_premium = []
     for ap in premium_apps:
         for aps in apps:
             if str(ap) == aps:
+                list_premium.append(ap)
                 premium_apps_check = True
 
 
@@ -91,7 +92,7 @@ def get_additional_parameters(user_id):
     approval_values = {
         'credit_card_limit': cc_limit,
         'salary': salary_dict,
-        'premium_apps': premium_apps
+        'premium_apps': list_premium
 
     }
 
