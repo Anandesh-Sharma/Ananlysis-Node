@@ -6,7 +6,7 @@ from HardCode.scripts.cibil.Analysis import analyse
 from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import create_transaction_balanced_sheet
 from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.classifiers.Classifier import classifier
-from HardCode.scripts.model_0.scoring.score.generate_total_score import get_score
+from HardCode.scripts.model_0.scoring.generate_total_score import get_score
 from HardCode.scripts.Util import *
 import warnings
 import pandas as pd
