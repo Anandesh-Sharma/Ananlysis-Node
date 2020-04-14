@@ -412,6 +412,7 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'.*loan.*overdue.*repayable\sis\srs.\s?([0-9]+)',
         r'.*loan.*rs\.\s([0-9]+).*overdue.*',
         r'.*loan.*overdue.*repayment.*rs\.?\s([0-9]+)',
+        r'despite\sseveral\sreminders.*over[-]?\s?due.*legal\saction'
 
         # due
         r'.*payment.*rs\.?.*?([0-9]+).*due.*',  # group(1) for amount
