@@ -1,7 +1,9 @@
 from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
 
 def loan_check(user_id):
-    max_limit, due_days, no_of_loan_apps, premium_apps = loan_limit(user_id)
+
+    max_limit, due_days, no_of_loan_apps, premium_apps ,overdue_ratio = loan_limit(user_id)
+
 
     #>>==>> loan limit
     loan_limit_check1 = False
@@ -36,19 +38,23 @@ def loan_check(user_id):
     loan_due_check5 = False
     loan_due_check = False
 
-    if  due_days != -1:
-        if due_days == 0:
-            loan_due_check1 = True
-        if 3 > due_days >= 1:
-            loan_due_check2 = True
-        if 6 > due_days >= 3:
-            loan_due_check3 = True
-        if 9 > due_days >= 6:
-            loan_due_check4 = True
-        if due_days >= 9:
-            loan_due_check5 = True
+    if overdue_ratio < 0.05:
+        if  due_days != -1:
+            if due_days == 0:
+                loan_due_check1 = True
+            if 3 > due_days >= 1:
+                loan_due_check2 = True
+            if 6 > due_days >= 3:
+                loan_due_check3 = True
+            if 9 > due_days >= 6:
+                loan_due_check4 = True
+            if due_days >= 9:
+                loan_due_check5 = True
 
-    if due_days == -1:
+        if due_days == -1:
+            loan_due_check = True
+
+    else:
         loan_due_check = True
 
     # >>==>> no. of loan apps

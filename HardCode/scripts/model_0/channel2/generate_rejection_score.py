@@ -70,6 +70,11 @@ def deduction_score(deduction_variables):
     ecs_check2 = deduction_variables['ecs_var']['ecs_check2']
     ecs_check3 = deduction_variables['ecs_var']['ecs_check3']
 
+    available_balance_check1 = deduction_variables['available_balance_var']['available_balance_check1']
+    available_balance_check2 = deduction_variables['available_balance_var']['available_balance_check2']
+    available_balance_check3 = deduction_variables['available_balance_var']['available_balance_check3']
+    available_balance_check4 = deduction_variables['available_balance_var']['available_balance_check4']
+    available_balance_check5 = deduction_variables['available_balance_var']['available_balance_check5']
 
 
 
@@ -79,24 +84,24 @@ def deduction_score(deduction_variables):
         weights['secured_unsecured'] = '-20'
 
     if secured_unsecured_check3:
-        score -= 30
-        weights['secured_unsecured'] = '-30'
-
-    if secured_unsecured_check4:
-        score -= 35
-        weights['secured_unsecured'] = '-35'
-
-    if secured_unsecured_check5:
         score -= 40
         weights['secured_unsecured'] = '-40'
 
+    if secured_unsecured_check4:
+        score -= 60
+        weights['secured_unsecured'] = '-60'
+
+    if secured_unsecured_check5:
+        score -= 80
+        weights['secured_unsecured'] = '-80'
+
     if secured_unsecured_check6:
-        score -= 45
-        weights['secured_unsecured'] = '-45'
+        score -= 90
+        weights['secured_unsecured'] = '-90'
 
     if secured_unsecured_check:
-        score -= 50
-        weights['secured_unsecured'] = '-50'
+        score -= 100
+        weights['secured_unsecured'] = '-100'
 
     if age_of_oldest_trade_check2:
         score -= 20
@@ -168,40 +173,40 @@ def deduction_score(deduction_variables):
 
 
     if payment_rating_check2:
-        score -= 40
-        weights['payment_rating'] = '-40'
+        score -= 20
+        weights['payment_rating'] = '-20'
 
     if payment_rating_check3:
-        score -= 60
-        weights['payment_rating'] = '-60'
+        score -= 30
+        weights['payment_rating'] = '-30'
 
     if payment_rating_check4 or payment_rating_check:
-        score -= 100
-        weights['payment_rating'] = '-100'
+        score -= 50
+        weights['payment_rating'] = '-50'
 
     if loan_limit_check2:
+        score -= 20
+        weights['loan_limit'] = '-20'
+
+    if loan_limit_check3:
         score -= 40
         weights['loan_limit'] = '-40'
 
-    if loan_limit_check3:
+    if loan_limit_check4:
         score -= 60
         weights['loan_limit'] = '-60'
 
-    if loan_limit_check4:
+    if loan_limit_check5:
         score -= 80
         weights['loan_limit'] = '-80'
 
-    if loan_limit_check5:
-        score -= 100
-        weights['loan_limit'] = '-100'
-
     if loan_limit_check6:
-        score -= 130
-        weights['loan_limit'] = '-130'
+        score -= 90
+        weights['loan_limit'] = '-90'
 
     if loan_limit_check:
-        score -= 150
-        weights['loan_limit'] = '-150'
+        score -= 100
+        weights['loan_limit'] = '-100'
 
     if loan_due_check2:
         score -= 20
@@ -220,20 +225,20 @@ def deduction_score(deduction_variables):
         weights['loan_due_days'] = '-100'
 
     if loan_app_no_check2:
+        score -= 20
+        weights['loan_apps_count'] = '-20'
+
+    if loan_app_no_check3:
+        score -= 30
+        weights['loan_apps_count'] = '-30'
+
+    if loan_app_no_check4:
         score -= 40
         weights['loan_apps_count'] = '-40'
 
-    if loan_app_no_check3:
-        score -= 60
-        weights['loan_apps_count'] = '-60'
-
-    if loan_app_no_check4:
-        score -= 80
-        weights['loan_apps_count'] = '-80'
-
     if loan_app_no_check:
-        score -= 100
-        weights['loan_apps_count'] = '-100'
+        score -= 50
+        weights['loan_apps_count'] = '-50'
 
 
 
@@ -248,5 +253,21 @@ def deduction_score(deduction_variables):
     if ecs_check3:
         score -= 60
         weights['ecs_count'] = '-60'
+
+    if available_balance_check1 or available_balance_check2:
+        score -= 100
+        weights['available_balance'] = '-100'
+
+    if available_balance_check3:
+        score -= 80
+        weights['available_balance'] = '-80'
+
+    if available_balance_check4:
+        score -= 60
+        weights['available_balance'] = '-60'
+
+    if available_balance_check5:
+        score -= 40
+        weights['available_balance'] = '-40'
 
     return score ,weights

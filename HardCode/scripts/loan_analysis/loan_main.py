@@ -116,7 +116,7 @@ def final_output(cust_id):
     except:
         pass  
     try:
-        report['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS'] = np.round(sum(li_overdue) - max(li_ovrdue) / (len(li_ovrdue) - 1) , 2)
+        report['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS'] = np.round(sum(li_ovrdue) - max(li_ovrdue) / (len(li_ovrdue) - 1) , 2)
     except:
         pass
     try:

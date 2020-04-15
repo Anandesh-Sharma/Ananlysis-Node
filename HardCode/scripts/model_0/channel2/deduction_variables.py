@@ -6,13 +6,15 @@ from HardCode.scripts.model_0.channel2.deduction_checks.reference_checks import 
 from HardCode.scripts.model_0.channel2.deduction_checks.secured_unsecured_checks import secured_unsecured_check
 from HardCode.scripts.model_0.channel2.deduction_checks.loan_checks import loan_check
 from HardCode.scripts.model_0.channel2.deduction_checks.ecs_bounce_checks import ecs_count
+from HardCode.scripts.model_0.channel2.deduction_checks.available_balance_checks import available_balance_check
 
 def get_deduction_parameters(user_id, cibil_df):
     """
     :returns dictionaries of rejected parameters and their values
     :rtype: dict
     """
-    #bal_var , bal_val = monthly_bal_check(user_id)
+
+    bal_var , bal_val = available_balance_check(user_id)
     active_close_var, active_close_val = active_close_check(cibil_df)
     age_var, age_val = age_check(cibil_df)
     loan_app_var , loan_app_val = loan_app_count_check(user_id)
@@ -26,7 +28,7 @@ def get_deduction_parameters(user_id, cibil_df):
 
     rejection_variables = {
         'loan_app_count_var': loan_app_var,
-        #'monthly_balance_var': bal_var,
+        'available_balance_var': bal_var,
         'active_close_var' : active_close_var,
         'age_of_oldest_trade_var' : age_var,
         'payment_rating_var': pay_r_var,
@@ -38,7 +40,7 @@ def get_deduction_parameters(user_id, cibil_df):
 
     rejection_values = {
         'loan_app_count_val': loan_app_val,
-        #'monthly_balance_val': bal_val,
+        'available_balance_val': bal_val,
         'active_close_val': active_close_val,
         'age_of_oldest_trade_val': age_val,
         'payment_rating_val': pay_r_val,

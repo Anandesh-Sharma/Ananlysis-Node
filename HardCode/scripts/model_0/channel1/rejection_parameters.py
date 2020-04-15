@@ -6,7 +6,7 @@ from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.model_0.parameters.deduction_parameters.ecs_bounce.ecs_bounce import get_count_ecs
 from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
 from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.total_rejection_msg import get_defaulter
-from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.available_balance import find_info
+
 from datetime import datetime
 
 def rejecting_parameters(user_id,cibil_df):
@@ -17,9 +17,9 @@ def rejecting_parameters(user_id,cibil_df):
     payment_rating = get_payment_rating(cibil_df)
     rejection_app = check_rejection(user_id)
     ecs_count , ecs_status = get_count_ecs(user_id)
-    max_limit, loan_due_days, no_of_loan_apps, premium_apps = loan_limit(user_id)
+    max_limit, loan_due_days, no_of_loan_apps, premium_apps , overdue_ratio = loan_limit(user_id)
     rejection_msg = get_defaulter(user_id)
-    # available_bal = find_info(date,user_id)
+
 
     rejection_reasons = []
     if loan_app >= 0.70:
@@ -57,9 +57,7 @@ def rejecting_parameters(user_id,cibil_df):
         msg = "user has critical rejection msgs in data"
         rejection_reasons.append(msg)
 
-    # if available_bal['balance_on_loan_date'] > 20000 | available_bal['balance_on_loan_date'] < 0:
-    #     msg = "available balance not in the desired range"
-    #     rejection_reasons.append(msg)
+
 
     return rejection_reasons
 

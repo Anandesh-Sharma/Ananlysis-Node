@@ -12,7 +12,7 @@ def get_additional_parameters(user_id):
 
     cc_limit = get_cc_limit(user_id)
     salary_dict = salary(user_id)
-    max_limit, due_days, no_of_loan_apps, premium_apps = loan_limit(user_id)
+    max_limit, due_days, no_of_loan_apps, premium_apps ,overdue_ratio = loan_limit(user_id)
 
 
     # >>==>> salary

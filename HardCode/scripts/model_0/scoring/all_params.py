@@ -7,6 +7,7 @@ def get_parameters(user_id, cibil_df):
     :returns combines rejection and approval parameters into a single dictionary
     :rtype: dict
     """
+
     additional_variables, additional_values = get_additional_parameters(user_id)
 
     deduction_variables, deduction_values = get_deduction_parameters(user_id,cibil_df)
