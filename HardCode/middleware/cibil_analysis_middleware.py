@@ -25,6 +25,7 @@ def get_cibil_analysis(request):
             del response['all_loan_amount']
         except:
             pass
+        print(response)
         if not verify_checksum(response, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
             raise ValueError
     except (AttributeError, ValueError, KeyError):

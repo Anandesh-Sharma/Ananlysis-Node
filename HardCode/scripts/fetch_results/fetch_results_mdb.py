@@ -3,6 +3,7 @@ import json
 
 
 def fetch_user(user_id):
+    user_id = int(user_id)
     # -> CHECK IF THE USER_ID IS PROCESSED BY CHECKING ANALYSIS RESULT
     client = conn()
     user_id = int(user_id)
@@ -42,7 +43,7 @@ def fetch_user(user_id):
                 'salary': alys_salary if alys_salary else {},
                 'rejection': alys_rejection if alys_rejection else {},
                 'balance_sheet': alys_bs if alys_bs else {},
-            },
+            }
         }
         return json.dumps(final_result)
     else:
