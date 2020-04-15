@@ -54,6 +54,7 @@ def execute_bl0(**kwargs):
     result = result.json()
 
 
+
     # if not os.path.exists('../result'):
     #     os.mkdir('result')
 
@@ -88,10 +89,10 @@ def testing(user_id):
         print(f"the following error occurred : {e}")
 
 
-# user_id = input('enter user id: ')
-# testing(user_id=user_id)
-# #
-l = npa_ids1
+user_id = input('enter user id: ')
+testing(user_id=user_id)
+#
+l = either_emi_default_ids
 l.sort(reverse=True)
 print(len(l))
 print(l)
@@ -102,5 +103,5 @@ print(l)
 #     exc.map(testing,(i for i in l))
 
 # #
-for i in tqdm(l[:150]):
-    testing(i)
+# for i in tqdm(l[:180]):
+#     testing(i)
