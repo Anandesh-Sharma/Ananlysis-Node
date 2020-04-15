@@ -45,6 +45,7 @@ def final_output(cust_id):
         'PAY_WITHIN_30_DAYS': True,
         'OVERDUE_DAYS' : -1,
         'OVERDUE_RATIO' : 0,
+        'AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS : -1,
         'CURRENT_OPEN_AMOUNT': [],
         'MAX_AMOUNT': -1,
         'empty': False
@@ -113,7 +114,11 @@ def final_output(cust_id):
     try:
         report['OVERDUE_DAYS'] = max(li_ovrdue)
     except:
-        pass     
+        pass  
+    try:
+        report['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS'] = np.round(float(sum(li_overdue) - max(li_ovrdue) / (len(li_ovrdue) - 1)), 2)
+    except:
+        pass
     try:
         report['OVERDUE_RATIO'] = np.round(report['TOTAL_LOANS'] / len(li_ovrdue), 2)
     except:
