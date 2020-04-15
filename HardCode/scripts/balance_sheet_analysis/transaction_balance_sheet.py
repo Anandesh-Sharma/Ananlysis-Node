@@ -46,8 +46,8 @@ def create_transaction_balanced_sheet(user_id):
         if p:
             index = 0
         df = df.loc[index:]
-    if df.shape[0] == 0:
-        return {'status': True, 'message': 'success'}  # do something
+    # if df.shape[0] == 0:
+    #     return {'status': True, 'message': 'success'}  # do something
     # doing something
     logger.info('Converting file to dataframe')
     if df.shape[0] == 0:

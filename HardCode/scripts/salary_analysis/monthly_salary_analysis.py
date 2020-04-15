@@ -316,7 +316,6 @@ def main(id):
                         if i["direct_sal"] == sal:
                             msg = {'body': i["body"], 'sender': i["sender"],
                                    'timestamp': str(i["timestamp"])}
-                    connect = conn()
                     salary_dict = {'salary': float(sal), 'keyword': 'salary', 'message': msg}
                     monthwise[month] = salary_dict
                     result['cust_id'] = id

@@ -3,7 +3,7 @@ from analysisnode import Checksum
 from analysisnode.settings import BASE_DIR, CHECKSUM_KEY
 import os
 from glob import glob
-API_ENDPOINT = 'http://127.0.0.1:8000/hard_code/bl0/'
+API_ENDPOINT = 'https://mlnode.credicxotech.com/hard_code/bl0/'
 
 
 def request_main(user_id):
@@ -15,13 +15,12 @@ def request_main(user_id):
     print(headers, temp)
     print(requests.post(API_ENDPOINT, data=temp, headers=headers,
                         files={
-                            'sms_json': open(f'/home/iam/Downloads/credicxo-projects/Users Data for AN/{user_id}/sms_data.json')}).text)
+                            'sms_json': open(f'/home/ravan/credicxo-projects/Users Data for AN/{user_id}/sms_data.json')}).text)
 
 
 if __name__ == "__main__":
-    os.chdir("/home/iam/Downloads/credicxo-projects/Users Data for AN/")
+    os.chdir("/home/ravan/credicxo-projects/Users Data for AN/")
     user_ids = list(map(int, glob("*")))
-    print(user_ids)
     for user_id in user_ids:
         request_main(user_id)
 

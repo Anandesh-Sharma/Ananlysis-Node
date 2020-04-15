@@ -106,7 +106,7 @@ def classifier(sms_json, user_id):
     max_timestamp = result1['timestamp']
     logger.info("Multiprocessing start for Credit card Classifier")
     try:
-        p1 = multiprocessing.Process(target=credit, args=(df, result, user_id, max_timestamp, new,))
+        p1 = multiprocessing.Process(target=credit(df, result, user_id, max_timestamp, new,))
     except BaseException as e:
         logger.info(f"error in credit card classifier as {e}")
         return False

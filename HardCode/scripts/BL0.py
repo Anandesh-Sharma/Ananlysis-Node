@@ -302,7 +302,7 @@ def bl0(**kwargs):
     limit = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df, new_user=new_user,
                     cibil_score=cibil_score)
     analysis_result['cibil'] = limit
-    analysis_result['modified_at'] = datetime.now(pytz.timezone('Asia/Kolkata'))
+    analysis_result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
 
     # PUSH analysis_result to the mongo
     client.analysisresult.bl0.update({'cust_id': user_id}, {'$push': {'result': analysis_result}})
