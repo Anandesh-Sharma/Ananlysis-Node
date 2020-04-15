@@ -62,7 +62,8 @@ def final_output(cust_id):
             logger.info("no loan apps")
         for j in a[i].keys():
             try:
-                li_ovrdue.append(int(a[i][j]['overdue_days']))
+                if a[i][j]['overdue_days'] != -1:
+                    li_ovrdue.append(int(a[i][j]['overdue_days']))
             except:
                 pass    
             try:
