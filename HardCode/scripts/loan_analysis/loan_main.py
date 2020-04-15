@@ -1,3 +1,4 @@
+import numpy as np
 from HardCode.scripts.loan_analysis.my_modules import *
 from HardCode.scripts.Util import logger_1 ,conn
 from HardCode.scripts.loan_analysis.preprocessing import preprocessing
@@ -43,6 +44,7 @@ def final_output(cust_id):
         'TOTAL_LOANS': 0,
         'PAY_WITHIN_30_DAYS': True,
         'OVERDUE_DAYS' : -1,
+        'OVERDUE_RATIO' : 0,
         'CURRENT_OPEN_AMOUNT': [],
         'MAX_AMOUNT': -1,
         'empty': False
@@ -111,6 +113,10 @@ def final_output(cust_id):
         report['OVERDUE_DAYS'] = max(li_ovrdue)
     except:
         pass     
+    try:
+        report['OVERDUE_RATIO'] = np.round(report['TOTAL_LOANS'] / len(li_ovrdue), 2)
+    except:
+        report['OVERDUE_RATIO'] = 0
     try:
         report['MAX_AMOUNT'] = float(max(li))
     except:
