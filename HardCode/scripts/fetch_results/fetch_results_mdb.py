@@ -47,6 +47,3 @@ def fetch_user(user_id):
         return json.dumps(final_result)
     else:
         return {'status': False, 'message': "Calm down! We're working on it"}
-
-
-print(fetch_user(380979))

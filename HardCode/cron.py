@@ -10,7 +10,7 @@ from analysisnode.settings import PROCESSING_DOCS, CHECKSUM_KEY, FINAL_RESULT
 from threadedprocess import ThreadedProcessPoolExecutor
 
 
-# API_ENDPOINT = 'https://api.credicxotech.com/api/ml_analysis/callback/'
+API_ENDPOINT = 'https://api.credicxotech.com/api/ml_analysis/callback/'
 
 
 def parallel_proccess_user_records(user_id):
@@ -66,18 +66,12 @@ def parallel_proccess_user_records(user_id):
         }
     with open(FINAL_RESULT + str(user_id) + '/user_data.json', 'w') as json_file:
         json.dump(response_bl0, json_file, ensure_ascii=True, indent=4)
-    # print(requests.post(API_ENDPOINT, data=response_bl0,
-    #                     headers={'CHECKSUMHASH': Checksum.generate_checksum(response_bl0, CHECKSUM_KEY)}).json())
+    print(requests.post(API_ENDPOINT, data=response_bl0,
+                        headers={'CHECKSUMHASH': Checksum.generate_checksum(response_bl0, CHECKSUM_KEY)}).json())
 
 
 def process_user_records():
     directories = os.listdir(PROCESSING_DOCS)
     user_ids = [user_id for user_id in directories]
-    print(user_ids)
-    for user_id in user_ids:
-        parallel_proccess_user_records(user_id)
-    # with ThreadedProcessPoolExecutor(max_processes=8, max_threads=16) as p:
-    #     p.map(parallel_proccess_user_records, user_ids)
-
-
-process_user_records()
+    with ThreadedProcessPoolExecutor(max_processes=8, max_threads=16) as p:
+        p.map(parallel_proccess_user_records, user_ids)
