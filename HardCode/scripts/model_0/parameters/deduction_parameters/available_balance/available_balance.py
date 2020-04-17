@@ -78,6 +78,7 @@ def find_info(loan_date_time,user_id):
     user_data = connect.analysis.balance_sheet.find_one({'cust_id': user_id})
 
     if not user_data:
+
         return {'AC_NO': '', 'balance_on_loan_date': 0, 'last_month_bal': 0,
                 'second_last_month_bal': 0,
                 'third_last_month_bal': 0,

@@ -5,7 +5,9 @@ from datetime import datetime
 def available_balance_check(user_id):
     date = datetime.now()
     available_balance = find_info(date,user_id)
+
     mean_avbl_bal = mean_available(user_id)
+
     bal = available_balance['balance_on_loan_date']
     last_month = available_balance['last_month_bal']
     scnd_last_month = available_balance['second_last_month_bal']

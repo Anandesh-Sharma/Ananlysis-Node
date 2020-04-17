@@ -39,7 +39,7 @@ def fetch_user_data(cust_id):
             loan_data = loan_data.append(closed_df)
             logger.info("Found loan closed data")
         else:
-            logger.error("loan closed data not found")
+            logger.info("loan closed data not found")
 
         '''if trans != None:
             transaction_df = pd.DataFrame(trans['sms'])
@@ -51,21 +51,21 @@ def fetch_user_data(cust_id):
             loan_data = loan_data.append(disbursed_df)
             logger.info("Found loan disbursed data")
         else:
-            logger.error("loan disbursed data not found")
+            logger.info("loan disbursed data not found")
 
         if len(overdue['sms']) != 0:
             overdue_df = pd.DataFrame(overdue['sms'])
             loan_data = loan_data.append(overdue_df)
             logger.info("Found loan overdue data")
         else:
-            logger.error("loan overdue data not found")
+            logger.info("loan overdue data not found")
 
         if len(approval['sms']) != 0:
             approval_df = pd.DataFrame(approval['sms'])
             loan_data = loan_data.append(approval_df)
             logger.info("Found loan approval data")
         else:
-            logger.error("loan approval data not found")
+            logger.info("loan approval data not found")
 
         loan_data.sort_values(by=["timestamp"])
         # transaction_df.sort_values(by=["timestamp"])

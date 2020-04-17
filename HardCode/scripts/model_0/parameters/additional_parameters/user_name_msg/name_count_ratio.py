@@ -71,9 +71,12 @@ def get_user_messages(cust_id):
 
 
 def get_name_count(cust_id):
-    user_data = get_user_messages(cust_id)
     name_count = 0
     defaulter = False
+    user_data = get_user_messages(cust_id)
+    if user_data.empty:
+        return name_count , defaulter
+
 
     pattern = r'dear\s?([a-z]+)'
     for i in range(user_data.shape[0]):
