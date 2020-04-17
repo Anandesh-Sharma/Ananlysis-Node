@@ -17,14 +17,14 @@ def get_data(user_id):
             logger.info("Found loan approval data")
         else:
             approval_df = pd.DataFrame(None)
-            logger.error("loan approval data not found")
+            logger.info("loan approval data not found")
 
         if len(rejection_data['sms']) != 0:
             rejection_df = pd.DataFrame(rejection_data['sms'])
             logger.info("Found loan rejection data")
         else:
             rejection_df = pd.DataFrame(None)
-            logger.error("loan rejection data not found")
+            logger.info("loan rejection data not found")
 
     except BaseException as e:
         print(f"Error in fetching data: {e} ")

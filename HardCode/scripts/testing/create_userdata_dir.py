@@ -3,7 +3,7 @@ from analysisnode import Checksum
 from analysisnode.settings import BASE_DIR, CHECKSUM_KEY
 import os
 from glob import glob
-API_ENDPOINT = 'https://mlnode.credicxotech.com/hard_code/bl0/'
+API_ENDPOINT = 'http://127.0.0.1:8000/hard_code/bl0/'
 
 
 def request_main(user_id):

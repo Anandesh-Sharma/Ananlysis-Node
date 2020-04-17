@@ -8,7 +8,7 @@ from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.classifiers.Classifier import classifier
 # from HardCode.scripts.reference_verification.validation.check_reference import validate
 from HardCode.scripts.Util import *
-from HardCode.scripts.model_0.scoring.score.generate_score import get_score
+from HardCode.scripts.model_0.scoring.generate_total_score import get_score
 import warnings
 import multiprocessing
 import pandas as pd
@@ -306,10 +306,11 @@ def bl0(**kwargs):
 
     # PUSH analysis_result to the mongo
     client.analysisresult.bl0.update({'cust_id': user_id}, {'$push': {'result': analysis_result}})
-    logger.info("analysis complete")
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
                                 balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,
                                 result_score=result_score)
+    logger.info("Setting processing bool to false")
     set_processing_bool(user_id, False)
     client.close()
+    logger.info("analysis complete")
     return end_result

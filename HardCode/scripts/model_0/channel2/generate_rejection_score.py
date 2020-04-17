@@ -1,0 +1,273 @@
+
+
+def deduction_score(deduction_variables):
+    score = 900
+    weights = {}
+
+    #secured_unsecured_check1 = deduction_variables['secured_unsecured_var']['secured_unsecured_check1']
+    secured_unsecured_check2 = deduction_variables['secured_unsecured_var']['secured_unsecured_check2']
+    secured_unsecured_check3 = deduction_variables['secured_unsecured_var']['secured_unsecured_check3']
+    secured_unsecured_check4 = deduction_variables['secured_unsecured_var']['secured_unsecured_check4']
+    secured_unsecured_check5 = deduction_variables['secured_unsecured_var']['secured_unsecured_check5']
+    secured_unsecured_check6 = deduction_variables['secured_unsecured_var']['secured_unsecured_check6']
+    secured_unsecured_check = deduction_variables['secured_unsecured_var']['secured_unsecured_check']
+
+    #age_of_oldest_trade_check1 = deduction_variables['age_of_oldest_trade_check1']
+    age_of_oldest_trade_check2 = deduction_variables['age_of_oldest_trade_var']['age_of_oldest_trade_check2']
+    age_of_oldest_trade_check3 = deduction_variables['age_of_oldest_trade_var']['age_of_oldest_trade_check3']
+    age_of_oldest_trade_check4 = deduction_variables['age_of_oldest_trade_var']['age_of_oldest_trade_check4']
+    age_of_oldest_trade_check5 = deduction_variables['age_of_oldest_trade_var']['age_of_oldest_trade_check5']
+    age_of_oldest_trade_check6 = deduction_variables['age_of_oldest_trade_var']['age_of_oldest_trade_check6']
+    age_of_oldest_trade_check7 = deduction_variables['age_of_oldest_trade_var']['age_of_oldest_trade_check7']
+    age_of_oldest_trade_check = deduction_variables['age_of_oldest_trade_var']['age_of_oldest_trade_check']
+
+    active_close_check1 = deduction_variables['active_close_var']['active_close_check1']
+    active_close_check2 = deduction_variables['active_close_var']['active_close_check2']
+    active_close_check3 = deduction_variables['active_close_var']['active_close_check3']
+    active_close_check4 = deduction_variables['active_close_var']['active_close_check4']
+    active_close_check5 = deduction_variables['active_close_var']['active_close_check5']
+    active_close_check = deduction_variables['active_close_var']['active_close_check']
+
+
+    reference_check = deduction_variables['reference_var']['reference_check']
+    reference_check1 = deduction_variables['reference_var']['reference_check1']
+
+    loan_app_check1 = deduction_variables['loan_app_count_var']['loan_app_count_check1']
+    loan_app_check2 = deduction_variables['loan_app_count_var']['loan_app_count_check2']
+    loan_app_check3 = deduction_variables['loan_app_count_var']['loan_app_count_check3']
+    loan_app_check = deduction_variables['loan_app_count_var']['loan_app_count_check']
+
+    payment_rating_check1 = deduction_variables['payment_rating_var']['pay_rating_check1']
+    payment_rating_check2 = deduction_variables['payment_rating_var']['pay_rating_check2']
+    payment_rating_check3 = deduction_variables['payment_rating_var']['pay_rating_check3']
+    payment_rating_check4 = deduction_variables['payment_rating_var']['pay_rating_check4']
+    payment_rating_check = deduction_variables['payment_rating_var']['pay_rating_check']
+
+    loan_limit_check1 = deduction_variables['loan_var']['loan_limit_check1']
+    loan_limit_check2 = deduction_variables['loan_var']['loan_limit_check2']
+    loan_limit_check3 = deduction_variables['loan_var']['loan_limit_check3']
+    loan_limit_check4 = deduction_variables['loan_var']['loan_limit_check4']
+    loan_limit_check5 = deduction_variables['loan_var']['loan_limit_check5']
+    loan_limit_check6 = deduction_variables['loan_var']['loan_limit_check6']
+    loan_limit_check = deduction_variables['loan_var']['loan_limit_check']
+
+    loan_due_check1 = deduction_variables['loan_var']['loan_due_check1']
+    loan_due_check2 = deduction_variables['loan_var']['loan_due_check2']
+    loan_due_check3 = deduction_variables['loan_var']['loan_due_check3']
+    loan_due_check4 = deduction_variables['loan_var']['loan_due_check4']
+    loan_due_check5 = deduction_variables['loan_var']['loan_due_check5']
+    loan_due_check = deduction_variables['loan_var']['loan_due_check']
+
+    loan_app_no_check1 = deduction_variables['loan_var']['loan_app_no_check1']
+    loan_app_no_check2 = deduction_variables['loan_var']['loan_app_no_check2']
+    loan_app_no_check3 = deduction_variables['loan_var']['loan_app_no_check3']
+    loan_app_no_check4 = deduction_variables['loan_var']['loan_app_no_check4']
+    loan_app_no_check = deduction_variables['loan_var']['loan_app_no_check']
+
+
+    ecs_check1 = deduction_variables['ecs_var']['ecs_check1']
+    ecs_check2 = deduction_variables['ecs_var']['ecs_check2']
+    ecs_check3 = deduction_variables['ecs_var']['ecs_check3']
+
+    available_balance_check1 = deduction_variables['available_balance_var']['available_balance_check1']
+    available_balance_check2 = deduction_variables['available_balance_var']['available_balance_check2']
+    available_balance_check3 = deduction_variables['available_balance_var']['available_balance_check3']
+    available_balance_check4 = deduction_variables['available_balance_var']['available_balance_check4']
+    available_balance_check5 = deduction_variables['available_balance_var']['available_balance_check5']
+    available_balance_check6 = deduction_variables['available_balance_var']['available_balance_check6']
+
+
+
+
+    if secured_unsecured_check2:
+        score -= 20
+        weights['secured_unsecured'] = '-20'
+
+    if secured_unsecured_check3:
+        score -= 40
+        weights['secured_unsecured'] = '-40'
+
+    if secured_unsecured_check4:
+        score -= 60
+        weights['secured_unsecured'] = '-60'
+
+    if secured_unsecured_check5:
+        score -= 80
+        weights['secured_unsecured'] = '-80'
+
+    if secured_unsecured_check6:
+        score -= 90
+        weights['secured_unsecured'] = '-90'
+
+    if secured_unsecured_check:
+        score -= 100
+        weights['secured_unsecured'] = '-100'
+
+    if age_of_oldest_trade_check2:
+        score -= 20
+        weights['age_old_trade'] = '-20'
+
+    if age_of_oldest_trade_check3:
+        score -= 40
+        weights['age_old_trade'] = '-40'
+
+    if age_of_oldest_trade_check4:
+        score -= 60
+        weights['age_old_trade'] = '-60'
+
+    if age_of_oldest_trade_check5:
+        score -= 80
+        weights['age_old_trade'] = '-80'
+
+    if age_of_oldest_trade_check6:
+        score -= 90
+        weights['age_old_trade'] = '-90'
+
+    if age_of_oldest_trade_check7 or age_of_oldest_trade_check:
+        score -= 100
+        weights['age_old_trade'] = '-100'
+
+
+
+
+    if active_close_check1:
+        score -= 20
+        weights['active_close'] = '-20'
+
+    if active_close_check2:
+        score -= 40
+        weights['active_close'] = '-40'
+
+    if active_close_check3:
+        score -= 60
+        weights['active_close'] = '-60'
+
+    if active_close_check4:
+        score -= 80
+        weights['active_close'] = '-80'
+
+    if active_close_check5 or active_close_check:
+        score -= 100
+        weights['active_close'] = '-100'
+
+
+
+
+    if not reference_check or reference_check1:
+        score -= 100
+        weights['reference'] = '-100'
+
+    if loan_app_check1:
+        score -= 20
+        weights['loan_app_percent'] = '-20'
+
+    if loan_app_check2:
+        score -= 30
+        weights['loan_app_percent'] = '-30'
+
+
+    if loan_app_check3 or loan_app_check:
+        score -= 40
+        weights['loan_app_percent'] = '-40'
+
+
+
+    if payment_rating_check2:
+        score -= 20
+        weights['payment_rating'] = '-20'
+
+    if payment_rating_check3:
+        score -= 30
+        weights['payment_rating'] = '-30'
+
+    if payment_rating_check4 or payment_rating_check:
+        score -= 50
+        weights['payment_rating'] = '-50'
+
+    if loan_limit_check2:
+        score -= 20
+        weights['loan_limit'] = '-20'
+
+    if loan_limit_check3:
+        score -= 40
+        weights['loan_limit'] = '-40'
+
+    if loan_limit_check4:
+        score -= 60
+        weights['loan_limit'] = '-60'
+
+    if loan_limit_check5:
+        score -= 80
+        weights['loan_limit'] = '-80'
+
+    if loan_limit_check6:
+        score -= 90
+        weights['loan_limit'] = '-90'
+
+    if loan_limit_check:
+        score -= 100
+        weights['loan_limit'] = '-100'
+
+    if loan_due_check2:
+        score -= 20
+        weights['loan_due_days'] = '-20'
+
+    if loan_due_check3:
+        score -= 40
+        weights['loan_due_days'] = '-40'
+
+    if loan_due_check4:
+        score -= 80
+        weights['loan_due_days'] = '-80'
+
+    if loan_due_check5 or loan_due_check:
+        score -= 100
+        weights['loan_due_days'] = '-100'
+
+    if loan_app_no_check2:
+        score -= 20
+        weights['loan_apps_count'] = '-20'
+
+    if loan_app_no_check3:
+        score -= 30
+        weights['loan_apps_count'] = '-30'
+
+    if loan_app_no_check4:
+        score -= 40
+        weights['loan_apps_count'] = '-40'
+
+    if loan_app_no_check:
+        score -= 50
+        weights['loan_apps_count'] = '-50'
+
+
+
+    if ecs_check1:
+        score -= 20
+        weights['ecs_count'] = '-20'
+
+    if ecs_check2:
+        score -= 40
+        weights['ecs_count'] = '-40'
+
+    if ecs_check3:
+        score -= 60
+        weights['ecs_count'] = '-60'
+
+    # if available_balance_check1 or available_balance_check2:
+    #     score -= 100
+    #     weights['available_balance'] = '-100'
+    #
+    # if available_balance_check3:
+    #     score -= 80
+    #     weights['available_balance'] = '-80'
+    #
+    # if available_balance_check4:
+    #     score -= 60
+    #     weights['available_balance'] = '-60'
+    #
+    # if available_balance_check5:
+    #     score -= 40
+    #     weights['available_balance'] = '-40'
+
+    return score ,weights
