@@ -1,6 +1,7 @@
 from HardCode.scripts.model_0.parameters.additional_parameters.credit_card_limit.cc_limit import get_cc_limit
 from HardCode.scripts.model_0.parameters.additional_parameters.salary.salary_count import salary
 from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
+from HardCode.scripts.model_0.parameters.additional_parameters.user_name_msg.name_count_ratio import get_name_count
 
 
 
@@ -12,6 +13,7 @@ def get_additional_parameters(user_id):
 
     cc_limit = get_cc_limit(user_id)
     salary_dict = salary(user_id)
+    name_count, defaulter = get_name_count(user_id)
     max_limit, due_days, no_of_loan_apps, premium_apps ,overdue_ratio = loan_limit(user_id)
 
 
@@ -71,6 +73,11 @@ def get_additional_parameters(user_id):
                 list_premium.append(ap)
                 premium_apps_check = True
 
+    # >>==>> user name msg count
+    defaulter_check = False
+    if defaulter:
+        defaulter_check = True
+
 
 
     approval_variables = {
@@ -84,7 +91,8 @@ def get_additional_parameters(user_id):
         'salary_check3': salary_check3,
         'salary_check4': salary_check4,
         'salary_check5': salary_check5,
-        'premium_check': premium_apps_check
+        'premium_check': premium_apps_check,
+        'msg_defaulter_check':defaulter_check
 
 
     }
@@ -92,7 +100,8 @@ def get_additional_parameters(user_id):
     approval_values = {
         'credit_card_limit': cc_limit,
         'salary': salary_dict,
-        'premium_apps': list_premium
+        'premium_apps': list_premium,
+        'name_msg_count': name_count
 
     }
 

@@ -104,6 +104,7 @@ def loan_check(user_id):
         'max_limit' : max_limit,
         'due_days': due_days,
         'no_of_loan_apps': no_of_loan_apps,
+        'loan_app_list': premium_apps
 
     }
 

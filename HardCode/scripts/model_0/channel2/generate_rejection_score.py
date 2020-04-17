@@ -65,7 +65,6 @@ def deduction_score(deduction_variables):
     loan_app_no_check = deduction_variables['loan_var']['loan_app_no_check']
 
 
-
     ecs_check1 = deduction_variables['ecs_var']['ecs_check1']
     ecs_check2 = deduction_variables['ecs_var']['ecs_check2']
     ecs_check3 = deduction_variables['ecs_var']['ecs_check3']
@@ -75,6 +74,7 @@ def deduction_score(deduction_variables):
     available_balance_check3 = deduction_variables['available_balance_var']['available_balance_check3']
     available_balance_check4 = deduction_variables['available_balance_var']['available_balance_check4']
     available_balance_check5 = deduction_variables['available_balance_var']['available_balance_check5']
+    available_balance_check6 = deduction_variables['available_balance_var']['available_balance_check6']
 
 
 
@@ -254,20 +254,20 @@ def deduction_score(deduction_variables):
         score -= 60
         weights['ecs_count'] = '-60'
 
-    if available_balance_check1 or available_balance_check2:
-        score -= 100
-        weights['available_balance'] = '-100'
-
-    if available_balance_check3:
-        score -= 80
-        weights['available_balance'] = '-80'
-
-    if available_balance_check4:
-        score -= 60
-        weights['available_balance'] = '-60'
-
-    if available_balance_check5:
-        score -= 40
-        weights['available_balance'] = '-40'
+    # if available_balance_check1 or available_balance_check2:
+    #     score -= 100
+    #     weights['available_balance'] = '-100'
+    #
+    # if available_balance_check3:
+    #     score -= 80
+    #     weights['available_balance'] = '-80'
+    #
+    # if available_balance_check4:
+    #     score -= 60
+    #     weights['available_balance'] = '-60'
+    #
+    # if available_balance_check5:
+    #     score -= 40
+    #     weights['available_balance'] = '-40'
 
     return score ,weights

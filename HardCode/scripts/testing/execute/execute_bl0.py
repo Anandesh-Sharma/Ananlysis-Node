@@ -52,6 +52,30 @@ def execute_bl0(**kwargs):
     files = [('sms_json', sms_json), ('cibil_xml', cibil_xml)]
     result = requests.post(url=url, data=payload, files=files, headers={'Authorization': Auth})
     result = result.json()
+    # df = {"cust_id": user_id,"score": [result['Model_0']['score']],
+    #        "secured": [result['Model_0']['parameters']['deduction_parameters']['secured_unsecured_val']['secured_unsecured_loans_count']['secured']],
+    #       "unsecured": [result['Model_0']['parameters']['deduction_parameters']['secured_unsecured_val']['secured_unsecured_loans_count']['unsecured_count']],
+    #
+    #          "age_of_oldest_trade":  [result['Model_0']['parameters']['deduction_parameters']['age_of_oldest_trade_val']['age_of_oldest_trade']],
+    #         "active_count":  [result['Model_0']['parameters']['deduction_parameters']['active_close_val']['active_count']],
+    #       "close_count":[result['Model_0']['parameters']['deduction_parameters']['active_close_val']['closed_count']],
+    #         "loan_app_count_percentage": [result['Model_0']['parameters']['deduction_parameters']['loan_app_count_val']['loan_app_count']],
+    #          'verification_similarity': [result['Model_0']['parameters']['deduction_parameters']['reference_val']['reference']['result']['similarity_score']],
+    #          "due_days":  [result['Model_0']['parameters']['deduction_parameters']['loan_val']['due_days']],
+    #       "max_loan_limit": [result['Model_0']['parameters']['deduction_parameters']['loan_val']['max_limit']],
+    #       "ecs_count": [result['Model_0']['parameters']['deduction_parameters']['ecs_val']['ecs_count']],
+    #       "payment_rating":[result['Model_0']['parameters']['deduction_parameters']['payment_rating_val']['payment_rating']],
+    #
+    #       "available_balance":[result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['balance_on_loan_date']],
+    #       "last_month_avbl_bal":[result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['last_month_bal']],
+    #       "scnd_last_month_bal":[result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['second_last_month_bal']],
+    #       "third_last_month_bal":[result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['third_last_month_bal']],
+    #       "loan_app_list":[result['Model_0']['parameters']['deduction_parameters']['loan_val']['loan_app_list']],
+    #       "rejection_reason": [result['Model_0']['rejection_reasons']],
+    #       }
+    #
+    # data = pd.DataFrame.from_dict(df)
+    # data.to_csv('result_both_emi_npa.csv', mode='a', header=False)
 
 
 
@@ -91,8 +115,8 @@ def testing(user_id):
 
 user_id = input('enter user id: ')
 testing(user_id=user_id)
-#
-l = either_emi_default_ids
+
+l = npa_ids1
 l.sort(reverse=True)
 print(len(l))
 print(l)
@@ -102,6 +126,6 @@ print(l)
 # with ThreadPoolExecutor() as exc:
 #     exc.map(testing,(i for i in l))
 
-# #
-# for i in tqdm(l[:180]):
+
+# for i in tqdm(l[:200]):
 #     testing(i)

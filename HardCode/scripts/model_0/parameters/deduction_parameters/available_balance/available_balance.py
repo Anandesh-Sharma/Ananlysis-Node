@@ -73,20 +73,25 @@ def month_balance(value,prev_month,prev_year,sec_mon,sec_yr,third_mon,third_yr,a
     return [last_month_bal,second_last_month_bal,third_last_month_bal]
 
 def find_info(loan_date_time,user_id):
-    # user_id = 364513
-    # latest_loan = Loans.objects.filter(user__id = user_id).order_by('loan_date').reverse()[0]
-    # loan_date_time = datetime.strptime('26-03-2020 07:12:22','%d-%m-%Y %H:%M:%S')
+
     connect = conn()
     user_data = connect.analysis.balance_sheet.find_one({'cust_id': user_id})
+
+    if not user_data:
+        return {'AC_NO': '', 'balance_on_loan_date': 0, 'last_month_bal': 0,
+                'second_last_month_bal': 0,
+                'third_last_month_bal': 0,
+                'count_creditordebit_msg': 0}
     user_data = user_data['sheet']
-
     sms_info_df = pd.DataFrame(user_data)
-
     all_timestamps = list(sms_info_df['timestamp'])
+
+
     unique_acc_dict = {}
     # loan_date_time = latest_loan.loan_date
     loan_date_time.astimezone(timezone("Asia/kolkata"))
     tz_info = loan_date_time.tzinfo
+
     if loan_date_time.month == 1:
         previous_month = 12
         previous_year = (loan_date_time.year - 1)
@@ -105,7 +110,11 @@ def find_info(loan_date_time,user_id):
     else:
         third_last_month = second_last_month -1
         third_last_year = second_last_year
-    for i in range(len(all_timestamps)-1,0,-1):
+
+
+
+    for i in range(len(all_timestamps)-1,-1,-1):
+
         timestamp = datetime.strptime(all_timestamps[i],'%Y-%m-%d %H:%M:%S')
         timestamp = timestamp.replace(tzinfo=tz_info)
         last_bal = 0
@@ -113,7 +122,6 @@ def find_info(loan_date_time,user_id):
         last_third_bal = 0
         if timestamp.month <= previous_month:
             if timestamp.year <= previous_year:
-
 
                 last_bal = int(sms_info_df['Available Balance'][i])
         elif timestamp.year < previous_year:
@@ -134,7 +142,6 @@ def find_info(loan_date_time,user_id):
         ac_no = str(sms_info_df['acc_no'][i])
         if len(ac_no) > 3:
             ac_no = ac_no[-3:]
-
 
         try:
 
@@ -184,18 +191,6 @@ def find_info(loan_date_time,user_id):
             continue
 
     list_to_return = []
-    # unique_acc_dict['0']['count_creditordebit_msg'] = 161
-    # unique_acc_dict['0']['balanace_on_loan_date'] = 250000000
-    # max_count = 0
-    # ac_no = 0
-    # value = 0
-    # for ac, values in unique_acc_dict.items():
-    #     if values['count_creditordebit_msg'] >= max_count:
-    #         max_count = values['count_creditordebit_msg']
-    #         ac_no = ac
-    #         value = values
-
-
 
     for ac_no,value in unique_acc_dict.items():
         if len(list_to_return) > 0:
@@ -246,6 +241,7 @@ def find_info(loan_date_time,user_id):
                          'third_last_month_bal':bal_list[2],
                          'count_creditordebit_msg':value['count_creditordebit_msg']})
         list_to_return.append(csv_dict)
+
 
 
     return list_to_return[0]

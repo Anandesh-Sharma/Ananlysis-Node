@@ -1,9 +1,11 @@
 from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.available_balance import find_info
+from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.mean_available_balance import mean_available
 from datetime import datetime
 
 def available_balance_check(user_id):
     date = datetime.now()
     available_balance = find_info(date,user_id)
+    mean_avbl_bal = mean_available(user_id)
     bal = available_balance['balance_on_loan_date']
     last_month = available_balance['last_month_bal']
     scnd_last_month = available_balance['second_last_month_bal']
@@ -13,6 +15,7 @@ def available_balance_check(user_id):
     available_balance_check3 = False
     available_balance_check4 = False
     available_balance_check5 = False
+    available_balance_check6 = False
 
     if bal > 35000 or bal < 0:
         available_balance_check1 = True
@@ -25,12 +28,16 @@ def available_balance_check(user_id):
     if 15000 > bal >5000:
         available_balance_check5 = True
 
+    if mean_avbl_bal < 5000:
+        available_balance_check6 = True
+
     variables = {
         'available_balance_check1':available_balance_check1,
         'available_balance_check2': available_balance_check2,
         'available_balance_check3': available_balance_check3,
         'available_balance_check4': available_balance_check4,
-        'available_balance_check5': available_balance_check5
+        'available_balance_check5': available_balance_check5,
+        'available_balance_check6': available_balance_check6
     }
 
     values = {
