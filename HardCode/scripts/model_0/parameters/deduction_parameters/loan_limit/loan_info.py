@@ -19,11 +19,12 @@ def loan_limit(user_id):
         max_limit = loan_analysis_result['MAX_AMOUNT']
         due_days = loan_analysis_result['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS']
         no_of_loan_apps = loan_analysis_result['TOTAL_LOAN_APPS']
-        premium_apps = loan_analysis_result['LOAN_APP_LIST']
+        loan_apps = loan_analysis_result['LOAN_APP_LIST']
         overdue_ratio = loan_analysis_result['OVERDUE_RATIO']
+        loan_dates = loan_analysis_result['LOAN_DATES']
 
     except BaseException as e:
         print(f"Error in loan limit check : {e}")
 
     finally:
-        return max_limit,due_days,no_of_loan_apps,premium_apps, overdue_ratio
+        return max_limit,due_days,no_of_loan_apps,loan_apps, overdue_ratio, loan_dates

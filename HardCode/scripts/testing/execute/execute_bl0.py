@@ -53,6 +53,7 @@ def execute_bl0(**kwargs):
     result = requests.post(url=url, data=payload, files=files, headers={'Authorization': Auth})
     result = result.json()
 
+
     # if not os.path.exists('../result'):
     #     os.mkdir('result')
 
@@ -86,9 +87,9 @@ def testing(user_id):
     except BaseException as e:
         print(f"the following error occurred : {e}")
 
-
-# user_id = input('enter user id: ')
-# testing(user_id=user_id)
+#
+user_id = input('enter user id: ')
+testing(user_id=user_id)
 
 l = npa_ids1
 l.sort(reverse=True)
@@ -100,6 +101,6 @@ print(l)
 # with ThreadPoolExecutor() as exc:
 #     exc.map(testing,(i for i in l))
 
-#
-for i in tqdm(l[:20]):
-    testing(i)
+# #
+# for i in tqdm(l):
+#     testing(i)

@@ -84,7 +84,7 @@ def get_name_count(cust_id):
         matcher = re.search(pattern, message)
         if matcher is not None:
             user_name = str(matcher.group(1)).lower()
-            actual_name = get_profile_name(cust_id).split(' ')
+            actual_name = get_profile_name(cust_id)
             actual_name = str(actual_name).split(' ')
             if user_name == str(actual_name[0]):
                 name_count += 1

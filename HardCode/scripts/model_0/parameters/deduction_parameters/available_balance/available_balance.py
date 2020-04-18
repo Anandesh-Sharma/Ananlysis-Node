@@ -85,6 +85,8 @@ def find_info(loan_date_time,user_id):
                 'count_creditordebit_msg': 0}
     user_data = user_data['sheet']
     sms_info_df = pd.DataFrame(user_data)
+
+    sms_info_df.to_csv("364513.csv")
     all_timestamps = list(sms_info_df['timestamp'])
 
 
@@ -240,7 +242,8 @@ def find_info(loan_date_time,user_id):
         csv_dict.update({'balance_on_loan_date':latest_avail_bal,'last_month_bal':bal_list[0],
                          'second_last_month_bal':bal_list[1],
                          'third_last_month_bal':bal_list[2],
-                         'count_creditordebit_msg':value['count_creditordebit_msg']})
+                         'count_creditordebit_msg':value['count_creditordebit_msg'],
+                         'no_of_accounts':len(ac_no)})
         list_to_return.append(csv_dict)
 
 

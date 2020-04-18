@@ -77,7 +77,7 @@ def epf_to_salary(data, id):
     """
 
     for i in range(len(data)):
-        data[i]["salary"] = (data[i]["epf_amount"] * 100) / 12
+        data[i]["salary"] = (data[i]["epf_amount"] * 100) / 15.67
     # logger.info("Salary Calculation from EPF Amount complete")
     return data
 

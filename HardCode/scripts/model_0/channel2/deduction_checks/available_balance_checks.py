@@ -6,7 +6,8 @@ def available_balance_check(user_id):
     date = datetime.now()
     available_balance = find_info(date,user_id)
 
-    mean_avbl_bal = mean_available(user_id)
+    mean_bal,third_last_peak_bal,scnd_last_peak_bal,last_peak_bal = mean_available(user_id)
+
 
     bal = available_balance['balance_on_loan_date']
     last_month = available_balance['last_month_bal']
@@ -30,7 +31,7 @@ def available_balance_check(user_id):
     if 15000 > bal >5000:
         available_balance_check5 = True
 
-    if mean_avbl_bal < 5000:
+    if mean_bal < 5000:
         available_balance_check6 = True
 
     variables = {
@@ -43,7 +44,12 @@ def available_balance_check(user_id):
     }
 
     values = {
-        'available_balance' : available_balance
+        'available_balance' : available_balance,
+        'mean_available_balance': mean_bal,
+        'last_month_peak_bal' :last_peak_bal,
+        'scnd_last_month_peak_bal': scnd_last_peak_bal,
+        'third_last_month_peak_bal': third_last_peak_bal,
+
 
     }
 
