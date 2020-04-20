@@ -89,7 +89,7 @@ def find_info(user_id):
         return {'AC_NO': '', 'balance_on_loan_date': 0, 'last_month_bal': 0,
                 'second_last_month_bal': 0,
                 'third_last_month_bal': 0,
-                'count_creditordebit_msg': 0}
+                'count_creditordebit_msg': 0,'no_of_accounts':0}
     user_data = user_data['sheet']
     sms_info_df = pd.DataFrame(user_data)
     all_timestamps = list(sms_info_df['timestamp'])
