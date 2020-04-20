@@ -9,16 +9,16 @@ def month_balance(value,prev_month,prev_year,sec_mon,sec_yr,third_mon,third_yr,a
     last_month_bal = int(value['last_month_available_balance'])
     second_last_month_bal = value['second_last_month_bal']
     if second_last_month_bal == 0:
-        index_second_last = value['index_second_last_month']
+        index_second_last = len(all_timestamps)
     else:
         index_second_last = value['index_second_last_month'] + 1
     third_last_month_bal = value['third_last_month_bal']
     if third_last_month_bal == 0:
-        index_third_last = value['index_third_last_month']
+        index_third_last = len(all_timestamps)
     else:
         index_third_last = value['index_third_last_month'] + 1
     if last_month_bal == 0:
-        index_last_month = value['index_last_month']
+        index_last_month = len(all_timestamps)
     else:
         index_last_month = value['index_last_month'] + 1
     temp = True
@@ -92,7 +92,6 @@ def find_info(user_id):
                 'count_creditordebit_msg': 0}
     user_data = user_data['sheet']
     sms_info_df = pd.DataFrame(user_data)
-
     all_timestamps = list(sms_info_df['timestamp'])
     loan_date_time = datetime.strptime(all_timestamps[-1],'%Y-%m-%d %H:%M:%S')
     unique_acc_dict = {}
@@ -197,9 +196,6 @@ def find_info(user_id):
 
     list_to_return = []
 
-
-
-
     for ac_no,value in unique_acc_dict.items():
         if len(list_to_return) > 0:
             if list_to_return[-1]['count_creditordebit_msg'] > value['count_creditordebit_msg']:
@@ -209,23 +205,21 @@ def find_info(user_id):
         csv_dict = {}
         csv_dict['AC_NO'] = ac_no
         latest_avail_bal = int(value['Available_balance'])
-        if latest_avail_bal == 0:
-            index_latest_timestamp = value['index_latest_timestamp']
-        else:
+        if latest_avail_bal != 0:
             index_latest_timestamp = value['index_latest_timestamp'] + 1
-        while index_latest_timestamp < len(all_timestamps):
-            ac_no_sheet = str(sms_info_df['acc_no'][index_latest_timestamp])
-            if len(ac_no_sheet) > 3:
-                ac_no_sheet = ac_no_sheet[-3:]
-            if ac_no_sheet != ac_no:
-                index_latest_timestamp += 1
-                continue
-            if sms_info_df['Credit Amount'][index_latest_timestamp] != 0:
-                latest_avail_bal += int(sms_info_df['Credit Amount'][index_latest_timestamp])
+            while index_latest_timestamp < len(all_timestamps):
+                ac_no_sheet = str(sms_info_df['acc_no'][index_latest_timestamp])
+                if len(ac_no_sheet) > 3:
+                    ac_no_sheet = ac_no_sheet[-3:]
+                if ac_no_sheet != ac_no:
+                    index_latest_timestamp += 1
+                    continue
+                if sms_info_df['Credit Amount'][index_latest_timestamp] != 0:
+                    latest_avail_bal += int(sms_info_df['Credit Amount'][index_latest_timestamp])
 
-            if sms_info_df['Debit Amount'][index_latest_timestamp] != 0:
-                latest_avail_bal = latest_avail_bal - int(sms_info_df['Debit Amount'][index_latest_timestamp])
-            index_latest_timestamp += 1
+                if sms_info_df['Debit Amount'][index_latest_timestamp] != 0:
+                    latest_avail_bal = latest_avail_bal - int(sms_info_df['Debit Amount'][index_latest_timestamp])
+                index_latest_timestamp += 1
 
         if len(list_to_return) > 0:
             if list_to_return[-1]['count_creditordebit_msg'] == value['count_creditordebit_msg']:
