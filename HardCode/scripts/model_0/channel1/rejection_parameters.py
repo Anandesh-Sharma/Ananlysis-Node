@@ -19,7 +19,7 @@ def rejecting_parameters(user_id,cibil_df):
     ecs_count , ecs_status = get_count_ecs(user_id)
     max_limit, loan_due_days, no_of_loan_apps, loan_apps , overdue_ratio, loan_dates = loan_limit(user_id)
     rejection_msg = get_defaulter(user_id)
-    available_balance = find_info(date,user_id)
+    available_balance = find_info(user_id)
 
 
     rejection_reasons = []

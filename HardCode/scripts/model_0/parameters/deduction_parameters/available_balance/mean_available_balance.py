@@ -14,7 +14,7 @@ def mean_available(user_id):
     if not data:
         return mean_bal,third_last_month,scnd_last_month,last_month
     data = data['sheet']
-    bal = find_info(date,user_id)
+    bal = find_info(user_id)
     ac_no = bal['AC_NO']
     avbl_bal = []
     if ac_no:

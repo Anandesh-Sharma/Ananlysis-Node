@@ -4,7 +4,7 @@ from datetime import datetime
 
 def available_balance_check(user_id):
     date = datetime.now()
-    available_balance = find_info(date,user_id)
+    available_balance = find_info(user_id)
 
     mean_bal,third_last_peak_bal,scnd_last_peak_bal,last_peak_bal = mean_available(user_id)
 
