@@ -33,7 +33,11 @@ def get_defaulter(user_id):
         r'could\snot\sapprove[d]?.*please\sre[-]?apply',
         r'final\sintimation.*account.*seriously.*due.*still.*not\sreceived[d]?.*payment',
         r'final\swarning',
-        r'legal\scourt\scase\sreminder'
+        r'legal\scourt\scase.*legal\scase\sagainst\syou',
+        r'final\sintimation.*final\snotice',
+        r'action\srequired.*pending.*\s([0-9]+)\s?day[s]?',
+        r'urgent\sattention.*overdue.*\s([0-9]+)\sday[s]?',
+        r'legal\snotice.*contemplated.*avoid.*legal\saction'
     ]
 
     for i in range(total.shape[0]):
@@ -41,7 +45,7 @@ def get_defaulter(user_id):
         
         for pattern in patterns:
             matcher = re.search(pattern, message)
-            if pattern is patterns[0]:
+            if pattern is patterns[0] or pattern is patterns[13] or pattern is patterns[14]:
                 if matcher is not None:
                     if int(matcher.group(1)) > 15:
                         FLAG = True
