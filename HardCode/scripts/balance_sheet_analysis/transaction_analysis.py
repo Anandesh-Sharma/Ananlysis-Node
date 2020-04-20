@@ -370,7 +370,7 @@ def balance_check(data):
     pattern_3 = r"(?:bal|balance) is (?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
     pattern_4 = r"(?i)(?:aval|avl)(?: bal)?(?: is)? \+?(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
     pattern_5 = r"(?:bal |balance )(?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
-    pattern_6 = r"(?:balances are.*\:)?\s?\+?(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
+    pattern_6 = r"(?:balances are [0-9]{3,}[\*nx]+(?:[0-9]{3,}))\:?\s?\+?(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
