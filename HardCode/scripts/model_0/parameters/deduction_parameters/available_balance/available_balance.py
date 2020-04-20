@@ -223,7 +223,7 @@ def find_info(user_id):
 
         if len(list_to_return) > 0:
             if list_to_return[-1]['count_creditordebit_msg'] == value['count_creditordebit_msg']:
-                if list_to_return[-1]['balanace_on_loan_date'] > latest_avail_bal:
+                if list_to_return[-1]['balance_on_loan_date'] > latest_avail_bal:
                     continue
                 else:
                     list_to_return = []
