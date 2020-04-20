@@ -21,10 +21,6 @@ def get_defaulter(user_id):
     else:
         return FLAG
 
-
-
-
-
     patterns = [
         r'legal\snotice\salert.*loan\samount.*overdue.*since\s([0-9]{1,2})\sday[s]?',
         r'legal\snotice\salert',
@@ -34,7 +30,10 @@ def get_defaulter(user_id):
         r'dispatch.*legal\snotice',
         r'sent.*legal\snotice',
         r'despite\sseveral\sreminders.*over[-]?\s?due.*legal\saction',
-        r'could\snot\sapprove[d]?.*please\sre[-]?apply'
+        r'could\snot\sapprove[d]?.*please\sre[-]?apply',
+        r'final\sintimation.*account.*seriously.*due.*still.*not\sreceived[d]?.*payment',
+        r'final\swarning',
+        r'legal\scourt\scase\sreminder'
     ]
 
     for i in range(total.shape[0]):
