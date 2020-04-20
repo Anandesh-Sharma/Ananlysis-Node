@@ -245,7 +245,7 @@ def find_info(user_id):
                          'second_last_month_bal':bal_list[1],
                          'third_last_month_bal':bal_list[2],
                          'count_creditordebit_msg':value['count_creditordebit_msg'],
-                         'no_of_accounts':len(ac_no)})
+                         'no_of_accounts':len(unique_acc_dict.keys())})
         list_to_return.append(csv_dict)
 
 
