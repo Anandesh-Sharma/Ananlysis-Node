@@ -2,6 +2,7 @@ from HardCode.scripts.model_0.parameters.additional_parameters.credit_card_limit
 from HardCode.scripts.model_0.parameters.additional_parameters.salary.salary_count import salary
 from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
 from HardCode.scripts.model_0.parameters.additional_parameters.user_name_msg.name_count_ratio import get_name_count
+from HardCode.scripts.model_0.parameters.additional_parameters.age_of_user.user_age import get_age
 
 
 
@@ -14,7 +15,8 @@ def get_additional_parameters(user_id):
     cc_limit = get_cc_limit(user_id)
     salary_dict = salary(user_id)
     name_count, defaulter = get_name_count(user_id)
-    max_limit, due_days, no_of_loan_apps, premium_apps ,overdue_ratio = loan_limit(user_id)
+    max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates = loan_limit(user_id)
+    age = get_age(user_id)
 
 
     # >>==>> salary
@@ -67,7 +69,7 @@ def get_additional_parameters(user_id):
     apps = ['MNYTAP','SALARY','NIRAFN','PAYSNS','PAYMEI','SUBHLN','VIVIFI','QUBERA','IAVAIL']
     premium_apps_check = False
     list_premium = []
-    for ap in premium_apps:
+    for ap in loan_apps:
         for aps in apps:
             if str(ap) == aps:
                 list_premium.append(ap)
@@ -101,7 +103,9 @@ def get_additional_parameters(user_id):
         'credit_card_limit': cc_limit,
         'salary': salary_dict,
         'premium_apps': list_premium,
-        'name_msg_count': name_count
+        'name_msg_count': name_count,
+        'loan_dates':loan_dates,
+        "age":age
 
     }
 

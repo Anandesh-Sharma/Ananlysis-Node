@@ -167,18 +167,19 @@ def get_cc_limit(id):
         connect = conn()
         db = connect.messagecluster.creditcard
         file1 = db.find_one({"cust_id": id})
-        if len(file1['sms']) != 0:
-            data = pd.DataFrame(file1["sms"])
-            sms_header_splitter(data)  
+        if file1:
+            if len(file1['sms']) != 0:
+                data = pd.DataFrame(file1["sms"])
+                sms_header_splitter(data)
 
-            final_df = get_extracted_data(data)
-            bank = final_df.groupby('bank_name')
-            x = bank['available_card_limit'].max()
-            x = x.to_dict()
-            delete = [key for key in x if key == 'not mentioned']
-            for key in delete:
-                del x[key]
-            result = x
+                final_df = get_extracted_data(data)
+                bank = final_df.groupby('bank_name')
+                x = bank['available_card_limit'].max()
+                x = x.to_dict()
+                delete = [key for key in x if key == 'not mentioned']
+                for key in delete:
+                    del x[key]
+                result = x
     except BaseException as e:
         print(f"error in credit card limit check: {e}")
     finally:

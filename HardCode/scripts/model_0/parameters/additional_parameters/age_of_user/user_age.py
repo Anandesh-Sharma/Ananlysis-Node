@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime, date
 
 URL = 'https://admin.credicxotech.com/api/get_user_info/'
 Auth = 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTU4OTIyMDY3OSwianRpIjoiNTM2YzM4NWU2NzNjNDg1ODhjZGEwY2UzMDA4NTA2NzgiLCJ1c2VyX2lkIjoxNywiY3VycmVudF9zdGVwIjoxLCJkZXNpZ25hdGlvbiI6WyJzdXBlcnVzZXJfc3VwZXJ1c2VyIl0sIm5hbWUiOiJTdXJhaiBCb2hhcmEiLCJlbWFpbCI6InN1cmFqLmJvaGFyYS41ODlAZ21haWwuY29tIiwicGhvbmVfbnVtYmVyIjo5MjY3OTg4NTY1fQ.e9_9BKfyehBBYzwJQ9uvmmrcAh2GR0JzCYSED-hhLKQ'
@@ -14,10 +15,13 @@ def generate_access_token():
     return r['access']
 
 
-
-def get_profile_name(user_id):
+def get_age(user_id):
+    """
+    :returns age of the user
+    :rtype: str
+    """
     global Auth
-    profile_name = ""
+    age = None
     param = {'user_id': user_id}
     try:
         res = requests.get(url=URL, params=param, headers={'Authorization': Auth})
@@ -32,13 +36,18 @@ def get_profile_name(user_id):
             else:
                 data = res.json()
                 if 'error' not in data:
-                    profile_name = data['profile']['name']
-
+                    dob = data['profile']['dob']
+                    dob = datetime.strptime(dob, "%Y-%m-%d")
+                    today = date.today()
+                    age = today.year - dob.year
         else:
             data = res.json()
             if 'error' not in data:
-                profile_name = data['profile']['name']
+                dob = data['profile']['dob']
+                dob = datetime.strptime(dob, "%Y-%m-%d")
+                today = date.today()
+                age = today.year - dob.year
     except BaseException as e:
         print(f"Error in fetching data from api : {e}")
     finally:
-        return profile_name    
+        return age

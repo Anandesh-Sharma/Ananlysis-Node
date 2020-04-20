@@ -370,6 +370,7 @@ def balance_check(data):
     pattern_3 = r"(?:bal|balance) is (?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
     pattern_4 = r"(?i)(?:aval|avl)(?: bal)?(?: is)? \+?(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
     pattern_5 = r"(?:bal |balance )(?:(?:rs|inr|\u20B9)\.?\s?:?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
+    pattern_6 = r"(?:balances are [0-9]{3,}[\*nx]+(?:[0-9]{3,}))\:?\s?\+?(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"
 
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
@@ -378,6 +379,7 @@ def balance_check(data):
         matcher_3 = re.search(pattern_3, message)
         matcher_4 = re.search(pattern_4, message)
         matcher_5 = re.search(pattern_5, message)
+        matcher_6 = re.search(pattern_6, message)
         amount = 0
         if matcher_1 is not None:
             amount = matcher_1.group(1)
@@ -394,10 +396,12 @@ def balance_check(data):
         elif matcher_5 is not None:
             amount = matcher_5.group(1)
 
+        elif matcher_6 is not None:
+            amount = matcher_6.group(1)
+
         else:
             amount = 0
         data['available balance'][i] = float(str(amount).replace(",", ""))
-
 
 def get_time(data):
     for i in range(data.shape[0]):

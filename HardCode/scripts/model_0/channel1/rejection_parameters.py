@@ -17,9 +17,9 @@ def rejecting_parameters(user_id,cibil_df):
     payment_rating = get_payment_rating(cibil_df)
     rejection_app = check_rejection(user_id)
     ecs_count , ecs_status = get_count_ecs(user_id)
-    max_limit, loan_due_days, no_of_loan_apps, premium_apps , overdue_ratio = loan_limit(user_id)
+    max_limit, loan_due_days, no_of_loan_apps, loan_apps , overdue_ratio, loan_dates = loan_limit(user_id)
     rejection_msg = get_defaulter(user_id)
-    available_balance = find_info(date,user_id)
+    available_balance = find_info(user_id)
 
 
     rejection_reasons = []
@@ -50,17 +50,19 @@ def rejecting_parameters(user_id,cibil_df):
         msg = "rejected as there are more than 4 ecs related msgs"
         rejection_reasons.append(msg)
 
-    if loan_due_days >= 9:
-        msg = "rejected as due days for a loan are more than 9 days"
+    if len(loan_apps) >= 10:
+        msg = "user has loans from more than 10 different loan apps"
         rejection_reasons.append(msg)
 
     if rejection_msg:
         msg = "user has critical rejection msgs in data"
         rejection_reasons.append(msg)
 
-    if available_balance['balance_on_loan_date'] > 35000:
-        msg = "user has a good amount of balance"
+    if available_balance['balance_on_loan_date'] > 30000:
+        msg = "user has a high amount of balance"
         rejection_reasons.append(msg)
+
+
 
 
 

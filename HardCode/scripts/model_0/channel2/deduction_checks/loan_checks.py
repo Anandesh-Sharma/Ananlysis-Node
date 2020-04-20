@@ -2,7 +2,7 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_in
 
 def loan_check(user_id):
 
-    max_limit, due_days, no_of_loan_apps, premium_apps ,overdue_ratio = loan_limit(user_id)
+    max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates = loan_limit(user_id)
 
 
     #>>==>> loan limit
@@ -104,7 +104,8 @@ def loan_check(user_id):
         'max_limit' : max_limit,
         'due_days': due_days,
         'no_of_loan_apps': no_of_loan_apps,
-        'loan_app_list': premium_apps
+        'loan_app_list': loan_apps,
+        'overdue_ratio':overdue_ratio
 
     }
 

@@ -71,9 +71,12 @@ def get_user_messages(cust_id):
 
 
 def get_name_count(cust_id):
-    user_data = get_user_messages(cust_id)
     name_count = 0
     defaulter = False
+    user_data = get_user_messages(cust_id)
+    if user_data.empty:
+        return name_count , defaulter
+
 
     pattern = r'dear\s?([a-z]+)'
     for i in range(user_data.shape[0]):
@@ -81,7 +84,7 @@ def get_name_count(cust_id):
         matcher = re.search(pattern, message)
         if matcher is not None:
             user_name = str(matcher.group(1)).lower()
-            actual_name = get_profile_name(cust_id).split(' ')
+            actual_name = get_profile_name(cust_id)
             actual_name = str(actual_name).split(' ')
             if user_name == str(actual_name[0]):
                 name_count += 1
