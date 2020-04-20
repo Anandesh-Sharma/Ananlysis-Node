@@ -50,8 +50,8 @@ def rejecting_parameters(user_id,cibil_df):
         msg = "rejected as there are more than 4 ecs related msgs"
         rejection_reasons.append(msg)
 
-    if len(loan_apps) >= 5:
-        msg = "user has loans from more than 5 different loan apps"
+    if len(loan_apps) >= 10:
+        msg = "user has loans from more than 10 different loan apps"
         rejection_reasons.append(msg)
 
     if rejection_msg:
