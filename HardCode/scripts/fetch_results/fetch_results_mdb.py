@@ -10,6 +10,7 @@ def fetch_user(user_id):
 
     # -> FETCH ANALYSIS
     if alys_result:
+        alys_result["result"] = [alys_result["result"][-1]]
         del alys_result["_id"]
         # -> balance_sheet
         alys_bs = client.analysis.balance_sheet.find_one({'cust_id': user_id})
@@ -29,6 +30,7 @@ def fetch_user(user_id):
             del alys_rejection["_id"]
         # -> scoring_model
         alys_sm = client.analysis.scoring_model.find_one({'cust_id': user_id})
+        alys_sm["result"] = [alys_sm["result"][-1]]
         if alys_sm:
             del alys_sm["_id"]
 

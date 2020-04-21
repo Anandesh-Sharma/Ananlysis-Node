@@ -87,7 +87,7 @@ def bl0(**kwargs):
     current_loan = kwargs.get('current_loan')
     cibil_df = kwargs.get('cibil_xml')
     sms_json = kwargs.get('sms_json')
-
+    sms_count = len(sms_json)
     logger = logger_1('bl0', user_id)
     if not isinstance(user_id, int):
         return exception_feeder(user_id=user_id, msg='user_id not int type', logger=logger)
@@ -302,6 +302,7 @@ def bl0(**kwargs):
     limit = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df, new_user=new_user,
                     cibil_score=cibil_score)
     analysis_result['cibil'] = limit
+    analysis_result['sms_count'] = sms_count
     analysis_result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
 
     # PUSH analysis_result to the mongo
