@@ -19,7 +19,7 @@ from configparser import RawConfigParser
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 config = RawConfigParser()
-config.read('/home/ravan/credicxo-projects/analysisnode/settings.ini')
+config.read('/etc/settings.ini')
 
 MONGOUSER = config.get('section', 'MONGOUSER')
 MONGOPASS = config.get('section', 'MONGOPASS')
