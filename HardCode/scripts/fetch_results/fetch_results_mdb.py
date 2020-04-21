@@ -46,6 +46,6 @@ def fetch_user(user_id):
                 'balance_sheet': alys_bs if alys_bs else {},
             },
         }
-        return json.dumps(final_result)
+        return final_result
     else:
         return {'status': False, 'message': "Calm down! We're working on it"}
