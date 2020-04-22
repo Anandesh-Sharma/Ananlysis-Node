@@ -21,8 +21,14 @@ def get_defaulter(user_id):
     else:
         return FLAG
 
+    legal_message_count = 0
     patterns = [
         r'legal\snotice\salert.*loan\samount.*overdue.*since\s([0-9]{1,2})\sday[s]?',
+        r'action\srequired.*pending.*\s([0-9]+)\s?day[s]?',
+        r'urgent\sattention.*overdue.*\s([0-9]+)\sday[s]?',
+        r'due\ssince\s([0-9]+)\sday[s]?.*immediately',
+        r'your\s(?:loan|emi).*is\soverdue\sseriously',
+        r'your\sloan\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\soverdue\sby\s([0-9]+)\s?days'
         r'legal\snotice\salert',
         r'legal\snotice.*going\sto\sbe\sdispatched',
         r'address.*shared.*legal\sdepartment.*legal\snotice.*',
@@ -35,9 +41,15 @@ def get_defaulter(user_id):
         r'final\swarning',
         r'legal\scourt\scase.*legal\scase\sagainst\syou',
         r'final\sintimation.*final\snotice',
-        r'action\srequired.*pending.*\s([0-9]+)\s?day[s]?',
-        r'urgent\sattention.*overdue.*\s([0-9]+)\sday[s]?',
-        r'legal\snotice.*contemplated.*avoid.*legal\saction'
+        r'legal\snotice.*contemplated.*avoid.*legal\saction',
+        r'overdue.*([0-9]+)\sday[s]?.*legal.*notice',
+        r'legal\saction.*attention.*required',
+        r'legal\sdepartment.*legal\snotice',
+        r'legal\scounsel.*legal\sproceedings',
+        #r'legal\simplications.*(\savoid)?legal\saction',
+        #r'loan.*due\ssince\s(\d{4}-\d{2}-\d{2}).*legal\s(?:actions|notification)',
+        r'legal\scourt\scase.*legal\saction[s]?',
+        #r'legal\scourt\scase.*legal\sactions'
     ]
 
     for i in range(total.shape[0]):
@@ -45,15 +57,17 @@ def get_defaulter(user_id):
         
         for pattern in patterns:
             matcher = re.search(pattern, message)
-            if pattern is patterns[0] or pattern is patterns[13] or pattern is patterns[14]:
+            if pattern is patterns[0] or pattern is patterns[1] or pattern is patterns[2] or pattern is pattern[3] or pattern is pattern[4] or pattern is pattern[5]:
                 if matcher is not None:
                     if int(matcher.group(1)) > 15:
                         FLAG = True
+                        #legal_message_count += 1
                         break
                     break
                 break
             if matcher is not None:
                 FLAG = True
+                legal_message_count += 1
                 break
-    return FLAG 
+    return FLAG , legal_message_count 
             
