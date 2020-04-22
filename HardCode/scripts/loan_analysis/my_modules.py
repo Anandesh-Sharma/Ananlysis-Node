@@ -250,15 +250,22 @@ def due_amount_extract(message):
 
 
 def is_overdue(message):
-    pattern_1 = r'.*loan.*overdue.*repayable\sis\srs.\s?([0-9]+)'
-    pattern_2 = r'.*loan.*rs\.\s([0-9]+).*overdue.*'
-    pattern_3 = r'.*loan.*overdue.*repayment.*rs\.?\s([0-9]+)'
-
-    matcher_1 = re.search(pattern_1, message)
-    matcher_2 = re.search(pattern_2, message)
-    matcher_3 = re.search(pattern_3, message)
-    if matcher_1 or matcher_2 or matcher_3:
-        return True
+    patterns = [
+        r'.*loan.*overdue.*repayable\sis\srs.\s?([0-9]+)',
+        r'.*loan.*rs\.\s([0-9]+).*overdue.*',
+        r'.*loan.*overdue.*repayment.*rs\.?\s([0-9]+)',
+        r'legal\snotice\salert.*loan\samount.*overdue.*since\s([0-9]{1,2})\sday[s]?',
+        r'action\srequired.*pending.*\s([0-9]+)\s?day[s]?',
+        r'urgent\sattention.*overdue.*\s([0-9]+)\sday[s]?',
+        r'due\ssince\s([0-9]+)\sday[s]?.*immediately',
+        r'your\s(?:loan|emi).*is\soverdue\sseriously',
+        r'your\sloan\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\soverdue\sby\s([0-9]+)\s?days'
+        ]
+    
+    for pattern in patterns:
+        matcher = re.search(pattern, message)
+        if matcher is not None:
+            return True
     else:
         return False
 
