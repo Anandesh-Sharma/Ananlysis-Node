@@ -51,14 +51,14 @@ def final_output(cust_id):
         'empty': False
     }
 
-    loan_disbursal_flow = {}
+    loan_disbursal_flow = []
 
     # final output
     li = []
     li_ovrdue = []
     for i in a.keys():
         report['TOTAL_LOANS'] = report['TOTAL_LOANS'] + len(a[i].keys())
-        loan_disbursal_flow[str(i)] = []
+        #loan_disbursal_flow[str(i)] = []
         try:       
             report['TOTAL_LOAN_APPS'] = len(a.keys())
             #freport['LOAN_APP_LIST'].append(str(i)
@@ -66,7 +66,7 @@ def final_output(cust_id):
             logger.info("no loan apps")
         for j in a[i].keys():
             try:
-                loan_disbursal_flow[str(i)].append(a[i][j]['disbursed_date'])
+                loan_disbursal_flow.append(a[i][j]['disbursed_date'])
             except:
                 pass
             try:
@@ -131,7 +131,7 @@ def final_output(cust_id):
     except:
         report['OVERDUE_RATIO'] = 0
     try:
-        report['LOAN_DATES'] = loan_disbursal_flow
+        report['LOAN_DATES'] = loan_disbursal_flow.sort(key=lambda date: datetime.strptime(date, "%Y-%m-%d %H:%M:%S"))
     except:
         pass
     try:
