@@ -36,7 +36,7 @@ def get_ecs_bounce(cust_id):
         for i in range(ecs_data.shape[0]):
             message = str(ecs_data['body'][i].encode('utf-8')).lower()
             for pattern in patterns:
-            matcher = re.search(pattern, message)
+                matcher = re.search(pattern, message)
 
             if matcher is not None:
                 ecs_bounce_list.append(i)

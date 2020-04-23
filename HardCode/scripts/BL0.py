@@ -6,9 +6,11 @@ from HardCode.scripts.cibil.Analysis import analyse
 from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import create_transaction_balanced_sheet
 from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.classifiers.Classifier import classifier
-from HardCode.scripts.model_0.scoring.generate_total_score import get_score
+# from HardCode.scripts.reference_verification.validation.check_reference import validate
 from HardCode.scripts.Util import *
+from HardCode.scripts.model_0.scoring.generate_total_score import get_score
 import warnings
+import multiprocessing
 import pandas as pd
 import pytz
 
@@ -38,7 +40,6 @@ def result_fetcher(**kwargs):
     balance_sheet = kwargs.get('balance_sheet_result')
     rejection = kwargs.get('result_rejection')
     score = kwargs.get('result_score')
-
     output_flag = kwargs.get('output_flag', 'cibil')
     test_final_result = client.analysisresult.bl0.find_one({'cust_id': user_id})
     final_result = test_final_result['result'][-1:][0]
@@ -47,11 +48,10 @@ def result_fetcher(**kwargs):
     del test_final_result['result']
     test_final_result['result'] = final_result
     del test_final_result['_id']
-
+    del score['cust_id']
     del loan_result['result']['cust_id']
     del salary_result['cust_id']
     del rejection['cust_id']
-    del score['cust_id']
 
     analysis = {
         'salary': salary_result,
@@ -72,18 +72,23 @@ def result_fetcher(**kwargs):
     return test_final_result
 
 
+def set_processing_bool(user_id, status):
+    client = conn()
+    client.user_process.bl0.update_one({'cust_id': user_id}, {'$set': {'processing': status}}, upsert=True)
+
+
 def bl0(**kwargs):
     # cibil_score, sms_json, user_id, new_user, list_loans, current_loan
-
     cibil_score = kwargs.get('cibil_score')
+    # sms_json = kwargs.get('sms_json')
     user_id = kwargs.get('user_id')
     new_user = kwargs.get('new_user')
     list_loans = kwargs.get('list_loans')
     current_loan = kwargs.get('current_loan')
     cibil_df = kwargs.get('cibil_xml')
     sms_json = kwargs.get('sms_json')
+    sms_count = len(sms_json)
     logger = logger_1('bl0', user_id)
-
     if not isinstance(user_id, int):
         return exception_feeder(user_id=user_id, msg='user_id not int type', logger=logger)
 
@@ -95,6 +100,16 @@ def bl0(**kwargs):
         return exception_feeder(user_id=user_id, msg=str(e), logger=logger)
 
     logger.info('connection success')
+
+    # CHECK IF THE USER_ID is already processing or just got a new hit !!!
+    user_process_bool = client.user_process.bl0.find_one({'cust_id': user_id})
+    if not user_process_bool:
+        set_processing_bool(user_id, True)
+    elif user_process_bool['processing']:
+        return
+    else:
+        set_processing_bool(user_id, True)
+
     logger.info("checking started")
 
     # typechecking current_loan
@@ -144,10 +159,18 @@ def bl0(**kwargs):
 
     # >>==>> Classification
     logger.info('starting classification')
-
-    classifier_result = classifier(sms_json, str(user_id))
-    if not classifier_result:  # returns a bool
-        exception_feeder(client=client, user_id=user_id, logger=logger, msg='error in classification')
+    p = multiprocessing.Process(target=classifier, args=(sms_json, str(user_id),))
+    try:
+        p.start()
+    except Exception as e:
+        print(e)
+    try:
+        p.join()
+    except Exception as e:
+        print(e)
+    # classifier_result = classifier(sms_json, str(user_id))
+    # if not classifier_result:   # returns a bool
+    #     exception_feeder(client=client, user_id=user_id, logger=logger, msg='error in classification')
 
     logger.info('classification completes')
 
@@ -183,6 +206,17 @@ def bl0(**kwargs):
                          msg="rejection check failed due to some reason")
     logger.info('rejection check complete')
 
+    # >>=>> reference verification
+
+    # logger.info('starting reference verification')
+    # result_verification = validate(user_id)  # returns a dictionary
+    # if result_verification['status']:
+    #     pass
+    # if not result_verification['status']:
+    #     exception_feeder(client=client, user_id=user_id, logger=logger,
+    #                      msg="reference verification failed due to some reason")
+    # logger.info('reference verification complete')
+
     # >>=>> SALARY ANALYSIS
     logger.info('starting salary analysis')
     try:
@@ -191,7 +225,6 @@ def bl0(**kwargs):
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg="Salary Analysis failed due to some reason")
     except BaseException as e:
-        print(f"Error : {e}")
         exception_feeder(client=client, user_id=user_id, logger=logger,
                          msg=str(e))
         # -> Run BASE CIBIL logic and handle
@@ -211,21 +244,6 @@ def bl0(**kwargs):
             analysis_result['cheque_bounce'] = True
             # TODO : CREATE A NEW FUNCTION THAT FINDS THE RESULT IN DB AND RETURN IT TO MIDDLEWARE
 
-    # >>==>> Scoring Model
-    logger.info("Scoring Model starts")
-
-    try:
-
-        result_score = get_score(user_id, cibil_df)# Returns a dictionary
-        if not result_score['status']:
-            exception_feeder(client=client, user_id=user_id, logger=logger,
-                             msg="scoring model failed due to some reason")
-    except BaseException as e:
-        print(f"Error : {e}")
-        exception_feeder(client=client, user_id=user_id, logger=logger,
-                         msg=str(e))
-
-    logger.info('scoring completed successfully')
     # >>=>> UTILIZING LOAN ANALYSIS
     # TODO : Change the logic for loan
     logger.info('Checking if a person has done default')
@@ -236,6 +254,18 @@ def bl0(**kwargs):
         # TODO : CREATE A NEW FUNCTION THAT FINDS THE RESULT IN DB AND RETURN IT TO MIDDLEWARE
     logger.info('Not a defaulter')
     logger.info('Starting Analysis')
+
+    logger.info("Scoring Model starts")
+    try:
+
+        result_score = get_score(user_id, cibil_df)  # Returns a dictionary
+        if not result_score['status']:
+            exception_feeder(client=client, user_id=user_id, logger=logger,
+                             msg="scoring model failed due to some reason")
+    except BaseException as e:
+        print(f"Error : {e}")
+        exception_feeder(client=client, user_id=user_id, logger=logger,
+                         msg=str(e))
 
     salary_present = False
     loan_present = False
@@ -272,14 +302,16 @@ def bl0(**kwargs):
     limit = analyse(user_id=user_id, current_loan=current_loan, cibil_df=cibil_df, new_user=new_user,
                     cibil_score=cibil_score)
     analysis_result['cibil'] = limit
-    analysis_result['modified_at'] = datetime.now(pytz.timezone('Asia/Kolkata'))
+    analysis_result['sms_count'] = sms_count
+    analysis_result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
 
     # PUSH analysis_result to the mongo
     client.analysisresult.bl0.update({'cust_id': user_id}, {'$push': {'result': analysis_result}})
-    logger.info("analysis complete")
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
                                 balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,
                                 result_score=result_score)
-
+    logger.info("Setting processing bool to false")
+    set_processing_bool(user_id, False)
     client.close()
+    logger.info("analysis complete")
     return end_result

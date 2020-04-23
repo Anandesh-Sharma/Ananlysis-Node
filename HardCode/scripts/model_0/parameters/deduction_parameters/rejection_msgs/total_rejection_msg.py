@@ -1,10 +1,10 @@
 import re
 import pandas as pd
-from tqdm import tqdm
 from HardCode.scripts.Util import conn
 
 def get_defaulter(user_id):
     FLAG = False
+    legal_message_count = 0
     connect = conn()
     loan_approval = connect.messagecluster.loanapproval.find_one({'cust_id':user_id})
     loan_reject = connect.messagecluster.loanrejection.find_one({'cust_id': user_id})
@@ -19,9 +19,9 @@ def get_defaulter(user_id):
         total = loan_approval + loan_overdue + loan_reject
         total = pd.DataFrame(total)
     else:
-        return FLAG
+        return FLAG,legal_message_count
 
-    legal_message_count = 0
+
     patterns = [
         r'legal\snotice\salert.*loan\samount.*overdue.*since\s([0-9]{1,2})\sday[s]?',
         r'action\srequired.*pending.*\s([0-9]+)\s?day[s]?',
@@ -49,7 +49,7 @@ def get_defaulter(user_id):
         #r'legal\simplications.*(\savoid)?legal\saction',
         #r'loan.*due\ssince\s(\d{4}-\d{2}-\d{2}).*legal\s(?:actions|notification)',
         r'legal\scourt\scase.*legal\saction[s]?',
-        #r'legal\scourt\scase.*legal\sactions'
+
     ]
 
     for i in range(total.shape[0]):

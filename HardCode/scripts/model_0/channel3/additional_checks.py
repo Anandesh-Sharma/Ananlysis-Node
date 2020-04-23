@@ -3,6 +3,7 @@ from HardCode.scripts.model_0.parameters.additional_parameters.salary.salary_cou
 from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
 from HardCode.scripts.model_0.parameters.additional_parameters.user_name_msg.name_count_ratio import get_name_count
 from HardCode.scripts.model_0.parameters.additional_parameters.age_of_user.user_age import get_age
+from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.get_ratio import *
 
 
 
@@ -15,9 +16,10 @@ def get_additional_parameters(user_id):
     cc_limit = get_cc_limit(user_id)
     salary_dict = salary(user_id)
     name_count, defaulter = get_name_count(user_id)
-    max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates = loan_limit(user_id)
+    max_limit, due_days, no_of_loan_apps, loan_apps ,loan_overdue_ratio, loan_dates = loan_limit(user_id)
     age = get_age(user_id)
-
+    overdue_msg_ratio = overdue_ratio(user_id)
+    legal_msg_ratio = legal_messages_ratio(user_id)
 
     # >>==>> salary
     salary_check1 = False
@@ -77,7 +79,7 @@ def get_additional_parameters(user_id):
 
     # >>==>> user name msg count
     defaulter_check = False
-    if defaulter:
+    if not defaulter:
         defaulter_check = True
 
 
@@ -105,7 +107,9 @@ def get_additional_parameters(user_id):
         'premium_apps': list_premium,
         'name_msg_count': name_count,
         'loan_dates':loan_dates,
-        "age":age
+        "age":age,
+        'overdue_msg_ratio':overdue_msg_ratio,
+        'legal_msg_ratio':legal_msg_ratio
 
     }
 

@@ -10,15 +10,18 @@ def month_balance(value,prev_month,prev_year,sec_mon,sec_yr,third_mon,third_yr,a
     second_last_month_bal = value['second_last_month_bal']
     if second_last_month_bal == 0:
         index_second_last = len(all_timestamps)
+        second_last_month_bal = -1
     else:
         index_second_last = value['index_second_last_month'] + 1
     third_last_month_bal = value['third_last_month_bal']
     if third_last_month_bal == 0:
         index_third_last = len(all_timestamps)
+        third_last_month_bal = -1
     else:
         index_third_last = value['index_third_last_month'] + 1
     if last_month_bal == 0:
         index_last_month = len(all_timestamps)
+        last_month_bal = -1
     else:
         index_last_month = value['index_last_month'] + 1
     temp = True
@@ -86,10 +89,11 @@ def find_info(user_id):
     user_data = connect.analysis.balance_sheet.find_one({'cust_id': user_id})
 
     if not user_data:
-        return {'AC_NO': '', 'balance_on_loan_date': 0, 'last_month_bal': 0,
-                'second_last_month_bal': 0,
-                'third_last_month_bal': 0,
-                'count_creditordebit_msg': 0,'no_of_accounts':0}
+        return {'AC_NO': '', 'balance_on_loan_date': -1, 'last_month_bal': -1,
+                'second_last_month_bal': -1,
+                'third_last_month_bal': -1,
+                'count_creditordebit_msg': 0,
+                'no_of_accounts':0}
     user_data = user_data['sheet']
     sms_info_df = pd.DataFrame(user_data)
     all_timestamps = list(sms_info_df['timestamp'])
@@ -124,8 +128,6 @@ def find_info(user_id):
         last_third_bal = 0
         if timestamp.month <= previous_month:
             if timestamp.year <= previous_year:
-
-
                 last_bal = int(sms_info_df['Available Balance'][i])
         elif timestamp.year < previous_year:
             last_bal = int(sms_info_df['Available Balance'][i])
@@ -177,7 +179,6 @@ def find_info(user_id):
             if int(sms_info_df['Debit Amount'][i]) != 0:
                 count += 1
 
-            # print(all_timestamps[i]
 
             unique_acc_dict.update({ac_no:
                                         {'index_latest_timestamp':i,
@@ -191,10 +192,10 @@ def find_info(user_id):
                                          'count_creditordebit_msg':count
                                          }})
 
-            # x = unique_acc_dict[sms_info_df['acc_no']]
             continue
 
     list_to_return = []
+
 
     for ac_no,value in unique_acc_dict.items():
         if len(list_to_return) > 0:
@@ -205,7 +206,9 @@ def find_info(user_id):
         csv_dict = {}
         csv_dict['AC_NO'] = ac_no
         latest_avail_bal = int(value['Available_balance'])
-        if latest_avail_bal != 0:
+        if latest_avail_bal == 0:
+            latest_avail_bal = -1
+        else:
             index_latest_timestamp = value['index_latest_timestamp'] + 1
             while index_latest_timestamp < len(all_timestamps):
                 ac_no_sheet = str(sms_info_df['acc_no'][index_latest_timestamp])
@@ -250,9 +253,6 @@ def find_info(user_id):
 
 
     return list_to_return[0]
-
-        # wr.writerow(csv_dict)
-
 
 
 
