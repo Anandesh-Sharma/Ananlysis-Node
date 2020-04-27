@@ -258,7 +258,7 @@ def bl0(**kwargs):
     logger.info("Scoring Model starts")
     try:
 
-        result_score = get_score(user_id, cibil_df)  # Returns a dictionary
+        result_score = get_score(user_id, cibil_df,sms_count)  # Returns a dictionary
         if not result_score['status']:
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg="scoring model failed due to some reason")

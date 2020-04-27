@@ -128,7 +128,10 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                             'ryatri',
                                             'dhanip',
                                             'zestmo',
-                                            'smart']
+                                            'smart',
+                                            'myntra',
+                                            'reings',
+                                            'reingp']
     garbage_header_rows = []
     for i, row in df.iterrows():
         if i in required_rows:

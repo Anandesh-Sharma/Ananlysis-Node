@@ -7,7 +7,7 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.get
 
 
 
-def get_additional_parameters(user_id):
+def get_additional_parameters(user_id,sms_count):
     """
     :returns dictionaries of approval parameters and their values
     :rtype: dict
@@ -15,11 +15,11 @@ def get_additional_parameters(user_id):
 
     cc_limit = get_cc_limit(user_id)
     salary_dict = salary(user_id)
-    name_count, defaulter = get_name_count(user_id)
+    name_count = get_name_count(user_id)
     max_limit, due_days, no_of_loan_apps, loan_apps ,loan_overdue_ratio, loan_dates = loan_limit(user_id)
     age = get_age(user_id)
-    overdue_msg_ratio = overdue_ratio(user_id)
-    legal_msg_ratio = legal_messages_ratio(user_id)
+    overdue_msg_ratio,overdue_msg_count = overdue_count_ratio(user_id,sms_count)
+    legal_msg_ratio,legal_msg_count = legal_messages_count_ratio(user_id,sms_count)
 
     # >>==>> salary
     salary_check1 = False
@@ -78,9 +78,9 @@ def get_additional_parameters(user_id):
                 premium_apps_check = True
 
     # >>==>> user name msg count
-    defaulter_check = False
-    if not defaulter:
-        defaulter_check = True
+    # non_defaulter_check = False
+    # if not defaulter:
+    #     non_defaulter_check = True
 
 
 
@@ -95,8 +95,7 @@ def get_additional_parameters(user_id):
         'salary_check3': salary_check3,
         'salary_check4': salary_check4,
         'salary_check5': salary_check5,
-        'premium_check': premium_apps_check,
-        'msg_defaulter_check':defaulter_check
+        'premium_check': premium_apps_check
 
 
     }
@@ -106,10 +105,13 @@ def get_additional_parameters(user_id):
         'salary': salary_dict,
         'premium_apps': list_premium,
         'name_msg_count': name_count,
-        'loan_dates':loan_dates,
-        "age":age,
-        'overdue_msg_ratio':overdue_msg_ratio,
-        'legal_msg_ratio':legal_msg_ratio
+        'loan_dates' : loan_dates,
+        "age" : age,
+        'overdue_msg_ratio' : overdue_msg_ratio,
+        'overdue_msg_count' : overdue_msg_count,
+        'legal_msg_ratio' : legal_msg_ratio,
+        'legal_msg_count' : legal_msg_count
+
 
     }
 

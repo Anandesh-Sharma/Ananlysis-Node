@@ -13,7 +13,7 @@ import pandas as pd
 def generate_access_token():
     # ==> this function is used to generate the access token in case if it expires
 
-    url = 'http://localhost:8888/api/token/'
+    url = 'http://localhost:5000/api/token/'
 
     credentials = {'username': 'root', 'password': 'root'}
 
@@ -38,7 +38,7 @@ def execute_bl0(**kwargs):
     all_loan_amount = [1000, 2000, 3000, 4000]
     current_loan_amount = 0
 
-    url = 'http://localhost:8888/hard_code/bl0/'
+    url = 'http://localhost:5000/hard_code/bl0/'
     token = generate_access_token()
     Auth = 'Bearer ' + str(token)
     payload = {
@@ -73,17 +73,24 @@ def execute_bl0(**kwargs):
           "no_of_accounts": [result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['no_of_accounts']],
           "mean_avbl_bal": [result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['mean_available_balance']],
           "age": [result['Model_0']['parameters']['additional_parameters']['age']],
+          "creditcard": [result['Model_0']['parameters']['additional_parameters']['credit_card_limit']],
+          "salary": [result['Model_0']['parameters']['additional_parameters']['salary']],
           "name_msg_count": [result['Model_0']['parameters']['additional_parameters']['name_msg_count']],
           "overdue_ratio": [result['Model_0']['parameters']['deduction_parameters']['loan_val']['overdue_ratio']],
+          "overdue_msg_count": [result['Model_0']['parameters']['additional_parameters']['overdue_msg_count']],
           "overdue_msg_ratio": [result['Model_0']['parameters']['additional_parameters']['overdue_msg_ratio']],
+          "legal_msg_count": [result['Model_0']['parameters']['additional_parameters']['legal_msg_count']],
           "legal_msg_ratio": [result['Model_0']['parameters']['additional_parameters']['legal_msg_ratio']],
+          "total_loans": [result['Model_0']['parameters']['deduction_parameters']['due_days_interval_val']['total_loans']],
+          "same_app_count": [result['Model_0']['parameters']['deduction_parameters']['due_days_interval_val']['same_app_count']],
+          "diferent_app_count": [result['Model_0']['parameters']['deduction_parameters']['due_days_interval_val']['different_app_count']],
           "loan_app_list":[result['Model_0']['parameters']['deduction_parameters']['loan_val']['loan_app_list']],
             "rejection_reason":[result['Model_0']['rejection_reasons']]
           }
 
     data = pd.DataFrame.from_dict(df)
     # output = data.append(df, ignore_index=True)
-    data.to_csv('goodclients.csv', mode='a', header=False)
+    data.to_csv('defaulter_clients1.csv', mode='a', header=False)
 
 
     # if not os.path.exists('../result'):
@@ -123,7 +130,7 @@ def testing(user_id):
 user_id = input('enter user id: ')
 testing(user_id=user_id)
 
-l = goodclient
+l = defaulters
 l.sort(reverse=True)
 print(len(l))
 print(l)
@@ -133,6 +140,6 @@ print(l)
 # with ThreadPoolExecutor() as exc:
 #     exc.map(testing,(i for i in l))
 
-# #
-# for i in tqdm(l):
+
+# for i in tqdm(l[:500]):
 #     testing(i)

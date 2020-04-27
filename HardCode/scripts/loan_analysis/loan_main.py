@@ -1,6 +1,6 @@
 import numpy as np
 from HardCode.scripts.loan_analysis.my_modules import *
-from HardCode.scripts.Util import logger_1 ,conn
+from HardCode.scripts.Util import logger_1, conn
 from HardCode.scripts.loan_analysis.preprocessing import preprocessing
 from datetime import datetime
 import pytz
@@ -11,6 +11,7 @@ warnings.filterwarnings('ignore')
 timezone = pytz.timezone('Asia/Kolkata')
 
 script_status = {}
+
 
 def final_output(cust_id):
     '''
@@ -35,45 +36,49 @@ def final_output(cust_id):
                 max_amount               :    maximum loan amount in all loans
     '''
     a, user_app_list = preprocessing(cust_id)
-
     logger = logger_1('final_output', cust_id)
     report = {
-        'TOTAL_LOAN_APPS' : 0,
-        'LOAN_APP_LIST' : user_app_list,
+        'TOTAL_LOAN_APPS': 0,
+        'LOAN_APP_LIST': user_app_list,
         'CURRENT_OPEN': 0,
         'TOTAL_LOANS': 0,
         'PAY_WITHIN_30_DAYS': True,
-        'OVERDUE_DAYS' : -1,
-        'OVERDUE_RATIO' : 0,
-        'AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS' : -1,
+        'OVERDUE_DAYS': -1,
+        'OVERDUE_RATIO': 0,
+        'AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS': -1,
         'CURRENT_OPEN_AMOUNT': [],
         'MAX_AMOUNT': -1,
         'empty': False
     }
 
-    loan_disbursal_flow = []
+    loan_disbursal_flow = {
+        'app' : [],
+        'disbursal_date' : []
+    }
 
     # final output
     li = []
     li_ovrdue = []
     for i in a.keys():
         report['TOTAL_LOANS'] = report['TOTAL_LOANS'] + len(a[i].keys())
-        #loan_disbursal_flow[str(i)] = []
-        try:       
+        #loan_disbursal_flow['app'].append(str(i))
+        try:
             report['TOTAL_LOAN_APPS'] = len(a.keys())
-            #freport['LOAN_APP_LIST'].append(str(i)
+            # freport['LOAN_APP_LIST'].append(str(i)
         except:
             logger.info("no loan apps")
         for j in a[i].keys():
             try:
-                loan_disbursal_flow.append(a[i][j]['disbursed_date'])
+                loan_disbursal_flow['app'].append(str(i))
+                loan_disbursal_flow['disbursal_date'].append(a[i][j]['disbursed_date'])
+
             except:
                 pass
             try:
                 if a[i][j]['overdue_days'] != -1:
                     li_ovrdue.append(int(a[i][j]['overdue_days']))
             except:
-                pass    
+                pass
             try:
                 li.append(float(a[i][j]['loan_disbursed_amount']))
                 li.append(float(a[i][j]['loan_closed_amount']))
@@ -117,13 +122,13 @@ def final_output(cust_id):
                         continue
             else:
                 continue
-    
+
     try:
         report['OVERDUE_DAYS'] = max(li_ovrdue)
     except:
-        pass  
+        pass
     try:
-        report['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS'] = np.round(sum(li_ovrdue) - max(li_ovrdue) / (len(li_ovrdue) - 1) , 2)
+        report['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS'] = np.round(sum(li_ovrdue) - max(li_ovrdue) / (len(li_ovrdue) - 1),2)
     except:
         pass
     try:
@@ -131,9 +136,10 @@ def final_output(cust_id):
     except:
         report['OVERDUE_RATIO'] = 0
     try:
-        report['LOAN_DATES'] = loan_disbursal_flow.sort(key=lambda date: datetime.strptime(date, "%Y-%m-%d %H:%M:%S"))
+        report['LOAN_DATES'] = loan_disbursal_flow
     except:
-        pass
+        report['LOAN_DATES'] = {}
+
     try:
         report['MAX_AMOUNT'] = float(max(li))
     except:
