@@ -52,45 +52,7 @@ def execute_bl0(**kwargs):
     files = [('sms_json', sms_json), ('cibil_xml', cibil_xml)]
     result = requests.post(url=url, data=payload, files=files, headers={'Authorization': Auth})
     result = result.json()
-    df = {"cust_id": user_id,"score": [result['Model_0']['score']],
-           "secured": [result['Model_0']['parameters']['deduction_parameters']['secured_unsecured_val']['secured_unsecured_loans_count']['secured']],
-          "unsecured": [result['Model_0']['parameters']['deduction_parameters']['secured_unsecured_val']['secured_unsecured_loans_count']['unsecured_count']],
 
-             "age_of_oldest_trade":  [result['Model_0']['parameters']['deduction_parameters']['age_of_oldest_trade_val']['age_of_oldest_trade']],
-            "active_count":  [result['Model_0']['parameters']['deduction_parameters']['active_close_val']['active_count']],
-          "close_count":[result['Model_0']['parameters']['deduction_parameters']['active_close_val']['closed_count']],
-            "loan_app_count_percentage": [result['Model_0']['parameters']['deduction_parameters']['loan_app_count_val']['loan_app_count']],
-             'verification_similarity': [result['Model_0']['parameters']['deduction_parameters']['reference_val']['reference']['result']['similarity_score']],
-             "due_days":  [result['Model_0']['parameters']['deduction_parameters']['loan_val']['due_days']],
-          "max_loan_limit": [result['Model_0']['parameters']['deduction_parameters']['loan_val']['max_limit']],
-          "ecs_count": [result['Model_0']['parameters']['deduction_parameters']['ecs_val']['ecs_bounce']],
-          "chq_count": [result['Model_0']['parameters']['deduction_parameters']['ecs_val']['cheque_bounce']],
-          "payment_rating":[result['Model_0']['parameters']['deduction_parameters']['payment_rating_val']['payment_rating']],
-          "balance_on_loan_date": [result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['balance_on_loan_date']],
-          "last_month_bal": [result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['last_month_bal']],
-          "scnd_last_month_bal": [result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['second_last_month_bal']],
-          "third_last_month": [result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['third_last_month_bal']],
-          "no_of_accounts": [result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['available_balance']['no_of_accounts']],
-          "mean_avbl_bal": [result['Model_0']['parameters']['deduction_parameters']['available_balance_val']['mean_available_balance']],
-          "age": [result['Model_0']['parameters']['additional_parameters']['age']],
-          "creditcard": [result['Model_0']['parameters']['additional_parameters']['credit_card_limit']],
-          "salary": [result['Model_0']['parameters']['additional_parameters']['salary']],
-          "name_msg_count": [result['Model_0']['parameters']['additional_parameters']['name_msg_count']],
-          "overdue_ratio": [result['Model_0']['parameters']['deduction_parameters']['loan_val']['overdue_ratio']],
-          "overdue_msg_count": [result['Model_0']['parameters']['additional_parameters']['overdue_msg_count']],
-          "overdue_msg_ratio": [result['Model_0']['parameters']['additional_parameters']['overdue_msg_ratio']],
-          "legal_msg_count": [result['Model_0']['parameters']['additional_parameters']['legal_msg_count']],
-          "legal_msg_ratio": [result['Model_0']['parameters']['additional_parameters']['legal_msg_ratio']],
-          "total_loans": [result['Model_0']['parameters']['deduction_parameters']['due_days_interval_val']['total_loans']],
-          "same_app_count": [result['Model_0']['parameters']['deduction_parameters']['due_days_interval_val']['same_app_count']],
-          "diferent_app_count": [result['Model_0']['parameters']['deduction_parameters']['due_days_interval_val']['different_app_count']],
-          "loan_app_list":[result['Model_0']['parameters']['deduction_parameters']['loan_val']['loan_app_list']],
-            "rejection_reason":[result['Model_0']['rejection_reasons']]
-          }
-
-    data = pd.DataFrame.from_dict(df)
-    # output = data.append(df, ignore_index=True)
-    data.to_csv('defaulter_clients1.csv', mode='a', header=False)
 
 
     # if not os.path.exists('../result'):
