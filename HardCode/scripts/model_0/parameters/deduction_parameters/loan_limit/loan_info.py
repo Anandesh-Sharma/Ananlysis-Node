@@ -10,14 +10,15 @@ def loan_limit(user_id):
     max_limit = -1
     due_days = -1
     no_of_loan_apps = 0
-    premium_apps = []
+    loan_apps = []
+    loan_dates = []
     overdue_ratio = 0
     connect = conn()
     loan_analysis_result = connect.analysis.loan.find_one({'cust_id': user_id})
 
     try:
         max_limit = loan_analysis_result['MAX_AMOUNT']
-        due_days = loan_analysis_result['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS']
+        due_days = loan_analysis_result['OVERDUE_DAYS']
         no_of_loan_apps = loan_analysis_result['TOTAL_LOAN_APPS']
         loan_apps = loan_analysis_result['LOAN_APP_LIST']
         overdue_ratio = loan_analysis_result['OVERDUE_RATIO']

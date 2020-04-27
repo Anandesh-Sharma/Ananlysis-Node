@@ -4,8 +4,8 @@ import pandas as pd
 
 import re
 
+
 def get_user_messages(cust_id):
-    
     client = conn()
     db = client.messagescluster
 
@@ -14,7 +14,7 @@ def get_user_messages(cust_id):
     overdue_data = db.loandueoverdue
     closed_data = db.loanclosed
     trans_data = db.transaction
-    extra_data = db.extra
+    # extra_data = db.extra
     reject_data = db.loanrejection
     creditcard_data = db.creditcard
     user_data = pd.DataFrame(columns=['sender', 'body', 'timestamp', 'read'])
@@ -27,7 +27,6 @@ def get_user_messages(cust_id):
         extra = extra_data.find_one({"cust_id": cust_id})
         reject = reject_data.find_one({"cust_id": cust_id})
         creditcard = creditcard_data.find_one({"cust_id": cust_id})
-
 
         if len(closed['sms']) != 0:
             closed_df = pd.DataFrame(closed['sms'])
@@ -48,11 +47,11 @@ def get_user_messages(cust_id):
         if len(approval['sms']) != 0:
             approval_df = pd.DataFrame(approval['sms'])
             user_data = user_data.append(approval_df)
-
+        '''
         if len(extra['sms']) != 0:
             extra_df = pd.DataFrame(extra['sms'])
             user_data = user_data.append(extra_df)
-
+            '''
         if len(reject['sms']) != 0:
             reject_df = pd.DataFrame(reject['sms'])
             user_data = user_data.append(reject_df)
@@ -62,9 +61,9 @@ def get_user_messages(cust_id):
             user_data = user_data.append(creditcard_df)
 
         user_data.sort_values(by=["timestamp"])
-        user_data.reset_index(drop=True, inplace = True)
+        user_data.reset_index(drop=True, inplace=True)
         client.close()
-    except Exception as e:
+    except:
         client.close()
     finally:
         return user_data
@@ -72,25 +71,15 @@ def get_user_messages(cust_id):
 
 def get_name_count(cust_id):
     name_count = 0
-    defaulter = False
     user_data = get_user_messages(cust_id)
-    if user_data.empty:
-        return name_count , defaulter
-
-
-    pattern = r'dear\s?([a-z]+)'
-    for i in range(user_data.shape[0]):
-        message = str(user_data['body'][i].encode('utf-8')).lower()
-        matcher = re.search(pattern, message)
-        if matcher is not None:
-            user_name = str(matcher.group(1)).lower()
-            actual_name = get_profile_name(cust_id)
-            actual_name = str(actual_name).split(' ')
-            if user_name == str(actual_name[0]):
+    if not user_data.empty:
+        actual_name = get_profile_name(cust_id)
+        actual_name = str(actual_name).split(' ')
+        pattern = str(actual_name[0])
+        for i in range(user_data.shape[0]):
+            message = str(user_data['body'][i]).lower()
+            matcher = re.search(pattern, message)
+            if matcher is not None:
                 name_count += 1
-            elif user_name != str(actual_name[0]):
-                defaulter = True
-                break 
-            else:
-                pass
-    return name_count, defaulter
+                break
+    return name_count

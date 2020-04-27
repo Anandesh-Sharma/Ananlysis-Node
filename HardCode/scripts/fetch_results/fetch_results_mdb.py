@@ -49,3 +49,16 @@ def fetch_user(user_id):
         return final_result
     else:
         return {'status': False, 'message': "Calm down! We're working on it"}
+
+
+def pre_rejection(user_id):
+    client = conn()
+    user_id = int(user_id)
+    rej_result = client.analysis.scoring_model.find_one({'cust_id': user_id})
+    if rej_result:
+        if len(rej_result['result'][-1]['rejection_reasons']) == 0:
+            return {'status': True, 'rejection_status': False, 'message': " no rejection reasons found"}
+        else:
+            return {'status': True, 'rejection_status': True, 'message': "rejection reasons found"}
+    else:
+        return {'status': False, 'message': "Calm down! We're working on it"}

@@ -1,6 +1,7 @@
 from django.views.generic.base import View
 from .middleware.cibil_analysis_middleware import get_cibil_analysis
 from .ml_analysis_status import get_cibil_analysis_status
+from .pre_rejection_status import get_pre_rejection_status
 
 
 class CibilAnalysis(View):
@@ -11,3 +12,8 @@ class CibilAnalysis(View):
 class CibilAnalysisStatus(View):
     def post(self, request):
         return get_cibil_analysis_status(request)
+
+
+class PreRejection(View):
+    def post(self, request):
+        return get_pre_rejection_status(request)

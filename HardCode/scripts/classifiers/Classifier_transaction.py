@@ -141,6 +141,9 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                             'ryatri',
                                             'dhanip',
                                             'zestmo',
+                                            'myntra',
+                                            'reings',
+                                            'reingp',
                                             'smart']
     # -->New Patterns
     # cleaning_transaction_patterns_header =['airbnk',

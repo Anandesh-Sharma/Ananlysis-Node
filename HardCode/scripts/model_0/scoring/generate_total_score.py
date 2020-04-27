@@ -6,29 +6,25 @@ from HardCode.scripts.Util import conn
 from datetime import datetime
 import pytz
 
-
 timezone = pytz.timezone('Asia/Kolkata')
 
 
-def get_score(user_id, cibil_df):
-
-
+def get_score(user_id, cibil_df, sms_count):
     status = True
     values = {}
     try:
         # >>==>> channel 1
-        rejection_reasons = rejecting_parameters(user_id,cibil_df)
+        rejection_reasons = rejecting_parameters(user_id, cibil_df, sms_count)
         if len(rejection_reasons) > 0:
             print("user rejected")
 
-
-        variables, values = get_parameters(user_id, cibil_df)
+        variables, values = get_parameters(user_id, cibil_df, sms_count)
         # >>==>> channel 2
 
         score1, weights1 = deduction_score(variables['deduction_variables'])
 
         # >>==>> channel 3
-        score2 , weights2 = additional_score(variables['additional_variables'])
+        score2, weights2 = additional_score(variables['additional_variables'])
 
         score = score1 + score2
         weights1.update(weights2)

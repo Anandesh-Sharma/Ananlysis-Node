@@ -19,17 +19,26 @@ def get_ecs_bounce(cust_id):
     ecs_data = get_ecs_data(cust_id)
     ecs_bounce_list = []
     mask = []
-    pattern_1 = r'ecs\sbounce\sho\schuka\shai'
-    pattern_2 = r'ecs\s(?:transaction|request).*(rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*returned.*insufficient\s(?:balance|fund[s]?)'
-    pattern_3 = r'unable\sto\sprocess.*ecs\srequest.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*insufficient\s(?:balance|fund[s]?)'
+    patterns = [
+        r'ecs\sbounce\sho\schuka\shai'
+        r'ecs\s(?:transaction|request).*(rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*returned.*insufficient\s(?:balance|fund[s]?)'
+        r'unable\sto\sprocess.*ecs\srequest.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*insufficient\s(?:balance|fund[s]?)'
+        r'(?:emi|payment|paymt|paymnt|ecs).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:has|is)\s(?:bounce[d]?|dishono[u]?red)'
+        r'(?:emi|payment|paymt|paymnt|ecs).*(?:is|has)\s(?:dishono[u]?red|bounced)'
+        r'ecs.*dishono[u]?red.*(?:due\sto|because\sof)\sinsufficient\s(?:balance|fund[s]?|bal)'
+        r'nach\s(?:payment|paymt|paymnt).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\s(?:has|is)\sbeen?\s(?:bounced|dishono[u]?red)'
+        r'(?:emi|payment|paymnt|paymt|ecs)\s.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*has\sbeen\sdishono[u]?red.*is\soverdue',
+        r'your\s(?:nach|ecs)\s?(payment)?\swas\sunsuccessful',
+        r'repayment.*not\ssuccessful\sthrough.*auto\s?\-?debit\sfacility'
+    ]
+
     if not ecs_data.empty:
         for i in range(ecs_data.shape[0]):
             message = str(ecs_data['body'][i].encode('utf-8')).lower()
-            matcher_1 = re.search(pattern_1, message)
-            matcher_2 = re.search(pattern_2, message)
-            matcher_3 = re.search(pattern_3, message)
+            for pattern in patterns:
+                matcher = re.search(pattern, message)
 
-            if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None:
+            if matcher is not None:
                 ecs_bounce_list.append(i)
                 mask.append(True)
             else:

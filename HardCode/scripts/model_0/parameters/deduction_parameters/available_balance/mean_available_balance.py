@@ -5,8 +5,7 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.
 
 def mean_available(user_id):
     connect = conn()
-    date = datetime.now()
-    mean_bal = 0
+    mean_bal = -1
     third_last_month = {}
     scnd_last_month = {}
     last_month = {}
@@ -53,15 +52,15 @@ def mean_available(user_id):
     if all_max_bal:
         mean_bal = sum(all_max_bal) / len(all_max_bal)
     try:
-        third_last_month = {'max_amt':all_max_bal[0],'datetime':all_max_time[0],'msg':all_max_msg[0]}
+        third_last_month = {'max_amt':all_max_bal[-3],'datetime':all_max_time[-3],'msg':all_max_msg[-3]}
     except:
         third_last_month = {}
     try:
-        scnd_last_month = {'max_amt': all_max_bal[1], 'datetime': all_max_time[1], 'msg': all_max_msg[1]}
+        scnd_last_month = {'max_amt': all_max_bal[-2], 'datetime': all_max_time[-2], 'msg': all_max_msg[-2]}
     except:
         scnd_last_month = {}
     try:
-        last_month = {'max_amt': all_max_bal[2], 'datetime': all_max_time[2], 'msg': all_max_msg[2]}
+        last_month = {'max_amt': all_max_bal[-1], 'datetime': all_max_time[-1], 'msg': all_max_msg[-1]}
     except:
         last_month = {}
 

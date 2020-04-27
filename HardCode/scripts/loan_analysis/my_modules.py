@@ -250,15 +250,37 @@ def due_amount_extract(message):
 
 
 def is_overdue(message):
-    pattern_1 = r'.*loan.*overdue.*repayable\sis\srs.\s?([0-9]+)'
-    pattern_2 = r'.*loan.*rs\.\s([0-9]+).*overdue.*'
-    pattern_3 = r'.*loan.*overdue.*repayment.*rs\.?\s([0-9]+)'
+    patterns = [
+        r'.*loan.*overdue.*repayable\sis\srs.\s?([0-9]+)',
+        r'(?:amount|loan|emi|payment|paymt|amt\.?)\s.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*overdue',
+        r'immediate\s(?:payment|repayment)\srequired.*overdue.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
+        r'.*loan.*overdue.*repayment.*rs\.?\s([0-9]+)',
+        r'legal\snotice\salert.*loan\samount.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*\soverdue.*since\s([0-9]{1,2})\sday[s]?',
+        r'legal\snotice\salert.*(?:loan|amount|emi).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*penalty.*overdue',
+        r'action\srequired.*pending.*\s([0-9]+)\s?day[s]?',
+        r'urgent\sattention.*overdue.*\s([0-9]+)\sday[s]?',
+        r'due\ssince\s([0-9]+)\sday[s]?.*immediately',
+        r'(?:loan|emi|repayment|amount|payment|amt\.?|paymt\.?).*(?:is|has\sbeen)\s?(seriously)?\soverdue\s?(seriously)?',
+        r'have\snot\s?(yet)?\sreceived\soverdue\s(?:payment|amount)\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]+[0-9]+)',
+        r'(?:loan|emi|repayment|amount|payment|amt\.?|paymt\.?).*severely\soverdue',
+        r'(?:loan|bill).*overdue\s(?:by|since|for)\s([0-9]+)\s?days',
+        r'you\shave\sbeen\soverdue\s([0-9,]+[.]?[0-9]+)',
+        r'missed.*payment.*loan.*(?:is|has\sbeen).* overdue.*(?:outstanding|due)\s(?:payment|amount).*(?:rs\.|inr)\s?([0-9,]+[.]?[0-9]+)',
+        r'transfer\s?(the)?\soverdue\s(?:amount|payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
+        r'(?:loan|emi|repayment|amount|payment|amt\.?|paymt\.?).*(?:have|has).*overdue',
+        r'(?:loan|emi|repayment|amount|payment|amt\.?|paymt\.?).*has\spassed\s?(the)?\sdue\sdate',
+        r'make\syour\sloan\soverdue\samount\swith\swaive\soff',
+        r'outstanding\sdue\samount.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\s(?:has\sbeen|is)\sin\sarrears',
+        r'([0-9]+)\s?days\spast.*(?:payment|emi|loan).*due\sdate',
+        r'overdue.*(?:paid|pay).*immediately',
+        r'(?:exceeded|overdued)\s(?:your)?.*(?:emi|installment|loan)\s(?:payment|repayment).*([0-9]+)\s?days',
+        r'have\snot\s?(?:yet)?\s(?:made|make)?.*(?:payment|paid).*(?:loan|emi)'
+    ]
 
-    matcher_1 = re.search(pattern_1, message)
-    matcher_2 = re.search(pattern_2, message)
-    matcher_3 = re.search(pattern_3, message)
-    if matcher_1 or matcher_2 or matcher_3:
-        return True
+    for pattern in patterns:
+        matcher = re.search(pattern, message)
+        if matcher is not None:
+            return True
     else:
         return False
 

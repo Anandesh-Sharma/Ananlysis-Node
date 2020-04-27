@@ -2,13 +2,13 @@ from HardCode.scripts.model_0.channel3.additional_checks import get_additional_p
 from HardCode.scripts.model_0.channel2.deduction_variables import get_deduction_parameters
 
 
-def get_parameters(user_id, cibil_df):
+def get_parameters(user_id, cibil_df,sms_count):
     """
     :returns combines rejection and approval parameters into a single dictionary
     :rtype: dict
     """
 
-    additional_variables, additional_values = get_additional_parameters(user_id)
+    additional_variables, additional_values = get_additional_parameters(user_id,sms_count)
 
     deduction_variables, deduction_values = get_deduction_parameters(user_id,cibil_df)
 

@@ -7,6 +7,7 @@ from HardCode.scripts.model_0.channel2.deduction_checks.secured_unsecured_checks
 from HardCode.scripts.model_0.channel2.deduction_checks.loan_checks import loan_check
 from HardCode.scripts.model_0.channel2.deduction_checks.ecs_bounce_checks import ecs_count
 from HardCode.scripts.model_0.channel2.deduction_checks.available_balance_checks import available_balance_check
+from HardCode.scripts.model_0.channel2.deduction_checks.loan_days_interval import due_days_interval
 
 def get_deduction_parameters(user_id, cibil_df):
     """
@@ -23,6 +24,7 @@ def get_deduction_parameters(user_id, cibil_df):
     secured_unsecured_var , secured_unsecured_val = secured_unsecured_check(cibil_df)
     loan_var , loan_val = loan_check(user_id)
     ecs_var , ecs_val = ecs_count(user_id)
+    dd_var,dd_val = due_days_interval(user_id)
 
 
 
@@ -47,7 +49,8 @@ def get_deduction_parameters(user_id, cibil_df):
         'reference_val': reference_val,
         'secured_unsecured_val': secured_unsecured_val,
         'loan_val':loan_val,
-        'ecs_val': ecs_val
+        'ecs_val': ecs_val,
+        'due_days_interval_val':dd_val
 
     }
 
