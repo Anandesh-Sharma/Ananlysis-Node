@@ -1,7 +1,7 @@
 father = ["papa", "papaji", "papa ji", "dad", "dady", "papa jio", "daddy", "daddu", "father", "baap", "abba", "appa",
           "baba", "abbu", "lala", "anna",
           "pappa", "pitaji", "pita ji", "pop", "pops", "bapuji", "bapu ji", "walid", "pa", "home", "bapu", "vader",
-          "babba", "yebba", "abbi", "pai",
+          "babba", "yebba", "abbi", "pai","sasurji","sasur ji","bauji","bau ji","papa g","my home","ghar",
           "awki", "aita", "pader", "peder", "otac", "buba", "tad", "patre", "patri", "papallu", "patra", "batu", "bato",
           "batico", "dada",
           "pare", "pattri", "opa", "daa", "da", "tata", "otec", "ate", "pappie", "pere", "poppa", "patro", "isa",
@@ -16,7 +16,7 @@ father = ["papa", "papaji", "papa ji", "dad", "dady", "papa jio", "daddy", "dadd
           "tad", "foter"]
 
 mother = ["mummy", "mumma", "mamma", "mummyji", "mummy ji", "mom", "mommy", "mammi", "mammy", "ammi", "aayi", "aai",
-          "ma", "maa", "matashri", "mata shri",
+          "ma", "maa", "matashri", "mata shri","my mom",'mama',"mummy g","my home","ghar",
           "sasuma", "walida", "amma", "maji", "ma ji", "ba", "mata", "tayi", "maai", 'ai', "home", "mummy1", "mummy 1",
           "mummy2", "mummy 2", "motherinlaw", "mother in law",
           "mil", "moeder", "nene", "meme", "ahm", "matka", "majka", "mae", "mare", "mati", "maminka", "mor", "moer",
@@ -27,3 +27,5 @@ mother = ["mummy", "mumma", "mamma", "mummyji", "mummy ji", "mom", "mommy", "mam
           "pabbo",
           "maica", "morsa", "anne", "ana", "valide", "mati", "ammee", "muter", "ama", "pabo", "amba", "avva", "abbe",
           "maasa", "mau", "bou"]
+
+subscribers=["airtel","jio","vodafone","voda","idea","tata","reliance","bsnl","mtnl","aircel"]

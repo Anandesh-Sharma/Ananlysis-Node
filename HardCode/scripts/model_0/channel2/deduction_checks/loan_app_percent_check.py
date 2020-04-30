@@ -12,11 +12,11 @@ def loan_app_count_check(user_id):
 
     if status:
         if loan_app_count_percentage >= 0.70:
-            loan_app_count_check3 = True
+            loan_app_count_check1 = True
         if 0.70 > loan_app_count_percentage >= 0.60:
             loan_app_count_check2 = True
         if 0.60 > loan_app_count_percentage >= 0.50:
-            loan_app_count_check1 = True
+            loan_app_count_check3 = True
         if loan_app_count_percentage < 0.50:
             loan_app_count_check4 = True
 

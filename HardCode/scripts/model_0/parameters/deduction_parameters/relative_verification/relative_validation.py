@@ -1,5 +1,5 @@
-from HardCode.scripts.model_0.parameters.scoring_criteria import rel_cos_sim
-from HardCode.scripts.model_0.parameters.scoring_criteria import get_contacts_data
+from HardCode.scripts.model_0.parameters.deduction_parameters.relative_verification.rel_similarity import rel_sim
+from HardCode.scripts.model_0.parameters.deduction_parameters.reference_verification.data_extraction.data import get_contacts_data
 
 
 def rel_validate(user_id):
@@ -7,11 +7,11 @@ def rel_validate(user_id):
     contacts_data = get_contacts_data(user_id)
     validated = False
     msg = ''
+    rel_len = 0
     try:
         if contacts_data:
-            rel_cosine_similarity = rel_cos_sim(contacts=contacts_data)
-            similarity = [float(i[0]) for i in rel_cosine_similarity]
-            if len(similarity) >= 3:
+            rel_status,rel_len = rel_sim(contacts=contacts_data)
+            if rel_status:
                 validated = True
             msg = 'validation successful'
         else:
@@ -24,6 +24,6 @@ def rel_validate(user_id):
 
     finally:
         res = {'verification': validated, 'message': msg}
-        return {'status': status, 'result': res}
+        return {'status': status, 'length':rel_len,'result': res}
 
 # rel_validate(8035)

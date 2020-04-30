@@ -6,6 +6,9 @@
 *.log
 *.pot
 *.pyc
+*.DS_Store
+*.json
+*.xml
 __pycache__/
 local_settings.py
 db.sqlite3
@@ -262,3 +265,4 @@ fabric.properties
 # Pyre type checker
 
 # End of https://www.gitignore.io/api/django,python,pycharm
+

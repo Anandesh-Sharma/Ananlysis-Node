@@ -7,7 +7,7 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.get
 
 
 
-def get_additional_parameters(user_id,sms_count):
+def get_additional_parameters(user_id):
     """
     :returns dictionaries of approval parameters and their values
     :rtype: dict
@@ -18,8 +18,8 @@ def get_additional_parameters(user_id,sms_count):
     name_count = get_name_count(user_id)
     max_limit, due_days, no_of_loan_apps, loan_apps ,loan_overdue_ratio, loan_dates = loan_limit(user_id)
     age = get_age(user_id)
-    overdue_msg_ratio,overdue_msg_count = overdue_count_ratio(user_id,sms_count)
-    legal_msg_ratio,legal_msg_count = legal_messages_count_ratio(user_id,sms_count)
+    overdue_msg_ratio,overdue_msg_count = overdue_count_ratio(user_id)
+    legal_msg_ratio,legal_msg_count = legal_messages_count_ratio(user_id)
 
     # >>==>> salary
     salary_check1 = False
@@ -27,18 +27,22 @@ def get_additional_parameters(user_id,sms_count):
     salary_check3 = False
     salary_check4 = False
     salary_check5 = False
+
     if salary_dict:
-        if salary_dict['keyword'] == "epf" or salary_dict['keyword'] == "salary":
-            if salary_dict['salary'] >= 25000:
-                salary_check1 = True
-            elif 25000 > salary_dict['salary'] >= 20000:
-                salary_check2 = True
-            elif 20000 > salary_dict['salary'] >= 15000:
-                salary_check3 = True
-            elif 15000 > salary_dict['salary'] >= 10000:
-                salary_check4 = True
-            elif 10000 > salary_dict['salary']:
-                salary_check5 = True
+        if salary_dict['salary'] >= 25000:
+            salary_check1 = True
+        elif 25000 > salary_dict['salary'] >= 20000:
+            salary_check2 = True
+        elif 20000 > salary_dict['salary'] >= 15000:
+            salary_check3 = True
+        elif 15000 > salary_dict['salary'] >= 10000:
+            salary_check4 = True
+        elif 10000 > salary_dict['salary']:
+            salary_check5 = True
+    else:
+        salary_dict = {'salary' : -1, 'keyword' : ""}
+
+
 
 
     # >>==>> credit card limit
@@ -47,6 +51,7 @@ def get_additional_parameters(user_id,sms_count):
     cc_limit_check3 = False
     cc_limit_check4 = False
     cc_limit_check5 = False
+    c_limit = -1
     cc_list = []
 
     for i in cc_limit.keys():
@@ -102,7 +107,9 @@ def get_additional_parameters(user_id,sms_count):
 
     approval_values = {
         'credit_card_limit': cc_limit,
-        'salary': salary_dict,
+        'no_of_ccard':len(cc_list),
+        'max_cc_limit':c_limit,
+        'salary_val': salary_dict,
         'premium_apps': list_premium,
         'name_msg_count': name_count,
         'loan_dates' : loan_dates,

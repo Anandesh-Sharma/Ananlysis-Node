@@ -1,5 +1,3 @@
-# test_credit_card
-
 import re
 from HardCode.scripts.Util import conn, convert_json, logger_1
 import warnings
@@ -9,97 +7,21 @@ import pytz
 warnings.filterwarnings("ignore")
 
 
-# def get_creditcard_promotion(data):
-#     credit_messages_filtered = []
-
-#     pattern_1 = r'congratulations'
-#     pattern_2 = r'sale'
-#     pattern_3 = r'voucher'
-#     pattern_4 = r'reward(.*)points'
-#     pattern_5 = r'discount'
-#     pattern_6 = r'rewarding'
-#     pattern_7 = r'off'
-#     pattern_8 = r'flat'
-#     pattern_9 = r'cashback'
-#     pattern_10 = r'offer'
-#     pattern_11 = r'offers'
-#     pattern_12 = r'w[o]?[i]?n'
-#     pattern_13 = r'features'
-#     pattern_14 = r'paperless(.*)?approval'
-#     pattern_15 = r'apply(.*)?now'
-#     pattern_16 = r'apply(.*)?for'
-#     pattern_17 = r'credit card approval'
-#     pattern_18 = r'apply(.*)?karein'
-#     pattern_19 = r'eligible(.*)?for membership'
-#     pattern_20 = r'to(.*)?apply'
-#     pattern_21 = r'instant(.*)?approval'
-#     pattern_22 = r'get your credit card'
-#     pattern_23 = r'free(.*)credit(.*)card'
-#     pattern_24 = r'congrats'
-#     pattern_25 = r'save.*up\s?to'
-#     pattern_26 = r'can\sbe\sapproved'
-#     pattern_27 = r'prevent\sfraud'
-#     pattern_28 = r'now\sget'
-#     pattern_29 = r'otp'
-
-#     for i in range(data.shape[0]):
-#         message = str(data['body'][i]).lower()
-#         matcher_1 = re.search(pattern_1, message)
-#         matcher_2 = re.search(pattern_2, message)
-#         matcher_3 = re.search(pattern_3, message)
-#         matcher_4 = re.search(pattern_4, message)
-#         matcher_5 = re.search(pattern_5, message)
-#         matcher_6 = re.search(pattern_6, message)
-#         matcher_7 = re.search(pattern_7, message)
-#         matcher_8 = re.search(pattern_8, message)
-#         matcher_9 = re.search(pattern_9, message)
-#         matcher_10 = re.search(pattern_10, message)
-#         matcher_11 = re.search(pattern_11, message)
-#         matcher_12 = re.search(pattern_12, message)
-#         matcher_13 = re.search(pattern_13, message)
-#         matcher_14 = re.search(pattern_14, message)
-#         matcher_15 = re.search(pattern_15, message)
-#         matcher_16 = re.search(pattern_16, message)
-#         matcher_17 = re.search(pattern_17, message)
-#         matcher_18 = re.search(pattern_18, message)
-#         matcher_19 = re.search(pattern_19, message)
-#         matcher_20 = re.search(pattern_20, message)
-#         matcher_21 = re.search(pattern_21, message)
-#         matcher_22 = re.search(pattern_22, message)
-#         matcher_23 = re.search(pattern_23, message)
-#         matcher_24 = re.search(pattern_24, message)
-#         matcher_25 = re.search(pattern_25, message)
-#         matcher_26 = re.search(pattern_26, message)
-#         matcher_27 = re.search(pattern_27, message)
-#         matcher_28 = re.search(pattern_28, message)
-#         matcher_29 = re.search(pattern_29, message)
-
-#         if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None or matcher_4 \
-#                 is not None or matcher_5 is not None or matcher_6 is not None or matcher_7 is not None or matcher_8 \
-#                 is not None or matcher_9 is not None or matcher_10 is not None or matcher_11 is not None or matcher_12 \
-#                 is not None or matcher_13 is not None or matcher_14 is not None or matcher_15 is not None or matcher_16 \
-#                 is not None or matcher_17 is not None or matcher_18 is not None or matcher_19 is not None or \
-#                 matcher_20 is not None or matcher_21 is not None or matcher_22 is not None or matcher_23 is not None or \
-#                 matcher_24 is not None or matcher_25 is not None or matcher_26 is not None or matcher_27 is not None or \
-#                 matcher_28 is not None or matcher_29 is not None:
-#             pass
-#         else:
-#             credit_messages_filtered.append(i)
-#     return credit_messages_filtered
-
 def get_confirm_cc_messages(data):
     cc_confirm_index_list = []
     all_patterns = [
         r'cardholder.*payment.*rs\.?\s?([0-9.?]+).*credit\scard.*successfully',
         r'approve\stransaction.*rs\.?\s?([0-9.?]+).*a/c\sno\.?.*credit\scard',
-        r'(?:rs|inr)\.?\s?\s?([0-9.?]+).*debited.*credit\scard',
+        r'(?:rs|inr)\.?\s?\s?([0-9,]+[.]?[0-9]+).*debited.*(?:available|avbl).*(?:limit|lmt\.?).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
+        r'(?:rs|inr)\.?\s?\s?([0-9,]+[.]?[0-9]+).*debited.*',
         r'inr\s?([0-9.?]+).*paytm.*credit\scard',
         r'txn\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*credit\scard',
         r'refund.*(?:rs\.?|inr)\s?([0-9.?]+).*credited.*credit\scard',
         r'spent\s(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
-        r'payment\sof\s(?:inr|rs\.?)\s?([0-9.?]+).*received.*credit\scard',
+        r'payment.*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*received',
+        r'payment.*(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]+).*successfully\sprocessed',
         r'received.*payment.*(?:for|of)*(?:rs\.?|inr)\s?([0-9.?]+).*credit\scard',
-        r'(?:inr|rs\.?)\s?([0-9,.]+).*spent.*card.*(?:available|avl\.?).*(?:limit|lim\.?).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*',
+        r'(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*spent.*card.*',
         r'.*charge\sof\s(?:rs\.?|inr)\s?([0-9.?]+).*initiated.*credit\scard.*',
         r'.*internet\spayment.*(?:rs\.?|inr)\s?([0-9.,?]+).*credit\scard.*',
         r'e-stmt.*card.*total\samt\sdue:\srs\.?\s?([0-9.?]+).*min\samt\sdue:\srs\.?\s?([0-9.?]+)\sis\spayable',
@@ -116,6 +38,7 @@ def get_confirm_cc_messages(data):
         r'.*not\sreceived\spayment.*credit\scard.*rs\.?\s?([0-9]+).*',
         r'.*necessary.*payment.*rs\.?\s?([0-9]+[.,]?).*credit\scard.*',
         r'.*credit\scard\sdues.*unpaid.*rs\.?\s?([0-9]+[.,]?).*',
+        r'.*received.*payment.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:available|avl\.?).*(?:limit|lmt\.?).*(rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
         r'unable.*overdue\s(?:payment|pymt).*rs\.?\s?([0-9.?]+).*credit\scard',
         r'.*payment.*overdue.*credit\scard.*(?:pl|please|pls)\spay.*total\s(?:amt|amount).*due.*(?:rs\.?|inr)\s?([0-9.,?]+).*min.*(?:amt|amount).*(?:rs\.?|inr)\s?([0-9.,?]+).*',
         r'.*overdue\samount.*(?:rs\.?|inr)\s?([0-9.,?]+).*credit\scard.*',
@@ -131,25 +54,30 @@ def get_confirm_cc_messages(data):
         r'.*(?:txn|trxn).*rs\.?\s?([0-9.,?]+).*credit\scard.*.*declined.*',
         r'.*credit\scard.*blocked.*total.*rs\.?\s?([0-9.,?]+).*minimum.*rs\.?\s?([0-9.,?]+).*',
         r'.*credit\scard.*blocked.*immediate.*',
+        r'request\sto\sincrease.*credit\slimit.*initiated',
+        r'convert.*(?:transaction|trxn|txn)\sof\s(?:rs\.?|inr)\s?([0-9]+[.]?[0-9]+).*into.*emi[s]?',
+        r'transfer.*outstanding\scredit\scard.*personal\sloan',
     ]
     cc_list = []
     credit_card_pattern_1 = "credit card"
     credit_card_pattern_2 = "sbi card"
     credit_card_pattern_3 = "rbl supercard"
+    credit_card_pattern_4 = 'sbi cardholder'
     for i in range(data.shape[0]):
         message = str(data['body'][i]).lower()
         matcher_1 = re.search(credit_card_pattern_1, message)
         matcher_2 = re.search(credit_card_pattern_2, message)
         matcher_3 = re.search(credit_card_pattern_3, message)
-        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None:
-            cc_list.append(i)  
+        matcher_4 = re.search(credit_card_pattern_4, message)
+        if matcher_1 or matcher_2 or matcher_3 or matcher_4 :
+            cc_list.append(i)
     for i in range(data.shape[0]):
         if i in cc_list:
             for pattern in all_patterns:
                 message = str(data['body'][i]).lower()
                 matcher = re.search(pattern, message)
 
-                if matcher is not None:
+                if matcher:
                     cc_confirm_index_list.append(i)
                     break
     return cc_confirm_index_list

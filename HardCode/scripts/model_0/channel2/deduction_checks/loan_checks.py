@@ -1,8 +1,10 @@
 from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
+from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.last_loan_details import get_final_loan_details
 
 def loan_check(user_id):
 
     max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates = loan_limit(user_id)
+    report = get_final_loan_details(user_id)
 
 
     #>>==>> loan limit
@@ -21,11 +23,11 @@ def loan_check(user_id):
         if 5000 > max_limit > 4000:
             loan_limit_check3 = True
         if 4000 > max_limit > 3000:
-            loan_limit_check2 = True
+            loan_limit_check4 = True
         if 3000 > max_limit > 2000:
-            loan_limit_check2 = True
+            loan_limit_check5 = True
         if 2000 > max_limit > 1000:
-            loan_limit_check2 = True
+            loan_limit_check6 = True
 
     if max_limit == -1:
         loan_limit_check = True
@@ -36,44 +38,23 @@ def loan_check(user_id):
     loan_due_check3 = False
     loan_due_check4 = False
     loan_due_check5 = False
-    loan_due_check = False
+    #loan_due_check = False
 
-    if overdue_ratio < 0.05:
-        if  due_days != -1:
-            if due_days == 0:
-                loan_due_check1 = True
-            if 3 > due_days >= 1:
-                loan_due_check2 = True
-            if 6 > due_days >= 3:
-                loan_due_check3 = True
-            if 9 > due_days >= 6:
-                loan_due_check4 = True
-            if due_days >= 9:
-                loan_due_check5 = True
 
-        if due_days == -1:
-            loan_due_check = True
+    if due_days['0-3_days'] > 0:
+        loan_due_check1 = True
+    if due_days['3-7_days'] > 0:
+        loan_due_check2 = True
+    if due_days['7-12_days'] > 0:
+        loan_due_check3 = True
+    if due_days['12-15_days'] > 0:
+        loan_due_check4 = True
+    if due_days['more_than_15'] > 0:
+        loan_due_check5 = True
 
-    else:
-        loan_due_check = True
+    # if due_days == -1:
+    #     loan_due_check = True
 
-    # >>==>> no. of loan apps
-    loan_app_no_check1 = False
-    loan_app_no_check2 = False
-    loan_app_no_check3 = False
-    loan_app_no_check4 = False
-    loan_app_no_check = False
-
-    if no_of_loan_apps >= 4:
-        loan_app_no_check1 = True
-    if no_of_loan_apps == 3:
-        loan_app_no_check2 = True
-    if no_of_loan_apps == 2:
-        loan_app_no_check3 = True
-    if no_of_loan_apps == 1:
-        loan_app_no_check4 = True
-    if no_of_loan_apps == 0:
-        loan_app_no_check = True
 
 
 
@@ -90,14 +71,7 @@ def loan_check(user_id):
         'loan_due_check3': loan_due_check3,
         'loan_due_check4': loan_due_check4,
         'loan_due_check5': loan_due_check5,
-        'loan_due_check': loan_due_check,
-        'loan_app_no_check1': loan_app_no_check1,
-        'loan_app_no_check2': loan_app_no_check2,
-        'loan_app_no_check3': loan_app_no_check3,
-        'loan_app_no_check4': loan_app_no_check4,
-        'loan_app_no_check': loan_app_no_check,
-
-
+        #'loan_due_check': loan_due_check,
     }
 
     values = {
@@ -105,7 +79,8 @@ def loan_check(user_id):
         'due_days': due_days,
         'no_of_loan_apps': no_of_loan_apps,
         'loan_app_list': loan_apps,
-        'overdue_ratio':overdue_ratio
+        'overdue_ratio':overdue_ratio,
+        'last_loan_detail': report
 
     }
 

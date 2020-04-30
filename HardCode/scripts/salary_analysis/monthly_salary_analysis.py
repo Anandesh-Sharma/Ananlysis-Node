@@ -76,7 +76,7 @@ def epf_to_salary(data, id):
     """
 
     for i in range(len(data)):
-        data[i]["salary"] = (data[i]["epf_amount"] * 100) / 12
+        data[i]["salary"] = (data[i]["epf_amount"] * 100) / 15.67
     # logger.info("Salary Calculation from EPF Amount complete")
     return data
 
@@ -282,49 +282,45 @@ def main(id):
         for df in df_salary:
             m = datetime.strptime(df['time'], "%Y-%m")
             month = m.strftime("%B")
-            df = get_epf_amount(df["data"], id)
-            df = epf_to_salary(df, id)
-            vals = []
+            df = get_salary(df['data'], id)
+            sal = []
             for i in df:
-                if i['salary'] >= 7000:
-                    vals.append(i['salary'])
-
-            if len(vals) != 0:
-                epf = max(vals)
+                if i['direct_sal'] != 0:
+                    sal.append(i["direct_sal"])
+            if len(sal) != 0:
+                sal = max(sal)
                 for i in df:
-                    if i["salary"] == epf:
-                        msg = {'body': i["body"], 'sender': i["sender"], 'timestamp': str(i["timestamp"])}
-
-                salary_dict = {'salary': round(float(epf), 2), 'keyword': 'epf', 'message': msg}
+                    if i["direct_sal"] == sal:
+                        msg = {'body': i["body"], 'sender': i["sender"],
+                               'timestamp': str(i["timestamp"])}
+                connect = conn()
+                salary_dict = {'salary': float(sal), 'keyword': 'salary', 'message': msg}
                 monthwise[month] = salary_dict
                 result['cust_id'] = id
                 result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
                 result['salary'] = monthwise
                 db.update({'cust_id': id}, {"$set": result}, upsert=True)
 
-
             else:
-                df = get_salary(df, id)
-                sal = []
+                df = get_epf_amount(df, id)
+                df = epf_to_salary(df, id)
+                vals = []
                 for i in df:
-                    if i['direct_sal'] != 0:
-                        sal.append(i["direct_sal"])
+                    if i['salary'] >= 7000:
+                        vals.append(i['salary'])
 
-                if len(sal) != 0:
-                    sal = max(sal)
+                if len(vals) != 0:
+                    epf = max(vals)
                     for i in df:
-                        if i["direct_sal"] == sal:
-                            msg = {'body': i["body"], 'sender': i["sender"],
-                                   'timestamp': str(i["timestamp"])}
-                    salary_dict = {'salary': float(sal), 'keyword': 'salary', 'message': msg}
+                        if i["salary"] == epf:
+                            msg = {'body': i["body"], 'sender': i["sender"], 'timestamp': str(i["timestamp"])}
+
+                    salary_dict = {'salary': round(float(epf), 2), 'keyword': 'epf', 'message': msg}
                     monthwise[month] = salary_dict
                     result['cust_id'] = id
                     result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
                     result['salary'] = monthwise
                     db.update({'cust_id': id}, {"$set": result}, upsert=True)
-
-
-
 
                 else:
                     df = get_neft_amount(df, id)
