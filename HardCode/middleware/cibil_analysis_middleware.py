@@ -95,7 +95,6 @@ def get_cibil_analysis(request):
         current_loan_amount = int(current_loan_amount)
     except:
         pass
-<<<<<<< HEAD
     with open(PROCESSING_DOCS + str(user_id) + '/user_data.json', 'w') as json_file:
         json.dump({
         'current_loan_amount': current_loan_amount,
@@ -106,34 +105,3 @@ def get_cibil_analysis(request):
     }, json_file, ensure_ascii=True, indent=4)
         # return Response({'status': False, 'message': 'current_loan_amount parameter must be int convertible'}, 400)
     return Response({'message': 'FILES RECEIVED!!'})
-=======
-
-    cibil_df = {'status': False, 'data': None, 'message': 'None'}
-    if cibil_xml:
-        response_parser = convert_to_df(cibil_xml)
-        cibil_df = response_parser
-
-    try:
-        response_bl0 = BL0.bl0(cibil_xml=cibil_df, cibil_score=cibil_score, user_id=user_id
-                               , new_user=new_user, list_loans=all_loan_amount,
-                               current_loan=current_loan_amount, sms_json=sms_json)
-        return Response(response_bl0, 200)
-    except Exception as e:
-        print(f"error in middleware {e}")
-        import traceback
-        traceback.print_tb(e.__traceback__)
-        limit = analyse(user_id=user_id, current_loan=current_loan_amount, cibil_df=cibil_df, new_user=new_user,
-                        cibil_score=cibil_score)
-        response_bl0 = {
-            "cust_id": user_id,
-            "status": True,
-            "message": "Exception occurred, I feel lonely in middleware",
-            "result": {
-                "loan_salary": -9,
-                "loan": -9,
-                "salary": -9,
-                "cibil": limit
-            }
-        }
-    return Response(response_bl0, 200)
->>>>>>> bl0.1
