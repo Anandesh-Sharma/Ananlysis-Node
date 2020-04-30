@@ -5,58 +5,56 @@ import pandas as pd
 import re
 
 
-def get_user_messages(cust_id):
+def get_user_messages(user_id):
     client = conn()
-    db = client.messagescluster
 
-    approval_data = db.loanapproval
-    disbursed_data = db.disbursed
-    overdue_data = db.loandueoverdue
-    closed_data = db.loanclosed
-    trans_data = db.transaction
+    approval_data = client.messagecluster.loanapproval.find_one({"cust_id": user_id})
+    disbursed_data = client.messagecluster.disbursed.find_one({"cust_id": user_id})
+    overdue_data = client.messagecluster.loandueoverdue.find_one({"cust_id": user_id})
+    closed_data = client.messagecluster.loanclosed.find_one({"cust_id": user_id})
+    trans_data = client.messagecluster.transaction.find_one({"cust_id": user_id})
     # extra_data = db.extra
-    reject_data = db.loanrejection
-    creditcard_data = db.creditcard
+    reject_data = client.messagecluster.loanrejection.find_one({"cust_id": user_id})
+    creditcard_data = client.messagecluster.creditcard.find_one({"cust_id": user_id})
     user_data = pd.DataFrame(columns=['sender', 'body', 'timestamp', 'read'])
-    try:
-        closed = closed_data.find_one({"cust_id": cust_id})
-        trans = trans_data.find_one({"cust_id": cust_id})
-        disbursed = disbursed_data.find_one({"cust_id": cust_id})
-        approval = approval_data.find_one({"cust_id": cust_id})
-        overdue = overdue_data.find_one({"cust_id": cust_id})
-        extra = extra_data.find_one({"cust_id": cust_id})
-        reject = reject_data.find_one({"cust_id": cust_id})
-        creditcard = creditcard_data.find_one({"cust_id": cust_id})
 
-        if len(closed['sms']) != 0:
-            closed_df = pd.DataFrame(closed['sms'])
+    try:
+        approval = approval_data['sms']
+        disbursed = disbursed_data['sms']
+        overdue =overdue_data['sms']
+        closed =closed_data['sms']
+        trans = trans_data['sms']
+        reject = reject_data['sms']
+        creditcard = creditcard_data['sms']
+
+        if closed :
+            closed_df = pd.DataFrame(closed)
             user_data = user_data.append(closed_df)
 
-        if len(trans_data['sms']) != None:
+        if trans and trans['sms']:
             transaction_df = pd.DataFrame(trans['sms'])
             user_data = user_data.append(transaction_df)
 
-        if len(disbursed['sms']) != 0:
+        if disbursed and disbursed['sms']:
             disbursed_df = pd.DataFrame(disbursed['sms'])
             user_data = user_data.append(disbursed_df)
 
-        if len(overdue['sms']) != 0:
+        if overdue and overdue['sms']:
             overdue_df = pd.DataFrame(overdue['sms'])
             user_data = user_data.append(overdue_df)
 
-        if len(approval['sms']) != 0:
+        if approval and approval['sms']:
             approval_df = pd.DataFrame(approval['sms'])
             user_data = user_data.append(approval_df)
-        '''
-        if len(extra['sms']) != 0:
-            extra_df = pd.DataFrame(extra['sms'])
-            user_data = user_data.append(extra_df)
-            '''
-        if len(reject['sms']) != 0:
+
+        # if len(extra['sms']) != 0:
+        #     extra_df = pd.DataFrame(extra['sms'])
+        #     user_data = user_data.append(extra_df)
+        if reject and reject['sms']:
             reject_df = pd.DataFrame(reject['sms'])
             user_data = user_data.append(reject_df)
 
-        if len(creditcard['sms']) != 0:
+        if creditcard and creditcard['sms']:
             creditcard_df = pd.DataFrame(creditcard['sms'])
             user_data = user_data.append(creditcard_df)
 

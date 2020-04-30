@@ -29,7 +29,7 @@ def get_defaulter(user_id):
         r'due\ssince\s([0-9]+)\sday[s]?.*immediately',
         r'your\s(?:loan|emi).*is\soverdue\sseriously',
         r'(?:loan|emi|repayment|bill|amount|payment|amt\.?|paymt\.?).*overdue\s(?:for|by|since)\s([0-9]+)\s?days',
-        r'your\sloan\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\soverdue\sby\s([0-9]+)\s?days',
+        r'your\sloan\sof\s(?:rs\.?|inr)\s?(?:[0-9,]+[.]?[0-9]+)\sis\soverdue\sby\s([0-9]+)\s?days',
         r'legal\snotice\salert',
         r'recovery\s(?:process|proceedings).*(?:started|begun)',
         r'legal\snotice.*going\sto\sbe\sdispatched',
@@ -62,16 +62,16 @@ def get_defaulter(user_id):
         r'your\sloan\s(?:has\sbeen|is)\s(?:moved|transferred)\sto\slegal\sbucket',
         r'filing.*police\scomplaint',
         r'overdue.*(?:paid|pay).*immediately',
-        r'(?:exceeded|overdued)\s(?:your)?.*(?:emi|installment|loan)\s(?:payment|repayment).*([0-9]+)\s?days'
+        r'(?:exceeded|overdued)\s(?:your)?.*(?:emi|installment|loan)\s(?:payment|repayment).*([0-9]+)\s?days',
+        r'pay.*before.*tagged\sas\s(?:defaulter|defaulted)'
     ]
-
     for i in range(total.shape[0]):
         message = str(total['body'][i].encode('utf-8')).lower()
 
         for pattern in patterns:
             matcher = re.search(pattern, message)
-            if pattern is patterns[0] or pattern is patterns[1] or pattern is patterns[2] or pattern is pattern[
-                3] or pattern is pattern[4] or pattern is pattern[5]:
+            if pattern is patterns[0] or pattern is patterns[1] or pattern is patterns[2] or pattern is patterns[3] or pattern is patterns[4] or pattern is patterns[5] or \
+                pattern is patterns[6] or pattern is patterns[14] or pattern is patterns[37]:
                 if matcher is not None:
                     if int(matcher.group(1)) > 15:
                         FLAG = True

@@ -1,24 +1,20 @@
-from HardCode.scripts.model_0.parameters.scoring_criteria.relative_verification import relatives as rel
-from HardCode.scripts.model_0.parameters.scoring_criteria import \
-    get_similarity
+from HardCode.scripts.model_0.parameters.deduction_parameters.relative_verification import relatives as rel
 
 
-def rel_cos_sim(**kwargs):
+def rel_sim(**kwargs):
     contacts = kwargs.get('contacts')
-
+    status = False
     Rel_name = []
     for key in contacts.keys():
         for contact_name in contacts[key]:
-            contact_name = contact_name.lower()
-            Rel_name.append(contact_name)
+            contact_name = str(contact_name)
+            res = contact_name.lower()
+            res = str(res).split(' ')
+            for x in res:
+                for y in rel.relatives:
+                    if x == y:
+                        Rel_name.append(contact_name)
+                        if len(Rel_name) >= 3:
+                            status = True
 
-    similarity = []
-    for i in tqdm(Rel_name):
-        for j in rel.relatives:
-            sim = get_similarity([i, j])
-            if sim >= 0.8:
-                similarity.append(sim)
-            if len(similarity) >= 3:
-                break
-
-    return similarity
+    return status,len(Rel_name)

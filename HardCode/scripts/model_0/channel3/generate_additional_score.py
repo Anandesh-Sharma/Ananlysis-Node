@@ -23,43 +23,43 @@ def additional_score(additional_variables):
         weights['cc_limit'] = '+60'
 
     if cc_limit_check2:
+        score += 50
+        weights['cc_limit'] = '+50'
+
+    if cc_limit_check3:
         score += 40
         weights['cc_limit'] = '+40'
 
-    if cc_limit_check3:
+    if cc_limit_check4:
         score += 30
         weights['cc_limit'] = '+30'
-
-    if cc_limit_check4:
-        score += 20
-        weights['cc_limit'] = '+20'
 
     if cc_limit_check5:
         score += 10
         weights['cc_limit'] = '+10'
 
     if salary_check1:
-        score += 30
-        weights['salary'] = '+30'
+        score += 100
+        weights['salary'] = '+100'
 
     if salary_check2:
-        score += 25
-        weights['salary'] = '+25'
+        score += 80
+        weights['salary'] = '+80'
 
     if salary_check3:
+        score += 60
+        weights['salary'] = '+60'
+
+    if salary_check4:
+        score += 40
+        weights['salary'] = '+40'
+
+    if salary_check5:
         score += 20
         weights['salary'] = '+20'
 
-    if salary_check4:
-        score += 15
-        weights['salary'] = '+15'
-
-    if salary_check5:
-        score += 10
-        weights['salary'] = '+10'
-
     if premium_apps_check:
-        score += 20
+        score += 50
         weights['premium_apps'] = '+50'
 
     # if name_msg_defaulter:
