@@ -9,7 +9,7 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.
 def rejecting_parameters(user_id,cibil_df,sms_count):
     loan_app , loan_status = loan_app_count(user_id)
     account_status_value , ac_status = get_acc_status(cibil_df)
-    max_limit, loan_due_days, no_of_loan_apps, loan_apps , overdue_ratio, loan_dates = loan_limit(user_id)
+    max_limit, loan_due_days, no_of_loan_apps, loan_apps , overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
     flag , rejection_msg = get_defaulter(user_id)
     ratio , overdue_count = overdue_count_ratio(user_id)
     user_sms_count = sms_count

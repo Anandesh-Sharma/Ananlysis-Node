@@ -4,6 +4,7 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_in
 from HardCode.scripts.model_0.parameters.additional_parameters.user_name_msg.name_count_ratio import get_name_count
 from HardCode.scripts.model_0.parameters.additional_parameters.age_of_user.user_age import get_age
 from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.get_ratio import *
+from HardCode.scripts.model_0.channel3.repayment_history import repayment_history
 
 
 
@@ -16,10 +17,11 @@ def get_additional_parameters(user_id):
     cc_limit = get_cc_limit(user_id)
     salary_dict = salary(user_id)
     name_count = get_name_count(user_id)
-    max_limit, due_days, no_of_loan_apps, loan_apps ,loan_overdue_ratio, loan_dates = loan_limit(user_id)
+    max_limit, due_days, no_of_loan_apps, loan_apps ,loan_overdue_ratio, loan_dates , total_loans = loan_limit(user_id)
     age = get_age(user_id)
     overdue_msg_ratio,overdue_msg_count = overdue_count_ratio(user_id)
     legal_msg_ratio,legal_msg_count = legal_messages_count_ratio(user_id)
+    total_loans, cr_loan_limit, overdue_report, pending_emi = repayment_history(user_id)
 
     # >>==>> salary
     salary_check1 = False
@@ -117,7 +119,11 @@ def get_additional_parameters(user_id):
         'overdue_msg_ratio' : overdue_msg_ratio,
         'overdue_msg_count' : overdue_msg_count,
         'legal_msg_ratio' : legal_msg_ratio,
-        'legal_msg_count' : legal_msg_count
+        'legal_msg_count' : legal_msg_count,
+        'crdcxo_total_laons':total_loans,
+        'crdcxo_loan_limit':cr_loan_limit,
+        'crdcxo_overdue_report':overdue_report,
+        'crdcxo_pending':pending_emi
 
 
     }

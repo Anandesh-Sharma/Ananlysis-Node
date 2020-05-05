@@ -6,12 +6,13 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.
 def mean_available(user_id):
     connect = conn()
     mean_bal = -1
+    avg_bal = -1
     third_last_month = {}
     scnd_last_month = {}
     last_month = {}
     data = connect.analysis.balance_sheet.find_one({'cust_id':user_id})
     if not data:
-        return mean_bal,third_last_month,scnd_last_month,last_month
+        return mean_bal,third_last_month,scnd_last_month,last_month,avg_bal
     data = data['sheet']
     bal = find_info(user_id)
     ac_no = bal['AC_NO']
@@ -31,6 +32,7 @@ def mean_available(user_id):
     all_max_bal = []
     all_max_time = []
     all_max_msg = []
+    monthly_avg_bal = []
     dfs = dfs[-3:]
 
     for i in range(len(dfs)):
@@ -44,6 +46,7 @@ def mean_available(user_id):
                 list_time.append(dfs[i]['data'][j]['timestamp'])
                 list_msg.append(dfs[i]['data'][j]['body'])
         if list_bal:
+            monthly_avg_bal.append(sum(list_bal)/len(list_bal))
             maxpos = list_bal.index(max(list_bal))
             all_max_bal.append(max(list_bal))
             all_max_time.append(list_time[maxpos])
@@ -51,6 +54,9 @@ def mean_available(user_id):
 
     if all_max_bal:
         mean_bal = sum(all_max_bal) / len(all_max_bal)
+
+    if monthly_avg_bal:
+        avg_bal = sum(monthly_avg_bal)/len(monthly_avg_bal)
     try:
         third_last_month = {'max_amt':all_max_bal[-3],'datetime':all_max_time[-3],'msg':all_max_msg[-3]}
     except:
@@ -66,4 +72,4 @@ def mean_available(user_id):
 
 
 
-    return mean_bal,third_last_month,scnd_last_month,last_month
+    return mean_bal,third_last_month,scnd_last_month,last_month,avg_bal

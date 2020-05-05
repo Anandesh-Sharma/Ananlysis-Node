@@ -90,8 +90,11 @@ def final_output(cust_id):
 
             now = datetime.now()
             now = timezone.localize(now)
-            disbursed_date = timezone.localize(pd.to_datetime(a[i][j]['disbursed_date']))
-            days = (now - disbursed_date).days
+            if a[i][j]['disbursed_date'] != -1:
+                disbursed_date = timezone.localize(pd.to_datetime(a[i][j]['disbursed_date']))
+                days = (now - disbursed_date).days
+            else:
+                days = 31
 
             if a[i][j]['closed_date'] == -1:
                 if days < 30:

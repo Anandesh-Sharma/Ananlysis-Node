@@ -13,7 +13,7 @@ import pandas as pd
 def generate_access_token():
     # ==> this function is used to generate the access token in case if it expires
 
-    url = 'http://localhost:5000/api/token/'
+    url = 'http://localhost:8888/api/token/'
 
     credentials = {'username': 'root', 'password': 'root'}
 
@@ -38,7 +38,7 @@ def execute_bl0(**kwargs):
     all_loan_amount = [1000, 2000, 3000, 4000]
     current_loan_amount = 0
 
-    url = 'http://localhost:5000/hard_code/bl0/'
+    url = 'http://localhost:8888/hard_code/bl0/'
     token = generate_access_token()
     Auth = 'Bearer ' + str(token)
     payload = {
@@ -52,7 +52,7 @@ def execute_bl0(**kwargs):
     files = [('sms_json', sms_json), ('cibil_xml', cibil_xml)]
     result = requests.post(url=url, data=payload, files=files, headers={'Authorization': Auth})
     result = result.json()
-    # df = {"cust_id": user_id,"score": [result['Model_0']['score']],
+    df = {"cust_id": user_id,"score": [result['Model_0']['score']],
     #        "secured": [result['Model_0']['parameters']['deduction_parameters']['secured_unsecured_val']['secured_unsecured_loans_count']['secured']],
     #       "unsecured": [result['Model_0']['parameters']['deduction_parameters']['secured_unsecured_val']['secured_unsecured_loans_count']['unsecured_count']],
     #
@@ -80,8 +80,8 @@ def execute_bl0(**kwargs):
     #       "age": [result['Model_0']['parameters']['additional_parameters']['age']],
     #       "creditcard_no": [result['Model_0']['parameters']['additional_parameters']['no_of_ccard']],
     #       "creditcard_max_limit": [result['Model_0']['parameters']['additional_parameters']['max_cc_limit']],
-    #       "salary": [result['Model_0']['parameters']['additional_parameters']['salary_val']['salary']],
-    #       "keyword": [result['Model_0']['parameters']['additional_parameters']['salary_val']['keyword']],
+          "salary": [result['Model_0']['parameters']['additional_parameters']['salary_val']['salary']],
+          "keyword": [result['Model_0']['parameters']['additional_parameters']['salary_val']['keyword']],
     #       "name_msg_count": [result['Model_0']['parameters']['additional_parameters']['name_msg_count']],
     #       "overdue_ratio": [result['Model_0']['parameters']['deduction_parameters']['loan_val']['overdue_ratio']],
     #       "overdue_msg_count": [result['Model_0']['parameters']['additional_parameters']['overdue_msg_count']],
@@ -93,11 +93,11 @@ def execute_bl0(**kwargs):
     #       "different_app_count": [result['Model_0']['parameters']['deduction_parameters']['due_days_interval_val']['different_app_count']],
     #       "loan_app_list":[result['Model_0']['parameters']['deduction_parameters']['loan_val']['loan_app_list']],
     #         "rejection_reason":[result['Model_0']['rejection_reasons']]
-    #       }
+          }
     #
-    # data = pd.DataFrame.from_dict(df)
-    # # output = data.append(df, ignore_index=True)
-    # data.to_csv('nondef_resultsss.csv', mode='a', header=False)
+    data = pd.DataFrame.from_dict(df)
+    # output = data.append(df, ignore_index=True)
+    data.to_csv('salary_results.csv', mode='a', header=False)
 
 
     # if not os.path.exists('../result'):
@@ -119,7 +119,6 @@ def testing(user_id):
             if os.path.exists(os.path.join('..\input_data', 'sms_data_' + str(user_id) + '.json')):
 
                 # ==> cibil score is passed 807 by default
-
                 execute_bl0(user_id=int(user_id), cibil_score=807)
 
                 print(f"result generated successfully : {user_id}")
@@ -137,7 +136,7 @@ def testing(user_id):
 # user_id = input('enter user id: ')
 # testing(user_id=user_id)
 
-l = defaulters
+l = ids
 l.sort(reverse=True)
 print(len(l))
 print(l)
@@ -148,5 +147,5 @@ print(l)
 #     exc.map(testing,(i for i in l))
 
 
-for i in tqdm(l[:300]):
+for i in tqdm(l):
     testing(i)

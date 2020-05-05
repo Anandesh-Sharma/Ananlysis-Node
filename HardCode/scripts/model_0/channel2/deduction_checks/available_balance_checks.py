@@ -5,7 +5,7 @@ from datetime import datetime
 def available_balance_check(user_id):
     available_balance = find_info(user_id)
 
-    bal,third_last_peak_bal,scnd_last_peak_bal,last_peak_bal = mean_available(user_id)
+    bal,third_last_peak_bal,scnd_last_peak_bal,last_peak_bal,avg_bal = mean_available(user_id)
 
     available_balance_check1 = False
     available_balance_check2 = False
@@ -48,6 +48,7 @@ def available_balance_check(user_id):
         'last_month_peak_bal' :last_peak_bal,
         'scnd_last_month_peak_bal': scnd_last_peak_bal,
         'third_last_month_peak_bal': third_last_peak_bal,
+        'avg_bal_of_3_month':avg_bal
 
 
     }

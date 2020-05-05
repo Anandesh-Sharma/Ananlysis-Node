@@ -9,6 +9,7 @@ from HardCode.scripts.classifiers.Classifier import classifier
 # from HardCode.scripts.reference_verification.validation.check_reference import validate
 from HardCode.scripts.Util import *
 from HardCode.scripts.model_0.scoring.generate_total_score import get_score
+from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
 import warnings
 import multiprocessing
 import pandas as pd
@@ -41,6 +42,7 @@ def result_fetcher(**kwargs):
     rejection = kwargs.get('result_rejection')
     score = kwargs.get('result_score')
     output_flag = kwargs.get('output_flag', 'cibil')
+    result_pass = kwargs.get('result_pass')
     test_final_result = client.analysisresult.bl0.find_one({'cust_id': user_id})
     final_result = test_final_result['result'][-1:][0]
 
@@ -57,7 +59,8 @@ def result_fetcher(**kwargs):
         'salary': salary_result,
         'loan': loan_result,
         'balance_sheet': balance_sheet,
-        'rejection_check': rejection
+        'rejection_check': rejection,
+        'result_pass': result_pass
 
     }
     response = {
@@ -267,6 +270,15 @@ def bl0(**kwargs):
         exception_feeder(client=client, user_id=user_id, logger=logger,
                          msg=str(e))
 
+    logger.info("Rule based Model starts")
+    try:
+        result_pass = rule_engine_main(user_id)  # Returns a dictionary
+
+    except BaseException as e:
+        print(f"Error : {e}")
+        exception_feeder(client=client, user_id=user_id, logger=logger,
+                         msg=str(e))
+
     salary_present = False
     loan_present = False
 
@@ -309,7 +321,7 @@ def bl0(**kwargs):
     client.analysisresult.bl0.update({'cust_id': user_id}, {'$push': {'result': analysis_result}})
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
                                 balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,
-                                result_score=result_score)
+                                result_score=result_score,result_pass = result_pass)
     logger.info("Setting processing bool to false")
     set_processing_bool(user_id, False)
     client.close()

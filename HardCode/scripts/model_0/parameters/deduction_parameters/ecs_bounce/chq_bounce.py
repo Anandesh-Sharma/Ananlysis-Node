@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 from HardCode.scripts.Util import conn
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def get_chq_bounce_data(cust_id):
     try:
@@ -11,6 +11,13 @@ def get_chq_bounce_data(cust_id):
         cb_data = pd.DataFrame(msgs['sms'])
         cb_data = cb_data.sort_values(by = 'timestamp')
         cb_data.reset_index(drop = True, inplace = True)
+        date = datetime.strptime('2020-03-20 00:00:00', '%Y-%m-%d %H:%M:%S')
+        last_date1 = date - timedelta(weeks=13)
+        mask = []
+        for i in range(cb_data.shape[0]):
+            mask.append(date >= datetime.strptime(cb_data['timestamp'][i], '%Y-%m-%d %H:%M:%S') > last_date1)
+        cb_data = cb_data[mask]
+        cb_data.reset_index(drop=True, inplace=True)
     except:
         cb_data = pd.DataFrame(columns = ['user_id', 'body', 'sender', 'timestamp', 'read'])
     return cb_data

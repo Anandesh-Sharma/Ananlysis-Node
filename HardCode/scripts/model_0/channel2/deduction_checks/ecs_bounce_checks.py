@@ -2,7 +2,6 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.ecs_bounce.ecs_bou
 from HardCode.scripts.model_0.parameters.deduction_parameters.ecs_bounce.chq_bounce import get_count_cb
 
 def ecs_chq_count(user_id):
-
     count1 , status1 = get_count_ecs(user_id)
     count2 , status2 = get_count_cb(user_id)
 
