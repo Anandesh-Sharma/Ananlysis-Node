@@ -40,7 +40,7 @@ def convert_json(epf,salary,cust_id,timestamp):
         sms = {"sender": epf['sender'][i], "body": epf['body'][i], "timestamp": epf['timestamp'][i],
                "read": epf['read'][i]}
         obj['epf'].append(sms)
-        data = salary
+    data = salary
     for i in range(data.shape[0]):
         sms = {"sender": data['sender'][i], "body": data['body'][i], "timestamp": str(data['timestamp'][i]),
             "read": data['read'][i], "time_message": str(data['time,message'][i]), "acc_no": int(data['acc_no'][i]),
@@ -93,7 +93,7 @@ def salary(df, result, user_id, max_timestamp, new):
 
     deposited_messages = process_data(deposited_messages, user_id)
 
-    data = convert_json(epf_messages,deposited_messages,user_id,max_timestamp)
+    data = convert_json(epf_messages,deposited_messages['df'],user_id,max_timestamp)
 
     try:
         logger.info('making connection with db')
@@ -115,9 +115,9 @@ def salary(df, result, user_id, max_timestamp, new):
     else:
         logger.info("Old User checked")
         for i in range(len(data['deposited'])):
-            db.loanapproval.update({"cust_id": int(user_id)}, {"$push": {"deposited": data['deposited'][i],"epf": data['epf'][i]}})
+            db.salary.update({"cust_id": int(user_id)}, {"$push": {"deposited": data['deposited'][i],"epf": data['epf'][i]}})
             logger.info("loan approval sms of old user updated successfully")
-        db.loanapproval.update_one({"cust_id": int(user_id)}, {
+        db.salary.update_one({"cust_id": int(user_id)}, {
             "$set": {"timestamp": max_timestamp, 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
                                    upsert=True)
         logger.info("Timestamp of User updated")
