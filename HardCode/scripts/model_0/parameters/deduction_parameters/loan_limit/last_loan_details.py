@@ -1,7 +1,7 @@
-import numpy as np
-from HardCode.scripts.loan_analysis.my_modules import *
+#import numpy as np
+#from HardCode.scripts.loan_analysis.my_modules import *
 from HardCode.scripts.Util import logger_1, conn
-from HardCode.scripts.loan_analysis.preprocessing import preprocessing
+#from HardCode.scripts.loan_analysis.preprocessing import preprocessing
 from datetime import datetime
 import pytz
 import warnings
@@ -17,7 +17,9 @@ Particular app repay categories are
 '''
 
 def get_final_loan_details(cust_id):
-    data, app_list = preprocessing(cust_id)
+    connect = conn()
+    loan_info = connect.analysis.loan.find_one({'cust_id': cust_id})
+    data = loan_info['complete_info']
     result = {}
     for app in data.keys():
         report = ''
