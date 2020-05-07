@@ -237,10 +237,10 @@ def main(user_id):
 
                 last_month = list(result['salary'].keys())[-1]
                 last_salary = result['salary'][last_month]['salary']
-
+        logger.info("salary analysis completed")
         return {'status': True, 'message': 'Success', 'cust_id': int(user_id), 'result': result['salary'],
                 'salary': float(last_salary)}
-        logger.info("salary analysis completed")
+        
     except BaseException as e:
         print(e)
         return {'status': False, 'message': str(e), 'cust_id': int(user_id), 'salary': 0}
