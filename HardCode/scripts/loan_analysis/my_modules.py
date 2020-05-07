@@ -210,3 +210,13 @@ def overdue_amount_extract(data, overdue_first_date, app):
         else:
             break
     return max(overdue_amount_list)
+
+
+def is_rejected(message, app):
+    patterns = loan_apps_regex[app]['rejection']
+    for pattern in patterns:
+        matcher = re.search(pattern, message)
+        if matcher:
+            return True
+    else:
+        return False
