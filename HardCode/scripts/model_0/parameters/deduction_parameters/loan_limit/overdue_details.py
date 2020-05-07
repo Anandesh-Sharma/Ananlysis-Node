@@ -1,5 +1,6 @@
-from HardCode.scripts.loan_analysis.preprocessing import preprocessing
-from HardCode.scripts.loan_analysis.my_modules import *
+#from HardCode.scripts.loan_analysis.preprocessing import preprocessing
+#from HardCode.scripts.loan_analysis.my_modules import *
+from HardCode.scripts.Util import conn
 import numpy as np
 import pandas as pd
 from datetime import datetime
@@ -17,7 +18,12 @@ def get_overdue_details(cust_id):
         'more_than_15': 0
     }
 
-    data,loan_list = preprocessing(cust_id)
+    try:
+        connect = conn()
+        loan_info = connect.analysis.loan.find_one({'cust_id': cust_id})
+        data = loan_info['complete_info']
+    except BaseException as e:
+        print(e)
     try:
         for i in data.keys():
             for j in data[i].keys():

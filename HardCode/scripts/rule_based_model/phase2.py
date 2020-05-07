@@ -1,5 +1,6 @@
 from HardCode.scripts.loan_analysis.preprocessing import preprocessing
 from datetime import datetime
+from HardCode.scripts.Util import conn
 
 def rule_quarantine(cust_id):
     report = {
@@ -8,7 +9,12 @@ def rule_quarantine(cust_id):
         'messages_deleted_per_loan' : 0
     }
 
-    data, list = preprocessing(cust_id)
+    try:
+        connect = conn()
+        loan_info = connect.analysis.loan.find_one({'cust_id': cust_id})
+        data = loan_info['complete_info']
+    except BaseException as e:
+        print(e)
     try:
         for i in data.keys():
             for j in data[i].keys():
