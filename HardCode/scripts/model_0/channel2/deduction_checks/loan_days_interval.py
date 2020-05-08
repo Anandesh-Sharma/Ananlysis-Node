@@ -10,14 +10,14 @@ def due_days_interval(user_id):
     total_loans = 0
 
 
-    max_limit,due_days,no_of_loan_apps,loan_apps, overdue_ratio, loan_dates = loan_limit(user_id)
+    max_limit,due_days,no_of_loan_apps,loan_apps, overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
     dates = pd.DataFrame(loan_dates)
 
     if not dates.empty:
         dates['disbursal_date'] = pd.to_datetime(dates['disbursal_date'])
         dates = dates.sort_values(by = 'disbursal_date').reset_index(drop = True)
         #dates['disbursal_date'] = dates['disbursal_date'].astype(str)
-        total_loans = dates.shape[0]
+        # total_loans = dates.shape[0]
         if dates.shape[0] > 1:
             for i in range(1,dates.shape[0]):
                 diff = dates['disbursal_date'][i] - dates['disbursal_date'][i-1]

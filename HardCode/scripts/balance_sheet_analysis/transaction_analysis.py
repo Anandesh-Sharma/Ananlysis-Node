@@ -165,7 +165,11 @@ def get_debit_amount(data):
         matcher_4 = re.search(pattern_4, message)
         matcher_5 = re.search(pattern_5, message)
         if matcher_1:
-            amount = matcher_1.group(1)
+            matcher_credited = re.search("and debited",message)
+            if matcher_credited:
+                amount = 0
+            else:
+                amount = matcher_1.group(1)
 
         elif matcher_2:
             amount = matcher_2.group(1)

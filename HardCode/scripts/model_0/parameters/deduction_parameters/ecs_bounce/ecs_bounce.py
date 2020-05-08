@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 from HardCode.scripts.Util import conn
-from datetime import datetime
+from datetime import datetime,timedelta
 
 def get_ecs_data(cust_id):
     try:
@@ -11,7 +11,15 @@ def get_ecs_data(cust_id):
         ecs_data = pd.DataFrame(msgs['sms'])
         ecs_data = ecs_data.sort_values(by = 'timestamp')
         ecs_data.reset_index(drop = True, inplace = True)
-    except:
+        date = datetime.strptime('2020-03-20 00:00:00', '%Y-%m-%d %H:%M:%S')
+        last_date = date - timedelta(weeks=13)
+        mask = []
+        for i in range(ecs_data.shape[0]):
+            mask.append(date >= datetime.strptime(ecs_data['timestamp'][i], '%Y-%m-%d %H:%M:%S') > last_date)
+
+        ecs_data = ecs_data[mask]
+        ecs_data.reset_index(drop=True, inplace=True)
+    except BaseException as e:
         ecs_data = pd.DataFrame(columns = ['user_id', 'body', 'sender', 'timestamp', 'read'])
     return ecs_data
 
@@ -34,6 +42,7 @@ def get_ecs_bounce(cust_id):
 
     if not ecs_data.empty:
         for i in range(ecs_data.shape[0]):
+
             message = str(ecs_data['body'][i].encode('utf-8')).lower()
             for pattern in patterns:
                 matcher = re.search(pattern, message)

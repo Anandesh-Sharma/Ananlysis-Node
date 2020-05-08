@@ -1,6 +1,7 @@
 from .Classifier_CreditCard import credit
 from .Classifier_Loan import loan
 from .Classifier_transaction import cleaning
+from .Classifier_salary import salary
 import multiprocessing
 from HardCode.scripts.Util import conn, read_json, convert_json, logger_1
 import warnings
@@ -122,6 +123,12 @@ def classifier(sms_json, user_id):
     except BaseException as e:
         logger.info(f"error in transaction classifier as {e}")
         return False
+    logger.info("Multiprocessing start for Salary Classifier")
+    try:
+        p4 = multiprocessing.Process(target=salary(df, result, user_id, max_timestamp, new, ))
+    except BaseException as e:
+        logger.info(f"error in salary classifier as {e}")
+        return False
     logger.info("process 1 starts")
     try:
         p1.start()
@@ -141,6 +148,11 @@ def classifier(sms_json, user_id):
         logger.info(f"error in transaction classifier {e}")
         return False
     try:
+        p4.start()
+    except BaseException as e:
+        logger.info(f"error in salary classifier {e}")
+        return False
+    try:
         p1.join()
     except BaseException:
         return False
@@ -155,6 +167,11 @@ def classifier(sms_json, user_id):
     except BaseException as e:
         return False
     logger.info("process 3 complete")
+    try:
+        p4.join()
+    except BaseException as e:
+        return False
+    logger.info("process 4 complete")
 
     logger.info("extra classifier called")
     extra(df, user_id, result, max_timestamp, new)

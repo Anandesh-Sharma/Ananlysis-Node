@@ -3,7 +3,7 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.last_lo
 
 def loan_check(user_id):
 
-    max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates = loan_limit(user_id)
+    max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
     report = get_final_loan_details(user_id)
 
 

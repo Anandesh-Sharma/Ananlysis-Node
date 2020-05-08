@@ -1,31 +1,9 @@
 from HardCode.scripts.loan_analysis.get_loan_data import fetch_user_data
-import pandas as pd
-from datetime import datetime
 from HardCode.scripts.Util import logger_1
 from HardCode.scripts.loan_analysis.my_modules import *
+from HardCode.scripts.loan_analysis.loan_app_regex_superset import loan_apps_regex
 
 def preprocessing(cust_id):
-    # transaction_data = trans_data
-    """
-    This function is preprocessed the data and give user's loan details in a dictionary.
-
-    Parameters:
-        loan_data              : loan_data of a user consist approval, disbursal, due/overdue and closing messages
-    Methos use for preprocessing:
-        sms_header_splitter    : split the sender's sms header to remove unwanted text
-        grouping               : group the sender names in different dataframes
-    Returns:
-        user_details(dictionary)         :
-            multi dictionary consists user's loan apps details
-            disbursed_date(datetime) : date of disbursal
-            closed_date(datetime)    : date of closed
-            due_date(datetime)       : date of due
-            loan_closed_amount(str)  : amount received at the closing time
-            loan_disbursed_amount(str) : amount recieved at the disbursal time
-            loan_due_amount(str)     : due messages amount info
-            overdue_max_amount(str)  : maximum overdue amount
-            loan_duration(int)       : duration of loan
-    """
     loan_data = fetch_user_data(cust_id)
     logger = logger_1('preprocessing', cust_id)
     loan_data = sms_header_splitter(loan_data)
@@ -35,278 +13,279 @@ def preprocessing(cust_id):
     loan_details_of_all_apps = {}
     user_app_list = []
 
-    for app, grp in loan_data_grouped:
+    for app, data in loan_data_grouped:
         logger.info("iteration in groups starts")
         try:
             if isinstance(int(app), int):
                 pass
         except:
             user_app_list.append(app)
-        if app == 'CASHBN' or app == 'KREDTB' or app == 'KREDTZ' or app == 'LNFRNT' or app == 'RRLOAN' or app == 'LOANAP' or app == 'KISSHT' or app == 'GTCASH' or app == 'FLASHO' or app == 'CSHMMA' or app == 'ZPLOAN' or app == 'FRLOAN' or app == 'SALARY':
-
-            grp = grp.sort_values(by='timestamp')
-            grp = grp.reset_index(drop=True)
+    
+        if app in list(loan_apps_regex.keys()):
+            logger.info("app found in app list")
+            data = data.sort_values(by='timestamp')
+            data = data.reset_index(drop=True)
 
             loan_count = 0
             loan_details_individual_app = {}
             i = 0
             FLAG = False
 
-            while i < len(grp):
-                logger.info("iteration in messages starts")
-
+            while i < len(data):
                 individual_loan_details = {
                     'disbursed_date': -1,
                     'closed_date': -1,
                     'loan_duration': -1,
-                    'due_date': -1,
                     'loan_disbursed_amount': -1,
                     'loan_due_amount': -1,
-                    'overdue_max_amount': -1,
+                    'loan_closed_amount' : -1,
                     'overdue_days' : -1,
+                    'overdue_check' : 0,
                     'messages': []
                 }
-                message = str(grp['body'][i].encode('utf-8')).lower()
-
-                if is_disbursed(message):
-                    """
-                    The function to check disbursal message
-
-                    Parameters:
-                        message(str)    : a single user message in lowercase
-
-                    Returns:
-                        disbursed_date(dictionary)           : disbursal date of the loan 
-                        loan_disbursed_amount(dictionary)    : loan_amount (if present)    
-                    """
-                    logger.info("disbursed message found")
-                    individual_loan_details['disbursed_date'] = str(grp['timestamp'][i])
-                    disbursed_date = datetime.strptime(str(grp['timestamp'][i]), '%Y-%m-%d %H:%M:%S')
-                    individual_loan_details['loan_disbursed_amount'] = float(disbursed_amount_extract(message))
-                    individual_loan_details['messages'].append(str(grp['body'][i]))
+                message = str(data['body'][i].encode('utf-8')).lower()
+                if is_disbursed(message, app):
+                    logger.info("disbursal message found")
+                    disbursal_date = datetime.strptime(str(data['timestamp'][i]), "%Y-%m-%d %H:%M:%S")
+                    individual_loan_details['disbursed_date'] = str(data['timestamp'][i])
+                    individual_loan_details['loan_disbursed_amount'] = float(disbursed_amount_extract(message, app))
+                    individual_loan_details['messages'] = str(data['body'][i]) 
                     loan_count += 1
-                    j = i + 1
-                    while j < len(grp):
-                        logger.info("iteration in sub messages starts")
-
-                        message_new = str(grp['body'][j].encode('utf-8')).lower()
-
-                        if is_disbursed(message_new):
-
-                            """
-                            The function to check next message is also disbursal or not. if YES, than get back to previous method
-
-                            Parameters:
-                                message_new(str)     : next user message after disbursal message in lowercase
-                            """
-                            logger.info("another disbursed message found before closing previous loan")
+                    j = i + 1    # iterate through next message after disbursal message
+                    while j < len(data):
+                        msg_after_disbursal = str(data['body'][j].encode('utf-8')).lower()
+                        if is_disbursed(msg_after_disbursal, app):
                             i = j
                             break
-
-                        elif is_due(message_new):
-
-                            """
-                            The function to check if the next message is due 
-
-                            Parameters:
-                                message_new(str)     : next user messsage after disbursal message in lowercase
-
-                            Returns:
-                                due_date(dictionary)         : due_date of the loan
-                                loan_due_amount(dictionary)  : loan_due_amount(if present)   
-                            """
+                        if is_due(msg_after_disbursal, app):
                             logger.info("due message found")
-                            individual_loan_details['due_date'] = due_date_extract(message_new)
-                            if individual_loan_details['due_date'] == -1:
-                                individual_loan_details['due_date'] = str(grp['timestamp'][j])
+                            due_date = datetime.strptime(str(data['timestamp'][j]), "%Y-%m-%d %H:%M:%S")
+                            if (due_date - disbursal_date).days < 15:
+                                # due message belongs to above disbursal message
+                                individual_loan_details['loan_due_amount'] = float(due_amount_extract(msg_after_disbursal, app))
+                                k = j + 1 
+                                while k < len(data):
+                                    msg_after_due = str(data['body'][k].encode('utf-8')).lower()
+                                    if is_overdue(msg_after_due, app):
+                                        logger.info("overdue message found")
+                                        try:
+                                            individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_due, app)
+                                        except:
+                                            pass
+                                        individual_loan_details['overdue_check'] += 1
+                                        individual_loan_details['messages'] = str(data['body'][k])
+                                        m = k + 1
+                                        while m < len(data):
+                                            msg_after_overdue = str(data['body'][m].encode('utf-8')).lower()
+                                            if is_closed(msg_after_overdue, app):
+                                                logger.info("closed message found")
+                                                closed_date = datetime.strptime(str(data['timestamp'][m]), "%Y-%m-%d %H:%M:%S")
+                                                loan_duration = (disbursal_date - closed_date).days
+                                                if individual_loan_details['overdue_days'] == -1:
+                                                    individual_loan_details['overdue_days'] = loan_duration - 15
+                                                individual_loan_details['closed_date'] = str(data['timestamp'][m])
+                                                individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_overdue, app))
+                                                individual_loan_details['messages'] = str(data['body'][m])
+                                                k = m + 1
+                                                FLAG = True
+                                                logger.info("loan closed!")
+                                                break
+                                            elif is_disbursed(msg_after_overdue, app) or is_due(msg_after_overdue, app):
+                                                logger.info("loan closed because before closing previous loan another disbursal message found")
+                                                k = m
+                                                FLAG = True
+                                                break
+                                            elif is_overdue(msg_after_overdue, app):
+                                                try:
+                                                    individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_overdue, app)
+                                                except:
+                                                    pass
+                                                individual_loan_details['overdue_check'] += 1
+                                                individual_loan_details['messages'] = str(data['body'][m])
+                                            else:
+                                                pass
+                                            m += 1
+                                    elif is_closed(msg_after_due, app):
+                                        logger.info("closed message found")
+                                        closed_date = datetime.strptime(str(data['timestamp'][k]), "%Y-%m-%d %H:%M:%S")
+                                        loan_duration = (disbursal_date - closed_date).days
+                                        if loan_duration > 15:
+                                            individual_loan_details['overdue_days'] = loan_duration - 15
+                                        individual_loan_details['closed_date'] = str(data['timestamp'][k])
+                                        individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_due, app))
+                                        individual_loan_details['messages'] = str(data['body'][k])
+                                        FLAG = True
+                                        j = k + 1
+                                        logger.info("loan closed")
+                                        break
+                                    elif is_disbursed(msg_after_due, app):
+                                        logger.info("loan closed because before closing previous loan another disbursal message found")
+                                        j = k
+                                        FLAG = True
+                                        break
+                                    elif is_due(msg_after_due, app):
+                                        due_date = datetime.strptime(str(data['timestamp'][k]), "%Y-%m-%d %H:%M:%S")
+                                        if (due_date - disbursal_date).days < 15:
+                                            pass
+                                        else:
+                                            logger.info("loan closed because a due message found which is not belong to current loan")
+                                            FLAG = True
+                                            j = k
+                                            break
+                                    else:
+                                        pass
+                                    if FLAG == True:
+                                        j = k
+                                    k += 1     # 'k' loop increment
+                            else:
+                                # due message doesn't belong to above disbursal message
+                                i = j
+                                break
+                            if FLAG == True:
+                                i = j
+                                break
+                        # ***********************************************************************************************
+                        # ***********************************************************************************************            
+                        elif is_overdue(msg_after_disbursal, app):
+                            logger.info("overdue message found")
+                            try:
+                                individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_disbursal, app)
+                            except:
+                                pass
+                            individual_loan_details['overdue_check'] += 1   
+                            individual_loan_details['messages'] = str(data['body'][j])
                             k = j + 1
-                            individual_loan_details['loan_due_amount'] = due_amount_extract(message_new)
-                            individual_loan_details['messages'].append(str(grp['body'][j]))
-                            while k < len(grp):
-                                logger.info("Looking for overdue message")
-
-                                message_overdue = str(grp['body'][k]).lower()
-
-                                if is_overdue(message_overdue):
-
-                                    """
-                                    The function to check if the next message is overdue
-
-                                    Parameters:
-                                        message_overdue     : next user message after due message in lowercase
-
-                                    Returns:
-                                        overdue_max_amount(dictionary)  : maximum overdue amount (if present)    
-                                    """
-                                    logger.info("overdue message found")
-                                    overdue_first_date = datetime.strptime(str(grp['timestamp'][k]),
-                                                                           '%Y-%m-%d %H:%M:%S')
-                                    individual_loan_details['overdue_max_amount'] = float(
-                                        overdue_amount_extract(grp, overdue_first_date))
-                                    individual_loan_details['messages'].append(str(grp['body'][k]))
-                                    m = k + 1
-                                    while m < len(grp):
-                                        logger.info("Looking for closed message")
-                                        message_closed = str(grp['body'][m]).lower()
-                                        if is_closed(message_closed):
-                                            """
-                                            The function to check if the next message is closed
-
-                                            Parameters:
-                                                message_closed    : next user message after overdue message in lowercase
-
-                                            Returns:
-                                                closed_date(dictionary)                : closed_date of the loan
-                                                loan_duration(dictionary)              : duration of loan (closed_date - disbursal_date)
-                                                loan_closed_amount(dictionary)         : loan_closed_amount (if present)   
-                                            """
-                                            logger.info("closed message found")
-                                            individual_loan_details['closed_date'] = str(grp['timestamp'][m])
-                                            closed_date = datetime.strptime(str(grp['timestamp'][m]),
-                                                                            '%Y-%m-%d %H:%M:%S')
-                                            loan_duration = (closed_date - disbursed_date).days
-                                            if loan_duration > 15:
-                                                individual_loan_details['overdue_days'] = int(loan_duration - 15)
-                                            individual_loan_details['loan_duration'] = loan_duration
-                                            individual_loan_details['loan_closed_amount'] = float(
-                                                closed_amount_extract(message_closed))
-                                            individual_loan_details['messages'].append(str(grp['body'][m]))
-                                            k = m + 1
-                                            FLAG = True
-                                            logger.info("Loan Closed!")
-                                            break
-                                        elif is_disbursed(message_closed):
-                                            k = m
-                                            FLAG = True
-                                            break
-                                        m += 1
-                                if FLAG == True:
-                                    i = j
+                            while k < len(data):
+                                msg_after_overdue = str(data['body'][k].encode('utf-8')).lower()
+                                if is_closed(msg_after_overdue, app):
+                                    logger.info("closed message found")
+                                    closed_date = datetime.strptime(str(data['timestamp'][k]), "%Y-%m-%d %H:%M:%S")
+                                    loan_duration = (disbursal_date - closed_date).days
+                                    if individual_loan_details['overdue_days'] == -1:
+                                        individual_loan_details['overdue_days'] = loan_duration - 15
+                                    individual_loan_details['closed_date'] = str(data['timestamp'][k])
+                                    individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_overdue, app))
+                                    individual_loan_details['messages'] = str(data['body'][k])
+                                    FLAG = True
+                                    j = k + 1
+                                    logger.info("loan closed!")
                                     break
-                                elif is_closed(message_overdue):
-
-                                    """
-                                    The function to check if the next message is closed
-
-                                    Parameters:
-                                        message_overdue    : next user message after due message in lowercase
-
-                                    Returns:
-                                        closed_date(dictionary)                : closed_date of the loan
-                                        loan_duration(dictionary)              : duration of loan (closed_date - disbursal_date)
-                                        loan_closed_amount(dictionary)         : loan_closed_amount (if present)   
-                                    """
-                                    logger.info("loan closed messagge found")
-                                    individual_loan_details['closed_date'] = str(grp['timestamp'][k])
-                                    closed_date = datetime.strptime(str(grp['timestamp'][k]), '%Y-%m-%d %H:%M:%S')
-                                    loan_duration = (closed_date - disbursed_date).days
-                                    if loan_duration > 15:
-                                        individual_loan_details['overdue_days'] = int(loan_duration - 15)
-                                    individual_loan_details['loan_duration'] = loan_duration
-                                    individual_loan_details['loan_closed_amount'] = float(
-                                        closed_amount_extract(message_overdue))
-                                    individual_loan_details['messages'].append(str(grp['body'][k]))
-                                    break
-                                elif is_disbursed(message_overdue):
-
-                                    """
-                                    The function to check next message is also disbursal or not. if YES, than get back to previous method
-
-                                    Parameters:
-                                        message_new(str)     : next user message after due message in lowercase
-                                    """
-                                    logger.info("another disbursed message found before closing previous loan")
+                                elif is_disbursed(msg_after_overdue, app) or is_due(msg_after_overdue, app):
+                                    logger.info("loan closed because before closing previous loan another disbursal/due message found")
+                                    FLAG = True
                                     j = k
-                                    break
-
+                                    break   
+                                elif is_overdue(msg_after_due, app):
+                                    try:
+                                        individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_due, app)
+                                    except:
+                                        pass 
+                                    individual_loan_details['overdue_check'] += 1
+                                else:
+                                    pass
                                 k += 1
-                        if FLAG  == True:
-                            j = k
-                            break
-                        elif is_overdue(message_new):
-
-                            """
-                            The function to check if the next message is overdue
-
-                            Parameters:
-                                message_overdue     : next user message after disbursal message in lowercase
-
-                            Returns:
-                                overdue_max_amount(dictionary)  : maximum overdue amount (if present)    
-                            """
-                            logger.info('overdue message found')
-                            overdue_first_date = datetime.strptime(str(grp['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
-                            individual_loan_details['overdue_max_amount'] = float(
-                                overdue_amount_extract(grp, overdue_first_date))
-                            individual_loan_details['messages'].append(str(grp['body'][j]))
-                            m = j + 1
-                            while m < len(grp):
-                                message_closed = str(grp['body'][m]).lower()
-                                if is_closed(message_closed):
-                                    """
-                                    The function to check if the next message is closed
-
-                                    Parameters:
-                                        message_overdue    : next user message after overdue message in lowercase
-
-                                    Returns:
-                                        closed_date(dictionary)                : closed_date of the loan
-                                        loan_duration(dictionary)              : duration of loan (closed_date - disbursal_date)
-                                        loan_closed_amount(dictionary)         : loan_closed_amount (if present)   
-                                    """
-                                    logger.info("loan closed message found")
-                                    individual_loan_details['closed_date'] = str(grp['timestamp'][m])
-                                    closed_date = datetime.strptime(str(grp['timestamp'][m]), '%Y-%m-%d %H:%M:%S')
-                                    loan_duration = (closed_date - disbursed_date).days
-                                    if loan_duration > 15:
-                                        individual_loan_details['overdue_days'] = int(loan_duration - 15)
-                                    individual_loan_details['loan_duration'] = loan_duration
-                                    individual_loan_details['loan_closed_amount'] = float(
-                                        closed_amount_extract(message_closed))
-                                    individual_loan_details['messages'].append(str(grp['body'][m]))
-                                    j = m + 1
-                                    logger.info("Loan Closed!")
-                                    break
-                                elif is_disbursed(message_closed):
-                                    """
-                                    The function to check next message is also disbursal or not. if YES, than get back to previous method
-
-                                    Parameters:
-                                        message_new(str)     : next user message after due message in lowercase
-                                    """
-                                    logger.info("another disbursed message found before closing previous loan")
-                                    j = m
-                                    break
-                                m += 1
-                        elif is_closed(message_new):
-
-                            """
-                            The function to check if the next message is closed
-
-                            Parameters:
-                                message_overdue    : next user message after disbursal message in lowercase
-
-                            Returns:
-                                closed_date(dictionary)                : closed_date of the loan
-                                loan_duration(dictionary)              : duration of loan (closed_date - disbursal_date)
-                                loan_closed_amount(dictionary)         : loan_closed_amount (if present)   
-                            """
-                            logger.info("loan closed message found")
-                            individual_loan_details['closed_date'] = str(grp['timestamp'][j])
-                            closed_date = datetime.strptime(str(grp['timestamp'][j]), '%Y-%m-%d %H:%M:%S')
-                            loan_duration = (closed_date - disbursed_date).days
+                            if FLAG == True:
+                                i = j
+                                break   # comes out from 'j' loop
+                        # ***********************************************************************************************
+                        # ***********************************************************************************************
+                        elif is_closed(msg_after_disbursal, app):
+                            logger.info("closed message found")
+                            closed_date = datetime.strptime(str(data['timestamp'][j]), "%Y-%m-%d %H:%M:%S")
+                            loan_duration = (disbursal_date - closed_date).days
                             if loan_duration > 15:
-                                individual_loan_details['overdue_days'] = int(loan_duration - 15)
-                            individual_loan_details['loan_duration'] = loan_duration
-                            individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(message_new))
-                            individual_loan_details['messages'].append(str(grp['body'][j]))
-                            logger.info("Loan Closed!")
+                                individual_loan_details['overdue_days'] = loan_duration - 15
+                            individual_loan_details['closed_date'] = str(data['timestamp'][j])
+                            individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_disbursal, app))
+                            individual_loan_details['messages'] = str(data['body'][j])
+                            i = j + 1
+                            logger.info("loan closed!")
+                            break
+                        j += 1     # 'j' loop increment
+                    loan_details_individual_app[str(loan_count)] = individual_loan_details
+                # **************************************************************************************************************
+                # **************************************************************************************************************
+                # **************************************************************************************************************
+                elif is_due(message, app):
+                    logger.info("due message found and loan start without disbursal message")
+                    due_date = datetime.strptime(str(data['timestamp'][i]), "%Y-%m-%d %H:%M:%S")
+                    individual_loan_details['loan_due_amount'] = float(due_amount_extract(message, app))
+                    individual_loan_details['messages'] = str(data['body'][i])
+                    loan_count += 1
+                    j = i + 1
+                    while j < len(data):
+                        msg_after_due = str(data['body'][j].encode('utf-8')).lower()
+                        if is_due(msg_after_due, app):
+                            next_due_date = datetime.strptime(str(data['timestamp'][j]), "%Y-%m-%d %H:%M:%S")
+                            if (next_due_date - due_date).days < 15:
+                                pass
+                            else:
+                                logger.info("loan closed because a due message found which is not belong to current loan")
+                                i = j
+                                break
+                        elif is_overdue(msg_after_due, app):
+                            logger.info("overdue message found")
+                            try:
+                                individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_due, app)
+                            except:
+                                pass
+                            individual_loan_details['overdue_check'] += 1
+                            individual_loan_details['messages'] = str(data['body'][j])
+                            k = j + 1
+                            while k < len(data):
+                                msg_after_overdue = str(data['body'][k].encode('utf-8')).lower()
+                                if is_closed(msg_after_overdue, app):
+                                    logger.info("closed message found")
+                                    #closed_date = datetime.strptime(str(data['timestamp'][k]), "%Y-%m-%d %H:%M:%S")
+                                    individual_loan_details['closed_date'] = str(data['timestamp'][k])
+                                    individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_overdue, app))
+                                    individual_loan_details['messages'] = str(data['body'][k])
+                                    j = k + 1
+                                    FLAG = True
+                                    logger.info("loan closed!")
+                                    break
+                                elif is_disbursed(msg_after_overdue, app) or is_due(msg_after_overdue, app):
+                                    logger.info("loan closed because before closing previous loan another disbursal message found")
+                                    j = k
+                                    FLAG = True
+                                    break
+                                elif is_overdue(msg_after_overdue, app):
+                                    try:
+                                        individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_overdue, app)
+                                    except:
+                                        pass
+                                    individual_loan_details['overdue_check'] += 1
+                                    individual_loan_details['messages'] = str(data['body'][k])
+                                else:
+                                    pass
+                                k += 1
+                        elif is_closed(msg_after_due, app):
+                            logger.info("closed message found")
+                            #closed_date = datetime.strptime(str(data['timestamp'][j]), "%Y-%m-%d %H:%M:%S")
+                            individual_loan_details['closed_date'] = str(data['timestamp'][j])
+                            individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_due, app))
+                            individual_loan_details['messages'] = str(data['body'][j])
+                            FLAG = True
+                            i = j + 1
+                            logger.info("loan closed!")
+                            break
+                        elif is_disbursed(msg_after_due, app):
+                            logger.info("loan closed because before closing previous loan another disbursal message found")
+                            i = j
+                            FLAG = True
+                            break
+                        else:
+                            pass
+                        if FLAG == True:
+                            i = j
                             break
                         j += 1
                     loan_details_individual_app[str(loan_count)] = individual_loan_details
+                    logger.info("information fetch")
+                else:
+                    pass
 
-                i += 1
-    
+                i += 1   # 'i' loop increment
             loan_details_of_all_apps[str(app)] = loan_details_individual_app
-
+            logger.info("all information fetch from current loan app")
     return loan_details_of_all_apps, user_app_list

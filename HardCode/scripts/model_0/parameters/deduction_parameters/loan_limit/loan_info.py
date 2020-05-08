@@ -7,16 +7,16 @@ def loan_limit(user_id):
     :returns max loan sanctioned by other loan apps, -1 implies amount is not detected
     :rtype: float
     """
-
     max_limit = -1
     due_days = -1
     no_of_loan_apps = 0
     loan_apps = []
     loan_dates = []
     overdue_ratio = 0
+    total_loans = 0
     connect = conn()
     loan_analysis_result = connect.analysis.loan.find_one({'cust_id': user_id})
-    overdue_ratio_3_months, overdue_report = get_overdue_details(user_id)
+    overdue_ratio_3_months, overdue_report, total_loans_within_3_months = get_overdue_details(user_id)
 
     try:
         max_limit = loan_analysis_result['MAX_AMOUNT']
@@ -26,9 +26,10 @@ def loan_limit(user_id):
 
         due_days = overdue_report
         overdue_ratio = overdue_ratio_3_months
+        total_loans = total_loans_within_3_months
 
     except BaseException as e:
         print(f"Error in loan limit check : {e}")
 
     finally:
-        return max_limit,due_days,no_of_loan_apps,loan_apps, overdue_ratio, loan_dates
+        return max_limit,due_days,no_of_loan_apps,loan_apps, overdue_ratio, loan_dates , total_loans
