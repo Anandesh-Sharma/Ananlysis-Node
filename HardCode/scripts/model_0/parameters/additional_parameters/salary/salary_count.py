@@ -15,8 +15,9 @@ def salary(id):
             month = list(sal['salary'].keys())[-i]
             salary = sal['salary'][month]['salary']
             keyword = sal['salary'][month]['keyword']
-            time = sal['salary'][month]['message']['timestamp']
+            
             if salary != 0:
+                time = sal['salary'][month]['message']['timestamp']
                 li = {'salary':salary,'keyword':keyword,'timestamp':time}
                 break
     return li

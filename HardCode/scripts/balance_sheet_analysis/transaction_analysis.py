@@ -494,6 +494,5 @@ def process_data(data, user_id):
         date_time_thread(data, user_id)
         logger.info('data time thread complete')
     except Exception as e:
-        print(data)
         return {'status': False, 'message': e}
     return {'status': True, 'message': 'success', 'df': data}
