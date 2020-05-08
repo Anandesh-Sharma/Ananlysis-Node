@@ -266,6 +266,7 @@ def bl0(**kwargs):
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg="scoring model failed due to some reason")
     except BaseException as e:
+        result_score = -1
         print(f"Error : {e}")
         exception_feeder(client=client, user_id=user_id, logger=logger,
                          msg=str(e))
@@ -276,6 +277,7 @@ def bl0(**kwargs):
 
     except BaseException as e:
         print(f"Error : {e}")
+        result_pass = False
         exception_feeder(client=client, user_id=user_id, logger=logger,
                          msg=str(e))
 
@@ -316,12 +318,13 @@ def bl0(**kwargs):
     analysis_result['cibil'] = limit
     analysis_result['sms_count'] = sms_count
     analysis_result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
+    analysis_result['result_pass'] = result_pass
 
     # PUSH analysis_result to the mongo
     client.analysisresult.bl0.update({'cust_id': user_id}, {'$push': {'result': analysis_result}})
     end_result = result_fetcher(client=client, user_id=user_id, result_loan=result_loan, result_salary=result_salary,
                                 balance_sheet_result=balance_sheet_result, result_rejection=result_rejection,
-                                result_score=result_score,result_pass = result_pass)
+                                result_score=result_score,result_pass=result_pass)
     logger.info("Setting processing bool to false")
     set_processing_bool(user_id, False)
     client.close()
