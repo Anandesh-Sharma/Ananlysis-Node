@@ -217,7 +217,7 @@ loan_apps_regex = {
                  r'your\snira\s(?:loan)?\s?emi\sof\s(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
                  r'upcoming\semi.*due\sdate\sof\s(?:[0-9]+(?:\/|\-)[0-9]+(?:\/|\-)[0-9]+)'],
         'overdue' : [r'overdue\semi\sof\s(?:rs[.]?|inr)\s?(?:[0-9,]+[.]?[0-9]+)',
-                     r'you\shave\smissed.*emi\s(?:of)?(?:rs[.]?|inr)\s?(?:[0-9,]+[.]?[0-9]+))',
+                     r'you\shave\smissed.*emi\s(?:of)?(?:rs[.]?|inr)\s?(?:[0-9,]+[.]?[0-9]+)',
                      r'not\sreceived\syour\snira\semi',
                      r'you\shave\smissed.*(?:emi|installment)\son\sdue\sdate',
                      r'your.*repayment\sis\sstill\spending',
