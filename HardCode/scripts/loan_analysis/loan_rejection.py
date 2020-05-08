@@ -7,7 +7,8 @@ def get_rejection_count(cust_id):
     loan_data = fetch_user_data(cust_id)
     loan_data = sms_header_splitter(loan_data)
     grouped_data = grouping(loan_data)
-    rejection_count = 0
+    premium_app_rejection_count = 0
+    normal_app_rejection_count = 0
 
     for app, data in grouped_data:
         if app in target_apps and app in list(loan_apps_regex.keys()):
@@ -15,8 +16,18 @@ def get_rejection_count(cust_id):
             while i < len(data):
                 message = str(data['body'][i].encode('utf-8')).lower()
                 if is_rejected(message, app):
-                    rejection_count += 1
+                    premium_app_rejection_count += 1
+                    break
                 i += 1
-    return rejection_count
+        else:
+            if app in list(loan_apps_regex.keys()):
+                i = 0
+                while i < len(data):
+                    message = str(data['body'][i].encode('utf-8')).lower()
+                    if is_rejected(message, app):
+                        normal_app_rejection_count += 1
+                        break
+                    i += 1
+    return premium_app_rejection_count, normal_app_rejection_count
     
     
