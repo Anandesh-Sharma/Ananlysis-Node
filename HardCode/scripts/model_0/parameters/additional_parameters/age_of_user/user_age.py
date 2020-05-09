@@ -48,6 +48,7 @@ def get_age(user_id):
                 today = date.today()
                 age = today.year - dob.year
     except BaseException as e:
+        pass
         print(f"Error in fetching data from api : {e}")
     finally:
         return age
