@@ -1,5 +1,4 @@
 from HardCode.scripts.Util import conn
-import json
 
 
 def fetch_user(user_id):
