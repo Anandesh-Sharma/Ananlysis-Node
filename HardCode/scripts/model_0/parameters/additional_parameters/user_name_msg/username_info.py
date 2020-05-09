@@ -39,6 +39,7 @@ def get_profile_name(user_id):
             if 'error' not in data:
                 profile_name = data['profile']['name']
     except BaseException as e:
-        print(f"Error in fetching data from api : {e}")
+        pass
+        #print(f"Error in fetching data from api : {e}")
     finally:
         return profile_name    
