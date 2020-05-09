@@ -6,7 +6,7 @@ from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.get
 from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.available_balance import find_info
 
 
-def rejecting_parameters(user_id,cibil_df,sms_count):
+def rejecting_parameters(user_id, cibil_df, sms_count):
     loan_app , loan_status = loan_app_count(user_id)
     account_status_value , ac_status = get_acc_status(cibil_df)
     max_limit, loan_due_days, no_of_loan_apps, loan_apps , overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
@@ -24,12 +24,9 @@ def rejecting_parameters(user_id,cibil_df,sms_count):
         msg = "written off nas suit filed found for the user"
         rejection_reasons.append(msg)
 
-
     if loan_due_days['more_than_15'] > 0:
         msg = "user has overdue days more than 15 days"
         rejection_reasons.append(msg)
-
-
 
     if flag and rejection_msg == 0:
         msg = "user has msgs for overdue of more than 15 days"
@@ -50,7 +47,6 @@ def rejecting_parameters(user_id,cibil_df,sms_count):
     if overdue_count > 10:
         msg = "user has more than 10 overdue msgs"
         rejection_reasons.append(msg)
-
 
     return rejection_reasons
 

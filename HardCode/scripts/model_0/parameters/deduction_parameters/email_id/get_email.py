@@ -42,6 +42,6 @@ def get_email_details(user_id):
             if 'error' not in data:
                 email = data['profile']['email']
     except BaseException as e:
-        print(f"Error in fetching data from api : {e}")
+        pass
     finally:
         return email

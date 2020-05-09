@@ -63,7 +63,7 @@ def get_loan_details(user_id):
                 for dict in data['transaction_status']:
                     repayment_date.append(dict['date_time'])
     except BaseException as e:
-        print(f"Error in fetching data from api : {e}")
+        pass
     finally:
         return total_loans,allowed_limit,expected_date,repayment_date
 
@@ -118,8 +118,6 @@ def repayment_history(user_id):
                         overdue_report['12-15_days'] += 1
                     else:
                         overdue_report['more_than_15'] += 1
-
-
 
             elif expected_date[i] > date1:
                 try:
