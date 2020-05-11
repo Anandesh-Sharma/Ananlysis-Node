@@ -110,7 +110,7 @@ def get_loan_messages(data):
         'gotocash',
         'cashmama'
     ]
-    header = ['kredtb', 'idfcfb', 'cashbn', 'lnfrnt', 'cshmma', 'kredtz', 'rrloan',
+    header = ['kredtb', 'cashbn', 'lnfrnt', 'cshmma', 'kredtz', 'rrloan',
               'frloan', 'wfcash', 'bajajf', 'flasho', 'kissht', 'gtcash', 'bajafn', 'monvew', 'mpockt',
               'mpokkt', 'montap', 'mnytap']
 
