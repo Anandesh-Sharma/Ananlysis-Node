@@ -16,10 +16,13 @@ def transaction_msg(user_id):
     deposited_msg = connect.messagecluster.salary.find_one({'cust_id': user_id})
 
     deposited = deposited_msg['deposited']
-    if not msgs or not msgs['sheet']:
+    if not msgs or not msgs['sheet'] and not deposited:
         return {'status': True, 'cust_id': user_id, 'message': 'No Transaction messages', 'salary': 0}
-    msgs = msgs['sheet']
-    msgs = msgs + deposited
+    elif not msgs['sheet'] and deposited:
+        msgs = deposited
+    else:
+        msgs = msgs['sheet']
+        msgs = msgs + deposited
     final = []
     for m in range(len(msgs)):
         picked = {'body': msgs[m]['body'], 'sender': msgs[m]['sender'], 'timestamp': msgs[m]['timestamp'],
@@ -119,10 +122,14 @@ def main(user_id):
 
     connect = conn()
     db = connect.analysis.salary
-
     trans = transaction_msg(user_id)
     epf = get_epf_amount(user_id)
-    bal_sheet = trans + epf
+    if isinstance(trans,dict) and not epf:
+        return {'status': True, 'message': "no messages", 'cust_id': int(user_id), 'salary': 0}
+    elif isinstance(trans,dict) and epf :
+        bal_sheet = epf
+    else:
+        bal_sheet = trans + epf
 
     try:
         if bal_sheet:

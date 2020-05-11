@@ -18,7 +18,7 @@ def rel_validate(user_id):
             status = False
             msg = 'no data fetched from api'
     except BaseException as e:
-        print(f"Error in validation: {e}")
+        #print(f"Error in validation: {e}")
         msg = f"error in relatives verification : {str(e)}"
         status = False
 
