@@ -91,6 +91,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                             'fabhtl',
                                             'spcmak',
                                             'cuemth',
+                                            'rechrg',
                                             'zestmn',
                                             'pcmcmh',
                                             'dlhvry',
