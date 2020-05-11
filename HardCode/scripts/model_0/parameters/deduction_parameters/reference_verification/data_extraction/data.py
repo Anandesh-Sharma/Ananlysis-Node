@@ -52,7 +52,8 @@ def get_reference_details(user_id):
                     reference_number = data['profile']['preference_number']
 
     except BaseException as e:
-        print(f"Error in fetching data from api : {e}")
+        pass
+        #print(f"Error in fetching data from api : {e}")
     finally:
         return reference_relation, reference_number
 
@@ -100,7 +101,7 @@ def get_contacts_data(user_id):
                     data_contacts[number].append(name)
 
     except BaseException as e:
-        print(f"Error in fetching contacts list : {e}")
+        #print(f"Error in fetching contacts list : {e}")
         data_contacts = None
 
     finally:

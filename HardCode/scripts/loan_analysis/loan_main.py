@@ -155,6 +155,7 @@ def final_output(cust_id):
         report['modified_at'] = str(timezone.localize(datetime.now()))
         report['cust_id'] = cust_id
         report['complete_info'] = a
+        report['app_list'] =  user_app_list
 
         client.analysis.loan.update_one({"cust_id": cust_id}, {"$set": report}, upsert=True)
 
