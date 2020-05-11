@@ -42,14 +42,12 @@ def get_ecs_bounce(cust_id):
 
     if not ecs_data.empty:
         for i in range(ecs_data.shape[0]):
-
             message = str(ecs_data['body'][i].encode('utf-8')).lower()
             for pattern in patterns:
                 matcher = re.search(pattern, message)
-
-            if matcher is not None:
-                ecs_bounce_list.append(i)
-                mask.append(True)
+                if matcher is not None:
+                    ecs_bounce_list.append(i)
+                    mask.append(True)
             else:
                 mask.append(False)
     else:
@@ -58,29 +56,28 @@ def get_ecs_bounce(cust_id):
 
 def get_count_ecs(cust_id):
     ecs = get_ecs_bounce(cust_id)
-    count = 0
-    status = False
+    ecs_count = 0
     if not ecs.empty:
         i = 0
-
         while i < ecs.shape[0]:
-            date = datetime.strptime(ecs['timestamp'][i], "%Y-%m-%d %H:%M:%S")
-            j=i+1
-
+            start_date = datetime.strptime(ecs['timestamp'][i], "%Y-%m-%d %H:%M:%S")
+            end_date = datetime.strptime(f"{start_date.year}-{start_date.month}-28 00:00:00", "%Y-%m-%d %H:%M:%S")
+            count = 0
+            j = i + 1
             while j < ecs.shape[0]:
-                nxt_date= datetime.strptime(ecs['timestamp'][j], "%Y-%m-%d %H:%M:%S")
-                diff = (nxt_date - date).days
-                if diff < 24:
-                    pass
+                nxt_date = datetime.strptime(ecs['timestamp'][j], "%Y-%m-%d %H:%M:%S")
+                if nxt_date < end_date:
+                    count += 1
+                    if count > 1:
+                        ecs_count += 1
+                        break
                 else:
                     i=j
-                    count +=1
-                    status = True
                     break
-                j=j+1
-            i=i+1
+                j += 1
+            i += 1
 
-    return count , status
+    return ecs_count
 
 
 
