@@ -1,5 +1,5 @@
 from HardCode.scripts.model_0.parameters.additional_parameters.credit_card_limit.cc_limit import get_cc_limit
-from HardCode.scripts.model_0.parameters.additional_parameters.salary.salary_count import salary
+from HardCode.scripts.model_0.parameters.additional_parameters.salary.salary_count import last_sal
 from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
 from HardCode.scripts.model_0.parameters.additional_parameters.user_name_msg.name_count_ratio import get_name_count
 from HardCode.scripts.model_0.parameters.additional_parameters.age_of_user.user_age import get_age
@@ -15,7 +15,7 @@ def get_additional_parameters(user_id):
     """
 
     cc_limit = get_cc_limit(user_id)
-    salary_dict = salary(user_id)
+    salary_dict = last_sal(user_id)
     name_count = get_name_count(user_id)
     max_limit, due_days, no_of_loan_apps, loan_apps ,loan_overdue_ratio, loan_dates , total_loans = loan_limit(user_id)
     age = get_age(user_id)

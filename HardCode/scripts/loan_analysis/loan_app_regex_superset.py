@@ -17,7 +17,7 @@ loan_apps_regex = {
                      r'payment\sis\snot\sdone\sby\smany\sdays',
                      r"we\s?(?:'ve|have)\s(?:received|got)\s(?:your|ur)\saccount\sfor\shigher\scollection\sactivities"],
         'closed' : [r'your\sloan\sis\snow\spaid\sback',
-                    r"we\s?('ve|have)\s(?:finished|done|completed)\sdealing\swith\syour\srepayment",
+                    r"we\s?(?:'ve|have)\s(?:finished|done|completed)\sdealing\swith\syour\srepayment",
                     r'loan.*(?:is|has\sbeen)\spaid\s(?:back|off)'],
         'rejection' : [r"could\s?(?:n't|not)\sapprove\syour\sprofile",
                        r'loan\s?(?:application)?.*rejected'] #not original
@@ -45,10 +45,10 @@ loan_apps_regex = {
                      r'pay\s(?:back|soon).*to\sensure\s?(?:that)?\s?[a]?\s([0-9]+)\s?days\sdelay.*not\supdated\sto\scibil',
                      r'clear.*outstanding\s(?:loan|emi|amount).*due\sdate\sis\sover',
                      r'clear.*outstanding\s(?:loan|emi|amount)\sof\s(?:rs\.?|inr)\s?(?:[0-9,]+[.]?[0-9]+).*due\sdate\sis\sover',
-                     r"we\shave\s?(?:n't|not)\sreceived.*payment"
+                     r"we\shave\s?(?:n't|not)\sreceived.*payment",
                      r'your\sprofile\sis\smoved\sto\slegal\sdepartment',
                      r'(?:despite|instead|in\s?spite)\s(?:of)?\s?(?:several|repeated|many|multiple)\sreminder[s]?.*(?:loan|emi)\sis\sstill\s(?:unpaid|pending)',
-                     r'(?:emi|payment|due).*(?:rs\.?|inr)\s?(?:[0-9,]+[.]?[0-9]+).*(?:unpaid|pending)'
+                     r'(?:emi|payment|due).*(?:rs\.?|inr)\s?(?:[0-9,]+[.]?[0-9]+).*(?:unpaid|pending)',
                      r'defaulter.*pay\simmediately',
                      r'your\saccount\sis\spast\sdue',
                      r'your\saccount\sis\spast\sdue\swith\s(?:rs\.?|inr)\s?(?:[0-9,]+[.]?[0-9]+)',
@@ -114,7 +114,7 @@ loan_apps_regex = {
         'due' : [r'your\sloan\sid.*is\sdue',
                  r're[-]?payment.*loan.*is\sdue',
                  r'(?:[0-9]+)\sday[s]?\sleft\sto\sre[-]?pay\syour\sloan.*(?:rs[.]?|inr[.]?)\s?([0-9,]+[.]?[0-9]+)\son\stime',
-                 r'(?:[0-9]+)\sday[s]?\sleft.*repayment\sof\s(?:rs[.]?|inr[.]?)\s?([0-9,]+[.]?[0-9]+)'
+                 r'(?:[0-9]+)\sday[s]?\sleft.*repayment\sof\s(?:rs[.]?|inr[.]?)\s?([0-9,]+[.]?[0-9]+)',
                  r'(?:rs[.]?|inr[.]?)\s?([0-9,]+[.]?[0-9]+)\sis\sdue'],
         'overdue' : [r'make.*(?:repayment|payment)\s\s?(?:of)?\s?(?:rs[.]?|inr)\s?(?:[0-9,]+[.]?[0-9]+)\s(?:immediately|urgently)',
                      r're[-]?pay\s(?:rs[.]?|inr)\s(?:[0-9,]+[.]?[0-9]+)\s(?:immediately|urgently)',

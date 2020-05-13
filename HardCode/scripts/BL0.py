@@ -1,5 +1,5 @@
 from HardCode.scripts.loan_analysis.loan_main import final_output
-from HardCode.scripts.salary_analysis.monthly_salary_analysis import main
+from HardCode.scripts.salary_analysis.monthly_salary_analysis import salary_main
 from HardCode.scripts.cheque_bounce_analysis.Cheque_Bounce import cheque_user_outer
 from HardCode.scripts.loan_salary_analysis.Loan_Salary_Logic import *
 from HardCode.scripts.cibil.Analysis import analyse
@@ -105,13 +105,13 @@ def bl0(**kwargs):
     logger.info('connection success')
 
     # CHECK IF THE USER_ID is already processing or just got a new hit !!!
-    user_process_bool = client.user_process.bl0.find_one({'cust_id': user_id})
-    if not user_process_bool:
-        set_processing_bool(user_id, True)
-    elif user_process_bool['processing']:
-        return
-    else:
-        set_processing_bool(user_id, True)
+    # user_process_bool = client.user_process.bl0.find_one({'cust_id': user_id})
+    # if not user_process_bool:
+    #     set_processing_bool(user_id, True)
+    # elif user_process_bool['processing']:
+    #     return
+    # else:
+    #     set_processing_bool(user_id, True)
 
     logger.info("checking started")
 
@@ -223,11 +223,13 @@ def bl0(**kwargs):
     # >>=>> SALARY ANALYSIS
     logger.info('starting salary analysis')
     try:
-        result_salary = main(user_id)  # Returns a dictionary
+        result_salary = salary_main(user_id)  # Returns a dictionary
         if not result_salary['status']:
             exception_feeder(client=client, user_id=user_id, logger=logger,
                              msg="Salary Analysis failed due to some reason")
     except BaseException as e:
+        import traceback
+        traceback.print_tb(e.__traceback__)
         exception_feeder(client=client, user_id=user_id, logger=logger,
                          msg=str(e))
         # -> Run BASE CIBIL logic and handle

@@ -66,7 +66,7 @@ def cheque_user_inner(data, user_id):
         if matcher_1 or matcher_2 or matcher_3 or matcher_4 or matcher_5 or matcher_6 or matcher_7 or matcher_8 or matcher_9 or matcher_10 or matcher_11 or matcher_12 or matcher_13:
             matcher_not_1 = re.search(pattern_not_1, message)
             matcher_not_2 = re.search(pattern_not_2, message)
-            if matcher_not_1 and matcher_not_2:
+            if not matcher_not_1 or not matcher_not_2:
                 bounce.append((datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S').month, row['sender'][3:]))
                 msg.append(row['body'])
     logger.info('cheque user inner successfully executed')

@@ -175,9 +175,9 @@ def preprocessing(cust_id):
                                     FLAG = True
                                     j = k
                                     break   
-                                elif is_overdue(msg_after_due, app):
+                                elif is_overdue(msg_after_overdue, app):
                                     try:
-                                        individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_due, app)
+                                        individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_overdue, app)
                                     except:
                                         pass 
                                     individual_loan_details['overdue_check'] += 1
