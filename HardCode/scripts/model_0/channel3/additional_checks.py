@@ -30,19 +30,18 @@ def get_additional_parameters(user_id):
     salary_check4 = False
     salary_check5 = False
 
-    if salary_dict:
-        if salary_dict['salary'] >= 25000:
-            salary_check1 = True
-        elif 25000 > salary_dict['salary'] >= 20000:
-            salary_check2 = True
-        elif 20000 > salary_dict['salary'] >= 15000:
-            salary_check3 = True
-        elif 15000 > salary_dict['salary'] >= 10000:
-            salary_check4 = True
-        elif 10000 > salary_dict['salary']:
-            salary_check5 = True
-    else:
-        salary_dict = {'salary' : -1, 'keyword' : ""}
+
+    if salary_dict >= 25000:
+        salary_check1 = True
+    elif 25000 > salary_dict >= 20000:
+        salary_check2 = True
+    elif 20000 > salary_dict >= 15000:
+        salary_check3 = True
+    elif 15000 > salary_dict >= 10000:
+        salary_check4 = True
+    elif 10000 > salary_dict:
+        salary_check5 = True
+
 
 
 
