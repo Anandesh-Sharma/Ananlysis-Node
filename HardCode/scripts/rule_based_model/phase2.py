@@ -20,6 +20,7 @@ def rule_quarantine(cust_id):
             for j in data[i].keys():
                 initial_date = datetime.strptime('2020-03-01 00:00:00', '%Y-%m-%d %H:%M:%S')
                 if data[i][j]['disbursed_date'] != -1:
+                    # print(data[i][j]['disbursed_date'])
                     disbursed_date = datetime.strptime(str(data[i][j]['disbursed_date']), '%Y-%m-%d %H:%M:%S')
                     if (disbursed_date - initial_date).days > 1:
                         report['total_loans'] += 1
@@ -27,6 +28,7 @@ def rule_quarantine(cust_id):
                             report['currently_open'] += 1
                         elif data[i][j]['closed_date'] == -1 and data[i][j]['overdue_check'] == 0:
                             report['messages_deleted_per_loan'] += 1
+                            report['currently_open'] += 1
                         else:
                             pass
                 else:
@@ -34,6 +36,9 @@ def rule_quarantine(cust_id):
                         closed_date = datetime.strptime(str(data[i][j]['closed_date']), '%Y-%m-%d %H:%M:%S')
                         if (closed_date - initial_date).days > 20:
                             report['total_loans'] += 1
+        # print(f"total loan : {report['total_loans']}")
+        # print(f"currently open : {report['currently_open']}")
+        # print(f"message delete per loan : {report['messages_deleted_per_loan']}")
     except BaseException as e:
         print(e)
     if report['currently_open'] != 0:

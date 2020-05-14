@@ -29,51 +29,41 @@ def cheque_user_inner(data, user_id):
     logger = logger_1('cheque user inner', user_id)
     logger.info('cheque user inner function starts')
 
-    pattern_1 = r'bounced'
-    pattern_2 = r'bounce ho chuka hai'
-    pattern_3 = r'has got bounce'
-    pattern_4 = r'overdue for bounce'
-    pattern_5 = r'cheque bouncing charges'
-    pattern_6 = r'unable to process your ecs request'
-    pattern_7 = r'dishonou?r charges of'
-    pattern_8 = r'dishonou?red'
-    pattern_9 = r'has been returned due to reason - insufficient fund'
-    pattern_10 = r'auto-debit attempt failed'
-    pattern_11 = r'cheque bounces'
-    pattern_12 = r'cheque return charges is still unpaid'
-    pattern_13 = r'returned unpaid'
-    pattern_not_1 = r'please ensure.*sufficient balance'
-    pattern_not_2 = r'if.*done payment'
+    patterns = [
+    r'bounced',
+    r'bounce ho chuka hai',
+    r'has got bounce',
+    r'overdue for bounce',
+    r'cheque bouncing charges',
+    r'unable to process your ecs request',
+    r'dishonou?r charges of',
+    r'dishonou?red',
+    r'has been returned due to reason - insufficient fund',
+    r'auto-debit attempt failed',
+    r'cheque bounces',
+    r'cheque return charges is still unpaid',
+    r'returned unpaid']
+    pattern_not_1 = r'please ensure.*sufficient balance',
+    pattern_not_2 = r'if.*done payment',
     bounce = []
     msg = []
-    for i, row in data.iterrows():
-        message = str(data['body'][i]).lower()
-
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
-        matcher_4 = re.search(pattern_4, message)
-        matcher_5 = re.search(pattern_5, message)
-        matcher_6 = re.search(pattern_6, message)
-        matcher_7 = re.search(pattern_7, message)
-        matcher_8 = re.search(pattern_8, message)
-        matcher_9 = re.search(pattern_9, message)
-        matcher_10 = re.search(pattern_10, message)
-        matcher_11 = re.search(pattern_11, message)
-        matcher_12 = re.search(pattern_12, message)
-        matcher_13 = re.search(pattern_13, message)
-
-        if matcher_1 or matcher_2 or matcher_3 or matcher_4 or matcher_5 or matcher_6 or matcher_7 or matcher_8 or matcher_9 or matcher_10 or matcher_11 or matcher_12 or matcher_13:
-            matcher_not_1 = re.search(pattern_not_1, message)
-            matcher_not_2 = re.search(pattern_not_2, message)
-            if not matcher_not_1 or not matcher_not_2:
-                bounce.append((datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S').month, row['sender'][3:]))
-                msg.append(row['body'])
+    for row in data:
+        message = str(row['body']).lower()
+        for pattern in patterns:
+            matcher = re.search(pattern,message)
+            if matcher:
+                matcher_not_1 = re.search(pattern_not_1, message)
+                matcher_not_2 = re.search(pattern_not_2, message)
+                if not (matcher_not_1 or matcher_not_2):
+                    bounce.append((datetime.strptime(row['timestamp'], '%Y-%m-%d %H:%M:%S').month, row['sender'][3:]))
+                    msg.append(row['body'])
+                    break
+                break
     logger.info('cheque user inner successfully executed')
     return bounce, msg
 
 
-def cheque_user_outer(df, user_id):
+def cheque_user_outer(user_id):
     """
     Checks Bounced Messages
 
@@ -91,8 +81,23 @@ def cheque_user_outer(df, user_id):
     int : count of total unique service messages per month"""
     logger = logger_1('cheque user outer', user_id)
     logger.info('cheque user outer function starts')
+
+    try:
+        logger.info('making connection with db')
+        client = conn()
+    except BaseException as e:
+        msg = 'error in connection - '+str(e)
+        logger.critical(msg)
+        return {"status":False,"message":msg}
+    logger.info('connection success')
+
+    file1 = client.messagecluster.extra.find_one({"cust_id": user_id})
+    if not file1:
+        logger.error("Extra File not found")
+        return {"status":True,"message":"success","a":0}
+    data = file1['sms']
     l = {}
-    bounce, msg = cheque_user_inner(df, user_id)
+    bounce, msg = cheque_user_inner(data, user_id)
     for i in bounce:
         if i[0] in l.keys():
             l[i[0]].add(i[1])
@@ -102,4 +107,4 @@ def cheque_user_outer(df, user_id):
     for i in l.keys():
         count += len(l[i])
     logger.info('cheque user outer successfully executed')
-    return count, msg
+    return {"status":True,"message":"success","count":count, "msg":msg}

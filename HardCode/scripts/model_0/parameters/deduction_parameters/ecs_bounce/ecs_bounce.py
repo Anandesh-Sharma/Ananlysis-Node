@@ -48,6 +48,7 @@ def get_ecs_bounce(cust_id):
                 if matcher is not None:
                     ecs_bounce_list.append(i)
                     mask.append(True)
+                    break
             else:
                 mask.append(False)
     else:

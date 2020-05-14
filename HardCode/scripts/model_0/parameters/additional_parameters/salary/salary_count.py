@@ -59,6 +59,9 @@ def last_sal(user_id):
     :return: last salary found
     rtype: float
     """
+    connect = conn()
+    db = connect.analysis.parameters
+    parameters = {}
     dict_of_sal = salary(user_id)
     list_of_sal = []
     last_sal = 0
@@ -69,4 +72,6 @@ def last_sal(user_id):
             if list_of_sal[-j] != 0:
                 last_sal = list_of_sal[-j]
                 break
+    parameters['last_salary'] = last_sal
+    # db.update({'cust_id': user_id}, {"$set": parameters}, upsert=True)
     return last_sal
