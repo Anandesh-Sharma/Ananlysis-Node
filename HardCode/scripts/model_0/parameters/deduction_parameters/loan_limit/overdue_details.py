@@ -22,9 +22,7 @@ def get_overdue_details(cust_id):
         connect = conn()
         loan_info = connect.analysis.loan.find_one({'cust_id': cust_id})
         data = loan_info['complete_info']
-    except BaseException as e:
-        print(e)
-    try:
+
         for i in data.keys():
             for j in data[i].keys():
                 if data[i][j]['disburse_date'] != -1:
@@ -48,6 +46,11 @@ def get_overdue_details(cust_id):
                         else:
                             overdue_report['more_than_15'] += 1
         overdue_ratio_3_months = np.round(len(overdue_days_list)/total_loans_within_3_months , 4)
+        connect.analysis.loan.update_one({"overdue_ratio" : overdue_ratio_3_months, "overdue_report" : overdue_report}, upsert = True)
+        #return overdue_ratio_3_months, overdue_report, total_loans_within_3_months
+        script_status = {"status" : True, "message" : str(e)}
+    except BaseException as e:
+        script_status = {"status" : False, "message" : str(e)}
+    finally:
+        #return script_status
         return overdue_ratio_3_months, overdue_report, total_loans_within_3_months
-    except:
-        return overdue_ratio_3_months, overdue_report,total_loans_within_3_months
