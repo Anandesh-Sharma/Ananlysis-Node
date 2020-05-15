@@ -21,10 +21,10 @@ def get_final_loan_details(cust_id):
     loan_info = connect.analysis.loan.find_one({'cust_id': cust_id})
     data = loan_info['complete_info']
     result = {}
-    for app in data.keys():
-        report = ''
-        if data[app]:
-            try:
+    try:
+        for app in data.keys():
+            report = ''
+            if data[app]:
                 last_index = list(data[app].keys())[-1]
                 target_loan = data[app][last_index]
                 if target_loan['disbursed_date'] != -1:
@@ -47,8 +47,9 @@ def get_final_loan_details(cust_id):
                             overdue_days = (loan_duration - 15)
                             report = f'Loan closed after done overdue for {overdue_days} days'
                     result[app] = str(report)
-            except BaseException as e:
-                print(e)
-                result[app] = report
-
-    return result
+        script_report = {"status" : True, "message" : "success"}
+    except BaseException as e:
+        script_report = {"status" : False, "message" : str(e)}
+    finally:
+        #eturn script_report
+        return result
