@@ -4,19 +4,15 @@ from HardCode.scripts.Util import conn
 import numpy as np
 import pandas as pd
 from datetime import datetime
+import pytz
 
 
 def get_overdue_details(cust_id):
     overdue_days_list = []
-    overdue_ratio_3_months = 0
-    total_loans_within_3_months = 0
-    overdue_report = {
-        '0-3_days': 0,
-        '3-7_days': 0,
-        '7-12_days': 0,
-        '12-15_days': 0,
-        'more_than_15': 0
-    }
+    script_status = {}
+    overdue_ratio = 0
+    total_loans = 0
+    report = {}
 
     try:
         connect = conn()
@@ -25,32 +21,25 @@ def get_overdue_details(cust_id):
 
         for i in data.keys():
             for j in data[i].keys():
+                total_loans += 1
                 if data[i][j]['disburse_date'] != -1:
                     disbursed_date = datetime.strptime(str(data[i][j]['disbursed_date']), '%Y-%m-%d %H:%M:%S')
                     current_date = datetime.strptime('2020-03-20 00:00:00', '%Y-%m-%d %H:%M:%S')
                     days = (current_date - disbursed_date).days
-                    if days < 90:
-                        total_loans_within_3_months += 1
-                        if data[i][j]['overdue_days'] != -1:
-                            overdue_days_list.append(data[i][j]['overdue_days'])
+                    if data[i][j]['overdue_days'] != -1:
+                        overdue_days_list.append(data[i][j]['overdue_days'])
 
-                    for i in overdue_days_list:
-                        if i <= 3:
-                            overdue_report['0-3_days'] += 1
-                        elif (i > 3 and i <= 7):
-                            overdue_report['3-7_days'] += 1
-                        elif (i > 7 and i <= 12):
-                            overdue_report['7-12_days'] += 1
-                        elif (i > 12 and i <= 15):
-                            overdue_report['12-15_days'] += 1
-                        else:
-                            overdue_report['more_than_15'] += 1
-        overdue_ratio_3_months = np.round(len(overdue_days_list)/total_loans_within_3_months , 4)
-        connect.analysis.loan.update_one({"overdue_ratio" : overdue_ratio_3_months, "overdue_report" : overdue_report}, upsert = True)
-        #return overdue_ratio_3_months, overdue_report, total_loans_within_3_months
-        script_status = {"status" : True, "message" : "success"}
+        overdue_ratio = np.round(len(overdue_days_list)/total_loans, 4)
+        report['overdue_ratio'] = overdue_ratio
+        report['overdue_days_list'] = overdue_days_list
+        report['total_loans'] = total_loans
+        report['cust_id'] = cust_id
+        db = connect.analysis.parameters
+
+        db.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "parameters.loan_info ": report}})
+        script_status = {"status" : True, "message" : "successfully updated overdue details on database"}
+
     except BaseException as e:
         script_status = {"status" : False, "message" : str(e)}
     finally:
-        #return script_status
-        return overdue_ratio_3_months, overdue_report, total_loans_within_3_months
+        return script_status

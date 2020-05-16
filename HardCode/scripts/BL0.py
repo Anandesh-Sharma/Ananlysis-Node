@@ -1,5 +1,5 @@
 from HardCode.scripts.rejection.rejected import check_rejection
-from HardCode.scripts.loan_analysis.loan_main import final_output
+from HardCode.scripts.loan_analysis.preprocessing import preprocessing
 from HardCode.scripts.classifiers.Classifier import classifier
 from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import create_transaction_balanced_sheet
 from HardCode.scripts.cheque_bounce_analysis.Cheque_Bounce import cheque_user_outer
@@ -97,7 +97,7 @@ def bl0(**kwargs):
         # >>=>> LOAN ANALYSIS
     logger.info('starting loan analysis')
     try:
-        result_loan = final_output(user_id)  # returns a dictionary
+        result_loan = preprocessing(user_id)  # returns a dictionary
         if not result_loan['status']:
             msg="Loan Analysis failed due to some reason-"+result_loan['message']
             exception_feeder(client=client, user_id=user_id,
@@ -215,6 +215,8 @@ def bl0(**kwargs):
             logger.error(msg)
             exception_feeder(client=client, user_id=user_id,msg=msg)
     except BaseException as e:
+        import traceback
+        traceback.print_tb(e.__traceback__)
         msg = "Mean Balance Available failed due to some reason-"+str(e)
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id,msg=msg)

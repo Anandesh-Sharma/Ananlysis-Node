@@ -16,6 +16,7 @@ def preprocessing(cust_id):
     loan_details_of_all_apps = {}
     user_app_list = []
     report = {}
+    script_status = {}
     try:
         for app, data in loan_data_grouped:
             logger.info("iteration in groups starts")
@@ -298,7 +299,7 @@ def preprocessing(cust_id):
         report['cust_id'] = cust_id
         report['complete_info'] = loan_details_of_all_apps
         report['user_app_list'] = user_app_list
-        report['modified_at'] = str(pytz.timezone.localize(datetime.now()))
+        report['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
 
         logger.info("successfully make connection with database")
         client = conn()

@@ -46,7 +46,7 @@ def mean_available(user_id):
 
         for j in range(len(dfs[i]['data'])):
             if dfs[i]['data'][j]['Available Balance'] != 0:
-                list_bal.append(dfs[i]['data'][j]['Available Balance'])
+                list_bal.append(int(dfs[i]['data'][j]['Available Balance']))
                 list_time.append(dfs[i]['data'][j]['timestamp'])
                 list_msg.append(dfs[i]['data'][j]['body'])
         if list_bal:

@@ -152,13 +152,12 @@ def final_output(cust_id):
             logger.info('no amount detect')
             report['empty'] = True
         try:
-            client.analysis.parameters.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "parameters.loan_info ": report}},  upsert = True)
+            client.analysis.parameters.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                                                    "parameters.loan_info ": report}},  upsert = True)
             logger.info("successfully updated loan info data on database")
         except:
             logger.info("unable to update loan info data on database")
         script_status = {'status': True, 'message': 'success', 'result': report}
     except BaseException as e:
-        import traceback
-        traceback.print_tb(e.__traceback__)
         script_status = {"status" : False, "message" : str(e)}
     return script_status

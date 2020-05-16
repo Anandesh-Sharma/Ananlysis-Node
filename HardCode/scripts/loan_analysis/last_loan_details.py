@@ -18,13 +18,16 @@ Particular app repay categories are
 
 def get_final_loan_details(cust_id):
     connect = conn()
+    db = connect.analysis.parameters
+    parameters = {}
     loan_info = connect.analysis.loan.find_one({'cust_id': cust_id})
     data = loan_info['complete_info']
     result = {}
-    try:
-        for app in data.keys():
-            report = ''
-            if data[app]:
+    output = {}
+    for app in data.keys():
+        report = ''
+        if data[app]:
+            try:
                 last_index = list(data[app].keys())[-1]
                 target_loan = data[app][last_index]
                 if target_loan['disbursed_date'] != -1:
@@ -47,9 +50,17 @@ def get_final_loan_details(cust_id):
                             overdue_days = (loan_duration - 15)
                             report = f'Loan closed after done overdue for {overdue_days} days'
                     result[app] = str(report)
-        script_report = {"status" : True, "message" : "success"}
-    except BaseException as e:
-        script_report = {"status" : False, "message" : str(e)}
-    finally:
-        #eturn script_report
-        return result
+                status = True
+                msg = 'success'
+            except BaseException as e:
+                print(e)
+                status = False
+                msg = str(e)
+                result[app] = report
+    parameters['cust_id'] = cust_id
+    parameters['last_loan_details'] = result
+    db.update({'cust_id': cust_id},
+              {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                        'parameters.loan_info': result}}, upsert=True)
+
+    return {'status':status,'message':msg}
