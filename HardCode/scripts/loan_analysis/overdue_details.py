@@ -22,7 +22,7 @@ def get_overdue_details(cust_id):
         for i in data.keys():
             for j in data[i].keys():
                 total_loans += 1
-                if data[i][j]['disburse_date'] != -1:
+                if data[i][j]['disbursed_date'] != -1:
                     disbursed_date = datetime.strptime(str(data[i][j]['disbursed_date']), '%Y-%m-%d %H:%M:%S')
                     current_date = datetime.strptime('2020-03-20 00:00:00', '%Y-%m-%d %H:%M:%S')
                     days = (current_date - disbursed_date).days

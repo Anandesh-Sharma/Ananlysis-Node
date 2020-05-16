@@ -24,43 +24,47 @@ def get_final_loan_details(cust_id):
     data = loan_info['complete_info']
     result = {}
     output = {}
-    for app in data.keys():
-        report = ''
-        if data[app]:
-            try:
-                last_index = list(data[app].keys())[-1]
-                target_loan = data[app][last_index]
-                if target_loan['disbursed_date'] != -1:
-                    disbursed_date = datetime.strptime(str(target_loan['disbursed_date']), '%Y-%m-%d %H:%M:%S')
-                    current_date = datetime.now()
-                    if target_loan['closed_date'] == -1:
-                        days = (current_date - disbursed_date).days
-                        if target_loan['overdue_check'] > 0:
-                            report = 'Client having status overdue or legal msg'
-                        elif days > 25:
-                            report = 'Has overdue and still not paid or maybe messags are deleted'
+    try:
+        for app in data.keys():
+            report = ''
+            if data[app]:
+                try:
+                    last_index = list(data[app].keys())[-1]
+                    target_loan = data[app][last_index]
+                    if target_loan['disbursed_date'] != -1:
+                        disbursed_date = datetime.strptime(str(target_loan['disbursed_date']), '%Y-%m-%d %H:%M:%S')
+                        current_date = datetime.now()
+                        if target_loan['closed_date'] == -1:
+                            days = (current_date - disbursed_date).days
+                            if target_loan['overdue_check'] > 0:
+                                report = 'Client having status overdue or legal msg'
+                            elif days > 25:
+                                report = 'Has overdue and still not paid or maybe messags are deleted'
+                            else:
+                                report = 'Client taken loan but due dates not over'
                         else:
-                            report = 'Client taken loan but due dates not over'
-                    else:
-                        closed_date = datetime.strptime(str(target_loan['closed_date']), '%Y-%m-%d %H:%M:%S')
-                        loan_duration = (closed_date - disbursed_date).days
-                        if loan_duration < 15:
-                            report = 'Loan closed successfully before taking loan from our app'
-                        else:
-                            overdue_days = (loan_duration - 15)
-                            report = f'Loan closed after done overdue for {overdue_days} days'
-                    result[app] = str(report)
-                status = True
-                msg = 'success'
-            except BaseException as e:
-                print(e)
-                status = False
-                msg = str(e)
-                result[app] = report
-    parameters['cust_id'] = cust_id
-    parameters['last_loan_details'] = result
-    db.update({'cust_id': cust_id},
-              {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                        'parameters.loan_info': result}}, upsert=True)
+                            closed_date = datetime.strptime(str(target_loan['closed_date']), '%Y-%m-%d %H:%M:%S')
+                            loan_duration = (closed_date - disbursed_date).days
+                            if loan_duration < 15:
+                                report = 'Loan closed successfully before taking loan from our app'
+                            else:
+                                overdue_days = (loan_duration - 15)
+                                report = f'Loan closed after done overdue for {overdue_days} days'
+                        result[app] = str(report)
+                except:
+                    result[app] = report
+        parameters['cust_id'] = cust_id
+        parameters['last_loan_details'] = result
+        db.update({'cust_id': cust_id},
+                  {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                            'parameters.loan_info': parameters}}, upsert=True)
+        return {'status': True, 'message': 'success'}
+    except BaseException as e:
+        # print(e)
+        parameters['cust_id'] = cust_id
+        parameters['last_loan_details'] = result
+        db.update({'cust_id': cust_id},
+                  {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                            'parameters.loan_info': parameters}}, upsert=True)
 
-    return {'status':status,'message':msg}
+        return {'status':False,'message':str(e)}
