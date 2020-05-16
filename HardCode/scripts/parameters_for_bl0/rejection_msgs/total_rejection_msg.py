@@ -26,8 +26,7 @@ def get_defaulter(user_id):
     else:
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.legal_message_count': legal_message_count,
-                                                  'parameters.legal_message_status':FLAG}}, upsert=True)
+                                                  'parameters.legal_message_count': legal_message_count}}, upsert=True)
         return {'status':True, 'message':'no loan data found'}
 
     patterns = [
@@ -93,12 +92,10 @@ def get_defaulter(user_id):
                     break
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.legal_message_count': legal_message_count,
-                                                  'parameters.legal_message_status':FLAG}}, upsert=True)
+                                                  'parameters.legal_message_count': legal_message_count}}, upsert=True)
         return {'status':True, 'message':'success'}
     except BaseException as e:
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.legal_message_count': legal_message_count,
-                                                  'parameters.legal_message_status': FLAG}}, upsert=True)
+                                                  'parameters.legal_message_count': legal_message_count}}, upsert=True)
         return {'status': False, 'message': str(e)}

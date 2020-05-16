@@ -15,11 +15,12 @@ def get_additional_parameters(user_id):
     """
     connect = conn()
     parameters = connect.analysis.parameters.find_one({'cust_id': user_id})
+    loans = connect.analysis.loan.find_one({'cust_id': user_id})
     cc_limit = parameters['parameters']['credit_card']
-    name_count = parameters['parameters']['credit_card']['username_msgs']
+    name_count = parameters['parameters']['username_msgs']
     salary_dict = parameters['parameters']['salary']
-    loan_apps = parameters['parameters']['loan_apps_list']
-    loan_dates = parameters['parameters']['loan_dates']
+    loan_apps = loans['user_app_list']
+    loan_dates = parameters['parameters']['loan_info']['LOAN_DATES']
     age = parameters['parameters']['age']
     overdue_msg_ratio = parameters['parameters']['overdue_msg_ratio']
     overdue_msg_count = parameters['parameters']['overdue_msg_count']

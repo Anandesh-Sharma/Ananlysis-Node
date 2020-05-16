@@ -60,4 +60,5 @@ def loan_limit(user_id):
                                                   'parameters.overdue_days': due_days,
                                                   'parameters.overdue_ratio': overdue_ratio,
                                                   'parameters.total_loans': total_loans}}, upsert=True)
+        connect.close()
         return {'status':status,'message':msg}

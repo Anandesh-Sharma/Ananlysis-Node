@@ -4,7 +4,7 @@ from HardCode.scripts.Util import conn
 def reference_check(user_id):
     connect = conn()
     parameters = connect.analysis.parameters.find_one({'cust_id': user_id})
-    reference = parameters['parameters']['refrence']
+    reference = parameters['parameters']['reference']
     relative = parameters['parameters']['relatives']
     no_of_relatives = parameters['parameters']['no_of_relatives']
     # reference = validate(user_id)
@@ -16,8 +16,8 @@ def reference_check(user_id):
     relatives_check2 = False
     relatives_check3 = False
 
-
-    reference_check = reference['verification']
+    if reference['status']:
+        reference_check = reference['result']['verification']
 
 
     if relative['verification']:

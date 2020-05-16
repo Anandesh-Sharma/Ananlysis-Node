@@ -53,21 +53,24 @@ def get_final_loan_details(cust_id):
                         result[app] = str(report)
                 except:
                     result[app] = report
-        parameters['cust_id'] = cust_id
+        # parameters['cust_id'] = cust_id
         parameters['last_loan_details'] = result
-        del parameters['cust_id']
+        # del parameters['cust_id']
         db.update({'cust_id': cust_id},
                   {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                            'parameters': parameters}}, upsert=True)
+                            'parameters.loan_details': parameters}}, upsert=True)
         return {'status': True, 'message': 'success'}
+
     except BaseException as e:
         # print(e)
-        parameters['cust_id'] = cust_id
+        # parameters['cust_id'] = cust_id
         parameters['last_loan_details'] = result
-        del parameters['cust_id']
+        # del parameters['cust_id']
         db.update({'cust_id': cust_id},
                   {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                            'parameters': parameters}}, upsert=True)
+                            'parameters.loan_details': parameters}}, upsert=True)
 
 
         return {'status':False,'message':str(e)}
+    finally:
+        connect.close()

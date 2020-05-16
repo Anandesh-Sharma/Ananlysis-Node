@@ -3,7 +3,18 @@ import pandas as pd
 import re
 from datetime import datetime
 from HardCode.scripts.loan_analysis.loan_app_regex_superset import loan_apps_regex
+from HardCode.scripts.loan_analysis.head_matcher import head_matcher
 
+
+def sms_header_matcher(header):
+    for i in list(head_matcher.keys()):
+        try:
+            if header in head_matcher[i]:
+                header = i
+                break
+        except:
+            pass
+    return header
 
 def sms_header_splitter(data):
     """
@@ -21,8 +32,12 @@ def sms_header_splitter(data):
 
     for i in range(len(data)):
         data['sender'][i] = data['sender'][i].replace('-', '')
-        data["sender"][i] = str(data["sender"][i][2:]).upper()
-        data['Sender-Name'][i] = data['sender'][i]
+        try:
+            header = str(data["sender"][i][2:]).upper()
+            header = sms_header_matcher(header)
+        except:
+            header = data["sender"][i][2:]
+        data['Sender-Name'][i] = header
     data.drop(['sender'], axis=1, inplace=True)
     return data
 
@@ -204,7 +219,7 @@ def overdue_amount_extract(data, overdue_first_date, app):
     overdue_amount_list = [-1]
     for i in range(INDEX, data.shape[0]):
         message = str(data['body'][i]).lower()
-        if is_overdue(message):
+        if is_overdue(message, app):
             amount = extract_amount_from_overdue_message(message, app)
             overdue_amount_list.append(amount)
         else:

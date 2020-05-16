@@ -13,9 +13,10 @@ def get_overdue_details(cust_id):
     overdue_ratio = 0
     total_loans = 0
     report = {}
+    connect = conn()
 
     try:
-        connect = conn()
+
         loan_info = connect.analysis.loan.find_one({'cust_id': cust_id})
         data = loan_info['complete_info']
 
@@ -38,10 +39,12 @@ def get_overdue_details(cust_id):
         report['cust_id'] = cust_id
         db = connect.analysis.parameters
         del report['cust_id']
-        db.update({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "parameters.overdue_info ": report}})
+        db.update({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "parameters.overdue_info": report}}
+                  ,upsert = True)
         script_status = {"status" : True, "message" : "successfully updated overdue details on database"}
 
     except BaseException as e:
         script_status = {"status" : False, "message" : str(e)}
     finally:
+        connect.close()
         return script_status
