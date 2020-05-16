@@ -90,7 +90,7 @@ def find_info(user_id):
     db  = connect.analysis.parameters
     parameters = {}
 
-    if not user_data['sheet']:
+    if not user_data:
 
         parameters['cust_id'] = int(user_id)
         db.update({'cust_id': int(user_id)}, {"$set": {'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))),

@@ -38,9 +38,9 @@ def transaction_msg(user_id):
         deposited = deposited_msg['deposited']
     else:
         deposited = []
-    if not msgs['sheet'] and not deposited:
+    if not msgs and not deposited:
         return {'status': True, 'cust_id': user_id, 'message': 'No Transaction messages', 'salary': 0}
-    elif not msgs['sheet'] and deposited:
+    elif not msgs and deposited:
         msgs = deposited
     else:
         msgs = msgs['sheet'][index:]
