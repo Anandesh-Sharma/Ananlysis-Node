@@ -51,20 +51,7 @@ def create_transaction_balanced_sheet(user_id):
     # doing something
     logger.info('Converting file to dataframe')
     if df.shape[0] == 0:
-        r={}
-        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
-        r['cust_id'] = user_id
-        r['max_timestamp']="2000-03-30 04:10:24"
-        r['final_credit']='mar/2000'
-        r['credit']=[]
-        r['debit']=[]
-        r['sheet']=[]
-        try:
-            client.analysis.balance_sheet.update({'cust_id': user_id}, {"$set": r}, upsert=True)
-            logger.info('balanced sheet found and saved')
-            return {'status':True,'message':'success'}
-        except BaseException as e:
-            return {'status':False,'message':str(e)}
+        return {'status':True,'message':"success"}
     logger.info('Conversion Successful')
     logger.info('Starting to process data')
     result = process_data(df, user_id)
