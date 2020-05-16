@@ -38,9 +38,9 @@ def transaction_msg(user_id):
         deposited = deposited_msg['deposited']
     else:
         deposited = []
-    if not msgs and not deposited:
+    if not msgs['sheet'] and not deposited:
         return {'status': True, 'cust_id': user_id, 'message': 'No Transaction messages', 'salary': 0}
-    elif not msgs and deposited:
+    elif not msgs['sheet'] and deposited:
         msgs = deposited
     else:
         msgs = msgs['sheet'][index:]
@@ -277,6 +277,8 @@ def salary_main(user_id):
         
     except BaseException as e:
         print(e)
+        import traceback
+        traceback.print_tb(e.__traceback__)
         return {'status': False, 'message': str(e), 'cust_id': int(user_id), 'salary': 0}
 
 

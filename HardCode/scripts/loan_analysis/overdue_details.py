@@ -37,7 +37,6 @@ def get_overdue_details(cust_id):
         report['total_loans'] = total_loans
         report['cust_id'] = cust_id
         db = connect.analysis.parameters
-
         db.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "parameters.loan_info ": report}})
         script_status = {"status" : True, "message" : "successfully updated overdue details on database"}
 

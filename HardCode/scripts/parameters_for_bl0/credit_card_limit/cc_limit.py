@@ -51,114 +51,116 @@ def get_extracted_data(data):
                  r'?:minimum|min\.?).*(?:rs\.?|inr)\s?\s?([0-9]+[.]?[0-9]+)'
     pattern_16 = r'(?:payment|pymt|trnx|transaction|txn)\sof\s(?:rs\.?|inr)\s?\s?([0-9,]+[.]?[0-9]?).*received.*'
 
-    for i in range(data.shape[0]):
-        message = str(data['body'][i]).lower()
-        sender = str(data['Sender-Name'][i]).lower()
-        if sender == 'icicib':
-            df['bank_name'][i] = 'icici'
-        elif sender == 'sbicrd' or sender == 'sbiinb' or sender == 'cmntri':
-            df['bank_name'][i] = 'sbi'
-        elif sender == 'kbankt' or sender == 'kotakb':
-            df['bank_name'][i] = 'kotak'
-        elif sender == 'indusb':
-            df['bank_name'][i] = 'indusind'
-        elif sender == 'rblcrd' or sender == 'rblbnk':
-            df['bank_name'][i] = 'rbl'
-        elif sender == 'hdfcbk' or sender == 'hdfccc':
-            df['bank_name'][i] = 'hdfc'
-        elif sender == 'axisbk':
-            df['bank_name'][i] = 'axis'
-        else:
-            df['bank_name'][i] = 'not mentioned'
+    if not data.empty:
+        for i in range(data.shape[0]):
+            message = str(data['body'][i]).lower()
+            sender = str(data['Sender-Name'][i]).lower()
+            if sender == 'icicib':
+                df['bank_name'][i] = 'icici'
+            elif sender == 'sbicrd' or sender == 'sbiinb' or sender == 'cmntri':
+                df['bank_name'][i] = 'sbi'
+            elif sender == 'kbankt' or sender == 'kotakb':
+                df['bank_name'][i] = 'kotak'
+            elif sender == 'indusb':
+                df['bank_name'][i] = 'indusind'
+            elif sender == 'rblcrd' or sender == 'rblbnk':
+                df['bank_name'][i] = 'rbl'
+            elif sender == 'hdfcbk' or sender == 'hdfccc':
+                df['bank_name'][i] = 'hdfc'
+            elif sender == 'axisbk':
+                df['bank_name'][i] = 'axis'
+            else:
+                df['bank_name'][i] = 'not mentioned'
 
-        matcher_1 = re.search(pattern_1, message)
-        matcher_2 = re.search(pattern_2, message)
-        matcher_3 = re.search(pattern_3, message)
-        matcher_4 = re.search(pattern_4, message)
-        matcher_5 = re.search(pattern_5, message)
-        matcher_6 = re.search(pattern_6, message)
-        matcher_7 = re.search(pattern_7, message)
-        matcher_8 = re.search(pattern_8, message)
-        matcher_9 = re.search(pattern_9, message)
-        matcher_10 = re.search(pattern_10, message)
-        matcher_11 = re.search(pattern_11, message)
-        matcher_12 = re.search(pattern_12, message)
-        matcher_13 = re.search(pattern_13, message)
-        matcher_14 = re.search(pattern_14, message)
-        matcher_15 = re.search(pattern_15, message)
-        matcher_16 = re.search(pattern_16, message)
+            matcher_1 = re.search(pattern_1, message)
+            matcher_2 = re.search(pattern_2, message)
+            matcher_3 = re.search(pattern_3, message)
+            matcher_4 = re.search(pattern_4, message)
+            matcher_5 = re.search(pattern_5, message)
+            matcher_6 = re.search(pattern_6, message)
+            matcher_7 = re.search(pattern_7, message)
+            matcher_8 = re.search(pattern_8, message)
+            matcher_9 = re.search(pattern_9, message)
+            matcher_10 = re.search(pattern_10, message)
+            matcher_11 = re.search(pattern_11, message)
+            matcher_12 = re.search(pattern_12, message)
+            matcher_13 = re.search(pattern_13, message)
+            matcher_14 = re.search(pattern_14, message)
+            matcher_15 = re.search(pattern_15, message)
+            matcher_16 = re.search(pattern_16, message)
 
-        if matcher_1 is not None:
-            df['total_due_amt'][i] = float(str(matcher_1.group(1)).replace(",", ""))
-            df['minimum_due_amt'][i] = float(str(matcher_1.group(2)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_2 is not None:
-            df['total_due_amt'][i] = float(str(matcher_2.group(2)).replace(",", ""))
-            df['minimum_due_amt'][i] = float(str(matcher_2.group(1)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_3 is not None:
-            df['total_due_amt'][i] = float(str(matcher_3.group(1)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_4 is not None:
-            df['minimum_due_amt'][i] = float(str(matcher_4.group(1)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_5 is not None:
-            df['minimum_due_amt'][i] = float(str(matcher_5.group(1)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_6 is not None:
-            df['minimum_due_amt'][i] = float(str(matcher_6.group(1)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_7 is not None:
-            df['total_due_amt'][i] = float(str(matcher_7.group(1)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_8 is not None:
-            df['total_due_amt'][i] = float(str(matcher_8.group(1)).replace(",", ""))
-            df['minimum_due_amt'][i] = float(str(matcher_8.group(2)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_9 is not None:
-            df['amount'][i] = float(str(matcher_9.group(1)).replace(",", ""))
-            df['minimum_due_amt'][i] = float(str(matcher_9.group(3)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_10 is not None:
-            df['amount'][i] = float(str(matcher_10.group(1)).replace(",", ""))
-            df['available_card_limit'][i] = float(str(matcher_10.group(2)).replace(",", ""))
-            df['status'][i] = 'transaction'
-        elif matcher_11 is not None:
-            df['amount'][i] = float(str(matcher_11.group(1)).replace(",", ""))
-            df['available_card_limit'][i] = float(str(matcher_11.group(2)).replace(",", ""))
-            df['current_outstanding_amt'][i] = float(str(matcher_11.group(3)).replace(",", ""))
-            df['status'][i] = 'transaction'
-        elif matcher_12 is not None:
-            df['amount'][i] = float(str(matcher_12.group(1)).replace(",", ""))
-            df['available_card_limit'][i] = float(str(matcher_12.group(2)).replace(",", ""))
-            df['status'][i] = "transaction"
-        elif matcher_13 is not None:
-            df['amount'][i] = float(str(matcher_13.group(1)).replace(",", ""))
-            df['available_card_limit'][i] = float(str(matcher_13.group(2)).replace(",", ""))
-            df['status'][i] = "transaction"
-        elif matcher_14 is not None:
-            df['amount'][i] = float(str(matcher_14.group(1)).replace(",", ""))
-            df['available_card_limit'][i] = float(str(matcher_14.group(2)).replace(",", ""))
-            df['status'][i] = "transaction"
-        elif matcher_15 is not None:
-            df['amount'][i] = float(str(matcher_15.group(1)).replace(",", ""))
-            df['minimum_due_amt'][i] = float(str(matcher_15.group(2)).replace(",", ""))
-            df['status'][i] = "due"
-        elif matcher_16 is not None:
-            df['amount'][i] = float(str(matcher_16.group(1)).replace(",", ""))
-            df['status'][i] = "transaction"
-        else:
-            pass
+            if matcher_1 is not None:
+                df['total_due_amt'][i] = float(str(matcher_1.group(1)).replace(",", ""))
+                df['minimum_due_amt'][i] = float(str(matcher_1.group(2)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_2 is not None:
+                df['total_due_amt'][i] = float(str(matcher_2.group(2)).replace(",", ""))
+                df['minimum_due_amt'][i] = float(str(matcher_2.group(1)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_3 is not None:
+                df['total_due_amt'][i] = float(str(matcher_3.group(1)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_4 is not None:
+                df['minimum_due_amt'][i] = float(str(matcher_4.group(1)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_5 is not None:
+                df['minimum_due_amt'][i] = float(str(matcher_5.group(1)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_6 is not None:
+                df['minimum_due_amt'][i] = float(str(matcher_6.group(1)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_7 is not None:
+                df['total_due_amt'][i] = float(str(matcher_7.group(1)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_8 is not None:
+                df['total_due_amt'][i] = float(str(matcher_8.group(1)).replace(",", ""))
+                df['minimum_due_amt'][i] = float(str(matcher_8.group(2)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_9 is not None:
+                df['amount'][i] = float(str(matcher_9.group(1)).replace(",", ""))
+                df['minimum_due_amt'][i] = float(str(matcher_9.group(3)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_10 is not None:
+                df['amount'][i] = float(str(matcher_10.group(1)).replace(",", ""))
+                df['available_card_limit'][i] = float(str(matcher_10.group(2)).replace(",", ""))
+                df['status'][i] = 'transaction'
+            elif matcher_11 is not None:
+                df['amount'][i] = float(str(matcher_11.group(1)).replace(",", ""))
+                df['available_card_limit'][i] = float(str(matcher_11.group(2)).replace(",", ""))
+                df['current_outstanding_amt'][i] = float(str(matcher_11.group(3)).replace(",", ""))
+                df['status'][i] = 'transaction'
+            elif matcher_12 is not None:
+                df['amount'][i] = float(str(matcher_12.group(1)).replace(",", ""))
+                df['available_card_limit'][i] = float(str(matcher_12.group(2)).replace(",", ""))
+                df['status'][i] = "transaction"
+            elif matcher_13 is not None:
+                df['amount'][i] = float(str(matcher_13.group(1)).replace(",", ""))
+                df['available_card_limit'][i] = float(str(matcher_13.group(2)).replace(",", ""))
+                df['status'][i] = "transaction"
+            elif matcher_14 is not None:
+                df['amount'][i] = float(str(matcher_14.group(1)).replace(",", ""))
+                df['available_card_limit'][i] = float(str(matcher_14.group(2)).replace(",", ""))
+                df['status'][i] = "transaction"
+            elif matcher_15 is not None:
+                df['amount'][i] = float(str(matcher_15.group(1)).replace(",", ""))
+                df['minimum_due_amt'][i] = float(str(matcher_15.group(2)).replace(",", ""))
+                df['status'][i] = "due"
+            elif matcher_16 is not None:
+                df['amount'][i] = float(str(matcher_16.group(1)).replace(",", ""))
+                df['status'][i] = "transaction"
+            else:
+                pass
     return df
 
 
 def sms_header_splitter(data):
-    data['Sender-Name'] = np.nan
-    for i in range(len(data)):
-        data['sender'][i] = data['sender'][i].replace('-', '')
-        data['sender'][i] = data['sender'][i][2:]
-        data['Sender-Name'][i] = data['sender'][i]
-    data.drop(['sender'], axis=1, inplace=True)
+    if not data.empty:
+        data['Sender-Name'] = np.nan
+        for i in range(len(data)):
+            data['sender'][i] = data['sender'][i].replace('-', '')
+            data['sender'][i] = data['sender'][i][2:]
+            data['Sender-Name'][i] = data['sender'][i]
+        data.drop(['sender'], axis=1, inplace=True)
     return data
 
 
@@ -171,7 +173,7 @@ def get_cc_limit(user_id):
     try:
         db = connect.messagecluster.creditcard
         file1 = db.find_one({"cust_id": user_id})
-        if file1['sms']:
+        if file1:
             data = pd.DataFrame(file1["sms"])
             data = sms_header_splitter(data)
 
@@ -192,6 +194,8 @@ def get_cc_limit(user_id):
                                                   'parameters.credit_card': result}}, upsert=True)
         return {'status': True, 'message': 'success'}
     except BaseException as e:
+        import traceback
+        traceback.print_tb(e.__traceback__)
         print(f"error in credit card limit check: {e}")
         parameters['cust_id'] = user_id
         df.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),

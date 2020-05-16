@@ -43,8 +43,8 @@ def cheque_user_inner(data, user_id):
     r'cheque bounces',
     r'cheque return charges is still unpaid',
     r'returned unpaid']
-    pattern_not_1 = r'please ensure.*sufficient balance',
-    pattern_not_2 = r'if.*done payment',
+    pattern_not_1 = r'please ensure.*sufficient balance'
+    pattern_not_2 = r'if.*done payment'
     bounce = []
     msg = []
     for row in data:
