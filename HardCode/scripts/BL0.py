@@ -245,6 +245,8 @@ def bl0(**kwargs):
             logger.error(msg)
             exception_feeder(client=client, user_id=user_id,msg=msg)
     except BaseException as e:
+        import traceback
+        traceback.print_tb(e.__traceback__)
         msg = "Last Salary failed due to some reason-"+str(e)
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id,msg=msg)

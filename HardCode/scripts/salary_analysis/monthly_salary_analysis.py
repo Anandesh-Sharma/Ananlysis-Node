@@ -25,13 +25,14 @@ def transaction_msg(user_id):
 
     index = 0
     if not new_user:
-        max_time = msgs['max_timestamp']
-        sal_modified = sal_modified['modified_at']
-        if sal_modified < max_time:
-            for i in range(len(msgs['sheet'])):
-               if msgs['sheet'][i]['timestamp'] == sal_modified:
-                   index = i + 1
-                   break
+        if msgs:
+            max_time = msgs['max_timestamp']
+            sal_modified = sal_modified['modified_at']
+            if sal_modified < max_time:
+                for i in range(len(msgs['sheet'])):
+                   if msgs['sheet'][i]['timestamp'] == sal_modified:
+                       index = i + 1
+                       break
 
 
     if deposited_msg:
@@ -171,13 +172,13 @@ def salary_main(user_id):
 
                     if salary:
                         for j in range(len(salary)):
-                            if salary[j]['Credit Amount'] >= 7000:
-                                sal.append(salary[j]['Credit Amount'])
+                            if int(salary[j]['Credit Amount']) >= 7000:
+                                sal.append(int(salary[j]['Credit Amount']))
 
                     if sal:
                         sal_amt = max(sal)
                         for i in range(len(salary)):
-                            if salary[i]['Credit Amount'] == sal_amt:
+                            if int(salary[i]['Credit Amount']) == sal_amt:
                                 msg = {'body': salary[i]["body"], 'sender': salary[i]["sender"],
                                        'timestamp': str(salary[i]["timestamp"])}
 
@@ -194,13 +195,13 @@ def salary_main(user_id):
                         epf = []
                         if epf_msg:
                             for j in range(len(epf_msg)):
-                                if epf_msg[j]['Credit Amount'] > 0:
-                                    epf.append(epf_msg[j]['Credit Amount'])
+                                if int(epf_msg[j]['Credit Amount']) > 0:
+                                    epf.append(int(epf_msg[j]['Credit Amount']))
 
                         if epf:
                             epf_amt = max(epf)
                             for i in range(len(epf_msg)):
-                                if epf_msg[i]['Credit Amount'] == epf_amt:
+                                if int(epf_msg[i]['Credit Amount']) == epf_amt:
                                     msg = {'body': epf_msg[i]["body"], 'sender': epf_msg[i]["sender"],
                                            'timestamp': str(epf_msg[i]["timestamp"])}
 
@@ -218,12 +219,12 @@ def salary_main(user_id):
                             neft = []
                             if neft_msg:
                                 for j in range(len(neft_msg)):
-                                    if neft_msg[j]['Credit Amount'] >= 7000:
-                                        neft.append(neft_msg[j]['Credit Amount'])
+                                    if int(neft_msg[j]['Credit Amount']) >= 7000:
+                                        neft.append(int(neft_msg[j]['Credit Amount']))
                             if neft:
                                 neft_amt = max(neft)
                                 for i in range(len(neft_msg)):
-                                    if neft_msg[i]['Credit Amount'] == neft_amt:
+                                    if int(neft_msg[i]['Credit Amount']) == neft_amt:
                                         msg = {'body': neft_msg[i]["body"], 'sender': neft_msg[i]["sender"],
                                                'timestamp': str(neft_msg[i]["timestamp"])}
 

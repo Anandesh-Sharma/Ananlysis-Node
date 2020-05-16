@@ -16,7 +16,7 @@ def mean_available(user_id):
     data = connect.analysis.balance_sheet.find_one({'cust_id':user_id})
     db = connect.analysis.parameters
     if not data:
-        return {'status':False,'message':'balance sheet not found'}
+        return {'status':True,'message':'balance sheet not found'}
     data = data['sheet']
     parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
     ac_no = parameters['parameters']['available_balance']['AC_NO']
