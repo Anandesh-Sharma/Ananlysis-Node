@@ -153,7 +153,7 @@ def final_output(cust_id):
             report['empty'] = True
         try:
             client.analysis.parameters.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                                                    "parameters.loan_info ": report}},  upsert = True)
+                                                                                    "parameters.loan_info": report}},  upsert = True)
             logger.info("successfully updated loan info data on database")
         except:
             logger.info("unable to update loan info data on database")

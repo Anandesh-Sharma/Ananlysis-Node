@@ -34,6 +34,8 @@ def get_score(user_id,sms_count):
         weights1.update(weights2)
 
     except BaseException as e:
+        import traceback
+        traceback.print_tb(e.__traceback__)
         print(f"Error in scoring model : {e}")
         status = False
     finally:

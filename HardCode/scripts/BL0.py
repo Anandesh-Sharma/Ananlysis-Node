@@ -13,7 +13,7 @@ from HardCode.scripts.parameters_for_bl0.salary.salary_count import last_sal
 from HardCode.scripts.parameters_for_bl0.ecs_bounce.ecs_bounce import get_count_ecs
 from HardCode.scripts.parameters_for_bl0.ecs_bounce.chq_bounce import get_count_cb
 from HardCode.scripts.parameters_for_bl0.rejection_msgs.total_rejection_msg import get_defaulter
-from HardCode.scripts.parameters_for_bl0.rejection_msgs.get_ratio import *
+from HardCode.scripts.parameters_for_bl0.rejection_msgs.get_ratio import get_overdue_count, legal_messages_count_ratio
 from HardCode.scripts.parameters_for_bl0.account_status.status import get_acc_status
 from HardCode.scripts.parameters_for_bl0.active_close_status.active_closed_count import get_active_closed
 from HardCode.scripts.parameters_for_bl0.age_of_oldest_trade.age import age_oldest_trade
@@ -313,7 +313,7 @@ def bl0(**kwargs):
 
     # >>=>> overdue message count
     try:
-        overdue_msg_count = overdue_count_ratio(user_id)
+        overdue_msg_count = get_overdue_count(user_id)
         if not overdue_msg_count['status']:
             msg = "Overdue Message Count failed due to some reason-"+overdue_msg_count['message']
             logger.error(msg)

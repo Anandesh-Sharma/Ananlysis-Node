@@ -4,10 +4,10 @@ from HardCode.scripts.Util import conn
 def rejecting_parameters(user_id,sms_count):
     connect = conn()
     parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
-    loan_app = parameters['parameters']['percentage_of_loan_app']
+    loan_app = parameters['parameters']['percentage_of_loan_apps']
     account_status_value = parameters['parameters']['account_status']
     bal = parameters['parameters']['available_balance']
-    loan_due_days = parameters['parameters']['overdue_days']
+    loan_due_days = parameters['parameters']['loan_info']['OVERDUE_DAYS']
     overdue_count = parameters['parameters']['overdue_msg_count']
     rejection_msg  = parameters['parameters']['legal_message_count']
     flag = parameters['parameters']['legal_message_status']
@@ -25,7 +25,7 @@ def rejecting_parameters(user_id,sms_count):
         rejection_reasons.append(msg)
 
 
-    if loan_due_days['more_than_15'] > 0:
+    if loan_due_days >= 15:
         msg = "user has overdue days more than 15 days"
         rejection_reasons.append(msg)
 
@@ -51,7 +51,7 @@ def rejecting_parameters(user_id,sms_count):
         msg = "user has more than 10 overdue msgs"
         rejection_reasons.append(msg)
 
-    connect.close()
+
     return rejection_reasons
 
 
