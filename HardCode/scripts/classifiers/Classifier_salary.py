@@ -1,6 +1,7 @@
 from HardCode.scripts.Util import conn, logger_1
 from HardCode.scripts.balance_sheet_analysis.transaction_analysis import process_data
 import warnings
+import pandas as pd
 import re
 from datetime import datetime
 import pytz
@@ -90,6 +91,9 @@ def salary(df, result, user_id, max_timestamp, new):
     epf_messages,df = epf(df, result, user_id)
 
     deposited_messages,df = deposited_keyword(df, result, user_id)
+
+    if deposited_messages.empty:
+        deposited_messages = pd.DataFrame(columns = ['body', 'timestamp', 'sender', 'read'])
 
     deposited_messages = process_data(deposited_messages, user_id)
 
