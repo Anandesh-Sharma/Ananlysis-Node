@@ -29,7 +29,6 @@ def sms_header_splitter(data):
     """
     pd.options.mode.chained_assignment = None
     data['Sender-Name'] = np.nan
-
     for i in range(len(data)):
         data['sender'][i] = data['sender'][i].replace('-', '')
         try:

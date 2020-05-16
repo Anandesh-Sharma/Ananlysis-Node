@@ -58,6 +58,9 @@ def fetch_user_data(cust_id):
         script_status = {'status': True, "result": loan_data}
         client.close()
     except:
+        r = {'status': False, 'message': str(e),
+            'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+        client.analysisresult.exception_bl0.insert_one(r)
         logger.info('unable to fetch data')
         script_status = {'status': False, 'message': 'unable to fetch data'}
         client.close()

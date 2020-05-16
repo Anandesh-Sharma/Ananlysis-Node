@@ -10,7 +10,7 @@ def loan_check(user_id):
     no_of_loan_apps = parameters['parameters']['loan_info']['TOTAL_LOAN_APPS']
     loan_apps =  loans['user_app_list']
     overdue_ratio =  parameters['parameters']['loan_info']['OVERDUE_RATIO']
-    report =  parameters['parameters']['OVERDUE_DAYS']  # TODO change this for actual report from loan analysis
+    report =  parameters['parameters']['loan_info']['OVERDUE_DAYS']  # TODO change this for actual report from loan analysis
     # max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
     # report = get_final_loan_details(user_id)
 
@@ -49,15 +49,15 @@ def loan_check(user_id):
     #loan_due_check = False
 
 
-    if due_days['0-3_days'] > 0:
+    if due_days > 3:
         loan_due_check1 = True
-    if due_days['3-7_days'] > 0:
+    if 3 > due_days > 7:
         loan_due_check2 = True
-    if due_days['7-12_days'] > 0:
+    if 7 > due_days > 12:
         loan_due_check3 = True
-    if due_days['12-15_days'] > 0:
+    if 12 > due_days > 15:
         loan_due_check4 = True
-    if due_days['more_than_15'] > 0:
+    if due_days > 15:
         loan_due_check5 = True
 
     # if due_days == -1:

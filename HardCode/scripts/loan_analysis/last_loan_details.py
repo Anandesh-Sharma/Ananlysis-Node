@@ -8,7 +8,7 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-'''
+'''client
 Particular app repay categories are
 1)Repay msg captured successfully before taking loan from our app
 2)client having status overdue or legal msg
@@ -52,6 +52,9 @@ def get_final_loan_details(cust_id):
                                 report = f'Loan closed after done overdue for {overdue_days} days'
                         result[app] = str(report)
                 except:
+                    r = {'status': False, 'message': str(e),
+                        'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+                    connect.analysisresult.exception_bl0.insert_one(r)
                     result[app] = report
         # parameters['cust_id'] = cust_id
         parameters['last_loan_details'] = result
@@ -63,13 +66,15 @@ def get_final_loan_details(cust_id):
 
     except BaseException as e:
         # print(e)
+        r = {'status': False, 'message': str(e),
+            'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+        connect.analysisresult.exception_bl0.insert_one(r)
         # parameters['cust_id'] = cust_id
         parameters['last_loan_details'] = result
         # del parameters['cust_id']
         db.update({'cust_id': cust_id},
                   {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                             'parameters.loan_details': parameters}}, upsert=True)
-
 
         return {'status':False,'message':str(e)}
     finally:

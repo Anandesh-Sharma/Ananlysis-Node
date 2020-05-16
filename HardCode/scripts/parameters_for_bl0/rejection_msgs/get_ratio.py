@@ -110,7 +110,7 @@ def overdue_count_ratio(user_id):
         # user_sms_count = user_sms_count['result'][-1]
         # user_sms_count = user_sms_count['sms_count']
         user_sms_count = db.find_one({"cust_id":user_id})['Total_msg']
-        due_overdue_messages = connection.messagecluster.loandueoverdue.find_one({'cust_id': user_id})
+        due_overdue_messages = connect.messagecluster.loandueoverdue.find_one({'cust_id': user_id})
         if due_overdue_messages:
             due_overdue_messages = pd.DataFrame(due_overdue_messages['sms'])
         else:

@@ -12,7 +12,7 @@ def due_days_interval(user_id):
     diff_app_count_check = False
     total_loans = 0
 
-    loan_dates = parameters['parameters']['loan_dates']
+    loan_dates = parameters['parameters']['loan_info']['LOAN_DATES']
     # max_limit,due_days,no_of_loan_apps,loan_apps, overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
     dates = pd.DataFrame(loan_dates)
 

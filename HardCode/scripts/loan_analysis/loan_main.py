@@ -37,6 +37,7 @@ def final_output(cust_id):
     '''
     #a, user_app_list = preprocessing(cust_id)
     logger = logger_1('final_output', cust_id)
+    user_id = cust_id
     report = {
         'TOTAL_LOAN_APPS': 0,
         'CURRENT_OPEN': 0,
@@ -68,26 +69,35 @@ def final_output(cust_id):
             try:
                 report['TOTAL_LOAN_APPS'] = len(a.keys())
                 # freport['LOAN_APP_LIST'].append(str(i)
-            except:
+            except Exception as e:
+                r = {'status': False, 'message': str(e),
+                    'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+                client.analysisresult.exception_bl0.insert_one(r)
                 logger.info("no loan apps")
             for j in a[i].keys():
                 try:
                     loan_disbursal_flow['app'].append(str(i))
                     loan_disbursal_flow['disbursal_date'].append(a[i][j]['disbursed_date'])
 
-                except:
-                    pass
+                except Exception as e:
+                    r = {'status': False, 'message': str(e),
+                        'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+                    client.analysisresult.exception_bl0.insert_one(r)
                 try:
                     if a[i][j]['overdue_days'] != -1:
                         li_ovrdue.append(int(a[i][j]['overdue_days']))
-                except:
-                    pass
+                except Exception as e:
+                    r = {'status': False, 'message': str(e),
+                        'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+                    client.analysisresult.exception_bl0.insert_one(r)
                 try:
                     li.append(float(a[i][j]['loan_disbursed_amount']))
                     li.append(float(a[i][j]['loan_closed_amount']))
                     li.append(float(a[i][j]['loan_due_amount']))
-                except:
-                    pass
+                except Exception as e:
+                    r = {'status': False, 'message': str(e),
+                        'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+                    client.analysisresult.exception_bl0.insert_one(r)
                 if a[i][j]['loan_duration'] > 30:
                     report['PAY_WITHIN_30_DAYS'] = False
 
@@ -131,33 +141,50 @@ def final_output(cust_id):
 
         try:
             report['OVERDUE_DAYS'] = max(li_ovrdue)
-        except:
-            pass
+        except Exception as e:
+            r = {'status': False, 'message': str(e),
+                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+            client.analysisresult.exception_bl0.insert_one(r)
         try:
             report['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS'] = np.round(sum(li_ovrdue) - max(li_ovrdue) / (len(li_ovrdue) - 1),2)
-        except:
-            pass
+        except Exception as e:
+            r = {'status': False, 'message': str(e),
+                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+            client.analysisresult.exception_bl0.insert_one(r)
         try:
             report['OVERDUE_RATIO'] = np.round(len(li_ovrdue) / report['TOTAL_LOANS'], 2)
-        except:
+        except Exception as e:
+            r = {'status': False, 'message': str(e),
+                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+            client.analysisresult.exception_bl0.insert_one(r)
             report['OVERDUE_RATIO'] = 0
         try:
             report['LOAN_DATES'] = loan_disbursal_flow
-        except:
+        except Exception as e:
+            r = {'status': False, 'message': str(e),
+                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+            client.analysisresult.exception_bl0.insert_one(r)
             report['LOAN_DATES'] = {}
 
         try:
             report['MAX_AMOUNT'] = float(max(li))
-        except:
+        except Exception as e:
             logger.info('no amount detect')
             report['empty'] = True
         try:
             client.analysis.parameters.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                                                     "parameters.loan_info": report}},  upsert = True)
             logger.info("successfully updated loan info data on database")
-        except:
+        except Exception as e:
+            r = {'status': False, 'message': str(e),
+                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+            client.analysisresult.exception_bl0.insert_one(r)
             logger.info("unable to update loan info data on database")
         script_status = {'status': True, 'message': 'success', 'result': report}
     except BaseException as e:
+        r = {'status': False, 'message': str(e),
+                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+        client.analysisresult.exception_bl0.insert_one(r)
         script_status = {"status" : False, "message" : str(e)}
+    client.close()
     return script_status

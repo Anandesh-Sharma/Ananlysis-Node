@@ -4,7 +4,8 @@ from HardCode.scripts.loan_analysis.my_modules import *
 from HardCode.scripts.loan_analysis.loan_app_regex_superset import loan_apps_regex
 from datetime import  datetime
 import pytz
-
+from HardCode.scripts.loan_analysis.current_open_details import get_current_open_details
+from HardCode.scripts.loan_analysis.loan_rejection import get_rejection_count
 
 def preprocessing(cust_id):
     loan_data = fetch_user_data(cust_id)
@@ -25,6 +26,9 @@ def preprocessing(cust_id):
                     pass
             except:
                 user_app_list.append(app)
+            app_name = app
+            if app not in list(loan_apps_regex.keys()):
+                app = 'OTHER'
             if app in list(loan_apps_regex.keys()):
                 logger.info("app found in app list")
                 data = data.sort_values(by='timestamp')
@@ -294,11 +298,16 @@ def preprocessing(cust_id):
                         pass
 
                     i += 1   # 'i' loop increment
-                loan_details_of_all_apps[str(app)] = loan_details_individual_app
+                loan_details_of_all_apps[str(app_name)] = loan_details_individual_app
                 logger.info("all information fetch from current loan app")
+        premium_rejection, normal_rejection, rejection_messages = get_rejection_count(cust_id)
         report['cust_id'] = cust_id
         report['complete_info'] = loan_details_of_all_apps
         report['user_app_list'] = user_app_list
+        report['current_open_details'] = get_current_open_details(cust_id)
+        report['premium_app_rejection'] = premium_rejection
+        report['normal_app_rejection'] = normal_rejection
+        report['rejection_messages'] = rejection_messages
         report['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
 
         logger.info("successfully make connection with database")
@@ -306,6 +315,9 @@ def preprocessing(cust_id):
         client.analysis.loan.update_one({"cust_id" : cust_id}, {"$set" : report}, upsert = True)
         script_status = {"status" : True, "message" : "success"}
     except BaseException as e:
+        r = {'status': False, 'message': str(e),
+            'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+        client.analysisresult.exception_bl0.insert_one(r)
         script_status = {"status" : False, "message" : str(e)}
     finally:
         return script_status

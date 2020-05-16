@@ -194,9 +194,6 @@ def get_cc_limit(user_id):
                                                   'parameters.credit_card': result}}, upsert=True)
         return {'status': True, 'message': 'success'}
     except BaseException as e:
-        import traceback
-        traceback.print_tb(e.__traceback__)
-        print(f"error in credit card limit check: {e}")
         parameters['cust_id'] = user_id
         df.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                   'parameters.credit_card': result}}, upsert=True)

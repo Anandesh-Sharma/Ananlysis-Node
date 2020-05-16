@@ -9,25 +9,26 @@ def get_rejection_count(cust_id):
     grouped_data = grouping(loan_data)
     premium_app_rejection_count = 0
     normal_app_rejection_count = 0
-
+    message_list = []
     for app, data in grouped_data:
-        if app in target_apps and app in list(loan_apps_regex.keys()):
-            i = 0
-            while i < len(data):
-                message = str(data['body'][i].encode('utf-8')).lower()
-                if is_rejected(message, app):
-                    premium_app_rejection_count += 1
-                    break
-                i += 1
-        else:
-            if app in list(loan_apps_regex.keys()):
-                i = 0
-                while i < len(data):
-                    message = str(data['body'][i].encode('utf-8')).lower()
+        try:
+            if app in target_apps and app in list(loan_apps_regex.keys()):
+                for _,row in data.iterrows():
+                    message = str(row['body'].encode('utf-8')).lower()
                     if is_rejected(message, app):
-                        normal_app_rejection_count += 1
+                        premium_app_rejection_count += 1
+                        message_list.append(message)
                         break
-                    i += 1
-    return premium_app_rejection_count, normal_app_rejection_count
-    
-    
+            else:
+                if app in list(loan_apps_regex.keys()):
+                    for _,row in data.iterrows():
+                        message = str(row['body'].encode('utf-8')).lower()
+                        if is_rejected(message, app):
+                            normal_app_rejection_count += 1
+                            message_list.append(message)
+                            break
+        except BaseException as e:
+            import traceback
+            traceback.print_tb(e.__traceback__)
+            print(e)
+    return premium_app_rejection_count, normal_app_rejection_count, message_list

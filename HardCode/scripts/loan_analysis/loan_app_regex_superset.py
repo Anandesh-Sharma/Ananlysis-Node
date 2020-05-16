@@ -19,8 +19,12 @@ loan_apps_regex = {
         'closed' : [r'your\sloan\sis\snow\spaid\sback',
                     r"we\s?(?:'ve|have)\s(?:finished|done|completed)\sdealing\swith\syour\srepayment",
                     r'loan.*(?:is|has\sbeen)\spaid\s(?:back|off)'],
-        'rejection' : [r"could\s?(?:n't|not)\sapprove\syour\sprofile",
-                       r'loan\s?(?:application)?.*rejected'] #not original
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #not original
     },
     'KREDTB' : {
         'disbursal' : [r'your\sloan\s(?:is|has\sbeen)\sdisbursed',
@@ -59,7 +63,8 @@ loan_apps_regex = {
                      r"you\sdid\s?(?:n't|not)\smake.*(?:emi|loan)\spayment",
                      r'your\semi.*still\spending',
                      r'you\shave\stime\still.*make\syour\spayment.*prevent\s([0-9]+)\s?day[s]?\sdelay',
-                     r'loan.*delinquency\sof\s(?:rs\.?|inr)\s?(?:[0-9,]+[.]?[0-9]+)\s(?:for|by|since)\s([0-9]+)\sdays'],
+                     r'loan.*delinquency\sof\s(?:rs\.?|inr)\s?(?:[0-9,]+[.]?[0-9]+)\s(?:for|by|since)\s([0-9]+)\sdays',
+                     r'(?:loan|emi).*unpaid\sfor\s([0-9]+)\s?day[s]?\soverdue'], #KRBEEE #new
         'closed' : [r'your\sloan.*(?:is|has\sbeen)\sclosed\ssuccessfully',
                     r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'],
         'rejection' : [r"could\s?(?:n't|not)\sapprove\syour\sprofile"]
@@ -122,8 +127,10 @@ loan_apps_regex = {
                      r'your\saccount\shas.*past\sdue\sbalance\sof\s(?:rs[.]?|inr[.]?)\s?(?:[0-9,]+[.]?[0-9]+).*due\s(?:by|since|from|for)\s([0-9]+)\sday[s]?',
                      r'immediate\sre[-]?payment\sof\s(?:rs[.]?|inr[.]?)\s?(?:[0-9,]+[.]?[0-9]+)',
                      r'your\sloan.*is\soverdue\s(?:since|by|for|from)\s([0-9]+)\s?day[s]?.*(?:rs[.]?|inr[.]?)\s?(?:[0-9,]+[.]?[0-9]+)\simmediately',
-                     r'due\samount\s(?:is|has)\spending\sof\s(?:rs[.]?|inr[.]?)\s?(?:[0-9,]+[.]?[0-9]+).*(?:since|for|from|by)\s([0-9]+)\sday[s]?'],
-        'closed' : [r'received.*(?:payment|repayment)\sof\s(?:rs[.]?|inr[.]?)?\s?([0-9,]+[.]?[0-9]+)'],
+                     r'due\samount\s(?:is|has)\spending\sof\s(?:rs[.]?|inr[.]?)\s?(?:[0-9,]+[.]?[0-9]+).*(?:since|for|from|by)\s([0-9]+)\sday[s]?',
+                     r'loan.*repaid.*successfully\swith\soverdue\sdays\sdelay'],  #new
+        'closed' : [r'received.*(?:payment|repayment)\sof\s(?:rs[.]?|inr[.]?)?\s?([0-9,]+[.]?[0-9]+)',
+                    r'loan.*(?:rs[.]?|inr[.]?)\s?([0-9,]+[.]?[0-9]+).*repaid.*successfully'], #new
         'rejection' : [r"could\s?(?:n't|not)\sfind\syou\seligible\sfor\s[a]?\s?loan",
                        r"could\s?(?:n't|not)\sapprove\syour\sprofile"]
     },
@@ -136,25 +143,33 @@ loan_apps_regex = {
         'rejection' : [r"your\s(?:loan|application).*could\s?(?:n't|not)\sget\sapproved"]
     },
     'LOANAP' : {
-        'disbursal' : [],
-        'due' : [],
-        'overdue' : [],
-        'closed' : []
+        'disbursal' : [r'loan.*(?:is|has\sbeen)\sdisbursed.*amount\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)'], #new
+        'due' : [r'loan\spayment.*amount\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)\sis\sdue'],
+        'overdue' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #commmon
+        'closed' : [r'your.*loan.*(?:is|has\sbeen)\spaid\ssuccessfully.*amount\sis\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)'], #new
+        'rejection' : [r'loan\sapplication\sis\srejected']
     },
     'KISSHT' : {
         'disbursal' : [r'(?:amount|loan).*(?:disbursed|transferred).*successfully'],
         'due' : [r'(?:kissht)?\s?loan\sre[-]?payment\sof\s\sis\sdue',
                  r'(?:kissht)?\s?(?:instalment|loan)\sof\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).is\sdue'],
-        'overdue' : [r'payment\soverdue.*you\shave\snot\smade.*payment\sof\s(?:rs[.]?|inr)\s?(?:[0-9,]+[.]?[0-9]+)\son.*due\sdate'],
-        'closed' : [r'received.*total\spayment\sof\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)'],
+        'overdue' : [r'payment\soverdue.*you\shave\snot\smade.*payment\sof\s(?:rs[.]?|inr)\s?(?:[0-9,]+[.]?[0-9]+)\son.*due\sdate',
+                     r'payment\soverdue.*(?:rs[.]?|inr)\s?(?:[0-9,]+[.]?[0-9]+)', #new
+                     r'(?:payment|emi|loan)\sof\s(?:rs[.]?|inr)\s?(?:[0-9,]+[.]?[0-9]+)\sis\soverdue\sby\s([0-9]+)\sdays'], #new
+        'closed' : [r'received.*payment\sof\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)'], #new
         'rejection' : [r'your\sapplication\s(?:is|has\sbeen)\sdenied']
     },
     'GTCASH' : {
         'disbursal' : [r'loan.*(?:is|has\sbeen)\sdisbursed.*amounting\sto\s(?:rs[.]?|inr)?\s?([0-9,]+[.]?[0-9]+)\s?(?:rupees)?'],
         'due' : [r'due\sdate\sof\syour\sloan.*(?:payment|repayment).*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)'],
-        'overdue' : [r'your\s(?:loan|emi)\sis\soverdue'], #not original
+        'overdue' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #not original
         'closed' : [r'your\sloan.*is\spaid\s(?:off|back)'],
-        'rejection' : [r"your\sloan\sapplication.*did\s?(?:n't|not)\spass.*eligibility\srequirement[s]?"]
+        'rejection' : [r"your\sloan\sapplication.*did\s?(?:n't|not)\spass.*eligibility\srequirement[s]?",
+                       r'application.*rejected']
     },
     'FLASHO' : {
         'disbursal' : [r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*disbursed'],
@@ -163,14 +178,19 @@ loan_apps_regex = {
         'overdue' : [r'unpaid\s(?:loan|emi).*pay\simmediately',
                      r'(?:loan|emi|payment|repayment)\sis\soverdue'],
         'closed' : [r'(?:repayment|payment)\sof\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)\s(?:is|has\sbeen).*received'],
-        'rejection' : [r'loan\s?(?:application)?.*rejected'] #not original
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #not original
     },
     'CSHMMA' : {
         'disbursal' : [r'receipt\sreminder.*loan\s(?:has\sbeen|is)\s(?:disbursed|transferred)'],
         'due' : [r'repayment\sreminder.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
                  r'(?:[0-9]+)\s?days\s(?:later|after)\s(?:is|will\sbe).*(?:bill|loan|emi|payment)\sday',
                  r'expiration\sreminder.*(?:rs[.]?|inr)\s([0-9,]+[.]?[0-9]+)\sis\sdue'],
-        'overdue' : [r'your\s(?:loan|emi)\sis\soverdue'], #not original
+        'overdue' : [r'overdue\sreminder.*(?:rs[.]?|inr)\s?(?:[0-9,]+[.]?[0-9]+).*([0-9]+)\s?day[s]?'], #new
         'closed' : [r'successful\srepayment.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)'],
         'rejection' : [r'loan\sapplication\shas\snot\spassed\sthe\sreview']
     },
@@ -222,11 +242,16 @@ loan_apps_regex = {
                      r'you\shave\smissed.*(?:emi|installment)\son\sdue\sdate',
                      r'your.*repayment\sis\sstill\spending',
                      r'your\spayment\sdate\salready\scrossed'],
-        'closed' : [r'loan.*(?:is|has\sbeen)\spaid\s(?:back|off)'], #not original
+        'closed' : [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #not original
         'rejection' : [r'sorry.*we\scan\s?not\sprovide\syou.*loan\swith\snira\sthis\stime']
     },
     'QCRDIT' : {
-        'disbursal' : [r'your\sloan\s(?:is|has\sbeen)\sdisbursed'], #not original
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #not original
         'due' : [r'loan.*has\sexhausted\s(?:[0-9]+)\sdays\so\/s\s?([0-9,]+[.]?[0-9]+)',
                  r'grace\speriod.*loan\s.*going\sto\send'],
         'overdue' : [r'loan\s(?:payment|repayment)\sdeadline.*already\sexhausted',
@@ -234,11 +259,18 @@ loan_apps_regex = {
                      r'loan.*is\soverdue.*extension.*not\swork\sin\syour\sfavo[u]?r',
                      r'(?:inspite|despite).*(?:several|multiple|repeated|many)\sattempts.*no\sresponse\sfrom\syour\send'],
         'closed' : [r'loan\s(?:is|has\sbeen)\scleared\sfor\so\/s\s(?:rs[.]?|inr)?\s?([0-9,]+[.]?[0-9]+)'],
-        'rejection' : [r"could\s?(?:n't|not)\sapprove\syour\sprofile",
-                       r'loan\s?(?:application)?.*rejected'] #not original
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #not original
     },
     'UPWARD' : {
-        'disbursal' : [r'your\sloan\s(?:is|has\sbeen)\sdisbursed'], #not original
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #not original
         'due' : [r'today\sis\syour\supwards\sloan\semi\sdue\sdate',
                  r'emi\spayment\sfor\supwards\sloan\sis\sdue'],
         'overdue' : [r'(?:despite|inspite).*(?:several|repeated|many|muliple)\sreminders.*you\swish\sto\scontinue\sto\sdefault\swith.*dues',
@@ -246,20 +278,38 @@ loan_apps_regex = {
                      r'final\sreminder\sto\sremit\syour\sdues',
                      r'your\saccount\sis\slisted\sas\spart\sof\sdefault(?:ed|er[s]?)?\sbucket',
                      r'we\sfailed\sto\sreceive\syour\sfunds',
-                     r'(?:emi|loan).*still\snot\sreceived.*make.*payment\simmediately'],
-        'closed' : [r'loan.*(?:is|has\sbeen)\spaid\s(?:back|off)'], #not original
+                     r'(?:emi|loan).*still\snot\sreceived.*make.*payment\simmediately',
+                     r'(?:loan|emi|payment)\sis\soverdue'], #new
+        'closed' : [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #not original
         'rejection' : [r"could\s?(?:n't|not)\sapprove\syour\sprofile",
-                       r'loan\s?(?:application)?.*rejected'] #not original
+                       r'loan.*(?:rejected|declined)',
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #not original
     },
     'LOANIT' : {
-        'disbursal' : [r'your\sloan\s(?:is|has\sbeen)\sdisbursed'], #not original
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #not original
         'due' : [r'today\sis\syour\sdue\sdate',
                  r'your.*loan\shas\sexhausted\s[0-9]+\sdays',
                  r'gentle\sreminder\sto\srepay\syour\sloan',
                  r'repay\syour\sloan\simmediately'],
         'overdue' : [r'your\sloan\shas\scrossed\sthe\sdue\sdate'],
-        'closed' : [r'loan\s(?:is|has\sbeen)\spaid\soff'], #not original
-        'rejection' : [r"application\shas\s?(?:n't|not)\sbeen\sapproved"] #not original
+        'closed' : [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #not original
+        'rejection' : [r"application\shas\s?(?:n't|not)\sbeen\sapproved",
+                       r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #not original
     },
     'ICREDT' : {
         'disbursal' : [r'transferred.*loan\samount\sto\syour.*account',
@@ -273,10 +323,15 @@ loan_apps_regex = {
         'rejection' : [r"application\shas\s?(?:n't|not)\sbeen\sapproved"]
     },
     'LENDEN' : {
-        'disbursal' : [r'your\sloan\s(?:is|has\sbeen)\sdisbursed'], #not original
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #not original
         'due' : [r'repayment\sof\s(?:rs[.]?|inr)?\s?([0-9,]+[.]?[0-9]+).*due',
                  r'(?:loan|emi)\sis\sdue'],
-        'overdue' : [r'your\s(?:loan|emi)\sis\soverdue'], #not original
+        'overdue' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #not original
         'closed' : [r'your.*loan\sis\sclosed'],
         'rejection' : [r'loan\srequest\scan\s?not\sbe\sprocessed\sat\sthe\smoment']
     },
@@ -285,10 +340,16 @@ loan_apps_regex = {
         'due' : [r'(?:emi|loan|installment)\spayment\sof\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\s(?:due|upcoming)'],
         'overdue' : [r'your\s?(?:loan|emi|installment)?\spayment\s(?:is|has\sbeen)\s?(?:still)?\soverdue',
                      r'your\soverdue\s(?:loan|emi|installment)\sis\s?(?:still)?\sunpaid'],
-        'closed' : [r'your.*loan\sis\sclosed',
-                    r'loan.*(?:is|has\sbeen)\spaid\s(?:back|off)'], #not original
+        'closed' : [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #not original
         'rejection' : [r"your\s(?:loan|application).*could\s?(?:n't|not)\sget\sapproved",
-                       r'loan\s?(?:application)?.*rejected'] #not original
+                       r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #not original
     },
     'VIVIFI' : {
         'disbursal' : [r'money.*transfer',
@@ -301,7 +362,501 @@ loan_apps_regex = {
         'overdue' : [r'is\soverdue'],
         'closed' : [r'thank\syou.*payment.*(?:inr|rs\.?)\s([0-9,]+[.]?[0-9]+)'],
         'rejection' : [r'loan\s?(?:application)?.*rejected']
+    },
+    'SHUBLN' : {
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due' : [r'emi\sof\s(?:inr|rs\.?)\s([0-9,]+[.]?[0-9]+)\sis\sdue'],
+        'overdue' : [r"you\shave\s?(?:n't|not)\scleared\syour\soverdue"],
+        'closed' : [r'loan\s?(?:application)?\sis\sclosed'], #new
+        'rejection' : [r"unfortunately\syou\sdo\s?(?:n't|not)\squalify\sfor\s?[a]?\sloan"] #new
+    },
+    'PAYMIN' : {
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due' : [r'(?:repayment|payment).*of\s(?:inr|rs\.?)\s([0-9,]+[.]?[0-9]+).*is\sdue'], #new
+        'overdue' : [r'despite\s(?:several|many|repeated)\sreminders.*loan.*is\s?(?:still)?\s(?:outstanding|pending|due)', #new
+                     r'reminder.*overdue\s(?:from|for|by|since)\s([0-9]+)\s?day[s]?', #new
+                     r'make\s?(?:the)?\spayment\stoday.*legal\saction'],#new
+        'closed' : [r'payment\sof\s(?:inr|rs\.?)\s([0-9,]+[.]?[0-9]+)\sreceived'], #new
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'HOMECR' : {
+        'disbursal' : [],
+        'due' : [r'loan.*(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*emi.*(?:due|dey)\shai'],
+        'overdue' : [r'loan.*bakaya\shai.*late\sfee[s]?\ske\ssath\sjama\skarwaye',
+                     r'(?:emi|loan).*overdue\shai'],
+        'closed' : [r'loan.*kisht\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)\ska\sbhugta[a]?n\skarne\ske\sliye\sdhany[a]?wa[a]?d'],
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'NOTICE' : {
+        'disbursal' : [r'loan\sdisbursement\swas\ssuccess.*(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)'], #new
+        'due' : [r'loan\s(?:will|is)\sdue',        #new
+                 r'loan.*approved.*due\sdate\sis\s(?:[0-9]+[-][0-9]+[-][0-9]+).*(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)'], #new
+        'overdue' : [r'loan.*overdue\s?(?:for)?\s([0-9]+)\sday[s]?'], #new
+        'closed' : [r'payment\sreceived.*loan.*closed\ssuccessfully'], #new
+        'rejection' : [r'loan\s?(?:application)?.*rejected'] #common
+    },
+    'BRANCH' : {
+        'disbursal' : [r'sent\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)\sto\syour\s(?:a\/c|account)',
+                       r'loan\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*sent'],
+        'due' : [r'(?:loan|emi|installment|payment)\sis\sdue',
+                 r'loan.*(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*due\sin\s[0-9]+\s?day[s]?'],
+        'overdue' : [r'(?:repayment|payment|loan|emi).*overdue\s(?:by|with|for|from)\s([0-9]+)\s?day[s]?',
+                     r'([0-9]+)\s?days\soverdue.*branch\sloan',
+                     r'(?:repayment|payment)\sis\snow\soverdue',
+                     r'loan\spayment\soverdue',
+                     r'missed\spayment\salert'],
+        'closed' : [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'STHFIN' : {
+        'disbursal' : [r'loan\samount\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*disbursed'],
+        'due' : [r'pay\s(?:your|ur).*loan\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*avoid\slate\spayment',
+                 r'(?:repayment|payment).*loan\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)\sis\sdue'],
+        'overdue' : [r'(?:immediate|urgent)\s(?:repayment|payment|pmnt)\sdue',
+                     r'pay\s(?:urgently|immediately)',
+                     r'loan\sof\s(?:inr|rs\.?)\s?(?:[0-9,]+[.]?[0-9]+).*still\soverdue'],
+        'closed' : [r'received\spayment\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)'],
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'BAJAJF' : {
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due' : [r'(?:emi|payment|amount|loan|instal[l]?ment)\s?(?:of)?\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*is\sdue'],
+        'overdue' : [r'(?:emi|installment).*(?:inr|rs\.?)\s?(?:[0-9,]+[.]?[0-9]+).*still\sunpaid',
+                     r'(?:emi|installment).*still\sunpaid.*pay\soverdue',
+                     r'emi.*(?:rs\.?|inr)\s?(?:[0-9,]+[.]?[0-9]+).*not\spaid.*pay\soverdue',
+                     r'pay\s?(?:your)?\soverdue\s(?:emi|installment)\sof\s(?:inr|rs\.?)\s?(?:[0-9,]+[.]?[0-9]+)',
+                     r'overdue\sof\s(?:inr|rs\.?)\s?(?:[0-9,]+[.]?[0-9]+).*still\sunpaid'],
+        'closed' : [r'thanks\sfor\s?(?:the)?\spayment\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)',
+                    r'your\sloan.*is\sclosed',
+                    r'(?:repayment|payment)\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*received',
+                    r'(?:received|rcvd)\spayment\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*loan\s(?:a\/c|account)',
+                    r'loan.*stands\sclosed',
+                    r'(?:thank\syou|thanks)\sfor\spayment.*(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)\stowards\sloan'],
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'NANOCD' : {
+        'disbursal' : [r'money\sis\s(?:transferred|disbursed)\sto\syour\saccount'],
+        'due' : [r'(?:your|ur)\sloan\sis\sdue'],
+        'overdue' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed' : [r'loan\sis\snow\spaid\sback'],
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'ZESTMN' : {
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sdue',
+                 r'(?:payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
+                 r'repayment.*of\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*due'], #common
+        'overdue' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed' : [r'you\sare\sthe\sbest.*(?:repayment|payment).*successful'],
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'LOANTP' : {
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due' : [r'instal[l]?ment\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)\sis\sdue'],
+        'overdue' : [r'legal\s(?:intimation|notice)\sfor\snon\s?[-]?payment'],
+        'closed' : [r'loan.*now\sclosed',
+                    r'closure\sdetails.*sent'],
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'MCreds' : {
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due' : [r'loan\spayment.*amount\s([0-9,]+[.]?[0-9]+)\s?(?:inr|rs\.?)\sis\sdue'],
+        'overdue' : [r'loan\spayment.*(?:is|has\sbeen)\soverdue'],
+        'closed' : [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'CASHEB' : {
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due' : [r'emi\sis\sdue\sfor\spayment'],
+        'overdue' : [r'you\shave\spassed\syour\sdue\sdate',
+                     r'you\shave.*overdue\soutstanding'],
+        'closed' : [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+    },
+    'ABCFIN' : {
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sdue',
+                 r'(?:payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
+                 r'repayment.*of\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*due'], #common
+        'overdue' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed' : [r'received payment\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)\s'],
+        'rejection' : [r'regret\sto\sinform\syou.*loan.*closed']
+    },
+    'PAYMEI' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'loan.*amount\s?(?:rs\.?|inr)?\s([0-9,]+[.]?[0-9]+)\sis\sdue',
+                r'loan.*amount.*(?:rs\.?|inr)?\s([0-9,]+[.]?[0-9]+)\sis\sdue'],
+        'overdue': [r'loan\saccount\s?(?:is)?still\sdue',
+                    r'([0-9]+)\sdays.*loan\sis\sdue.*pay.*overdue\simmediately'],
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'CFLOAN' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sdue',
+                 r'(?:payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
+                 r'repayment.*of\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*due'], #common
+        'overdue': [r'(?:repayment|payment).*is\soverdue\s(?:by|with|since|for|from)\s([0-9]+)\s?day[s]?'],
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'CAPFLT' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sdue',
+                 r'(?:payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
+                 r'repayment.*of\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*due'], #common
+        'overdue': [r'repayment\soverdue'],
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'ICASHE' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'emi\sof\s?(?:rs\.?|inr)?\s([0-9,]+[.]?[0-9]+).*is\sdue',
+                r'make.*payment[s]?.*before.*due\sdate',
+                r'pay\sbefore.*extended\sdue\sdate'],
+        'overdue': [r'loan.*severely\soverdue'],
+        'closed': [r'received.*payment\sof\s(?:rs\.?|inr)?\s([0-9,]+[.]?[0-9]+)'],
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'LOANXP' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sdue',
+                 r'(?:payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
+                 r'repayment.*of\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*due'], #common
+        'overdue': [r'loan.*is\soverdue\s?(?:by|since|for|from)?\s([0-9]+)\s?day[s]?'],
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'PAYSNS' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'emi.*is\sdue'],
+        'overdue': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:is|has\sbeen)\s(?:rejected|declined)']
+
+    },
+    'RAPIDR' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'[0-9]+\s?day[s]?\sto\sdue\sdate',
+                r'loan\sto\sbe\srepaid\sin\s[0-9]+\s?day[s]?',
+                r'[0-9]+\sday[s]?\sleft\sto\sdue\sdate',
+                r'loan.*is\sdue'],
+        'overdue': [r'loan\sis\s([0-9]+)\s?day[s]?\soverdue'],
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'CBTEST' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sdue',
+                 r'(?:payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
+                 r'repayment.*of\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*due'], #coomon
+        'overdue': [r'loan.*seriously\soverdue',
+                    r'(?:loan|bill)\sis\s([0-9]+)\s?day[s]?\soverdue',
+                    r'(?:loan|bill)\sis\soverdue'],
+        'closed': [r'repaid\s([0-9,]+[.]?[0-9]+)\srupees.*loan.*settled'],
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'DHANII' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'emi\sof\s(?:rs\.?|inr)\s([0-9,]+[.]?[0-9]+).*is\sdue'],
+        'overdue': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'RSLOAN' : {
+        'disbursal': [r'(?:rs\.?|inr\.?)\s([0-9,]+[.]?[0-9]+).*successfully\s(?:transferred|disbursed)'],
+        'due': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sdue',
+                 r'(?:payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
+                 r'repayment.*of\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*due'], #common
+        'overdue': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed': [r'loan.*fully\srepaid'],
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'RUPBUS' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'loan\s(?:will\sbe|is)\sdue.*amount\sis\s?(?:rs\.?|inr)?\s([0-9,]+[.]?[0-9]+)',
+                r'loan\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:will\sbe|is)\sdue'],
+        'overdue': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed': [r'loan\s(?:is|has\sbeen)\spaid\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'],
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'CKCASH' : {
+        'disbursal': [r'([0-9,]+[.]?[0-9]+)\sloan\s(?:is|has\sbeen)\stransferred'],
+        'due': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sdue',
+                 r'(?:payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
+                 r'repayment.*of\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*due'], #common
+        'overdue': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'LLNBRO' : {
+        'disbursal': [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'], #common
+        'due': [r'loan.*is\sdue\sshortly',
+                r'due\sdate.*is\snearing'],
+        'overdue': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'CASHBS' : {
+        'disbursal': [r'money\sis\s(?:transferred|disbursed)\sto\s(?:your|you)\saccount'],
+        'due': [r'loan\sis\sdue'],
+        'overdue': [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'], #common
+        'closed': [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'], #common
+        'rejection': [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer'] #common
+
+    },
+    'OTHER' : {
+        'disbursal' : [r'loan.*(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:credited|transferred|disbursed|sent)'],  # common
+        'due' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sdue',
+                 r'(?:payment|emi|loan).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue',
+                 r'repayment.*of\s(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*due'],  # common
+        'overdue' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\sover[-]?due',
+                     r'(?:loan|emi|payment).*over[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
+                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays'],  # common
+        'closed' : [r'loan.*(?:closed|repaid|paid)',
+                    r'payment\sreceived.*loan.*closed\ssuccessfully',
+                    r'received\spayment\sof\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'],  # common
+        'rejection' : [r'loan.*(?:rejected|declined)',
+                       r"could\s?(?:n't|not)\sapprove\syour\sprofile",
+                       r'cannot\sprovide\syou\s?[a]?\sloan',
+                       r'unable\sto\sprocess\syour\sapplication',
+                       r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+                       r'sorry.*not.*suitable\sloan\soffer']  # common
     }
+
 
 }
 

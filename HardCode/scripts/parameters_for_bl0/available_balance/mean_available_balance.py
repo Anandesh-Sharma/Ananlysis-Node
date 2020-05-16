@@ -16,6 +16,13 @@ def mean_available(user_id):
     data = connect.analysis.balance_sheet.find_one({'cust_id':user_id})
     db = connect.analysis.parameters
     if not data:
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.mean_bal': mean_bal,
+                                                  'parameters.last_month_peak': {},
+                                                  'parameters.second_last_month_peak': {},
+                                                  'parameters.third_last_month_peak': {},
+                                                  'parameters.avg_balance': avg_bal}}, upsert=True)
         return {'status':True,'message':'balance sheet not found'}
     data = data['sheet']
     parameters = connect.analysis.parameters.find_one({'cust_id':user_id})

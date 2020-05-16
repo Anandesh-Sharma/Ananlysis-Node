@@ -3,6 +3,7 @@ import warnings
 import re
 from datetime import datetime
 import pytz
+import pandas as pd
 
 warnings.filterwarnings("ignore")
 
@@ -59,7 +60,8 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         else:
             mask.append(False)
     logger.info("Dropped sms other than loan closed")
-    return data.copy()[mask].reset_index(drop=True)
+    x= data.copy()[mask].reset_index(drop=True)
+    return x
 
 
 def replace_parenthesis(message):
@@ -184,7 +186,7 @@ def get_loan_messages_promotional_removed(data, loan_messages):
         r'emi\scard|credit\scard',
         r'\se-?sign\s',
         r'claim\sbonus',
-        r'icredit|rupeeplus',
+        # r'icredit|rupeeplus',
         r'good\snews',
         r'confirm\snow'
     ]
@@ -238,7 +240,8 @@ def get_approval(data, loan_messages_filtered, result, name):
         else:
             mask.append(False)
     logger.info("Dropped sms other than loan approval")
-    return data.copy()[mask].reset_index(drop=True)
+    approve = data.copy()[mask].reset_index(drop=True)
+    return approve
 
 
 def get_disbursed(data, loan_messages_filtered, result, name):
@@ -298,7 +301,8 @@ def get_disbursed(data, loan_messages_filtered, result, name):
         else:
             mask.append(False)
     logger.info("Dropped sms other than loan disbursed")
-    return data.copy()[mask].reset_index(drop=True)
+    z = data.copy()[mask].reset_index(drop=True)
+    return z
 
 
 def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
@@ -317,6 +321,19 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         r'could\snot\sget\sapproved',
         r"sorry.*?couldn't.*?eligible.*?loan",
         r'credit.*rejected.*loan.*application'
+        r'loan\s(?:is|was|has\sbeen)\srejected',
+        r'sorry.*not.*suitable\sloan\soffer',
+        r'unfortunately.*application\scould\snot\smatch.*eligibility\scriteria',
+        r'sorry.*can\s?not\sprocess\syour\sapplication',
+        r'loan\sprocess\scan\s?not\sbe\scompleted',
+        r'loan\sapplication\shas\snot\spassed\sthe\sreview',
+        r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+        r'loan\sapplication\sfailed\sto\spass',
+        r'unable\sto\sserve\syou.*at\sthe\smoment',
+        r'unfortunately.*can\s?not\sapprove\syou\sfor\s?[a]?\sloan',
+        r'discrepancy\sin\sthe\sdocuments',
+        r'unable\sto\sprocess\syour\sapplication',
+        r'cannot\sprovide\syou\s?[a]?\sloan'
     ]
     all_patterns_2 = [
         r'low\scibil\sscore',
@@ -360,7 +377,8 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         else:
             mask.append(False)
     logger.info("Dropped sms other than loan rejection")
-    return data.copy()[mask].reset_index(drop=True)
+    reject = data.copy()[mask].reset_index(drop=True)
+    return reject
 
 
 def get_over_due(data, loan_messages_filtered, result, name):
@@ -368,7 +386,7 @@ def get_over_due(data, loan_messages_filtered, result, name):
     selected_rows = []
     # pattern_1 = r'(.*)?immediate(.*)payment(.*)'
     # pattern_2 = r'(.*)?delinquent(.*)?'
-    # # pattern_3 = r'(.*)?has(.*)?bounced(.*)?'
+    # # pattern_3 = r'(.*)?has(.*)cd?bounced(.*)?'
     # pattern_4 = r'missed(.*)?payments'
     # pattern_5 = r'(.*)?due(.*)?'
     # pattern_6 = r'\sover-?due\
@@ -418,7 +436,18 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'.*rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+).*',  
         r'due\s(?:on)?.*([0-9]+/[0-9]+).*',  
         r'.*loan.*rs\.?.*?([0-9]+).*due.*',
-        r'.*payment.*due.*'
+        r'.*payment.*due.*',
+        r'(?:emi|loan|repayment|payment)\sis\sdue',
+        r'pay\s?(?:your)?\soverdue\samount',
+        r'is\syour\sdue\s(?:day|date)',
+        r'(?:a\/c|account)\sis\sdue',
+        r'repayment\sdue\s(?:day|date)',
+        r'not\sreceived\s(?:outstanding|o\/s)\s(?:amount|amt)',
+        r'loan\srepayment\sis\slate',
+        r'not\s(?:make|made).*payment\sof.*loan\swithin.*due\sdate',
+        r'overdue\sbills\shave\snot\sbeen\sprocessed',
+        r'loan.*passed\sthe\sdue\sdate',
+        r'repayment.*is\spending',
     ]
 
     for i in range(data.shape[0]):
@@ -450,7 +479,8 @@ def get_over_due(data, loan_messages_filtered, result, name):
         else:
             mask.append(False)
     logger.info("Dropped sms other than loan due overdue")
-    return data.copy()[mask].reset_index(drop=True)
+    overdue = data.copy()[mask].reset_index(drop=True)
+    return overdue
 
 
 def loan(df, result, user_id, max_timestamp, new):
