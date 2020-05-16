@@ -12,10 +12,9 @@ pd.options.mode.chained_assignment = None
 
 
 def get_extracted_data(data):
-
     df = pd.DataFrame(columns=['amount', 'status', 'available_card_limit', 'current_outstanding_amt',
                            'minimum_due_amt', 'total_due_amt', 'bank_name'])
-                           
+
     df['total_due_amt'] = [0] * data.shape[0]
     df['minimum_due_amt'] = [0] * data.shape[0]
     df['available_card_limit'] = [0] * data.shape[0]
@@ -172,28 +171,30 @@ def get_cc_limit(user_id):
     try:
         db = connect.messagecluster.creditcard
         file1 = db.find_one({"cust_id": user_id})
-        if file1:
-            if len(file1['sms']) != 0:
-                data = pd.DataFrame(file1["sms"])
-                sms_header_splitter(data)
+        if file1['sms']:
+            data = pd.DataFrame(file1["sms"])
+            data = sms_header_splitter(data)
 
-                final_df = get_extracted_data(data)
-                bank = final_df.groupby('bank_name')
-                x = bank['available_card_limit'].max()
-                x = x.to_dict()
-                delete = [key for key in x if key == 'not mentioned']
-                for key in delete:
-                    del x[key]
-                result = x
-        status = True
-        msg = 'success'
-    except BaseException as e:
-        status = False
-        msg = str(e)
-        print(f"error in credit card limit check: {e}")
-    finally:
+            final_df = get_extracted_data(data)
+            bank = final_df.groupby('bank_name')
+            x = bank['available_card_limit'].max()
+            x = x.to_dict()
+            delete = [key for key in x if key == 'not mentioned']
+            for key in delete:
+                del x[key]
+            result = x
+        else:
+            result = {}
+
 
         parameters['cust_id'] = user_id
         df.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                   'parameters.credit_card':result,}}, upsert=True)
-        return {'status':status,'message':'success'}
+                                                  'parameters.credit_card': result}}, upsert=True)
+        return {'status': True, 'message': 'success'}
+    except BaseException as e:
+        print(f"error in credit card limit check: {e}")
+        parameters['cust_id'] = user_id
+        df.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.credit_card': result}}, upsert=True)
+        return {'status': False, 'message': str(e)}
+

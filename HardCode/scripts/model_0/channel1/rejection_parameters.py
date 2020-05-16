@@ -1,19 +1,19 @@
-from HardCode.scripts.model_0.parameters.deduction_parameters.loan_app.loan_app_count_validate import loan_app_count
-from HardCode.scripts.model_0.parameters.deduction_parameters.account_status.status import get_acc_status
-from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
-from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.total_rejection_msg import get_defaulter
-from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.get_ratio import overdue_count_ratio
-from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.available_balance import find_info
 
+from HardCode.scripts.Util import conn
 
-def rejecting_parameters(user_id,cibil_df,sms_count):
-    loan_app , loan_status = loan_app_count(user_id)
-    account_status_value , ac_status = get_acc_status(cibil_df)
-    max_limit, loan_due_days, no_of_loan_apps, loan_apps , overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
-    flag , rejection_msg = get_defaulter(user_id)
-    ratio , overdue_count = overdue_count_ratio(user_id)
+def rejecting_parameters(user_id,sms_count):
+    connect = conn()
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
+    loan_app = parameters['parameters']['percentage_of_loan_app']
+    account_status_value = parameters['parameters']['account_status']
+    bal = parameters['parameters']['available_balance']
+    loan_due_days = parameters['parameters']['overdue_days']
+    overdue_count = parameters['parameters']['overdue_msg_count']
+    rejection_msg  = parameters['parameters']['legal_message_count']
+    flag = parameters['parameters']['legal_message_status']
+
     user_sms_count = sms_count
-    bal = find_info(user_id)
+    # bal = find_info(user_id)
 
     rejection_reasons = []
     if loan_app >= 0.70:
@@ -51,7 +51,7 @@ def rejecting_parameters(user_id,cibil_df,sms_count):
         msg = "user has more than 10 overdue msgs"
         rejection_reasons.append(msg)
 
-
+    connect.close()
     return rejection_reasons
 
 

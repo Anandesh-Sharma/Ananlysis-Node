@@ -1,5 +1,8 @@
 from HardCode.scripts.parameters_for_bl0.relative_verification.rel_similarity import rel_sim
 from HardCode.scripts.parameters_for_bl0.reference_verification.data_extraction.data import get_contacts_data
+from datetime import datetime, date
+from HardCode.scripts.Util import conn
+import pytz
 
 
 def rel_validate(user_id):
@@ -7,6 +10,9 @@ def rel_validate(user_id):
     contacts_data = get_contacts_data(user_id)
     validated = False
     msg = ''
+    connect = conn()
+    db  = connect.analysis.parameters
+    parameters = {}
     rel_len = 0
     try:
         if contacts_data:
@@ -17,13 +23,21 @@ def rel_validate(user_id):
         else:
             status = False
             msg = 'no data fetched from api'
+        res = {'verification': validated, 'message': msg}
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.relatives': res, 'parameters.no_of_relatives': rel_len}},
+                  upsert=True)
+        return {'status': True, 'message': msg}
     except BaseException as e:
         #print(f"Error in validation: {e}")
         msg = f"error in relatives verification : {str(e)}"
-        status = False
 
-    finally:
+
         res = {'verification': validated, 'message': msg}
-        return {'status': status, 'length':rel_len,'result': res}
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.relatives': res,'parameters.no_of_relatives':rel_len}}, upsert=True)
+        return {'status': False, 'message': msg}
 
-# rel_validate(8035)
+

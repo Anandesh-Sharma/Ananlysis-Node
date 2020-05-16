@@ -1,4 +1,4 @@
-from HardCode.scripts.parameters_for_bl1.profile_info import get_profile_info
+from HardCode.scripts.parameters_for_bl0.profile_info import get_profile_info
 from datetime import datetime, date
 from HardCode.scripts.Util import conn
 import pytz

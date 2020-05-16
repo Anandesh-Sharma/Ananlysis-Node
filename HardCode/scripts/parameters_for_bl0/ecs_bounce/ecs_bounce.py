@@ -59,6 +59,9 @@ def get_ecs_bounce(cust_id):
 def get_count_ecs(cust_id):
     ecs = get_ecs_bounce(cust_id)
     ecs_count = 0
+    connect = conn()
+    db  = connect.analysis.parameters
+    parameters = {}
     try:
         if not ecs.empty:
             i = 0
@@ -81,9 +84,15 @@ def get_count_ecs(cust_id):
                 i += 1
         status = True
         msg = 'success'
+        parameters['cust_id'] = cust_id
+        db.update({'cust_id': cust_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.ecs_bounce': ecs_count}}, upsert=True)
     except BaseException as e:
         status = False
         msg = str(e)
+        parameters['cust_id'] = cust_id
+        db.update({'cust_id': cust_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.ecs_bounce': ecs_count}}, upsert=True)
 
     return {'status':status,'message':msg}
 

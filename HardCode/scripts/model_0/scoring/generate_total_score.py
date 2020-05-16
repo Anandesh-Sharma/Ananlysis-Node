@@ -10,19 +10,19 @@ import pytz
 timezone = pytz.timezone('Asia/Kolkata')
 
 
-def get_score(user_id, cibil_df,sms_count):
+def get_score(user_id,sms_count):
 
 
     status = True
     values = {}
     try:
         # >>==>> channel 1
-        rejection_reasons = rejecting_parameters(user_id,cibil_df,sms_count)
+        rejection_reasons = rejecting_parameters(user_id,sms_count)
         if len(rejection_reasons) > 0:
             print("user rejected")
 
 
-        variables, values = get_parameters(user_id, cibil_df)
+        variables, values = get_parameters(user_id)
         # >>==>> channel 2
 
         score1, weights1 = deduction_score(variables['deduction_variables'])

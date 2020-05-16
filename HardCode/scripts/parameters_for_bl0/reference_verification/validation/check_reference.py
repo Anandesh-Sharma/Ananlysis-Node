@@ -1,7 +1,10 @@
-from scripts.parameters_for_bl1.reference_verification.data_extraction.data import get_contacts_data
-from scripts.parameters_for_bl1.profile_info import get_profile_info
-from scripts.parameters_for_bl1.reference_verification.validation.cosine_similarity_method import \
+from HardCode.scripts.parameters_for_bl0.reference_verification.data_extraction.data import get_contacts_data
+from HardCode.scripts.parameters_for_bl0.profile_info import get_profile_info
+from HardCode.scripts.parameters_for_bl0.reference_verification.validation.cosine_similarity_method import \
     cos_sim
+from datetime import datetime, date
+from HardCode.scripts.Util import conn
+import pytz
 
 
 def validate(user_id):
@@ -15,6 +18,9 @@ def validate(user_id):
     validated = False
     max_similarity = -9
     msg = ''
+    connect = conn()
+    db  = connect.analysis.parameters
+    parameters = {}
 
 
     try:
@@ -38,12 +44,22 @@ def validate(user_id):
         else:
             status = False
             msg = 'no data fetched from api'
+        res = {'status': status,
+               'result': {'verification': validated, 'similarity_score': max_similarity, 'message': msg}}
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.reference': res}}, upsert=True)
+
+        return {'status': True, 'message': msg}
     except BaseException as e:
-        print(f"Error in validation: {e}")
+        #print(f"Error in validation: {e}")
         msg = f"error in reference verification : {str(e)}"
-        status = False
+        res = {'status': False,
+               'result': {'verification': validated, 'similarity_score': max_similarity, 'message': msg}}
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.reference': res}}, upsert=True)
 
-    finally:
-        res = {'verification': validated, 'similarity_score': max_similarity, 'message': msg}
+        return {'status': False, 'message': msg}
 
-        return {'status': status, 'result': res}
+

@@ -1,11 +1,11 @@
-from HardCode.scripts.model_0.parameters.additional_parameters.credit_card_limit.cc_limit import get_cc_limit
-from HardCode.scripts.model_0.parameters.additional_parameters.salary.salary_count import last_sal
-from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
-from HardCode.scripts.model_0.parameters.additional_parameters.user_name_msg.name_count_ratio import get_name_count
-from HardCode.scripts.model_0.parameters.additional_parameters.age_of_user.user_age import get_age
-from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.get_ratio import *
-from HardCode.scripts.model_0.channel3.repayment_history import repayment_history
-
+# from HardCode.scripts.model_0.parameters.additional_parameters.credit_card_limit.cc_limit import get_cc_limit
+# from HardCode.scripts.model_0.parameters.additional_parameters.salary.salary_count import last_sal
+# from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
+# from HardCode.scripts.parameters_for_bl0.user_name_msg.name_count_ratio import get_name_count
+# from HardCode.scripts.model_0.parameters.additional_parameters.age_of_user.user_age import get_age
+# from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.get_ratio import *
+# from HardCode.scripts.model_0.channel3.repayment_history import repayment_history
+from HardCode.scripts.Util import conn
 
 
 def get_additional_parameters(user_id):
@@ -13,15 +13,32 @@ def get_additional_parameters(user_id):
     :returns dictionaries of approval parameters and their values
     :rtype: dict
     """
+    connect = conn()
+    parameters = connect.analysis.parameters.find_one({'cust_id': user_id})
+    cc_limit = parameters['parameters']['credit_card']
+    name_count = parameters['parameters']['credit_card']['username_msgs']
+    salary_dict = parameters['parameters']['salary']
+    loan_apps = parameters['parameters']['loan_apps_list']
+    loan_dates = parameters['parameters']['loan_dates']
+    age = parameters['parameters']['age']
+    overdue_msg_ratio = parameters['parameters']['overdue_msg_ratio']
+    overdue_msg_count = parameters['parameters']['overdue_msg_count']
+    legal_msg_ratio = parameters['parameters']['legal_msg_count']
+    legal_msg_count = parameters['parameters']['legal_msg_count']
+    cr_loan_limit = parameters['parameters']['credicxo_loan_limit']
+    total_loans = parameters['parameters']['credicxo_total_loans']
+    overdue_report = parameters['parameters']['credicxo_overdue_days']
+    pending_emi = parameters['parameters']['credicxo_pending_emi']
 
-    cc_limit = get_cc_limit(user_id)
-    salary_dict = last_sal(user_id)
-    name_count = get_name_count(user_id)
-    max_limit, due_days, no_of_loan_apps, loan_apps ,loan_overdue_ratio, loan_dates , total_loans = loan_limit(user_id)
-    age = get_age(user_id)
-    overdue_msg_ratio,overdue_msg_count = overdue_count_ratio(user_id)
-    legal_msg_ratio,legal_msg_count = legal_messages_count_ratio(user_id)
-    total_loans, cr_loan_limit, overdue_report, pending_emi = repayment_history(user_id)
+
+    # cc_limit = get_cc_limit(user_id)
+    # salary_dict = last_sal(user_id)
+    # name_count = get_name_count(user_id)
+    # max_limit, due_days, no_of_loan_apps, loan_apps ,loan_overdue_ratio, loan_dates , total_loans = loan_limit(user_id)
+    # age = get_age(user_id)
+    # overdue_msg_ratio,overdue_msg_count = overdue_count_ratio(user_id)
+    # legal_msg_ratio,legal_msg_count = legal_messages_count_ratio(user_id)
+    # total_loans, cr_loan_limit, overdue_report, pending_emi = repayment_history(user_id)
 
     # >>==>> salary
     salary_check1 = False
@@ -89,7 +106,7 @@ def get_additional_parameters(user_id):
     #     non_defaulter_check = True
 
 
-
+    connect.close()
     approval_variables = {
         'cc_limit_check1': cc_limit_check1,
         'cc_limit_check2': cc_limit_check2,

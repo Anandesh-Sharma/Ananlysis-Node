@@ -1,9 +1,9 @@
 import pytz
 import pandas as pd
 from datetime import datetime
-from scripts.parameters_for_bl1.rejection_msgs.total_rejection_msg import get_defaulter
-from Util import conn
-from scripts.loan_analysis.my_modules import is_overdue
+from HardCode.scripts.parameters_for_bl0.rejection_msgs.total_rejection_msg import get_defaulter
+from HardCode.scripts.Util import conn
+from HardCode.scripts.loan_analysis.my_modules import is_overdue
 
 
 def get_user_messages_length(user_id):
@@ -85,9 +85,14 @@ def  legal_messages_count_ratio(user_id):
         ratio = legal_messages_count / user_sms_count
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.legal_msg_count': legal_messages_count}}, upsert=True)
+                                                  'parameters.legal_msg_count': legal_messages_count,
+                                                  'parameters.legal_msg_ratio': ratio}}, upsert=True)
         return {'status':True,'message':'success'}
     except Exception as e:
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.legal_msg_count': legal_messages_count,
+                                                  'parameters.legal_msg_ratio': ratio}}, upsert=True)
         return {'status':False,'message':str(e)}
 
 
@@ -108,7 +113,11 @@ def overdue_count_ratio(user_id):
         if due_overdue_messages:
             due_overdue_messages = pd.DataFrame(due_overdue_messages['sms'])
         else:
-            return ratio, overdue_count
+            parameters['cust_id'] = user_id
+            db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                      'parameters.overdue_msg_count': overdue_count,
+                                                      'parameters.overdue_msg_ratio': ratio}}, upsert=True)
+            return {'status':False,'message':'no data found'}
         if not due_overdue_messages.empty:
             for i in range(due_overdue_messages.shape[0]):
                 message = str(due_overdue_messages['body'][i]).lower()
@@ -118,9 +127,14 @@ def overdue_count_ratio(user_id):
         ratio = overdue_count / user_sms_count
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.overdue_msg_count': overdue_count}}, upsert=True)
+                                                  'parameters.overdue_msg_count': overdue_count,
+                                                  'parameters.overdue_msg_ratio': ratio}}, upsert=True)
         return {'status':True,'message':'success'}
     except Exception as e:
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.overdue_msg_count': overdue_count,
+                                                  'parameters.overdue_msg_ratio': ratio}}, upsert=True)
 
         return {'status':False,'message':str(e)}
 

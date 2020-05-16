@@ -1,12 +1,16 @@
 import re
 import pandas as pd
 from HardCode.scripts.Util import conn
+from datetime import  datetime
+import  pytz
 
 
 def get_defaulter(user_id):
     FLAG = False
     legal_message_count = 0
     connect = conn()
+    db = connect.analysis.parameters
+    parameters = {}
     loan_approval = connect.messagecluster.loanapproval.find_one({'cust_id': user_id})
     loan_reject = connect.messagecluster.loanrejection.find_one({'cust_id': user_id})
     loan_overdue = connect.messagecluster.loandueoverdue.find_one({'cust_id': user_id})
@@ -20,7 +24,11 @@ def get_defaulter(user_id):
         total = loan_approval + loan_overdue + loan_reject
         total = pd.DataFrame(total)
     else:
-        return {'status':FLAG, 'message':'success','legal_msg_count':legal_message_count}
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.legal_message_count': legal_message_count,
+                                                  'parameters.legal_message_status':FLAG}}, upsert=True)
+        return {'status':FLAG, 'message':'no loan data found'}
 
     patterns = [
         r'legal\snotice\salert.*(?:loan|emi)\samount.*overdue.*since\s([0-9]{1,2})\sday[s]?', #days [0]
@@ -65,21 +73,32 @@ def get_defaulter(user_id):
         r'(?:exceeded|overdued)\s(?:your)?.*(?:emi|installment|loan)\s(?:payment|repayment).*([0-9]+)\s?days', #days [37]
         r'pay.*before.*tagged\sas\s(?:defaulter|defaulted)' #[38]
     ]
-    for i in range(total.shape[0]):
-        message = str(total['body'][i].encode('utf-8')).lower()
+    try:
+        for i in range(total.shape[0]):
+            message = str(total['body'][i].encode('utf-8')).lower()
 
-        for pattern in patterns:
-            matcher = re.search(pattern, message)
-            if pattern is patterns[0] or pattern is patterns[1] or pattern is patterns[2] or pattern is patterns[3] or pattern is patterns[5] or \
-                pattern is patterns[6] or pattern is patterns[14] or pattern is patterns[22] or pattern is patterns[27] or pattern is patterns[37]:
-                if matcher is not None:
-                    if int(matcher.group(1)) > 15:
-                        FLAG = True
-                        # legal_message_count += 1
+            for pattern in patterns:
+                matcher = re.search(pattern, message)
+                if pattern is patterns[0] or pattern is patterns[1] or pattern is patterns[2] or pattern is patterns[3] or pattern is patterns[5] or \
+                    pattern is patterns[6] or pattern is patterns[14] or pattern is patterns[22] or pattern is patterns[27] or pattern is patterns[37]:
+                    if matcher is not None:
+                        if int(matcher.group(1)) > 15:
+                            FLAG = True
+                            # legal_message_count += 1
+                            break
                         break
+                if matcher is not None:
+                    FLAG = True
+                    legal_message_count += 1
                     break
-            if matcher is not None:
-                FLAG = True
-                legal_message_count += 1
-                break
-    return {'status':FLAG, 'message':'success','legal_msg_count':legal_message_count}
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.legal_message_count': legal_message_count,
+                                                  'parameters.legal_message_status':FLAG}}, upsert=True)
+        return {'status':True, 'message':'success'}
+    except BaseException as e:
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.legal_message_count': legal_message_count,
+                                                  'parameters.legal_message_status': FLAG}}, upsert=True)
+        return {'status': False, 'message': str(e)}

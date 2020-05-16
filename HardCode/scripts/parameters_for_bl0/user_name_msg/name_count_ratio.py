@@ -1,6 +1,8 @@
-from HardCode.scripts.model_0.parameters.additional_parameters.user_name_msg.username_info import get_profile_name
+from HardCode.scripts.parameters_for_bl0.user_name_msg.username_info import get_profile_name
 from HardCode.scripts.Util import conn
 import pandas as pd
+from datetime import datetime, date
+import pytz
 
 import re
 
@@ -70,14 +72,27 @@ def get_user_messages(user_id):
 def get_name_count(cust_id):
     name_count = 0
     user_data = get_user_messages(cust_id)
-    if not user_data.empty:
-        actual_name = get_profile_name(cust_id)
-        actual_name = str(actual_name).split(' ')
-        pattern = str(actual_name[0])
-        for i in range(user_data.shape[0]):
-            message = str(user_data['body'][i]).lower()
-            matcher = re.search(pattern, message)
-            if matcher is not None:
-                name_count += 1
-                break
-    return name_count
+    connect = conn()
+    db  = connect.analysis.parameters
+    parameters = {}
+
+    try:
+        if not user_data.empty:
+            actual_name = get_profile_name(cust_id)
+            actual_name = str(actual_name).split(' ')
+            pattern = str(actual_name[0])
+            for i in range(user_data.shape[0]):
+                message = str(user_data['body'][i]).lower()
+                matcher = re.search(pattern, message)
+                if matcher is not None:
+                    name_count += 1
+                    break
+        parameters['cust_id'] = cust_id
+        db.update({'cust_id': cust_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.username_msgs': name_count}}, upsert=True)
+        return {'status':True,'message':'success'}
+    except BaseException as e:
+        parameters['cust_id'] = cust_id
+        db.update({'cust_id': cust_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.username_msgs': name_count}}, upsert=True)
+        return {'status': False, 'message': str(e)}

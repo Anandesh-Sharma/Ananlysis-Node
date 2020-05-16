@@ -1,5 +1,5 @@
 # import pandas as pd
-from HardCode.scripts.Util import logger_1
+from HardCode.scripts.Util import logger_1,conn
 import regex as re
 from datetime import datetime
 

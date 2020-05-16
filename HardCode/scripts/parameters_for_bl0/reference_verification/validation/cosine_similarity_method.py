@@ -1,6 +1,6 @@
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
-from scripts.parameters_for_bl1.reference_verification.corpus import synonymns as syns
+from HardCode.scripts.parameters_for_bl0.reference_verification.corpus import synonymns as syns
 
 
 def cos_sim(**kwargs):

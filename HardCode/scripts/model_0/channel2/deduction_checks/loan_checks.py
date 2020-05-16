@@ -1,10 +1,17 @@
-from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
-from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.last_loan_details import get_final_loan_details
-
+# from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
+# from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.last_loan_details import get_final_loan_details
+from HardCode.scripts.Util import conn
 def loan_check(user_id):
-
-    max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
-    report = get_final_loan_details(user_id)
+    connect = conn()
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
+    max_limit =  parameters['parameters']['loan_limit']
+    due_days =  parameters['parameters']['overdue_days']
+    no_of_loan_apps =  parameters['parameters']['no_of_loan_apps']
+    loan_apps =  parameters['parameters']['loan_limit']
+    overdue_ratio =  parameters['parameters']['overdue_ratio']
+    report =  parameters['parameters']['loan_limit']  # TODO change this for actual report from loan analysis
+    # max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
+    # report = get_final_loan_details(user_id)
 
 
     #>>==>> loan limit
@@ -57,7 +64,7 @@ def loan_check(user_id):
 
 
 
-
+    connect.close()
     variables = {
         'loan_limit_check1': loan_limit_check1,
         'loan_limit_check2': loan_limit_check2,
