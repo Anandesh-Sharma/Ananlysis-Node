@@ -1,10 +1,10 @@
 from .transaction_analysis import process_data
 from .monthly_transactions import monthly_credit_sum, monthly_debit_sum
 from HardCode.scripts.balance_sheet_analysis.Validation2 import *
-from datetime import datetime 
+from datetime import datetime
 import pytz
 import json
-from HardCode.scripts.Util import conn, logger_1, convert_json_balanced_sheet, convert_json_balanced_sheet_empty
+from HardCode.scripts.Util import conn, logger_1, convert_json_balanced_sheet# convert_json_balanced_sheet_empty
 
 
 def create_transaction_balanced_sheet(user_id):
@@ -46,13 +46,25 @@ def create_transaction_balanced_sheet(user_id):
         if p:
             index = 0
         df = df.loc[index:]
-    if df.shape[0] == 0:
-        return {'status': True, 'message': 'success'}  # do something
+        if df.shape[0] == 0:
+            return {'status': True, 'message': 'success'}  # do something
     # doing something
     logger.info('Converting file to dataframe')
     if df.shape[0] == 0:
-        r = {'status': True, 'message': 'success', 'df': convert_json_balanced_sheet_empty()}
-        return r
+        r={}
+        r['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
+        r['cust_id'] = user_id
+        r['max_timestamp']="2000-03-30 04:10:24"
+        r['final_credit']='mar/2000'
+        r['credit']=[]
+        r['debit']=[]
+        r['sheet']=[]
+        try:
+            client.analysis.balance_sheet.update({'cust_id': user_id}, {"$set": r}, upsert=True)
+            logger.info('balanced sheet found and saved')
+            return {'status':True,'message':'success'}
+        except BaseException as e:
+            return {'status':False,'message':str(e)}
     logger.info('Conversion Successful')
     logger.info('Starting to process data')
     result = process_data(df, user_id)

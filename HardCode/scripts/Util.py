@@ -172,14 +172,12 @@ def convert_json_balanced_sheet(data, credit, debit):
     return obj
 
 
-def convert_json_balanced_sheet_empty():
-    obj = {"sheet": [], 'credit': [], 'debit': []}
-    sms = {"sender": "", "body": "", "timestamp": "",
-           "read": "", "time_message": "", "acc_no": "",
-           "VPA": "", "IMPS Ref no": "", 'UPI Ref no': "",
-           'neft': "", 'Neft no': "", 'Credit Amount': "",
-           'Debit Amount': "", 'UPI': "", 'Date Time': "",
-           'Date Message': "", 'IMPS': "", 'Available Balance': ""}
-    obj['sheet'].append(sms)
+# def convert_json_balanced_sheet_empty():
+#     sms = {"sender": "", "body": "", "timestamp": "",
+#            "read": "", "time_message": "", "acc_no": "",
+#            "VPA": "", "IMPS Ref no": "", 'UPI Ref no': "",
+#            'neft': "", 'Neft no': "", 'Credit Amount': "",
+#            'Debit Amount': "", 'UPI': "", 'Date Time': "",
+#            'Date Message': "", 'IMPS': "", 'Available Balance': ""}
 
-    return obj
+#     return list().append(sms)

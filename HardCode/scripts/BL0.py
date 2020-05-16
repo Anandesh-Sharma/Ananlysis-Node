@@ -43,7 +43,7 @@ def exception_feeder(**kwargs):
     r = {'status': False, 'message': msg,
          'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
     if client:
-        client.analysisresuult.exception_bl0.insert_one(r)
+        client.analysisresult.exception_bl0.insert_one(r)
     return r
 
 def result_output_false(msg):

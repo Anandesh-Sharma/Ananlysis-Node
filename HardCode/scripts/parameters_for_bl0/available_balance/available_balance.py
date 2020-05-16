@@ -98,7 +98,7 @@ def find_info(user_id):
                                                                                        'last_month_bal':-1,'second_last_month_bal':-1,
                                                                                        'third_last_month_bal':-1,'count_creditordebit_msg':-1,
                                                                                        'no_of_accounts':-1}}}, upsert=True)
-        return {'status':False,'message':'balance sheet not found'}
+        return {'status':True,'message':'success'}
     try:
         user_data = user_data['sheet']
         sms_info_df = pd.DataFrame(user_data)

@@ -28,7 +28,7 @@ def get_defaulter(user_id):
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                   'parameters.legal_message_count': legal_message_count,
                                                   'parameters.legal_message_status':FLAG}}, upsert=True)
-        return {'status':FLAG, 'message':'no loan data found'}
+        return {'status':True, 'message':'no loan data found'}
 
     patterns = [
         r'legal\snotice\salert.*(?:loan|emi)\samount.*overdue.*since\s([0-9]{1,2})\sday[s]?', #days [0]
