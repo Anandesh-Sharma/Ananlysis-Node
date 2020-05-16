@@ -15,7 +15,6 @@ def loan_app_count(user_id):
     db  = connect.analysis.parameters
     parameters = {}
     try:
-
         if app_data:
             d = []
             for i in app_data:
@@ -26,16 +25,16 @@ def loan_app_count(user_id):
                     d.append(i)
 
             percentage_of_loan_apps = (len(d) / len(app_data))
-            status = True
-            msg = 'success'
+        parameters['cust_id'] = user_id
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.percentage_of_loan_apps': percentage_of_loan_apps}},
+                  upsert=True)
+        return {'status': True, 'message': 'success'}
 
     except BaseException as e:
-        status = False
-
         print(f"Error in loan app count validation : {e}")
 
-    finally:
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                   'parameters.percentage_of_loan_apps': percentage_of_loan_apps}}, upsert=True)
-        return {'status': status, 'message': msg}
+        return {'status': False, 'message': str(e)}

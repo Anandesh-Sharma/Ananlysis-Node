@@ -133,8 +133,8 @@ def testing(user_id):
         print(f"the following error occurred : {e}")
 
 #
-# user_id = input('enter user id: ')
-# testing(user_id=user_id)
+user_id = input('enter user id: ')
+testing(user_id=user_id)
 
 l = [10717,12147,17684,60932,30977,169529,320781,50402,260887]
 l.sort(reverse=True)
@@ -147,8 +147,8 @@ print(l)
 #     exc.map(testing,(i for i in l))
 
 
-for i in tqdm(l):
-    testing(i)
+# for i in tqdm(l):
+#     testing(i)
 
 # df = pd.read_json("C:/Users/shreya/Downloads/exception_(1).json")
 # print(df)
