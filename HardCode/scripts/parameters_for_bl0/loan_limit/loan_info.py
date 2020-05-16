@@ -1,7 +1,7 @@
 from HardCode.scripts.Util import conn
 from datetime import datetime
 import pytz
-from HardCode.scripts.parameters_for_bl0.loan_limit.overdue_details import get_overdue_details
+from HardCode.scripts.loan_analysis.overdue_details import get_overdue_details
 
 
 def loan_limit(user_id):

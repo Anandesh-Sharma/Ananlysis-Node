@@ -5,7 +5,7 @@ from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import cr
 from HardCode.scripts.cheque_bounce_analysis.Cheque_Bounce import cheque_user_outer
 from HardCode.scripts.salary_analysis.monthly_salary_analysis import salary_main
 from HardCode.scripts.parameters_for_bl0.loan_limit.loan_info import loan_limit
-from HardCode.scripts.parameters_for_bl0.loan_limit.last_loan_details import get_final_loan_details
+from HardCode.scripts.loan_analysis.last_loan_details import get_final_loan_details
 from HardCode.scripts.parameters_for_bl0.available_balance.available_balance import find_info
 from HardCode.scripts.parameters_for_bl0.available_balance.mean_available_balance import mean_available
 from HardCode.scripts.parameters_for_bl0.credit_card_limit.cc_limit import get_cc_limit
@@ -24,8 +24,6 @@ from HardCode.scripts.parameters_for_bl0.reference_verification.validation.check
 from HardCode.scripts.parameters_for_bl0.relative_verification.relative_validation import rel_validate
 from HardCode.scripts.parameters_for_bl0.secured_unsecured_loans.count import secure_unsecured_loan
 from HardCode.scripts.parameters_for_bl0.user_name_msg.name_count_ratio import get_name_count
-from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
-from HardCode.scripts.model_0.scoring.generate_total_score import get_score
 from HardCode.scripts.Util import conn,logger_1
 import multiprocessing
 import warnings

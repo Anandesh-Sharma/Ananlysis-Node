@@ -158,15 +158,15 @@ def convert_json_balanced_sheet(data, credit, debit):
     obj['debit'] = debit
     for i in range(data.shape[0]):
         sms = {"sender": data['sender'][i], "body": data['body'][i], "timestamp": str(data['timestamp'][i]),
-               "read": data['read'][i], "time_message": str(data['time,message'][i]), "acc_no": int(data['acc_no'][i]),
+               "read": data['read'][i], "time_message": str(data['time,message'][i]), "acc_no": str(data['acc_no'][i]),
                "VPA": str(data['VPA'][i]), "IMPS Ref no": str(data["IMPS Ref no"][i]),
                'UPI Ref no': int(data['UPI Ref no'][i]),
                'neft': int(data['neft'][i]), 'Neft no': str(data['neft no'][i]),
-               'Credit Amount': float(data['credit_amount'][i]),
-               'Debit Amount': float(data['debit_amount'][i]), 'UPI': int(data['upi'][i]),
+               'Credit Amount': str(data['credit_amount'][i]),
+               'Debit Amount': str(data['debit_amount'][i]), 'UPI': str(data['upi'][i]),
                'Date Time': str(data['date_time'][i]),
-               'Date Message': str(data['date,message'][i]), 'IMPS': int(data['imps'][i]),
-               'Available Balance': float(data['available balance'][i])}
+               'Date Message': str(data['date,message'][i]), 'IMPS': str(data['imps'][i]),
+               'Available Balance': str(data['available balance'][i])}
         obj['sheet'].append(sms)
 
     return obj

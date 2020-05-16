@@ -35,11 +35,10 @@ def final_output(cust_id):
                 current_open             :    current open loans
                 max_amount               :    maximum loan amount in all loans
     '''
-    a, user_app_list = preprocessing(cust_id)
+    #a, user_app_list = preprocessing(cust_id)
     logger = logger_1('final_output', cust_id)
     report = {
         'TOTAL_LOAN_APPS': 0,
-        'LOAN_APP_LIST': user_app_list,
         'CURRENT_OPEN': 0,
         'TOTAL_LOANS': 0,
         'PAY_WITHIN_30_DAYS': True,
@@ -59,113 +58,107 @@ def final_output(cust_id):
     # final output
     li = []
     li_ovrdue = []
-    for i in a.keys():
-        report['TOTAL_LOANS'] = report['TOTAL_LOANS'] + len(a[i].keys())
-        #loan_disbursal_flow['app'].append(str(i))
-        try:
-            report['TOTAL_LOAN_APPS'] = len(a.keys())
-            # freport['LOAN_APP_LIST'].append(str(i)
-        except:
-            logger.info("no loan apps")
-        for j in a[i].keys():
-            try:
-                loan_disbursal_flow['app'].append(str(i))
-                loan_disbursal_flow['disbursal_date'].append(a[i][j]['disbursed_date'])
-
-            except:
-                pass
-            try:
-                if a[i][j]['overdue_days'] != -1:
-                    li_ovrdue.append(int(a[i][j]['overdue_days']))
-            except:
-                pass
-            try:
-                li.append(float(a[i][j]['loan_disbursed_amount']))
-                li.append(float(a[i][j]['loan_closed_amount']))
-                li.append(float(a[i][j]['loan_due_amount']))
-            except:
-                pass
-            if a[i][j]['loan_duration'] > 30:
-                report['PAY_WITHIN_30_DAYS'] = False
-
-            now = datetime.now()
-            now = timezone.localize(now)
-            if a[i][j]['disbursed_date'] != -1:
-                disbursed_date = timezone.localize(pd.to_datetime(a[i][j]['disbursed_date']))
-                days = (now - disbursed_date).days
-            else:
-                days = 31
-
-            if a[i][j]['closed_date'] == -1:
-                if days < 30:
-                    report['CURRENT_OPEN'] += 1
-
-                    try:
-                        disbursed_amount = float(a[i][j]['loan_disbursed_amount'])
-
-                        disbursed_amount_from_due = float(a[i][j]['loan_due_amount'])
-
-                        if int(disbursed_amount) != -1 and int(disbursed_amount_from_due) == -1:
-                            report['CURRENT_OPEN_AMOUNT'].append(disbursed_amount)
-
-                        elif int(disbursed_amount) == -1 and int(disbursed_amount_from_due) != -1:
-                            report['CURRENT_OPEN_AMOUNT'].append(disbursed_amount_from_due)
-
-                        elif int(disbursed_amount) == -1 and int(disbursed_amount_from_due) == -1:
-                            report['CURRENT_OPEN_AMOUNT'].append(disbursed_amount)
-
-                        if int(disbursed_amount) != -1 and int(disbursed_amount_from_due) != -1:
-                            report['CURRENT_OPEN_AMOUNT'].append(disbursed_amount)
-
-                        # report['CURRENT_OPEN_AMOUNT'].append(float(a[i][j]['loan_disbursed_amount']))
-                        #
-                        # report['CURRENT_OPEN_AMOUNT'].append(float(a[i][j]['loan_due_amount']))
-
-                    except BaseException as e:
-                        continue
-            else:
-                continue
-
-    try:
-        report['OVERDUE_DAYS'] = max(li_ovrdue)
-    except:
-        pass
-    try:
-        report['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS'] = np.round(sum(li_ovrdue) - max(li_ovrdue) / (len(li_ovrdue) - 1),2)
-    except:
-        pass
-    try:
-        report['OVERDUE_RATIO'] = np.round(len(li_ovrdue) / report['TOTAL_LOANS'], 2)
-    except:
-        report['OVERDUE_RATIO'] = 0
-    try:
-        report['LOAN_DATES'] = loan_disbursal_flow
-    except:
-        report['LOAN_DATES'] = {}
-
-    try:
-        report['MAX_AMOUNT'] = float(max(li))
-    except:
-        logger.info('no amount detect')
-        report['empty'] = True
-        script_status = {'status': True, 'message': 'success', 'result': report}
     try:
         client = conn()
-        logger.info('Successfully connect to the database')
-        report['modified_at'] = str(timezone.localize(datetime.now()))
-        report['cust_id'] = cust_id
-        report['complete_info'] = a
-        report['app_list'] =  user_app_list
+        loan_cluster = client.analysis.loan.find_one({"cust_id" : cust_id})
+        a = loan_cluster['complete_info']
+        for i in a.keys():
+            report['TOTAL_LOANS'] = report['TOTAL_LOANS'] + len(a[i].keys())
+            #loan_disbursal_flow['app'].append(str(i))
+            try:
+                report['TOTAL_LOAN_APPS'] = len(a.keys())
+                # freport['LOAN_APP_LIST'].append(str(i)
+            except:
+                logger.info("no loan apps")
+            for j in a[i].keys():
+                try:
+                    loan_disbursal_flow['app'].append(str(i))
+                    loan_disbursal_flow['disbursal_date'].append(a[i][j]['disbursed_date'])
 
-        client.analysis.loan.update_one({"cust_id": cust_id}, {"$set": report}, upsert=True)
+                except:
+                    pass
+                try:
+                    if a[i][j]['overdue_days'] != -1:
+                        li_ovrdue.append(int(a[i][j]['overdue_days']))
+                except:
+                    pass
+                try:
+                    li.append(float(a[i][j]['loan_disbursed_amount']))
+                    li.append(float(a[i][j]['loan_closed_amount']))
+                    li.append(float(a[i][j]['loan_due_amount']))
+                except:
+                    pass
+                if a[i][j]['loan_duration'] > 30:
+                    report['PAY_WITHIN_30_DAYS'] = False
 
-        logger.info('Successfully upload result to the database')
+                now = datetime.now()
+                now = timezone.localize(now)
+                if a[i][j]['disbursed_date'] != -1:
+                    disbursed_date = timezone.localize(pd.to_datetime(a[i][j]['disbursed_date']))
+                    days = (now - disbursed_date).days
+                else:
+                    days = 31
 
-        script_status = {'status': True, "message": "success", 'result': report}
-    except Exception as e:
-        logger.critical('Unable to connect to the database')
-        return {'status': False, "message": str(e)}
-    finally:
-        client.close()
+                if a[i][j]['closed_date'] == -1:
+                    if days < 30:
+                        report['CURRENT_OPEN'] += 1
 
+                        try:
+                            disbursed_amount = float(a[i][j]['loan_disbursed_amount'])
+
+                            disbursed_amount_from_due = float(a[i][j]['loan_due_amount'])
+
+                            if int(disbursed_amount) != -1 and int(disbursed_amount_from_due) == -1:
+                                report['CURRENT_OPEN_AMOUNT'].append(disbursed_amount)
+
+                            elif int(disbursed_amount) == -1 and int(disbursed_amount_from_due) != -1:
+                                report['CURRENT_OPEN_AMOUNT'].append(disbursed_amount_from_due)
+
+                            elif int(disbursed_amount) == -1 and int(disbursed_amount_from_due) == -1:
+                                report['CURRENT_OPEN_AMOUNT'].append(disbursed_amount)
+
+                            if int(disbursed_amount) != -1 and int(disbursed_amount_from_due) != -1:
+                                report['CURRENT_OPEN_AMOUNT'].append(disbursed_amount)
+
+                            # report['CURRENT_OPEN_AMOUNT'].append(float(a[i][j]['loan_disbursed_amount']))
+                            #
+                            # report['CURRENT_OPEN_AMOUNT'].append(float(a[i][j]['loan_due_amount']))
+
+                        except BaseException as e:
+                            continue
+                else:
+                    continue
+
+        try:
+            report['OVERDUE_DAYS'] = max(li_ovrdue)
+        except:
+            pass
+        try:
+            report['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS'] = np.round(sum(li_ovrdue) - max(li_ovrdue) / (len(li_ovrdue) - 1),2)
+        except:
+            pass
+        try:
+            report['OVERDUE_RATIO'] = np.round(len(li_ovrdue) / report['TOTAL_LOANS'], 2)
+        except:
+            report['OVERDUE_RATIO'] = 0
+        try:
+            report['LOAN_DATES'] = loan_disbursal_flow
+        except:
+            report['LOAN_DATES'] = {}
+
+        try:
+            report['MAX_AMOUNT'] = float(max(li))
+        except:
+            logger.info('no amount detect')
+            report['empty'] = True
+        try:
+            client.analysis.parameters.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "parameters.loan_info ": report}},  upsert = True)
+            logger.info("successfully updated loan info data on database")
+        except:
+            logger.info("unable to update loan info data on database")
+        script_status = {'status': True, 'message': 'success', 'result': report}
+    except BaseException as e:
+        import traceback
+        traceback.print_tb(e.__traceback__)
+        script_status = {"status" : False, "message" : str(e)}
     return script_status

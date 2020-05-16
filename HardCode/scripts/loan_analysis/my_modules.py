@@ -21,7 +21,7 @@ def sms_header_splitter(data):
 
     for i in range(len(data)):
         data['sender'][i] = data['sender'][i].replace('-', '')
-        data["sender"][i] = data["sender"][i][2:]
+        data["sender"][i] = str(data["sender"][i][2:]).upper()
         data['Sender-Name'][i] = data['sender'][i]
     data.drop(['sender'], axis=1, inplace=True)
     return data
