@@ -80,6 +80,12 @@ def bl0(**kwargs):
         logger.critical('error in connection')
     logger.info('connection success')
 
+    # ==> Saving no of sms
+    no_of_sms = len(sms_json)
+    db = client.analysis.parameters
+    db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.Total_msg': no_of_sms}}, upsert=True)
+
 
     # >>==>> Classification
     logger.info('starting classification')

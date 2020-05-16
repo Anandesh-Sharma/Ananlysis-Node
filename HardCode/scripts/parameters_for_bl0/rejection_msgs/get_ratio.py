@@ -76,15 +76,17 @@ def  legal_messages_count_ratio(user_id):
     parameters = {}
     output = {}
     try:
-        connect = conn()
         # user_sms_count = connection.analysisresult.bl0.find_one({'cust_id':user_id})
         # user_sms_count = user_sms_count['result'][-1]
         # user_sms_count = user_sms_count['sms_count']
-        user_sms_count = get_user_messages_length(user_id)
+        user_sms_count = db.find_one({"cust_id":user_id})['Total_msg']
         # defaulter, legal_messages_count = get_defaulter(user_id)
         legal_sms_count = db.find_one({'cust_id': user_id})
         legal_messages_count = legal_sms_count['legal_message_count']
-        ratio = legal_messages_count / user_sms_count
+        if user_sms_count==0:
+            ratio=0
+        else:
+            ratio = legal_messages_count / user_sms_count
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                   'parameters.legal_msg_ratio': ratio}}, upsert=True)
@@ -104,11 +106,10 @@ def overdue_count_ratio(user_id):
     parameters = {}
     output = {}
     try:
-        connection = conn()
         # user_sms_count = connection.analysisresult.bl0.find_one({'cust_id': user_id})
         # user_sms_count = user_sms_count['result'][-1]
         # user_sms_count = user_sms_count['sms_count']
-        user_sms_count = get_user_messages_length(user_id)
+        user_sms_count = db.find_one({"cust_id":user_id})['Total_msg']
         due_overdue_messages = connection.messagecluster.loandueoverdue.find_one({'cust_id': user_id})
         if due_overdue_messages:
             due_overdue_messages = pd.DataFrame(due_overdue_messages['sms'])
@@ -124,7 +125,10 @@ def overdue_count_ratio(user_id):
                 if is_overdue(message):
                     overdue_count += 1
 
-        ratio = overdue_count / user_sms_count
+        if user_sms_count==0:
+            ratio=0
+        else:
+            ratio = overdue_count / user_sms_count
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                   'parameters.overdue_msg_count': overdue_count,
