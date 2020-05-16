@@ -25,7 +25,7 @@ def get_overdue_details(cust_id):
                 if data[i][j]['disbursed_date'] != -1:
                     disbursed_date = datetime.strptime(str(data[i][j]['disbursed_date']), '%Y-%m-%d %H:%M:%S')
                     current_date = datetime.strptime('2020-03-20 00:00:00', '%Y-%m-%d %H:%M:%S')
-                    days = (current_date - disbursed_date).days
+                    # days = (current_date - disbursed_date).days
                     if data[i][j]['overdue_days'] != -1:
                         overdue_days_list.append(data[i][j]['overdue_days'])
         if total_loans != 0:
@@ -37,7 +37,8 @@ def get_overdue_details(cust_id):
         report['total_loans'] = total_loans
         report['cust_id'] = cust_id
         db = connect.analysis.parameters
-        db.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "parameters.loan_info ": report}})
+        del report['cust_id']
+        db.update({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "parameters.overdue_info ": report}})
         script_status = {"status" : True, "message" : "successfully updated overdue details on database"}
 
     except BaseException as e:

@@ -5,6 +5,7 @@ from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import cr
 from HardCode.scripts.cheque_bounce_analysis.Cheque_Bounce import cheque_user_outer
 from HardCode.scripts.salary_analysis.monthly_salary_analysis import salary_main
 from HardCode.scripts.loan_analysis.last_loan_details import get_final_loan_details
+from HardCode.scripts.loan_analysis.loan_main import final_output
 from HardCode.scripts.parameters_for_bl0.available_balance.available_balance import find_info
 from HardCode.scripts.parameters_for_bl0.available_balance.mean_available_balance import mean_available
 from HardCode.scripts.parameters_for_bl0.credit_card_limit.cc_limit import get_cc_limit
@@ -24,6 +25,7 @@ from HardCode.scripts.parameters_for_bl0.relative_verification.relative_validati
 from HardCode.scripts.parameters_for_bl0.secured_unsecured_loans.count import secure_unsecured_loan
 from HardCode.scripts.parameters_for_bl0.user_name_msg.name_count_ratio import get_name_count
 from HardCode.scripts.loan_analysis.overdue_details import get_overdue_details
+from HardCode.scripts.model_0.scoring.generate_total_score import get_score
 from HardCode.scripts.Util import conn,logger_1
 import multiprocessing
 import warnings
@@ -191,6 +193,19 @@ def bl0(**kwargs):
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id,msg=msg)
     logger.info('Loan detail final complete')
+
+    # >>=>> lOAN_Main
+    try:
+        loan_main_result = final_output(user_id)
+        if not loan_main_result['status']:
+            msg = "Loan main check failed due to some reason-"+loan_main_result['message']
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id,msg=msg)
+    except BaseException as e:
+        msg = "Loan main failed due to some reason-"+str(e)
+        logger.error(msg)
+        exception_feeder(client=client, user_id=user_id,msg=msg)
+    logger.info('Loan main complete')
 
 
     # >>=>> Available Balance
@@ -440,17 +455,17 @@ def bl0(**kwargs):
     logger.info('Username messages count complete')
 
     # >>=>> Scoring Model
-    # try:
-    #     result_score = get_score(user_id,sms_count)
-    #     if not result_score['status']:
-    #         msg = "Scoring Model failed due to some reason"
-    #         logger.error(msg)
-    #         exception_feeder(client=client, user_id=user_id,msg=msg)
-    # except BaseException as e:
-    #     msg = "Scoring Model failed due to some reason-"+str(e)
-    #     logger.error(msg)
-    #     exception_feeder(client=client, user_id=user_id,msg=msg)
-    # logger.info('Scoring Model complete')
+    try:
+        result_score = get_score(user_id,sms_count)
+        if not result_score['status']:
+            msg = "Scoring Model failed due to some reason"
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id,msg=msg)
+    except BaseException as e:
+        msg = "Scoring Model failed due to some reason-"+str(e)
+        logger.error(msg)
+        exception_feeder(client=client, user_id=user_id,msg=msg)
+    logger.info('Scoring Model complete')
 
     # >>=>> Rule Engine
     # try:
