@@ -28,8 +28,10 @@ def get_overdue_details(cust_id):
                     days = (current_date - disbursed_date).days
                     if data[i][j]['overdue_days'] != -1:
                         overdue_days_list.append(data[i][j]['overdue_days'])
-
-        overdue_ratio = np.round(len(overdue_days_list)/total_loans, 4)
+        if total_loans != 0:
+            overdue_ratio = np.round(len(overdue_days_list)/total_loans, 4)
+        else:
+            overdue_ratio = 0
         report['overdue_ratio'] = overdue_ratio
         report['overdue_days_list'] = overdue_days_list
         report['total_loans'] = total_loans
