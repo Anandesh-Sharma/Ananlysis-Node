@@ -27,7 +27,7 @@ from HardCode.scripts.parameters_for_bl0.secured_unsecured_loans.count import se
 from HardCode.scripts.parameters_for_bl0.user_name_msg.name_count_ratio import get_name_count
 from HardCode.scripts.loan_analysis.overdue_details import get_overdue_details
 from HardCode.scripts.model_0.scoring.generate_total_score import get_score
-from HardCode.scripts.Util import conn,logger_1
+from HardCode.scripts.Util import conn, logger_1
 import multiprocessing
 import warnings
 from datetime import datetime
@@ -35,12 +35,13 @@ import pytz
 
 warnings.filterwarnings("ignore")
 
+
 def exception_feeder(**kwargs):
     client = kwargs.get('client')
     msg = kwargs.get('msg')
     user_id = kwargs.get('user_id')
 
-    logger = logger_1('exception_feeder',user_id)
+    logger = logger_1('exception_feeder', user_id)
 
     logger.error(msg)
     r = {'status': False, 'message': msg,
@@ -49,11 +50,14 @@ def exception_feeder(**kwargs):
         client.analysisresult.exception_bl0.insert_one(r)
     return r
 
+
 def result_output_false(msg):
     return {'status': False, 'message': msg}
 
+
 def result_output_block():
     return {'status': True, 'message': "success"}
+
 
 def bl0(**kwargs):
     user_id = kwargs.get('user_id')
@@ -72,7 +76,6 @@ def bl0(**kwargs):
         except BaseException as e:
             return exception_feeder(user_id=-1, msg='user_id has a issue got id' + str(user_id))
 
-
     try:
         logger.info('making connection with db')
         client = conn()
@@ -84,8 +87,7 @@ def bl0(**kwargs):
     no_of_sms = len(sms_json)
     db = client.analysis.parameters
     db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.Total_msg': no_of_sms}}, upsert=True)
-
+                                              'parameters.Total_msg': no_of_sms}}, upsert=True)
 
     # >>==>> Classification
     logger.info('starting classification')
@@ -93,44 +95,43 @@ def bl0(**kwargs):
     try:
         p.start()
     except BaseException as e:
-        msg="Exception in starting classifier"+str(e)
-        exception_feeder(user_id=user_id, msg=msg,client=client)
+        msg = "Exception in starting classifier" + str(e)
+        exception_feeder(user_id=user_id, msg=msg, client=client)
 
     try:
         p.join()
     except BaseException as e:
-        msg="Exception in joining classification process"+str(e)
-        exception_feeder(user_id=user_id, msg=msg,client=client)
+        msg = "Exception in joining classification process" + str(e)
+        exception_feeder(user_id=user_id, msg=msg, client=client)
     logger.info('classification completes')
 
-        # >>=>> LOAN ANALYSIS
+    # >>=>> LOAN ANALYSIS
     logger.info('starting loan analysis')
     try:
         result_loan = preprocessing(user_id)  # returns a dictionary
         if not result_loan['status']:
-            msg="Loan Analysis failed due to some reason-"+result_loan['message']
+            msg = "Loan Analysis failed due to some reason-" + result_loan['message']
             exception_feeder(client=client, user_id=user_id,
-                         msg=msg)
+                             msg=msg)
     except BaseException as e:
-        msg="Exception in Loan Analysis-"+str(e)
-        exception_feeder(user_id=user_id, msg=msg,client=client)
+        msg = "Exception in Loan Analysis-" + str(e)
+        exception_feeder(user_id=user_id, msg=msg, client=client)
     logger.info('loan analysis successful')
-
 
     # >>=>> Rejection check
     logger.info('starting rejection checkrejection check')
     try:
         result_rejection = check_rejection(user_id)  # returns a dictionary
         if not result_rejection['status']:
-            msg = "rejection check failed due to some reason-"+result_rejection['message']
+            msg = "rejection check failed due to some reason-" + result_rejection['message']
             logger.error(msg)
             exception_feeder(client=client, user_id=user_id,
-                            msg=msg)
+                             msg=msg)
     except BaseException as e:
-        msg = "rejection check failed due to some reason-"+str(e)
+        msg = "rejection check failed due to some reason-" + str(e)
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id,
-                        msg=msg)
+                         msg=msg)
     logger.info('rejection check complete')
 
     # >>=>> BALANCE SHEET
@@ -138,354 +139,344 @@ def bl0(**kwargs):
     try:
         result_balance_sheet = create_transaction_balanced_sheet(user_id)
         if not result_balance_sheet['status']:
-            msg = "Balance Sheet check failed due to some reason-"+result_balance_sheet['message']
+            msg = "Balance Sheet check failed due to some reason-" + result_balance_sheet['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Balance Sheet failed due to some reason-"+str(e)
+        msg = "Balance Sheet failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Balance Sheet complete')
-
 
     # >>=>> CHEQUE BOUNCE ANALYSIS
     try:
         result_cheque_bounce = cheque_user_outer(user_id)
         if not result_cheque_bounce['status']:
-            msg = "Cheque Bounce check failed due to some reason-"+result_cheque_bounce['message']
+            msg = "Cheque Bounce check failed due to some reason-" + result_cheque_bounce['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Cheque Bounce failed due to some reason-"+str(e)
+        msg = "Cheque Bounce failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Cheque Bounce complete')
 
-# >>=>> SALARY ANALYSIS
+    # >>=>> SALARY ANALYSIS
     logger.info('starting salary analysis')
     try:
         result_salary = salary_main(user_id)  # Returns a dictionary
         if not result_salary['status']:
-            msg = "Salary check failed due to some reason-"+result_salary['message']
+            msg = "Salary check failed due to some reason-" + result_salary['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Salary failed due to some reason-"+str(e)
+        msg = "Salary failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Salary analysis complete')
 
     # >>=>> Overdue Details
     try:
         result_overdue = get_overdue_details(user_id)
         if not result_overdue['status']:
-            msg = "Overdue Details check failed due to some reason-"+result_overdue['message']
+            msg = "Overdue Details check failed due to some reason-" + result_overdue['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Overdue Details failed due to some reason-"+str(e)
+        msg = "Overdue Details failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Overdue Details complete')
 
     # >>=>> lOAN_details
     try:
         result_loan_detail_final = get_final_loan_details(user_id)
         if not result_loan_detail_final['status']:
-            msg = "Loan detail final check failed due to some reason-"+result_loan_detail_final['message']
+            msg = "Loan detail final check failed due to some reason-" + result_loan_detail_final['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Loan detail final failed due to some reason-"+str(e)
+        msg = "Loan detail final failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Loan detail final complete')
 
     # >>=>> lOAN_Main
     try:
         loan_main_result = final_output(user_id)
         if not loan_main_result['status']:
-            msg = "Loan main check failed due to some reason-"+loan_main_result['message']
+            msg = "Loan main check failed due to some reason-" + loan_main_result['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Loan main failed due to some reason-"+str(e)
+        msg = "Loan main failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Loan main complete')
-
 
     # >>=>> Available Balance
     try:
         result_available_balance = find_info(user_id)
         if not result_available_balance['status']:
-            msg = "Available balance final check failed due to some reason-"+result_available_balance['message']
+            msg = "Available balance final check failed due to some reason-" + result_available_balance['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Available Balance failed due to some reason-"+str(e)
+        msg = "Available Balance failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Available Balance complete')
-
 
     # >>=>> Mean Available Balance
     try:
         result_mean_available = mean_available(user_id)
         if not result_mean_available['status']:
-            msg = "Mean balance final check failed due to some reason-"+result_mean_available['message']
+            msg = "Mean balance final check failed due to some reason-" + result_mean_available['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
         import traceback
         traceback.print_tb(e.__traceback__)
-        msg = "Mean Balance Available failed due to some reason-"+str(e)
+        msg = "Mean Balance Available failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Mean Balance Available complete')
-
 
     # >>=>> CC Limit
     try:
         result_cc_limit = get_cc_limit(user_id)
         if not result_cc_limit['status']:
-            msg = "cc limit check failed due to some reason-"+result_cc_limit['message']
+            msg = "cc limit check failed due to some reason-" + result_cc_limit['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "cc limit failed due to some reason-"+str(e)
+        msg = "cc limit failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('cc limit complete')
-
 
     # >>=>> Last Salary Calculate
     try:
         result_last_salary = last_sal(user_id)
         if not result_last_salary['status']:
-            msg = "Last salary check failed due to some reason-"+result_last_salary['message']
+            msg = "Last salary check failed due to some reason-" + result_last_salary['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
         import traceback
         traceback.print_tb(e.__traceback__)
-        msg = "Last Salary failed due to some reason-"+str(e)
+        msg = "Last Salary failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Last Salary complete')
-
 
     # >>=>> Ecs Calculate
     try:
         result_ecs_data = get_count_ecs(user_id)
         if not result_ecs_data['status']:
-            msg = "Ecs data check failed due to some reason-"+result_ecs_data['message']
+            msg = "Ecs data check failed due to some reason-" + result_ecs_data['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Ecs data failed due to some reason-"+str(e)
+        msg = "Ecs data failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Ecs data complete')
-
 
     # >>=>> Chq Bounce Calculate
     try:
         result_chq_bounce = get_count_cb(user_id)
         if not result_chq_bounce['status']:
-            msg = "Cheque Bounce failed due to some reason-"+result_chq_bounce['message']
+            msg = "Cheque Bounce failed due to some reason-" + result_chq_bounce['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Cheque Bounce failed due to some reason-"+str(e)
+        msg = "Cheque Bounce failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Cheque Bounce complete')
-
 
     # >>=>> Total Rejection Message
     try:
         result_rejection_message = get_defaulter(user_id)
         legal_msg_ratio = legal_messages_count_ratio(user_id)
         if not result_rejection_message['status']:
-            msg = "Rejection Messages failed due to some reason-"+result_rejection_message['message']
+            msg = "Rejection Messages failed due to some reason-" + result_rejection_message['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Rejection Messages failed due to some reason-"+str(e)
+        msg = "Rejection Messages failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Rejection Messages complete')
 
     # >>=>> overdue message count
     try:
         overdue_msg_count = get_overdue_count(user_id)
         if not overdue_msg_count['status']:
-            msg = "Overdue Message Count failed due to some reason-"+overdue_msg_count['message']
+            msg = "Overdue Message Count failed due to some reason-" + overdue_msg_count['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Overdue Message Count failed due to some reason-"+str(e)
+        msg = "Overdue Message Count failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Overdue Message Count complete')
 
     # >>=>> Account status
     try:
-        account_status = get_acc_status(user_id,cibil_df)
+        account_status = get_acc_status(user_id, cibil_df)
         if not account_status['status']:
-            msg = "Account status failed due to some reason-"+account_status['message']
+            msg = "Account status failed due to some reason-" + account_status['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Account status failed due to some reason-"+str(e)
+        msg = "Account status failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Account status complete')
-
 
     # >>=>> Active Close
     try:
-        active_closed = get_active_closed(user_id,cibil_df)
+        active_closed = get_active_closed(user_id, cibil_df)
         if not active_closed['status']:
-            msg = "Active closed loans failed due to some reason-"+active_closed['message']
+            msg = "Active closed loans failed due to some reason-" + active_closed['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Active closed loans failed due to some reason-"+str(e)
+        msg = "Active closed loans failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Active closed loans complete')
-
 
     # >>=>> Age of oldest Trade
     try:
-        age_of_oldest_trade = age_oldest_trade(user_id,cibil_df)
+        age_of_oldest_trade = age_oldest_trade(user_id, cibil_df)
         if not age_of_oldest_trade['status']:
-            msg = "Age of oldest trade failed due to some reason-"+age_of_oldest_trade['message']
+            msg = "Age of oldest trade failed due to some reason-" + age_of_oldest_trade['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Age of oldest trade failed due to some reason-"+str(e)
+        msg = "Age of oldest trade failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Age of oldest trade complete')
 
     # >>=>> Age of user
     try:
         age_of_user = get_age(user_id)
         if not age_of_user['status']:
-            msg = "Age of user failed due to some reason-"+age_of_user['message']
+            msg = "Age of user failed due to some reason-" + age_of_user['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Age of user failed due to some reason-"+str(e)
+        msg = "Age of user failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Age of user complete')
 
     # >>=>> Loan App Percentage
     try:
         loan_app_percent = loan_app_count(user_id)
         if not loan_app_percent['status']:
-            msg = "Loan App Percentage failed due to some reason-"+loan_app_percent['message']
+            msg = "Loan App Percentage failed due to some reason-" + loan_app_percent['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Loan App Percentage failed due to some reason-"+str(e)
+        msg = "Loan App Percentage failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Loan App Percentage complete')
 
     # >>=>> Payment Rating
     try:
-        payment_rating = get_payment_rating(user_id,cibil_df)
+        payment_rating = get_payment_rating(user_id, cibil_df)
         if not payment_rating['status']:
-            msg = "Payment Rating failed due to some reason-"+payment_rating['message']
+            msg = "Payment Rating failed due to some reason-" + payment_rating['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Payment Rating failed due to some reason-"+str(e)
+        msg = "Payment Rating failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Payment Rating complete')
 
     # >>=>> Repayment History
     try:
         repay_history = repayment_history(user_id)
         if not repay_history['status']:
-            msg = "Repayment History failed due to some reason-"+repay_history['message']
+            msg = "Repayment History failed due to some reason-" + repay_history['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Repayment History failed due to some reason-"+str(e)
+        msg = "Repayment History failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Repayment History complete')
 
     # >>=>> Reference
     try:
         reference = validate(user_id)
         if not reference['status']:
-            msg = "Reference failed due to some reason-"+reference['message']
+            msg = "Reference failed due to some reason-" + reference['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Reference failed due to some reason-"+str(e)
+        msg = "Reference failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Reference verification complete')
 
     # >>=>> Relatives
     try:
         relatives = rel_validate(user_id)
         if not relatives['status']:
-            msg = "Relatives failed due to some reason-"+relatives['message']
+            msg = "Relatives failed due to some reason-" + relatives['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Relatives failed due to some reason-"+str(e)
+        msg = "Relatives failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Relatives verification complete')
 
     # >>=>> Secured Unsecured Loans
     try:
-        secured_unsecured = secure_unsecured_loan(user_id,cibil_df)
+        secured_unsecured = secure_unsecured_loan(user_id, cibil_df)
         if not secured_unsecured['status']:
-            msg = "Secured Unsecured Loans failed due to some reason-"+secured_unsecured['message']
+            msg = "Secured Unsecured Loans failed due to some reason-" + secured_unsecured['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Secured Unsecured Loans failed due to some reason-"+str(e)
+        msg = "Secured Unsecured Loans failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Secured Unsecured Loans complete')
 
     # >>=>> Username messages
     try:
         username_msg = get_name_count(user_id)
         if not username_msg['status']:
-            msg = "Username messages failed due to some reason-"+username_msg['message']
+            msg = "Username messages failed due to some reason-" + username_msg['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Username messages failed due to some reason-"+str(e)
+        msg = "Username messages failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Username messages count complete')
 
     # >>=>> Scoring Model
     try:
-        result_score = get_score(user_id,sms_count)
+        result_score = get_score(user_id, sms_count)
         if not result_score['status']:
             msg = "Scoring Model failed due to some reason"
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Scoring Model failed due to some reason-"+str(e)
+        msg = "Scoring Model failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Scoring Model complete')
 
     # >>=>> Rule Engine
@@ -501,5 +492,4 @@ def bl0(**kwargs):
     #     exception_feeder(client=client, user_id=user_id,msg=msg)
     # logger.info('Rule engine complete')
 
-
-    return {"status":True,"messages":"success"}
+    return {"status": True, "messages": "success"}

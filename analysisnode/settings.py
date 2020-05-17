@@ -13,10 +13,16 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 from datetime import timedelta
 from django.utils import timezone
-
+from pprint import pprint
+from configparser import RawConfigParser
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+config = RawConfigParser()
+config.read('/etc/settings.ini')
+
+MONGOUSER = config.get('section', 'MONGOUSER')
+MONGOPASS = config.get('section', 'MONGOPASS')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -25,30 +31,29 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'k$bpv=+g4r@*^3ypth*-0#9*0zd81e$8ea!8d*v(9e_f%5a&7z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['mlnode.credicxotech.com', '127.0.0.1']
 
 
 # Application definition
 
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
-    ]
+    'rest_framework',
+    'django_crontab'
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -83,33 +88,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-DATA_UPLOAD_MAX_MEMORY_SIZE = None
-# MIDDLEWARE.append('request_logging.middleware.LoggingMiddleware')
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '{asctime} {message}',
-#             'style': '{',
-#         }
-#     },
-#     'handlers': {
-#         'file': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'filename': BASE_DIR + '/django_logs/' + str(timezone.now().date()) + '.log',
-#             'formatter': 'verbose'
-#         },
-#     },
-#     'loggers': {
-#         'django.request': {
-#             'handlers': ['file'],
-#             'level': 'DEBUG',  # change debug level as appropiate
-#             'propagate': False,
-#         },
-#     },
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -129,13 +107,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+CRONJOBS = [
+        ('*/5 * * * *', 'HardCode.cron.process_user_records', '>' + BASE_DIR + '/process_user_records.log'),
+    ]
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -148,10 +128,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-}
+
+CHECKSUM_KEY = 'NUG2EDIWi3%khpfw'
 
 # Static files (CSS, JavaScript, Images)`
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -166,3 +144,6 @@ STATIC_URL = '/static/'
 #
 # from mongoengine import connect
 # connect(MONGO_DATABASE_NAME)
+
+PROCESSING_DOCS = BASE_DIR + '/PROCESSING_DOCS/'
+FINAL_RESULT = BASE_DIR + '/FINAL_RESULT/'

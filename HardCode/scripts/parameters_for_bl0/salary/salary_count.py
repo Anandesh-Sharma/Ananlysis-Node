@@ -53,6 +53,7 @@ def max_sal(user_id):
     if dict_of_sal:
         for i in range(len(dict_of_sal)):
             list_of_sal.append(dict_of_sal[i]['salary'])
+            print(f"max_sal: {list_of_sal}")
             max_sal = max(list_of_sal)
     return max_sal
 

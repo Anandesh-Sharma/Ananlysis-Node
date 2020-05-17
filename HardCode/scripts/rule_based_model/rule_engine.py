@@ -28,9 +28,6 @@ def rule_phase1(user_id):
     cr_pending_emi = params['parameters']['credicxo_pending_emi']
     cr_total_loan = params['parameters']['credicxo_total_loans']
 
-
-
-
     # if not similarity >= 0.8:
     #     return False
     # if not relatives > 3:
@@ -78,5 +75,4 @@ def rule_engine_main(user_id):
     else:
         print("rejected by rule engine")
     return result_pass
-
 
