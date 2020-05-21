@@ -309,14 +309,14 @@ def preprocessing(cust_id):
                     i += 1   # 'i' loop increment
                 loan_details_of_all_apps[str(app_name)] = loan_details_individual_app
                 logger.info("all information fetch from current loan app")
-        premium_rejection, normal_rejection, rejection_messages = get_rejection_count(cust_id)
+        # premium_rejection, normal_rejection, rejection_messages = get_rejection_count(cust_id)
         report['cust_id'] = cust_id
         report['complete_info'] = loan_details_of_all_apps
         report['user_app_list'] = user_app_list
         #report['current_open_details'] = get_current_open_details(cust_id)
-        report['premium_app_rejection'] = premium_rejection
-        report['normal_app_rejection'] = normal_rejection
-        report['rejection_messages'] = rejection_messages
+        # report['premium_app_rejection'] = premium_rejection
+        # report['normal_app_rejection'] = normal_rejection
+        # report['rejection_messages'] = rejection_messages
         report['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
 
         logger.info("successfully make connection with database")

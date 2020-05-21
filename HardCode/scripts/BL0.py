@@ -5,6 +5,7 @@ from HardCode.scripts.balance_sheet_analysis.transaction_balance_sheet import cr
 from HardCode.scripts.cheque_bounce_analysis.Cheque_Bounce import cheque_user_outer
 from HardCode.scripts.salary_analysis.monthly_salary_analysis import salary_main
 from HardCode.scripts.loan_analysis.last_loan_details import get_final_loan_details
+from HardCode.scripts.loan_analysis.loan_rejection import get_rejection_count
 from HardCode.scripts.loan_analysis.loan_main import final_output
 from HardCode.scripts.parameters_for_bl0.available_balance.available_balance import find_info
 from HardCode.scripts.parameters_for_bl0.available_balance.mean_available_balance import mean_available
@@ -27,7 +28,7 @@ from HardCode.scripts.parameters_for_bl0.secured_unsecured_loans.count import se
 from HardCode.scripts.parameters_for_bl0.user_name_msg.name_count_ratio import get_name_count
 from HardCode.scripts.loan_analysis.overdue_details import get_overdue_details
 from HardCode.scripts.model_0.scoring.generate_total_score import get_score
-from HardCode.scripts.Util import conn, logger_1
+from HardCode.scripts.Util import conn,logger_1
 import multiprocessing
 import warnings
 from datetime import datetime
@@ -35,13 +36,12 @@ import pytz
 
 warnings.filterwarnings("ignore")
 
-
 def exception_feeder(**kwargs):
     client = kwargs.get('client')
     msg = kwargs.get('msg')
     user_id = kwargs.get('user_id')
 
-    logger = logger_1('exception_feeder', user_id)
+    logger = logger_1('exception_feeder',user_id)
 
     logger.error(msg)
     r = {'status': False, 'message': msg,
@@ -62,7 +62,7 @@ def result_output_block():
 def bl0(**kwargs):
     user_id = kwargs.get('user_id')
     sms_json = kwargs.get('sms_json')
-    cibil_df = kwargs.get('cibil')
+    cibil_df = kwargs.get('cibil_xml')
 
     sms_count = len(sms_json)
 
@@ -87,7 +87,7 @@ def bl0(**kwargs):
     no_of_sms = len(sms_json)
     db = client.analysis.parameters
     db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                              'parameters.Total_msg': no_of_sms}}, upsert=True)
+                                                  'parameters.Total_msg': no_of_sms}}, upsert=True)
 
     # >>==>> Classification
     logger.info('starting classification')
@@ -95,14 +95,14 @@ def bl0(**kwargs):
     try:
         p.start()
     except BaseException as e:
-        msg = "Exception in starting classifier" + str(e)
-        exception_feeder(user_id=user_id, msg=msg, client=client)
+        msg="Exception in starting classifier"+str(e)
+        exception_feeder(user_id=user_id, msg=msg,client=client)
 
     try:
         p.join()
     except BaseException as e:
-        msg = "Exception in joining classification process" + str(e)
-        exception_feeder(user_id=user_id, msg=msg, client=client)
+        msg="Exception in joining classification process"+str(e)
+        exception_feeder(user_id=user_id, msg=msg,client=client)
     logger.info('classification completes')
 
     # >>=>> LOAN ANALYSIS
@@ -200,6 +200,19 @@ def bl0(**kwargs):
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Loan detail final complete')
+
+    # >>=>> Loan Rejection
+    try:
+        result_loan_rejection = get_rejection_count(user_id)
+        if not result_loan_rejection['status']:
+            msg = "Loan Rejection messages check failed due to some reason-"+result_loan_rejection['message']
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id,msg=msg)
+    except BaseException as e:
+        msg = "Loan Rejection messages failed due to some reason-"+str(e)
+        logger.error(msg)
+        exception_feeder(client=client, user_id=user_id,msg=msg)
+    logger.info('Loan Rejection messages complete')
 
     # >>=>> lOAN_Main
     try:

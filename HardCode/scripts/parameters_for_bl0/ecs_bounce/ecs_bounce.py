@@ -61,9 +61,15 @@ def get_count_ecs(cust_id):
     ecs_count = 0
     connect = conn()
     db  = connect.analysis.parameters
+    test_db = connect.analysisresult.ecs_msg
     parameters = {}
     try:
+        dict_ecs = []
         if not ecs.empty:
+            for i,row in ecs.iterrows():
+                dict_ecs.append(row.to_dict())
+            test_db.update({'cust_id' : cust_id}, {"$set" : {'modified_at' : str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                    'ecs_messages' : dict_ecs}}, upsert = True)
             i = 0
             while i < ecs.shape[0]:
                 start_date = datetime.strptime(ecs['timestamp'][i], "%Y-%m-%d %H:%M:%S")

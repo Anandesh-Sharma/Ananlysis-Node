@@ -11,6 +11,7 @@ def get_defaulter(user_id):
     connect = conn()
     db = connect.analysis.parameters
     parameters = {}
+    legal_messages = []
     loan_approval = connect.messagecluster.loanapproval.find_one({'cust_id': user_id})
     loan_reject = connect.messagecluster.loanrejection.find_one({'cust_id': user_id})
     loan_overdue = connect.messagecluster.loandueoverdue.find_one({'cust_id': user_id})
@@ -76,7 +77,7 @@ def get_defaulter(user_id):
     try:
         for i in range(total.shape[0]):
             message = str(total['body'][i].encode('utf-8')).lower()
-
+            legal_messages.append(message)
             for pattern in patterns:
                 matcher = re.search(pattern, message)
                 if pattern is patterns[0] or pattern is patterns[1] or pattern is patterns[2] or pattern is patterns[3] or pattern is patterns[5] or \
@@ -95,10 +96,16 @@ def get_defaulter(user_id):
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                   'parameters.legal_message_count': legal_message_count,
                                                   'parameters.legal_message_status': FLAG}}, upsert=True)
+
+        connect.analysisresult.legal_msg.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'legal_msg': legal_messages}}, upsert=True)
         return {'status':True, 'message':'success'}
     except BaseException as e:
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                   'parameters.legal_message_count': legal_message_count,
                                                   'parameters.legal_message_status': FLAG}}, upsert=True)
+        connect.analysisresult.legal_msg.update({'cust_id': user_id}, {
+            "$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                     'legal_msg': legal_messages}}, upsert=True)
         return {'status': False, 'message': str(e)}

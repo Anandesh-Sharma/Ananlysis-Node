@@ -51,10 +51,16 @@ def get_count_cb(cust_id):
     status = False
     connect = conn()
     db  = connect.analysis.parameters
+    test_db = connect.analysisresult.cheque_bounce_msg
     parameters = {}
     output = {}
     try:
+        dict_chq = []
         if not cb.empty:
+            for i,row in cb.iterrows():
+                dict_chq.append(row.to_dict())
+            test_db.update({'cust_id' : cust_id}, {"$set" : {'modified_at' : str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                    'cheque_bounce_msg' : dict_chq}}, upsert = True)
             i = 0
 
             while i < cb.shape[0]:
