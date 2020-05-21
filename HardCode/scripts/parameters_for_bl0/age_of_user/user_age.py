@@ -15,12 +15,17 @@ def get_age(user_id):
     parameters = {}
     try:
         dob,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation = get_profile_info(user_id)
-        dob = datetime.strptime(dob, "%Y-%m-%d")
-        today = date.today()
-        age = today.year - dob.year
-        parameters['age'] = age
-        status = True
-        msg = 'success'
+        if dob:
+            dob = datetime.strptime(dob, "%Y-%m-%d")
+            today = date.today()
+            age = today.year - dob.year
+            parameters['age'] = age
+            status = True
+            msg = 'success'
+        else:
+            status = True
+            msg = 'success'
+            age = 0
     except BaseException as e:
         pass
         status = False

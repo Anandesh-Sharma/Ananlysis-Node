@@ -28,6 +28,7 @@ def get_profile_info(user_id):
     repayment_date = []
     allowed_limit = []
     total_loans = 0
+    no_of_contacts = 0
     param = {'user_id': user_id}
     try:
         res = requests.get(url=URL, params=param, headers={'Authorization': Auth})
@@ -42,6 +43,7 @@ def get_profile_info(user_id):
             else:
                 data = res.json()
                 if 'error' not in data:
+                    no_of_contacts = data['profile']['kyc']['contacts_count']
                     age = data['profile']['dob']
                     app_data = data['apps']
                     if data['profile']['preference__relation'] and data['profile']['preference_number']:
@@ -63,6 +65,7 @@ def get_profile_info(user_id):
         else:
             data = res.json()
             if 'error' not in data:
+                no_of_contacts = data['profile']['kyc']['contacts_count']
                 age = data['profile']['dob']
                 app_data = data['apps']
                 if data['profile']['preference__relation'] and data['profile']['preference_number']:
@@ -83,4 +86,4 @@ def get_profile_info(user_id):
         pass
         # print(f"Error in fetching data from api : {e}")
     finally:
-        return age,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation
+        return age,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation,no_of_contacts

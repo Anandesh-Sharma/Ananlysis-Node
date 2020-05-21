@@ -13,7 +13,7 @@ def validate(user_id):
     :rtype: dict
     """
     status = True
-    age,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation = get_profile_info(user_id)
+    age,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation,no_of_contacts = get_profile_info(user_id)
     contacts_data = get_contacts_data(user_id)
     validated = False
     max_similarity = -9
@@ -48,7 +48,8 @@ def validate(user_id):
                'result': {'verification': validated, 'similarity_score': max_similarity, 'message': msg}}
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.reference': res}}, upsert=True)
+                                                  'parameters.reference': res,
+                                                  'parameters.no_of_contacts':no_of_contacts}}, upsert=True)
 
         return {'status': True, 'message': msg}
     except BaseException as e:
@@ -58,7 +59,8 @@ def validate(user_id):
                'result': {'verification': validated, 'similarity_score': max_similarity, 'message': msg}}
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.reference': res}}, upsert=True)
+                                                  'parameters.reference': res,
+                                                  'parameters.no_of_contacts':no_of_contacts}}, upsert=True)
 
         return {'status': False, 'message': msg}
 
