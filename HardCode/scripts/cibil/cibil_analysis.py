@@ -122,12 +122,15 @@ def cibil_analysis(df, cibil_score, user_id):
                             if payment_r in selected:
                                 ans = True
         logger.info('cibil analysis function successfull')
-        if ans:
-            return {'status': True, 'message': 'success', 'ans': 3000}
-        else:
-            return {'status': True, 'message': 'success', 'ans': 0}
+        # if ans:
+        #     return {'status': True, 'message': 'success', 'ans': 3000}
+        # else:
+        #     return {'status': True, 'message': 'success', 'ans': 0}
 
+        return payment_r, history,amt_principal,amt_total
     except Exception as e:
         logger.debug('cibil analysis function failed')
-        return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
-                'logic': 'BL0'}
+
+        return payment_r, history, amt_principal, amt_total
+        # return {'status': False, 'message': str(e), 'onhold': None, 'user_id': user_id, 'limit': None,
+        #         'logic': 'BL0'}

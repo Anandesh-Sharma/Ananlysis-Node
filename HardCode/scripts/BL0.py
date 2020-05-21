@@ -1,3 +1,4 @@
+from HardCode.scripts.cibil.cibil_analysis import cibil_analysis
 from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.loan_analysis.preprocessing import preprocessing
 from HardCode.scripts.classifiers.Classifier import classifier
@@ -402,6 +403,24 @@ def bl0(**kwargs):
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Loan App Percentage complete')
+
+    # ==> Payment history result
+    try:
+        payment_r, history, amt_principal, amt_total = cibil_analysis(cibil_df['data'], cibil_df['data']['credit_score'].max(), user_id)
+        db = client.analysis.parameters
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.payment_history': history,
+                                                  'parameters.written_amt_total':amt_total,
+                                                  'parameters.written_amt_principal':amt_principal}}, upsert=True)
+    except BaseException as e:
+
+        import traceback
+        traceback.print_tb(e.__traceback__)
+        msg = "Payment History failed due to some reason-" + str(e)
+        logger.error(msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
+    logger.info('Payment History complete')
+
 
     # >>=>> Payment Rating
     try:
