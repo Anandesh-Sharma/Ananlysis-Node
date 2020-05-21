@@ -82,4 +82,25 @@ def last_sal(user_id):
                                               'parameters.salary': last_sal}}, upsert=True)
     return {'status':True,'message':'success'}
 
+def quarantine_sal(user_id):
+    connect = conn()
+    db = connect.analysis.parameters
+    salary = connect.analysis.salary.find_one({'cust_id':user_id})
+    try:
+        if salary:
+            if "May" in list(salary['salary'].keys()):
+                sal = salary['salary']['May']['salary']
+            elif "April" in list(salary['salary'].keys()):
+                sal = salary['salary']['April']['salary']
+            else:
+                sal = -1
+    except:
+        sal = -1
+    finally:
+        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                  'parameters.quarantine_salary': sal}}, upsert=True)
+        return {'status': True, 'message': 'success'}
+
+
+
 

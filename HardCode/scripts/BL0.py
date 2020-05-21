@@ -11,6 +11,7 @@ from HardCode.scripts.parameters_for_bl0.available_balance.available_balance imp
 from HardCode.scripts.parameters_for_bl0.available_balance.mean_available_balance import mean_available
 from HardCode.scripts.parameters_for_bl0.credit_card_limit.cc_limit import get_cc_limit
 from HardCode.scripts.parameters_for_bl0.salary.salary_count import last_sal
+from HardCode.scripts.parameters_for_bl0.salary.salary_count import quarantine_sal
 from HardCode.scripts.parameters_for_bl0.ecs_bounce.ecs_bounce import get_count_ecs
 from HardCode.scripts.parameters_for_bl0.ecs_bounce.chq_bounce import get_count_cb
 from HardCode.scripts.parameters_for_bl0.rejection_msgs.total_rejection_msg import get_defaulter
@@ -271,6 +272,7 @@ def bl0(**kwargs):
     # >>=>> Last Salary Calculate
     try:
         result_last_salary = last_sal(user_id)
+        quarantine = quarantine_sal(user_id)
         if not result_last_salary['status']:
             msg = "Last salary check failed due to some reason-" + result_last_salary['message']
             logger.error(msg)

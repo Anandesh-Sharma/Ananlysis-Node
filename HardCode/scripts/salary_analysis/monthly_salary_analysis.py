@@ -176,7 +176,6 @@ def salary_main(user_id):
                                 sal.append(int(salary[j]['Credit Amount']))
 
                     if sal:
-                        print(f"sal: {len(sal)}")
                         sal_amt = max(sal)
                         for i in range(len(salary)):
                             if int(salary[i]['Credit Amount']) == sal_amt:
@@ -200,7 +199,6 @@ def salary_main(user_id):
                                     epf.append(int(epf_msg[j]['Credit Amount']))
 
                         if epf:
-                            print(f"epf: {len(epf)}")
                             epf_amt = max(epf)
                             for i in range(len(epf_msg)):
                                 if int(epf_msg[i]['Credit Amount']) == epf_amt:
@@ -224,7 +222,6 @@ def salary_main(user_id):
                                     if int(neft_msg[j]['Credit Amount']) >= 7000:
                                         neft.append(int(neft_msg[j]['Credit Amount']))
                             if neft:
-                                print(f"neft: {len(neft)}")
                                 neft_amt = max(neft)
                                 for i in range(len(neft_msg)):
                                     if int(neft_msg[i]['Credit Amount']) == neft_amt:
@@ -280,9 +277,6 @@ def salary_main(user_id):
                 'salary': float(last_salary)}
         
     except BaseException as e:
-        print(e)
-        import traceback
-        traceback.print_tb(e.__traceback__)
         return {'status': False, 'message': str(e), 'cust_id': int(user_id), 'salary': 0}
 
 
