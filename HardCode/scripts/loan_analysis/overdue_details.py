@@ -6,7 +6,6 @@ import pandas as pd
 from datetime import datetime
 import pytz
 
-
 def get_overdue_details(cust_id):
     overdue_days_list = []
     script_status = {}
@@ -22,13 +21,26 @@ def get_overdue_details(cust_id):
 
         for i in data.keys():
             for j in data[i].keys():
-                total_loans += 1
                 if data[i][j]['disbursed_date'] != -1:
                     disbursed_date = datetime.strptime(str(data[i][j]['disbursed_date']), '%Y-%m-%d %H:%M:%S')
-                    current_date = datetime.strptime('2020-03-20 00:00:00', '%Y-%m-%d %H:%M:%S')
-                    # days = (current_date - disbursed_date).days
-                    if data[i][j]['overdue_days'] != -1:
-                        overdue_days_list.append(data[i][j]['overdue_days'])
+                    start_date = datetime.strptime("2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+                    if disbursed_date > start_date:
+                        if data[i][j]['overdue_days'] != -1:
+                            #overdue_days_list["overdue_days"].append(data[i][j]['overdue_days'])
+                            #overdue_days_list["date"].append(str(data[i][j]['disbursed_date']))
+                            overdue_days_list.append(data[i][j]['overdue_days'])
+                            total_loans += 1
+                elif data[i][j]['due_message_date'] != -1:
+                    due_date = datetime.strptime(str(data[i][j]['due_message_date']), '%Y-%m-%d %H:%M:%S')
+                    start_date = datetime.strptime("2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+                    if due_date > start_date:
+                        if data[i][j]['overdue_days'] != -1:
+                            #overdue_days_list['overdue_days'].append(data[i][j]['overdue_days'])
+                            #overdue_days_list["date"].append(str(data[i][j]['disbursed_date']))
+                            overdue_days_list.append(data[i][j]['overdue_days'])
+                            total_loans += 1
+                else:
+                    pass
         if total_loans != 0:
             overdue_ratio = np.round(len(overdue_days_list)/total_loans, 4)
         else:
@@ -48,3 +60,5 @@ def get_overdue_details(cust_id):
     finally:
         connect.close()
         return script_status
+
+

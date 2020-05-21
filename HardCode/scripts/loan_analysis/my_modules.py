@@ -16,6 +16,22 @@ def sms_header_matcher(header):
             pass
     return header
 
+def remove_numerical_header(data):
+    li = []
+    try:
+        for i in range(data.shape[0]):
+            try:
+                if isinstance(int(data['Sender-Name'][i]), int):
+                    li.append(i)
+            except:
+                pass
+        data.drop(li, axis = 0, inplace = True)
+        data.reset_index(drop = True, inplace = True)
+    except BaseException as e:
+        print(e)
+    return data
+
+
 def sms_header_splitter(data):
     """
     This function splits the sms header of each message of the user.
@@ -27,6 +43,7 @@ def sms_header_splitter(data):
         data(dataframe): dataframe containing sms headers splitted
 
     """
+    li = []
     pd.options.mode.chained_assignment = None
     data['Sender-Name'] = np.nan
     for i in range(len(data)):
@@ -38,6 +55,7 @@ def sms_header_splitter(data):
             header = data["sender"][i][2:]
         data['Sender-Name'][i] = header
     data.drop(['sender'], axis=1, inplace=True)
+    data = remove_numerical_header(data)
     return data
 
 

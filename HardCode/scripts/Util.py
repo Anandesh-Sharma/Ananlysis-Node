@@ -1,31 +1,31 @@
 import logging
 import pandas as pd
+import os
 from datetime import datetime
 from datetime import timedelta
 from logging.handlers import TimedRotatingFileHandler
 from pymongo import MongoClient
 import warnings
-from analysisnode.settings import MONGOUSER, MONGOPASS
 import urllib
-import os
 
 warnings.filterwarnings("ignore")
 
 
 def conn():
     # Create MONGO_SUPERUSER and MONGO_SUPERPASS global varaible in local environment for MongoDB
-    connection = MongoClient(f"mongodb://{(urllib.parse.quote(MONGOUSER))}:{urllib.parse.quote(MONGOPASS)}@localhost"
-                             f":27017/?authSource=admin&readPreference=primary&ssl=false", socketTimeoutMS=900000)
+
+    connection = MongoClient(
+        f"mongodb://abhiomi:abhi28@localhost:27017/?authSource=admin"
+                                       f"&readPreference=primary&ssl=false"
+,
+        socketTimeoutMS=900000)
     return connection
 
 
 def logger_1(name, user_id):
     logger = logging.getLogger('analysis_node ' + str(user_id) + "  " + name)
     logger.setLevel(logging.INFO)
-    if not os.path.exists("logs"):
-        os.mkdir("logs")
-
-    logHandler = TimedRotatingFileHandler(filename="logs/analysis_node_{}.log".format(user_id), when="midnight")
+    logHandler = TimedRotatingFileHandler(filename="logs/analysis_node_{}.log".format(user_id), when="midnight", backupCount=7)
     logFormatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
     logHandler.setFormatter(logFormatter)
 
@@ -170,6 +170,7 @@ def convert_json_balanced_sheet(data, credit, debit):
         obj['sheet'].append(sms)
 
     return obj
+
 
 # def convert_json_balanced_sheet_empty():
 #     sms = {"sender": "", "body": "", "timestamp": "",

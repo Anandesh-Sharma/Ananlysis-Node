@@ -1,14 +1,18 @@
 #import numpy as np
-#from HardCode.scripts.loan_analysis.my_modules import *
+from HardCode.scripts.loan_analysis.my_modules import sms_header_splitter, grouping, is_disbursed, is_closed, is_due, is_overdue, is_rejected
+from HardCode.scripts.loan_analysis.get_loan_data import fetch_user_data
+from HardCode.scripts.loan_analysis.loan_app_regex_superset import loan_apps_regex, bank_headers
+from HardCode.scripts.loan_analysis.current_open_details import get_current_open_details
 from HardCode.scripts.Util import logger_1, conn
-#from HardCode.scripts.loan_analysis.preprocessing import preprocessing
 from datetime import datetime
 import pytz
 import warnings
+#from pprint import pprint
 
 warnings.filterwarnings('ignore')
 
-'''client
+'''
+client
 Particular app repay categories are
 1)Repay msg captured successfully before taking loan from our app
 2)client having status overdue or legal msg
@@ -16,66 +20,97 @@ Particular app repay categories are
 4)Last msg from particular app was overdue then no msg retrieved from the same app (means msg deleted)
 '''
 
+
 def get_final_loan_details(cust_id):
     connect = conn()
     db = connect.analysis.parameters
+    loan_data = fetch_user_data(cust_id)
+    sms_header_splitter(loan_data)
+    loan_data_grouped = grouping(loan_data)
     parameters = {}
-    loan_info = connect.analysis.loan.find_one({'cust_id': cust_id})
-    data = loan_info['complete_info']
-    result = {}
-    output = {}
+    report = {
+        "app" : [],
+        "status" : [],
+        "date" : [],
+        "message" : [],
+        "category" : []
+    }
     try:
-        for app in data.keys():
-            report = ''
-            if data[app]:
-                try:
-                    last_index = list(data[app].keys())[-1]
-                    target_loan = data[app][last_index]
-                    if target_loan['disbursed_date'] != -1:
-                        disbursed_date = datetime.strptime(str(target_loan['disbursed_date']), '%Y-%m-%d %H:%M:%S')
-                        current_date = datetime.now()
-                        if target_loan['closed_date'] == -1:
-                            days = (current_date - disbursed_date).days
-                            if target_loan['overdue_check'] > 0:
-                                report = 'Client having status overdue or legal msg'
-                            elif days > 25:
-                                report = 'Has overdue and still not paid or maybe messags are deleted'
-                            else:
-                                report = 'Client taken loan but due dates not over'
+        current_date = datetime.now()
+        start_date = datetime.strptime("2020-03-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+        for app, data in loan_data_grouped:
+            app_name = app
+            data = data.sort_values(by = 'timestamp')
+            data = data.reset_index(drop = True)
+            if app not in list(loan_apps_regex.keys()) and app not in bank_headers:
+                app = 'OTHER'
+            if not data.empty and app not in bank_headers:
+                last_message = str(data['body'].iloc[-1]).lower()
+                last_message_date = datetime.strptime(str(data['timestamp'].iloc[-1]), "%Y-%m-%d %H:%M:%S")
+                report["message"].append(last_message)
+                if last_message_date > start_date:
+                    if is_disbursed(last_message, app):
+                        if (current_date - last_message_date).days < 15:
+                            report["app"].append(app_name)
+                            report["status"].append('client taken loan but due dates not over')
+                            report["date"].append(str(data['timestamp'].iloc[-1]))
+                            report["category"].append(1)
                         else:
-                            closed_date = datetime.strptime(str(target_loan['closed_date']), '%Y-%m-%d %H:%M:%S')
-                            loan_duration = (closed_date - disbursed_date).days
-                            if loan_duration < 15:
-                                report = 'Loan closed successfully before taking loan from our app'
-                            else:
-                                overdue_days = (loan_duration - 15)
-                                report = f'Loan closed after done overdue for {overdue_days} days'
-                        result[app] = str(report)
-                except:
-                    r = {'status': False, 'message': str(e),
-                        'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
-                    connect.analysisresult.exception_bl0.insert_one(r)
-                    result[app] = report
-        # parameters['cust_id'] = cust_id
-        parameters['last_loan_details'] = result
-        # del parameters['cust_id']
+                            report["app"].append(app_name)
+                            report["status"].append('last loan message was disbursed message and than no messgage even after 15 days (means msg deleted)')
+                            report["date"].append(str(data['timestamp'].iloc[-1]))
+                            report["category"].append(1)
+                    elif is_closed(last_message, app):
+                        report["app"].append(app_name)
+                        report["status"].append('Repay msg captured successfully before taking loan from our app')
+                        report["date"].append(str(data['timestamp'].iloc[-1]))
+                        report["category"].append(0)
+                    elif is_due(last_message, app):
+                        if (current_date - last_message_date).days < 10:
+                            report["app"].append(app_name)
+                            report["status"].append('client taken loan but due dates not over')
+                            report["date"].append(str(data['timestamp'].iloc[-1]))
+                            report["category"].append(1)
+                        else:
+                            report["app"].append(app_name)
+                            report["status"].append('Last msg from particular app was due/overdue then no msg retrieved from the same app (means msg deleted)')
+                            report["date"].append(str(data['timestamp'].iloc[-1]))
+                            report["category"].append(1)
+                    elif is_overdue(last_message, app):
+                        report["app"].append(app_name)
+                        report["status"].append('Last msg from particular app was due/overdue then no msg retrieved from the same app (means msg deleted)')
+                        report["date"].append(str(data['timestamp'].iloc[-1]))
+                        report["category"].append(1)
+                    elif is_rejected(last_message, app):
+                        report["app"].append(app_name)
+                        report["status"].append('user was rejected by this loan app')
+                        report["date"].append(str(data['timestamp'].iloc[-1]))
+                        report["category"].append(0)
+                    else:
+                        report["app"].append(app_name)
+                        report["status"].append('no information detected')
+                        report["date"].append(str(data['timestamp'].iloc[-1]))
+                        report["category"].append(0)
+        #pprint(report)
+        parameters['last_loan_details'] = report
         db.update({'cust_id': cust_id},
-                  {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                             'parameters.loan_details': parameters}}, upsert=True)
-        return {'status': True, 'message': 'success'}
-
+        connect.close()
+        get_current_open_details(cust_id)
+        r = {'status': True, 'message': 'success'}
     except BaseException as e:
-        # print(e)
+        print("error in last laon")
         r = {'status': False, 'message': str(e),
-            'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+            'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': cust_id}
         connect.analysisresult.exception_bl0.insert_one(r)
-        # parameters['cust_id'] = cust_id
-        parameters['last_loan_details'] = result
-        # del parameters['cust_id']
+        parameters['last_loan_details'] = report
         db.update({'cust_id': cust_id},
-                  {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                    {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                             'parameters.loan_details': parameters}}, upsert=True)
+        connect.close()
 
         return {'status':False,'message':str(e)}
     finally:
-        connect.close()
+        return r
+

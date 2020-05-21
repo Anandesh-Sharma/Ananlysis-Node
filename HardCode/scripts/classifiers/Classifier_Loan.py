@@ -15,7 +15,7 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'.*?loan.*?closed.*?',
         r'.*?closed.*?successfully.*?',
         r'successfully\sreceived\spayment.*rs\.\s[0-9]{3,6}',
-        r'loan.*?paid\sback',
+        r'loan.*?paid\s(?:back|off)',
         r'making\spayment.*?home\scredit\sloan',
         r'bhugta+n\skarne\ske\sliye\sdhanya?wad',
         r'payment.*?was\ssuccessful',
@@ -29,7 +29,9 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'you\sjust\spaid.*?towards\sloan',
         r'thanks\sfor\spayment.*?for\sloan',
         r'payment\sreceived\sfor.*?loan',
-        r'received.*\n\n.*towards\syour\sloan'
+        r'received.*\n\n.*towards\syour\sloan',
+        r'(?:repayment|payment).*(?:is|has\sbeen)\s?(?:well)?\sreceived',
+        r'received.*payment\sof\s(?:rs\.?|inr)'
     ]
 
     for i in range(data.shape[0]):
@@ -110,11 +112,19 @@ def get_loan_messages(data):
         'loanapp',
         'kissht',
         'gotocash',
-        'cashmama'
+        'cashmama',
+        'nira'
     ]
     header = ['kredtb', 'cashbn', 'lnfrnt', 'cshmma', 'kredtz', 'rrloan',
               'frloan', 'wfcash', 'bajajf', 'flasho', 'kissht', 'gtcash', 'bajafn', 'monvew', 'mpockt',
-              'mpokkt', 'montap', 'mnytap']
+              'mpokkt', 'montap', 'mnytap', 'erupee','flasho','qcrdit','qcredt','cashln','paymei','pmifsp',
+              'salary','esalry','cashme','moneed','bajajf','dhanii','idhani','dhanip','krbeee','krtbee','nirafn','nlrafn','pdnira','pdnlra',
+              'icredt','nanocd','nanocr','zestmn','loanzm','lnfrnt','loanap','cshmma','upward','loanit','lenden','vivifi','shubln','paymin','homecr',
+              'branch','sthfin','zestmn','loantp','mcreds','casheb','abcfin','cfloan','capflt','icashe','loanxp','paysns','rapidr',
+              'cbtest','rsloan','rupbus','ckcash','llnbro','cashbs','credme','atomec','finmtv','cashtm','roboin','trubal','payltr','cashbk','loante',
+              'payuib','iavail','smcoin','ruplnd','ftcash','rupeeh','cashmt','loanbl','cashep','cashem','tatacp','loanco','loanfu','loanpl','haaloo',
+              'rsfast','cashbo','cashin','rupmax','cashpd','lendko','loanfx','mudrak','prloan','cmntri','cashmx','rupls','rscash','ezloan','ftloan',
+              'abcash','loanhr']
 
     data['body'] = data['body'].apply(lambda m: replace_parenthesis(m))
     for i in range(data.shape[0]):
@@ -188,7 +198,9 @@ def get_loan_messages_promotional_removed(data, loan_messages):
         r'claim\sbonus',
         # r'icredit|rupeeplus',
         r'good\snews',
-        r'confirm\snow'
+        r'confirm\snow',
+        r'use\sdebit\scard.*netbanking.*wallets.*upi',
+        r'are\syou\snot\sgetting\sloan'
     ]
     for i in range(data.shape[0]):
         if i not in loan_messages:
@@ -248,7 +260,7 @@ def get_disbursed(data, loan_messages_filtered, result, name):
     logger = logger_1("loan disbursed", name)
     selected_rows = []
     all_patterns = [
-        r'has\sbeen\sdisburse[d]?',
+        r'(?:is|has\sbeen)\sdisburse[d]?',
         r'disbursement\shas\sbeen\scredited',
         r'has\sbeen\stransferred.*account',
         r'disburse?ment.*has\sbeen\sinitiated',
@@ -333,7 +345,10 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         r'unfortunately.*can\s?not\sapprove\syou\sfor\s?[a]?\sloan',
         r'discrepancy\sin\sthe\sdocuments',
         r'unable\sto\sprocess\syour\sapplication',
-        r'cannot\sprovide\syou\s?[a]?\sloan'
+        r'cannot\sprovide\syou\s?[a]?\sloan',
+        r'loan\sapplication.*cancelled',
+        r'loan(.)*not(.)*eligib',
+        r'loan\sdid\snot\spass'
     ]
     all_patterns_2 = [
         r'low\scibil\sscore',
@@ -391,6 +406,7 @@ def get_over_due(data, loan_messages_filtered, result, name):
     # pattern_5 = r'(.*)?due(.*)?'
     # pattern_6 = r'\sover-?due\
     all_patterns = [
+        r'missed.*installment.*pay\sback',
         r'immediate\spayment',
         r'delinquent',
         r'missed\spayments',
@@ -407,7 +423,7 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'payment\sof.*?against.*?loan.*?bounced',
         r"you\sstill\shaven['o]t\spaid.*?loan",
         r'you\shave\smissed.*?payment.*?loan',
-        r'loan\sof\srs.*?disbursed\sfrom.*?a\/c',
+        # r'loan\sof\srs.*?disbursed\sfrom.*?a\/c',
         r'repay\syour\semi\samount\sdue\son',
         r'loan.*?borrowed.*?will\sbe\sdue\son',
         r'k[io]\sdey\shai',
@@ -448,6 +464,9 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'overdue\sbills\shave\snot\sbeen\sprocessed',
         r'loan.*passed\sthe\sdue\sdate',
         r'repayment.*is\spending',
+        r'settle\syour\sdues.*legal\saction',
+        r'pay\surgently',
+        r'will\sbe\sauto\s?[-]?debited.*against\syour\sdues'
     ]
 
     for i in range(data.shape[0]):
