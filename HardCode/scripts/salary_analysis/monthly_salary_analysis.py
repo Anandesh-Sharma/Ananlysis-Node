@@ -64,6 +64,46 @@ def get_salary_msg(data):
             salary.append(data[i])
     return salary
 
+def get_salary(data):
+    salary = []
+    pattern1 = r"credited with salary of ?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?))"
+    pattern2 = r"salary.*(?:rs\.?|inr\.?)\s?([0-9,]+[.]?[0-9]+).*credited"
+    pattern3 = r"(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*?imps\/salary"
+    pattern4 = r"credited.*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*?sal.*\/salary"
+    pattern5 = r"(?:a\/c|account).*credited\s?(?:with|for|by)?\s(?:rs\.?|inr\.?)\s?([0-9,]+[.]?[0-9]+).*salary"
+    pattern6 = r"(?:rs\.?|inr\.?)\s?([0-9,]+[.]?[0-9]+).*(?:credited|deposited).*salary"
+    if data:
+        for i in range(len(data)):
+            m = data[i]["body"].lower()
+
+            y1 = re.search(pattern1, m)
+            y2 = re.search(pattern2, m)
+            y3 = re.search(pattern3, m)
+            y4 = re.search(pattern4, m)
+            y5 = re.search(pattern5, m)
+            y6 = re.search(pattern6, m)
+            if y1 :
+                salary.append(data[i])
+
+            elif y2 :
+                salary.append(data[i])
+
+            elif y3 :
+                salary.append(data[i])
+
+            elif y4:
+                salary.append(data[i])
+
+            elif y5:
+                salary.append(data[i])
+
+            elif y6:
+                salary.append(data[i])
+
+            else:
+                pass
+        return salary
+
 
 def get_neft_amount(data):
     neft = []
@@ -166,7 +206,7 @@ def salary_main(user_id):
                     m = datetime.strptime(df['time'], "%Y-%m")
                     month = m.strftime("%B")
                     data = df['data']
-                    salary = get_salary_msg(data)
+                    salary = get_salary(data)
 
                     sal = []
 
