@@ -11,10 +11,11 @@ def get_age(user_id):
     """
     age = 0
     connect = conn()
-    db  = connect.analysis.parameters
+    db = connect.analysis.parameters
     parameters = {}
     try:
-        dob,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation,no_of_contacts = get_profile_info(user_id)
+        dob, app_data, total_loans, allowed_limit, expected_date, repayment_date, reference_number, reference_relation, no_of_contacts = get_profile_info(
+            user_id)
         if dob:
             dob = datetime.strptime(dob, "%Y-%m-%d")
             today = date.today()
@@ -35,7 +36,6 @@ def get_age(user_id):
 
         parameters['cust_id'] = user_id
         db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                   'parameters.age': age}}, upsert=True)
+                                                  'parameters.age': age}}, upsert=True)
 
-
-        return {'status':status,'message':msg}
+        return {'status': status, 'message': msg}

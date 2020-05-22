@@ -30,7 +30,7 @@ from HardCode.scripts.parameters_for_bl0.secured_unsecured_loans.count import se
 from HardCode.scripts.parameters_for_bl0.user_name_msg.name_count_ratio import get_name_count
 from HardCode.scripts.loan_analysis.overdue_details import get_overdue_details
 from HardCode.scripts.model_0.scoring.generate_total_score import get_score
-from HardCode.scripts.Util import conn,logger_1
+from HardCode.scripts.Util import conn, logger_1
 import multiprocessing
 import warnings
 from datetime import datetime
@@ -38,12 +38,13 @@ import pytz
 
 warnings.filterwarnings("ignore")
 
+
 def exception_feeder(**kwargs):
     client = kwargs.get('client')
     msg = kwargs.get('msg')
     user_id = kwargs.get('user_id')
 
-    logger = logger_1('exception_feeder',user_id)
+    logger = logger_1('exception_feeder', user_id)
 
     logger.error(msg)
     r = {'status': False, 'message': msg,
@@ -65,7 +66,6 @@ def bl0(**kwargs):
     user_id = kwargs.get('user_id')
     sms_json = kwargs.get('sms_json')
     cibil_df = kwargs.get('cibil_xml')
-
     sms_count = len(sms_json)
 
     # ==> creating logger and checking user_id
@@ -81,15 +81,16 @@ def bl0(**kwargs):
     try:
         logger.info('making connection with db')
         client = conn()
-    except BaseException as e:
+    except:
         logger.critical('error in connection')
+        return
     logger.info('connection success')
 
     # ==> Saving no of sms
     no_of_sms = len(sms_json)
     db = client.analysis.parameters
     db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.Total_msg': no_of_sms}}, upsert=True)
+                                              'parameters.Total_msg': no_of_sms}}, upsert=True)
 
     # >>==>> Classification
     logger.info('starting classification')
@@ -97,14 +98,14 @@ def bl0(**kwargs):
     try:
         p.start()
     except BaseException as e:
-        msg="Exception in starting classifier"+str(e)
-        exception_feeder(user_id=user_id, msg=msg,client=client)
+        msg = "Exception in starting classifier" + str(e)
+        exception_feeder(user_id=user_id, msg=msg, client=client)
 
     try:
         p.join()
     except BaseException as e:
-        msg="Exception in joining classification process"+str(e)
-        exception_feeder(user_id=user_id, msg=msg,client=client)
+        msg = "Exception in joining classification process" + str(e)
+        exception_feeder(user_id=user_id, msg=msg, client=client)
     logger.info('classification completes')
 
     # >>=>> LOAN ANALYSIS
@@ -207,13 +208,13 @@ def bl0(**kwargs):
     try:
         result_loan_rejection = get_rejection_count(user_id)
         if not result_loan_rejection['status']:
-            msg = "Loan Rejection messages check failed due to some reason-"+result_loan_rejection['message']
+            msg = "Loan Rejection messages check failed due to some reason-" + result_loan_rejection['message']
             logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
-        msg = "Loan Rejection messages failed due to some reason-"+str(e)
+        msg = "Loan Rejection messages failed due to some reason-" + str(e)
         logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,msg=msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Loan Rejection messages complete')
 
     # >>=>> lOAN_Main
@@ -339,44 +340,88 @@ def bl0(**kwargs):
         exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Overdue Message Count complete')
 
-    # >>=>> Account status
-    try:
-        account_status = get_acc_status(user_id, cibil_df)
-        if not account_status['status']:
-            msg = "Account status failed due to some reason-" + account_status['message']
+    # !! RUN IFF CIBIL_DF IS PRESENT !!
+    if cibil_df['status']:
+        # >>=>> Account status
+        try:
+            account_status = get_acc_status(user_id, cibil_df)
+            if not account_status['status']:
+                msg = "Account status failed due to some reason-" + account_status['message']
+                logger.error(msg)
+                exception_feeder(client=client, user_id=user_id, msg=msg)
+        except BaseException as e:
+            msg = "Account status failed due to some reason-" + str(e)
             logger.error(msg)
             exception_feeder(client=client, user_id=user_id, msg=msg)
-    except BaseException as e:
-        msg = "Account status failed due to some reason-" + str(e)
-        logger.error(msg)
-        exception_feeder(client=client, user_id=user_id, msg=msg)
-    logger.info('Account status complete')
+        logger.info('Account status complete')
 
-    # >>=>> Active Close
-    try:
-        active_closed = get_active_closed(user_id, cibil_df)
-        if not active_closed['status']:
-            msg = "Active closed loans failed due to some reason-" + active_closed['message']
+        # >>=>> Active Close
+        try:
+            active_closed = get_active_closed(user_id, cibil_df)
+            if not active_closed['status']:
+                msg = "Active closed loans failed due to some reason-" + active_closed['message']
+                logger.error(msg)
+                exception_feeder(client=client, user_id=user_id, msg=msg)
+        except BaseException as e:
+            msg = "Active closed loans failed due to some reason-" + str(e)
             logger.error(msg)
             exception_feeder(client=client, user_id=user_id, msg=msg)
-    except BaseException as e:
-        msg = "Active closed loans failed due to some reason-" + str(e)
-        logger.error(msg)
-        exception_feeder(client=client, user_id=user_id, msg=msg)
-    logger.info('Active closed loans complete')
+        logger.info('Active closed loans complete')
 
-    # >>=>> Age of oldest Trade
-    try:
-        age_of_oldest_trade = age_oldest_trade(user_id, cibil_df)
-        if not age_of_oldest_trade['status']:
-            msg = "Age of oldest trade failed due to some reason-" + age_of_oldest_trade['message']
+        # >>=>> Age of oldest Trade
+        try:
+            age_of_oldest_trade = age_oldest_trade(user_id, cibil_df)
+            if not age_of_oldest_trade['status']:
+                msg = "Age of oldest trade failed due to some reason-" + age_of_oldest_trade['message']
+                logger.error(msg)
+                exception_feeder(client=client, user_id=user_id, msg=msg)
+        except BaseException as e:
+            msg = "Age of oldest trade failed due to some reason-" + str(e)
             logger.error(msg)
             exception_feeder(client=client, user_id=user_id, msg=msg)
-    except BaseException as e:
-        msg = "Age of oldest trade failed due to some reason-" + str(e)
-        logger.error(msg)
-        exception_feeder(client=client, user_id=user_id, msg=msg)
-    logger.info('Age of oldest trade complete')
+        logger.info('Age of oldest trade complete')
+
+        # >>=>> Secured Unsecured Loans
+        try:
+            secured_unsecured = secure_unsecured_loan(user_id, cibil_df)
+            if not secured_unsecured['status']:
+                msg = "Secured Unsecured Loans failed due to some reason-" + secured_unsecured['message']
+                logger.error(msg)
+                exception_feeder(client=client, user_id=user_id, msg=msg)
+        except BaseException as e:
+            msg = "Secured Unsecured Loans failed due to some reason-" + str(e)
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
+        logger.info('Secured Unsecured Loans complete')
+
+        # ==> Payment history result
+        try:
+            payment_r, history, amt_principal, amt_total = cibil_analysis(cibil_df['data'],
+                                                                          cibil_df['data']['credit_score'].max(),
+                                                                          user_id)
+            db = client.analysis.parameters
+            db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                      'parameters.payment_history': history,
+                                                      'parameters.written_amt_total': amt_total,
+                                                      'parameters.written_amt_principal': amt_principal}}, upsert=True)
+        except BaseException as e:
+            msg = "Payment History failed due to some reason-" + str(e)
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
+        logger.info('Payment History complete')
+
+        # >>=>> Payment Rating
+        try:
+            payment_rating = get_payment_rating(user_id, cibil_df)
+            if not payment_rating['status']:
+                msg = "Payment Rating failed due to some reason-" + payment_rating['message']
+                logger.error(msg)
+                exception_feeder(client=client, user_id=user_id, msg=msg)
+        except BaseException as e:
+            msg = "Payment Rating failed due to some reason-" + str(e)
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
+        logger.info('Payment Rating complete')
 
     # >>=>> Age of user
     try:
@@ -403,37 +448,6 @@ def bl0(**kwargs):
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Loan App Percentage complete')
-
-    # ==> Payment history result
-    try:
-        payment_r, history, amt_principal, amt_total = cibil_analysis(cibil_df['data'], cibil_df['data']['credit_score'].max(), user_id)
-        db = client.analysis.parameters
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.payment_history': history,
-                                                  'parameters.written_amt_total':amt_total,
-                                                  'parameters.written_amt_principal':amt_principal}}, upsert=True)
-    except BaseException as e:
-
-        import traceback
-        traceback.print_tb(e.__traceback__)
-        msg = "Payment History failed due to some reason-" + str(e)
-        logger.error(msg)
-        exception_feeder(client=client, user_id=user_id, msg=msg)
-    logger.info('Payment History complete')
-
-
-    # >>=>> Payment Rating
-    try:
-        payment_rating = get_payment_rating(user_id, cibil_df)
-        if not payment_rating['status']:
-            msg = "Payment Rating failed due to some reason-" + payment_rating['message']
-            logger.error(msg)
-            exception_feeder(client=client, user_id=user_id, msg=msg)
-    except BaseException as e:
-        msg = "Payment Rating failed due to some reason-" + str(e)
-        logger.error(msg)
-        exception_feeder(client=client, user_id=user_id, msg=msg)
-    logger.info('Payment Rating complete')
 
     # >>=>> Repayment History
     try:
@@ -473,19 +487,6 @@ def bl0(**kwargs):
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Relatives verification complete')
-
-    # >>=>> Secured Unsecured Loans
-    try:
-        secured_unsecured = secure_unsecured_loan(user_id, cibil_df)
-        if not secured_unsecured['status']:
-            msg = "Secured Unsecured Loans failed due to some reason-" + secured_unsecured['message']
-            logger.error(msg)
-            exception_feeder(client=client, user_id=user_id, msg=msg)
-    except BaseException as e:
-        msg = "Secured Unsecured Loans failed due to some reason-" + str(e)
-        logger.error(msg)
-        exception_feeder(client=client, user_id=user_id, msg=msg)
-    logger.info('Secured Unsecured Loans complete')
 
     # >>=>> Username messages
     try:

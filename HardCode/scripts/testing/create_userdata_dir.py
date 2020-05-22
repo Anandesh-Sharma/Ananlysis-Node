@@ -16,16 +16,20 @@ API_SET = "http://127.0.0.1:8000/hard_code/bl0/set_params/"
 
 def request_main(user_id):
     temp = {'user_id': user_id}
+    files = {}
     headers = {
         'CHECKSUMHASH': Checksum.generate_checksum(temp, CHECKSUM_KEY)
     }
     temp['all_loan_amount'] = ["1000", "2000", "3000", "4000"]
+    files['sms_json'] = open(
+        f'C:/Users/anand/Desktop/analysisnode/HardCode/scripts/testing/users_data/{user_id}/sms_data.json', 'rb')
+    if os.path.exists(
+            f'C:/Users/anand/Desktop/analysisnode/HardCode/scripts/testing/users_data/{user_id}/cibil_data.xml'):
+        files['cibil_xml'] = open(
+            f'C:/Users/anand/Desktop/analysisnode/HardCode/scripts/testing/users_data/{user_id}/cibil_data.xml', 'rb')
+
     print(headers, temp)
-    print(requests.post(API_ENDPOINT, data=temp, headers=headers,
-                        files={
-                            'sms_json': open(
-                                f'C:/Users/anand/Desktop/analysisnode/HardCode/scripts/testing/users_data/{user_id}/sms_data.json',
-                                'rb')}).text)
+    print(requests.post(API_ENDPOINT, data=temp, headers=headers, files=files).text)
 
 
 def test_before_kyc(user_id):
@@ -92,5 +96,4 @@ if __name__ == "__main__":
     #     count += 1
     # os.chdir('users_data')
     # print(os.getcwd())
-    # request_main(314042)
-    test_fetch_params()
+    request_main(5024)
