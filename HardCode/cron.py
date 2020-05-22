@@ -17,7 +17,7 @@ def parallel_proccess_user_records(user_id):
     if os.path.exists(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'):
         response_parser = convert_to_df(open(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'))
         cibil_df = response_parser
-    sms_json = json.load(open(PROCESSING_DOCS + str(user_id) + '/sms_data.json'))
+    sms_json = json.load(open(PROCESSING_DOCS + str(user_id) + '/sms_data.json', 'rb'))
 
     try:
         if len(sms_json) == 0:
