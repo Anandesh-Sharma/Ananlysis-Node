@@ -1,5 +1,7 @@
 from HardCode.scripts.Util import logger_1, conn
 import pandas as pd
+from datetime import datetime
+import pytz
 
 def fetch_user_data(cust_id):
     """
@@ -57,9 +59,9 @@ def fetch_user_data(cust_id):
         loan_data = loan_data.reset_index(drop=True)
         script_status = {'status': True, "result": loan_data}
         client.close()
-    except:
+    except BaseException as e:
         r = {'status': False, 'message': str(e),
-            'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+            'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': cust_id}
         client.analysisresult.exception_bl0.insert_one(r)
         logger.info('unable to fetch data')
         script_status = {'status': False, 'message': 'unable to fetch data'}

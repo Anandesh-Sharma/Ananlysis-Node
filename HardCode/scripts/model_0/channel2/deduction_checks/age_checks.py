@@ -4,8 +4,8 @@ from HardCode.scripts.Util import conn
 def age_check(user_id):
     # age_of_oldest_trade , status = age_oldest_trade(cibil_df)
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
-    age_of_oldest_trade = parameters['parameters']['age_of_oldest_trade']
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})['parameters'][-1]
+    age_of_oldest_trade = parameters['age_of_oldest_trade']
     # >>==>> age of oldest trade
     age_of_oldest_trade_check1 = False
     age_of_oldest_trade_check2 = False

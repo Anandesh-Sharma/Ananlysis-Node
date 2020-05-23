@@ -6,6 +6,7 @@ from analysisnode.settings import BASE_DIR, CHECKSUM_KEY, PROCESSING_DOCS
 import os
 from threadedprocess import ThreadedProcessPoolExecutor
 from glob import glob
+from HardCode.scripts.testing.user_ids import ids
 
 API_ENDPOINT = 'http://127.0.0.1:8000/hard_code/bl0/'
 API_ENDPOINT_1 = 'http://127.0.0.1:8000/hard_code/bl0/before_kyc/'
@@ -22,11 +23,11 @@ def request_main(user_id):
     }
     temp['all_loan_amount'] = ["1000", "2000", "3000", "4000"]
     files['sms_json'] = open(
-        f'C:/Users/anand/Desktop/analysisnode/HardCode/scripts/testing/users_data/{user_id}/sms_data.json', 'rb')
+        f'C:/Users/shreya/Desktop/Users_Info/{user_id}/sms_data.json', 'rb')
     if os.path.exists(
-            f'C:/Users/anand/Desktop/analysisnode/HardCode/scripts/testing/users_data/{user_id}/cibil_data.xml'):
+            f'C:/Users/shreya/Desktop/Users_Info/{user_id}/cibil_data.xml'):
         files['cibil_xml'] = open(
-            f'C:/Users/anand/Desktop/analysisnode/HardCode/scripts/testing/users_data/{user_id}/cibil_data.xml', 'rb')
+            f'C:/Users/shreya/Desktop/Users_Info/{user_id}/cibil_data.xml', 'rb')
 
     print(headers, temp)
     print(requests.post(API_ENDPOINT, data=temp, headers=headers, files=files).text)
@@ -42,7 +43,7 @@ def test_before_kyc(user_id):
     print(requests.post(API_ENDPOINT_1, data=temp, headers=headers,
                         files={
                             'sms_json': open(
-                                f'C:/Users/anand/Desktop/analysisnode/HardCode/scripts/testing/users_data/{user_id}/sms_data.json')}).text)
+                                f'C:/Users/shreya/Desktop/Users_Info/{user_id}/sms_data.json')}).text)
 
 
 def test_pre_rejection(user_id):
@@ -96,4 +97,4 @@ if __name__ == "__main__":
     #     count += 1
     # os.chdir('users_data')
     # print(os.getcwd())
-    request_main(5024)
+    request_main(123244)

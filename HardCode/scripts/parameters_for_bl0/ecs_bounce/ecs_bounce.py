@@ -60,9 +60,8 @@ def get_count_ecs(cust_id):
     ecs = get_ecs_bounce(cust_id)
     ecs_count = 0
     connect = conn()
-    db  = connect.analysis.parameters
     test_db = connect.analysisresult.ecs_msg
-    parameters = {}
+
     try:
         dict_ecs = []
         if not ecs.empty:
@@ -88,19 +87,11 @@ def get_count_ecs(cust_id):
                         break
                     j += 1
                 i += 1
-        status = True
-        msg = 'success'
-        parameters['cust_id'] = cust_id
-        db.update({'cust_id': cust_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.ecs_bounce': ecs_count}}, upsert=True)
-    except BaseException as e:
-        status = False
-        msg = str(e)
-        parameters['cust_id'] = cust_id
-        db.update({'cust_id': cust_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.ecs_bounce': ecs_count}}, upsert=True)
 
-    return {'status':status,'message':msg}
+    except BaseException as e:
+        ecs_count = 0
+
+    return ecs_count
 
 
 

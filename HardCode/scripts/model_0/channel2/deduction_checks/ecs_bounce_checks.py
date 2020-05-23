@@ -5,9 +5,9 @@ from HardCode.scripts.Util import conn
 
 def ecs_chq_count(user_id):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({"cust_id":user_id})
-    count1 = parameters['parameters']['ecs_bounce']
-    count2 = parameters['parameters']['chq_bounce']
+    parameters = connect.analysis.parameters.find_one({"cust_id":user_id})['parameters'][-1]
+    count1 = parameters['ecs_bounce']
+    count2 = parameters['chq_bounce']
     # count1 = get_count_ecs(user_id)
     # count2 , status2 = get_count_cb(user_id)
 

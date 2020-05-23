@@ -4,7 +4,7 @@ from HardCode.scripts.parameters_for_bl0.reference_verification.validation.cosin
     cos_sim
 from datetime import datetime, date
 from HardCode.scripts.Util import conn
-import pytz
+
 
 
 def validate(user_id):
@@ -46,22 +46,15 @@ def validate(user_id):
             msg = 'no data fetched from api'
         res = {'status': status,
                'result': {'verification': validated, 'similarity_score': max_similarity, 'message': msg}}
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.reference': res,
-                                                  'parameters.no_of_contacts':no_of_contacts}}, upsert=True)
 
-        return {'status': True, 'message': msg}
+        return res, no_of_contacts
     except BaseException as e:
         #print(f"Error in validation: {e}")
         msg = f"error in reference verification : {str(e)}"
         res = {'status': False,
                'result': {'verification': validated, 'similarity_score': max_similarity, 'message': msg}}
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.reference': res,
-                                                  'parameters.no_of_contacts':no_of_contacts}}, upsert=True)
 
-        return {'status': False, 'message': msg}
+
+        return res, no_of_contacts
 
 

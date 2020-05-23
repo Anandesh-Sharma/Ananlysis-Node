@@ -1,7 +1,7 @@
 from HardCode.scripts.parameters_for_bl0.profile_info import get_profile_info
 from datetime import datetime
 from HardCode.scripts.Util import conn,logger_1
-import pytz
+
 
 
 def repayment_history(user_id):
@@ -88,13 +88,8 @@ def repayment_history(user_id):
                         overdue_report['more_than_15'] += 1
                     pending_emi += 1
 
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.credicxo_overdue_days': overdue_report,
-                                                  'parameters.credicxo_total_loans':total_loans,
-                                                  'parameters.credicxo_loan_limit':loan_limit,
-                                                  'parameters.credicxo_pending_emi':pending_emi}}, upsert=True)
-        return {'status':True,'message':'success'}
+
+        return overdue_report,total_loans,loan_limit,pending_emi
     except BaseException as e:
         overdue_report = {
             '0-3_days': -1,
@@ -103,12 +98,6 @@ def repayment_history(user_id):
             '12-15_days': -1,
             'more_than_15': -1}
         pending_emi = -1
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.credicxo_overdue_days': overdue_report,
-                                                  'parameters.credicxo_total_loans': total_loans,
-                                                  'parameters.credicxo_loan_limit': loan_limit,
-                                                  'parameters.credicxo_pending_emi': pending_emi}}, upsert=True)
-        return {'status': False, 'message': str(e)}
+        return overdue_report,total_loans,loan_limit,pending_emi
 
 

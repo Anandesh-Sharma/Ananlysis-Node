@@ -4,13 +4,13 @@
 from HardCode.scripts.Util import conn
 def available_balance_check(user_id):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id': user_id})
-    bal = parameters['parameters']['mean_bal']
-    last_peak_bal = parameters['parameters']['last_month_peak']
-    scnd_last_peak_bal = parameters['parameters']['second_last_month_peak']
-    third_last_peak_bal = parameters['parameters']['third_last_month_peak']
-    avg_bal = parameters['parameters']['avg_balance']
-    available_balance = parameters['parameters']['available_balance']
+    parameters = connect.analysis.parameters.find_one({'cust_id': user_id})['parameters'][-1]
+    bal = parameters['mean_bal']
+    last_peak_bal = parameters['last_month_peak']
+    scnd_last_peak_bal = parameters['second_last_month_peak']
+    third_last_peak_bal = parameters['third_last_month_peak']
+    avg_bal = parameters['avg_balance']
+    available_balance = parameters['available_balance']
     # available_balance = find_info(user_id)
 
     # bal,third_last_peak_bal,scnd_last_peak_bal,last_peak_bal,avg_bal = mean_available(user_id)

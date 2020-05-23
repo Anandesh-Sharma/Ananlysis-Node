@@ -48,12 +48,8 @@ def get_chq_bounce(cust_id):
 def get_count_cb(cust_id):
     cb = get_chq_bounce(cust_id)
     count = 0
-    status = False
     connect = conn()
-    db  = connect.analysis.parameters
     test_db = connect.analysisresult.cheque_bounce_msg
-    parameters = {}
-    output = {}
     try:
         dict_chq = []
         if not cb.empty:
@@ -79,14 +75,7 @@ def get_count_cb(cust_id):
                         break
                     j=j+1
                 i=i+1
-        status = True
-        msg = 'success'
+
     except BaseException as e:
-        msg = str(e)
-        status = False
-
-
-    parameters['cust_id'] = cust_id
-    db.update({'cust_id': cust_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                   'parameters.chq_bounce':count}}, upsert=True)
-    return {'status':status, 'message':msg}
+        count = 0
+    return count

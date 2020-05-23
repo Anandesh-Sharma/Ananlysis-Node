@@ -2,9 +2,9 @@
 from HardCode.scripts.Util import conn
 def loan_app_count_check(user_id):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})['parameters'][-1]
     # loan_app_count_percentage , status = loan_app_count(user_id)
-    loan_app_count_percentage = parameters['parameters']['percentage_of_loan_apps']
+    loan_app_count_percentage = parameters['percentage_of_loan_apps']
     # >>==>> loan app count
     loan_app_count_check1 = False
     loan_app_count_check2 = False

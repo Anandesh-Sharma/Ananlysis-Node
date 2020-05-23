@@ -3,10 +3,10 @@ from HardCode.scripts.Util import conn
 
 def active_close_check(user_id):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})['parameters'][-1]
     # active_count, closed_count , status = get_active_closed(cibil_df)
-    active_count = parameters['parameters']['active']
-    closed_count = parameters['parameters']['closed']
+    active_count = parameters['active']
+    closed_count = parameters['closed']
     # >>==>> active closed account
     active_close_check1 = False
     active_close_check2 = False

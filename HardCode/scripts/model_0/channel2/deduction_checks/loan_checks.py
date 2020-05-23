@@ -3,14 +3,14 @@
 from HardCode.scripts.Util import conn
 def loan_check(user_id):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})['parameters'][-1]
     loans = connect.analysis.loan.find_one({'cust_id': user_id})
-    max_limit =  parameters['parameters']['loan_info']['MAX_AMOUNT']
-    due_days =  parameters['parameters']['loan_info']['OVERDUE_DAYS']
-    no_of_loan_apps = parameters['parameters']['loan_info']['TOTAL_LOAN_APPS']
+    max_limit =  parameters['loan_info']['MAX_AMOUNT']
+    due_days =  parameters['loan_info']['OVERDUE_DAYS']
+    no_of_loan_apps = parameters['loan_info']['TOTAL_LOAN_APPS']
     loan_apps =  loans['user_app_list']
-    overdue_ratio =  parameters['parameters']['loan_info']['OVERDUE_RATIO']
-    report =  parameters['parameters']['loan_info']['OVERDUE_DAYS']  # TODO change this for actual report from loan analysis
+    overdue_ratio =  parameters['loan_info']['OVERDUE_RATIO']
+    report =  parameters['loan_info']['OVERDUE_DAYS']  # TODO change this for actual report from loan analysis
     # max_limit, due_days, no_of_loan_apps, loan_apps ,overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
     # report = get_final_loan_details(user_id)
 

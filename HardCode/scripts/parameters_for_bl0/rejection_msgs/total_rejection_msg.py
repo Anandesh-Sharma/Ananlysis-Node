@@ -92,20 +92,13 @@ def get_defaulter(user_id):
                     FLAG = True
                     legal_message_count += 1
                     break
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.legal_message_count': legal_message_count,
-                                                  'parameters.legal_message_status': FLAG}}, upsert=True)
+
 
         connect.analysisresult.legal_msg.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                   'legal_msg': legal_messages}}, upsert=True)
-        return {'status':True, 'message':'success'}
+        return legal_message_count,FLAG
     except BaseException as e:
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.legal_message_count': legal_message_count,
-                                                  'parameters.legal_message_status': FLAG}}, upsert=True)
         connect.analysisresult.legal_msg.update({'cust_id': user_id}, {
             "$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                      'legal_msg': legal_messages}}, upsert=True)
-        return {'status': False, 'message': str(e)}
+        return legal_message_count,FLAG

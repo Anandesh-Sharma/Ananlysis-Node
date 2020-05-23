@@ -2,9 +2,6 @@ import numpy as np
 import os
 import pandas as pd
 import re
-import pytz
-from datetime import datetime
-from pymongo import MongoClient
 
 from HardCode.scripts.Util import conn
 
@@ -166,10 +163,7 @@ def sms_header_splitter(data):
 
 def get_cc_limit(user_id):
     connect = conn()
-    df  = connect.analysis.parameters
-    parameters = {}
     result = {}
-    output = {}
     try:
         db = connect.messagecluster.creditcard
         file1 = db.find_one({"cust_id": user_id})
@@ -189,13 +183,7 @@ def get_cc_limit(user_id):
             result = {}
 
 
-        parameters['cust_id'] = user_id
-        df.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.credit_card': result}}, upsert=True)
-        return {'status': True, 'message': 'success'}
+        return result
     except BaseException as e:
-        parameters['cust_id'] = user_id
-        df.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.credit_card': result}}, upsert=True)
-        return {'status': False, 'message': str(e)}
+      return result
 
