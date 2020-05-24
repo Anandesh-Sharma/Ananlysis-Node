@@ -15,7 +15,7 @@ def salary(user_id):
     salary_main(user_id)
     sal = connect.analysis.salary.find_one({'cust_id': user_id})
     dict_of_sal = []
-    no_of_month = 4
+    no_of_month = 6
     if sal:
         months = list(sal['salary'].keys())[::-1]
         month_key = months[:no_of_month]
@@ -77,10 +77,11 @@ def last_sal(user_id):
             if list_of_sal[-j] != 0:
                 last_sal = list_of_sal[-j]
                 break
-    parameters['cust_id'] = user_id
-    db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                              'parameters.salary': last_sal}}, upsert=True)
-    return {'status':True,'message':'success'}
+    # parameters['cust_id'] = user_id
+    # db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+    #                                           'parameters.salary': last_sal}}, upsert=True)
+    # return {'status':True,'message':'success'}
+    return last_sal
 
 def quarantine_sal(user_id):
     connect = conn()
@@ -97,9 +98,10 @@ def quarantine_sal(user_id):
     except:
         sal = -1
     finally:
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.quarantine_salary': sal}}, upsert=True)
-        return {'status': True, 'message': 'success'}
+        # db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+        #                                           'parameters.quarantine_salary': sal}}, upsert=True)
+        # return {'status': True, 'message': 'success'}
+        return sal
 
 
 

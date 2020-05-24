@@ -87,18 +87,15 @@ def month_balance(value,prev_month,prev_year,sec_mon,sec_yr,third_mon,third_yr,a
 def find_info(user_id):
     connect = conn()
     user_data = connect.analysis.balance_sheet.find_one({'cust_id': user_id})
-    db  = connect.analysis.parameters
-    parameters = {}
+
 
     if not user_data:
 
-        parameters['cust_id'] = int(user_id)
-        db.update({'cust_id': int(user_id)}, {"$set": {'modified_at':str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                       'parameters.available_balance':{'AC_NO':'','balance_on_loan_date':-1,
-                                                                                       'last_month_bal':-1,'second_last_month_bal':-1,
-                                                                                       'third_last_month_bal':-1,'count_creditordebit_msg':-1,
-                                                                                       'no_of_accounts':-1}}}, upsert=True)
-        return {'status':True,'message':'success'}
+        return {'AC_NO':'','balance_on_loan_date':-1,
+                'last_month_bal':-1,'second_last_month_bal':-1,
+                'third_last_month_bal':-1,'count_creditordebit_msg':-1,
+                'no_of_accounts':-1}
+
     try:
         user_data = user_data['sheet']
         sms_info_df = pd.DataFrame(user_data)
@@ -257,26 +254,12 @@ def find_info(user_id):
                              'count_creditordebit_msg':value['count_creditordebit_msg'],
                              'no_of_accounts':len(unique_acc_dict.keys())})
             list_to_return.append(csv_dict)
-        # parameters['available_balance'] = list_to_return[0]
-        parameters['cust_id'] = int(user_id)
-        db.update({'cust_id': int(user_id)}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                       'parameters.available_balance': list_to_return[0]}}, upsert=True)
-
-
-        return {'status':True,'message':'success'}
+        return list_to_return[0]
     except BaseException as e:
-        parameters['cust_id'] = int(user_id)
-        db.update({'cust_id': int(user_id)}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                       'parameters.available_balance': {'AC_NO': '',
-                                                                                        'balance_on_loan_date': -1,
-                                                                                        'last_month_bal': -1,
-                                                                                        'second_last_month_bal': -1,
-                                                                                        'third_last_month_bal': -1,
-                                                                                        'count_creditordebit_msg': -1,
-                                                                                        'no_of_accounts': -1}}},upsert=True)
-
-        return {'status': False, 'message': str(e)}
-
+        return {'AC_NO':'','balance_on_loan_date':-1,
+                'last_month_bal':-1,'second_last_month_bal':-1,
+                'third_last_month_bal':-1,'count_creditordebit_msg':-1,
+                'no_of_accounts':-1}
 
 
 

@@ -14,22 +14,22 @@ def get_additional_parameters(user_id):
     :rtype: dict
     """
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id': user_id})
+    parameters = connect.analysis.parameters.find_one({'cust_id': user_id})['parameters'][-1]
     loans = connect.analysis.loan.find_one({'cust_id': user_id})
-    cc_limit = parameters['parameters']['credit_card']
-    name_count = parameters['parameters']['username_msgs']
-    salary_dict = parameters['parameters']['salary']
+    cc_limit = parameters['credit_card']
+    name_count = parameters['username_msgs']
+    salary_dict = parameters['salary']
     loan_apps = loans['user_app_list']
-    loan_dates = parameters['parameters']['loan_info']['LOAN_DATES']
-    age = parameters['parameters']['age']
-    overdue_msg_ratio = parameters['parameters']['overdue_msg_ratio']
-    overdue_msg_count = parameters['parameters']['overdue_msg_count']
-    legal_msg_ratio = parameters['parameters']['legal_msg_ratio']
-    legal_msg_count = parameters['parameters']['legal_message_count']
-    cr_loan_limit = parameters['parameters']['credicxo_loan_limit']
-    total_loans = parameters['parameters']['credicxo_total_loans']
-    overdue_report = parameters['parameters']['credicxo_overdue_days']
-    pending_emi = parameters['parameters']['credicxo_pending_emi']
+    loan_dates = parameters['loan_info']['LOAN_DATES']
+    age = parameters['age']
+    overdue_msg_ratio = parameters['overdue_msg_ratio']
+    overdue_msg_count = parameters['overdue_msg_count']
+    legal_msg_ratio = parameters['legal_msg_ratio']
+    legal_msg_count = parameters['legal_message_count']
+    cr_loan_limit = parameters['credicxo_loan_limit']
+    total_loans = parameters['credicxo_total_loans']
+    overdue_report = parameters['credicxo_overdue_days']
+    pending_emi = parameters['credicxo_pending_emi']
 
 
     # cc_limit = get_cc_limit(user_id)

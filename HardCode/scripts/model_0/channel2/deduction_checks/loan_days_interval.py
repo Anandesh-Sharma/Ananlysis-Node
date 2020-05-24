@@ -4,7 +4,7 @@ from HardCode.scripts.Util import conn
 
 def due_days_interval(user_id):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({"cust_id":user_id})
+    parameters = connect.analysis.parameters.find_one({"cust_id":user_id})['parameters'][-1]
     count_same_app = 0
     count_diff_app = 0
     kredit = ['KREDTB', 'KRDITB','KRBEEE']
@@ -12,7 +12,7 @@ def due_days_interval(user_id):
     diff_app_count_check = False
     total_loans = 0
 
-    loan_dates = parameters['parameters']['loan_info']['LOAN_DATES']
+    loan_dates = parameters['loan_info']['LOAN_DATES']
     # max_limit,due_days,no_of_loan_apps,loan_apps, overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
     dates = pd.DataFrame(loan_dates)
 

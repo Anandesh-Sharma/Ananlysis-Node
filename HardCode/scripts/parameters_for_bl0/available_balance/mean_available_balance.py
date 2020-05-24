@@ -1,7 +1,5 @@
 from HardCode.scripts.Util import conn
-from datetime import datetime
 import itertools
-import pytz
 from HardCode.scripts.parameters_for_bl0.available_balance.available_balance import find_info
 
 def mean_available(user_id):
@@ -11,22 +9,13 @@ def mean_available(user_id):
     third_last_month = {}
     scnd_last_month = {}
     last_month = {}
-    parameters = {}
-    output = {}
     data = connect.analysis.balance_sheet.find_one({'cust_id':user_id})
-    db = connect.analysis.parameters
+
     if not data:
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.mean_bal': mean_bal,
-                                                  'parameters.last_month_peak': {},
-                                                  'parameters.second_last_month_peak': {},
-                                                  'parameters.third_last_month_peak': {},
-                                                  'parameters.avg_balance': avg_bal}}, upsert=True)
-        return {'status':True,'message':'balance sheet not found'}
+        return mean_bal,last_month,scnd_last_month,third_last_month,avg_bal
     data = data['sheet']
-    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
-    ac_no = parameters['parameters']['available_balance']['AC_NO']
+    avbl = find_info(user_id)
+    ac_no = avbl['AC_NO']
     avbl_bal = []
     if ac_no:
         for i in range(len(data)):
@@ -81,12 +70,6 @@ def mean_available(user_id):
     except:
         last_month = {}
 
-    parameters['cust_id'] = user_id
-    db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                   'parameters.mean_bal':mean_bal,
-                                              'parameters.last_month_peak':last_month,
-                                              'parameters.second_last_month_peak': scnd_last_month,
-                                            'parameters.third_last_month_peak':  third_last_month,
-                                            'parameters.avg_balance': avg_bal}}, upsert=True)
-    return {'status':True,'message':'success'}
+
+    return mean_bal,last_month,scnd_last_month,third_last_month,avg_bal
 

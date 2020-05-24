@@ -45,5 +45,8 @@ acc_types = \
         '88': 'Suit filed(Wilful default ) and Account Purchased and Written Off',
         '94': 'Suit filed(Wilful default ) and Account Purchased and Settled',
         '90': 'Suit filed(Wilful default ) and Account Purchased and Restructured',
-        '91': 'Suit filed(Wilful default ) and Status Cleared'
+        '91': 'Suit filed(Wilful default ) and Status Cleared',
+        'loss':'rejected'
+
+
     }

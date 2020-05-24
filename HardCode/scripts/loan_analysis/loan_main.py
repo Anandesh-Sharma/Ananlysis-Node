@@ -1,7 +1,6 @@
 import numpy as np
 from HardCode.scripts.loan_analysis.my_modules import *
 from HardCode.scripts.Util import logger_1, conn
-from HardCode.scripts.loan_analysis.preprocessing import preprocessing
 from datetime import datetime
 import pytz
 import warnings
@@ -59,8 +58,8 @@ def final_output(cust_id):
     # final output
     li = []
     li_ovrdue = []
+    client = conn()
     try:
-        client = conn()
         loan_cluster = client.analysis.loan.find_one({"cust_id" : cust_id})
         a = loan_cluster['complete_info']
         for i in a.keys():
@@ -171,20 +170,21 @@ def final_output(cust_id):
         except Exception as e:
             logger.info('no amount detect')
             report['empty'] = True
-        try:
-            client.analysis.parameters.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                                                    "parameters.loan_info": report}},  upsert = True)
-            logger.info("successfully updated loan info data on database")
-        except Exception as e:
-            r = {'status': False, 'message': str(e),
-                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
-            client.analysisresult.exception_bl0.insert_one(r)
-            logger.info("unable to update loan info data on database")
-        script_status = {'status': True, 'message': 'success', 'result': report}
+        # try:
+        #     client.analysis.parameters.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+        #                                                                             "parameters.loan_info": report}},  upsert = True)
+        #     logger.info("successfully updated loan info data on database")
+        # except Exception as e:
+        #     r = {'status': False, 'message': str(e),
+        #         'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+        #     client.analysisresult.exception_bl0.insert_one(r)
+        #     logger.info("unable to update loan info data on database")
+
+        return report
     except BaseException as e:
         r = {'status': False, 'message': str(e),
                 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
         client.analysisresult.exception_bl0.insert_one(r)
-        script_status = {"status" : False, "message" : str(e)}
-    client.close()
-    return script_status
+    finally:
+        client.close()
+        return report

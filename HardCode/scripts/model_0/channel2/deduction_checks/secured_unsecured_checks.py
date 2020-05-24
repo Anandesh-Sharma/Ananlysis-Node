@@ -3,9 +3,9 @@ from HardCode.scripts.Util import conn
 
 def secured_unsecured_check(user_id):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
-    secured_count = parameters['parameters']['secured_loans']
-    unsecured_count = parameters['parameters']['unsecured_loans']
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})['parameters'][-1]
+    secured_count = parameters['secured_loans']
+    unsecured_count = parameters['unsecured_loans']
     # secured_count, unsecured_count , status = secure_unsecured_loan(cibil_df)
 
     # >>==>> secured unsecured loan count check

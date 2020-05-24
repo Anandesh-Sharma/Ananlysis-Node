@@ -3,8 +3,8 @@ from HardCode.scripts.Util import conn
 
 def payment_rating_check(user_id):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
-    payment_rating = parameters['parameters']['payment_rating']
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})['parameters'][-1]
+    payment_rating = parameters['payment_rating']
     # payment_rating = get_payment_rating(cibil_df)
 
 

@@ -3,10 +3,10 @@
 from HardCode.scripts.Util import conn
 def reference_check(user_id):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id': user_id})
-    reference = parameters['parameters']['reference']
-    relative = parameters['parameters']['relatives']
-    no_of_relatives = parameters['parameters']['no_of_relatives']
+    parameters = connect.analysis.parameters.find_one({'cust_id': user_id})['parameters'][-1]
+    reference = parameters['reference']
+    relative = parameters['relatives']
+    no_of_relatives = parameters['no_of_relatives']
     # reference = validate(user_id)
     # relative = rel_validate(user_id)
 

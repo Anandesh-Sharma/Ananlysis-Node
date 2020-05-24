@@ -1,6 +1,4 @@
-from datetime import datetime, date
-from HardCode.scripts.Util import conn
-import pytz
+
 from HardCode.scripts.parameters_for_bl0.profile_info import get_profile_info
 
 
@@ -11,9 +9,6 @@ def loan_app_count(user_id):
     """
     age,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation,no_of_contacts = get_profile_info(user_id)
     percentage_of_loan_apps = 0
-    connect = conn()
-    db  = connect.analysis.parameters
-    parameters = {}
     try:
         if app_data:
             d = []
@@ -25,16 +20,7 @@ def loan_app_count(user_id):
                     d.append(i)
 
             percentage_of_loan_apps = (len(d) / len(app_data))
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.percentage_of_loan_apps': percentage_of_loan_apps}},
-                  upsert=True)
-        return {'status': True, 'message': 'success'}
-
+        return percentage_of_loan_apps
     except BaseException as e:
-        print(f"Error in loan app count validation : {e}")
 
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.percentage_of_loan_apps': percentage_of_loan_apps}}, upsert=True)
-        return {'status': False, 'message': str(e)}
+        return percentage_of_loan_apps

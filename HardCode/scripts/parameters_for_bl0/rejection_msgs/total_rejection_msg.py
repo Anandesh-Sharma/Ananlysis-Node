@@ -25,11 +25,11 @@ def get_defaulter(user_id):
         total = loan_approval + loan_overdue + loan_reject
         total = pd.DataFrame(total)
     else:
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.legal_message_count': legal_message_count,
-                                                  'parameters.legal_message_status': FLAG}}, upsert=True)
-        return {'status':True, 'message':'no loan data found'}
+        # parameters['cust_id'] = user_id
+        # db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
+        #                                           'parameters.legal_message_count': legal_message_count,
+        #                                           'parameters.legal_message_status': FLAG}}, upsert=True)
+        return legal_message_count,FLAG
 
     patterns = [
         r'legal\snotice\salert.*(?:loan|emi)\samount.*overdue.*since\s([0-9]{1,2})\sday[s]?', #days [0]
@@ -92,20 +92,13 @@ def get_defaulter(user_id):
                     FLAG = True
                     legal_message_count += 1
                     break
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.legal_message_count': legal_message_count,
-                                                  'parameters.legal_message_status': FLAG}}, upsert=True)
+
 
         connect.analysisresult.legal_msg.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                   'legal_msg': legal_messages}}, upsert=True)
-        return {'status':True, 'message':'success'}
+        return legal_message_count,FLAG
     except BaseException as e:
-        parameters['cust_id'] = user_id
-        db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                  'parameters.legal_message_count': legal_message_count,
-                                                  'parameters.legal_message_status': FLAG}}, upsert=True)
         connect.analysisresult.legal_msg.update({'cust_id': user_id}, {
             "$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                      'legal_msg': legal_messages}}, upsert=True)
-        return {'status': False, 'message': str(e)}
+        return legal_message_count,FLAG

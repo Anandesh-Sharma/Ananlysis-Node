@@ -3,14 +3,14 @@ from HardCode.scripts.Util import conn
 
 def rejecting_parameters(user_id,sms_count):
     connect = conn()
-    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})
-    loan_app = parameters['parameters']['percentage_of_loan_apps']
-    account_status_value = parameters['parameters']['account_status']
-    bal = parameters['parameters']['available_balance']
-    loan_due_days = parameters['parameters']['loan_info']['OVERDUE_DAYS']
-    overdue_count = parameters['parameters']['overdue_msg_count']
-    rejection_msg  = parameters['parameters']['legal_message_count']
-    flag = parameters['parameters']['legal_message_status']
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})['parameters'][-1]
+    loan_app = parameters['percentage_of_loan_apps']
+    account_status_value = parameters['account_status']
+    bal = parameters['available_balance']
+    loan_due_days = parameters['loan_info']['OVERDUE_DAYS']
+    overdue_count = parameters['overdue_msg_count']
+    rejection_msg  = parameters['legal_message_count']
+    flag = parameters['legal_message_status']
 
     user_sms_count = sms_count
     # bal = find_info(user_id)
