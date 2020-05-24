@@ -12,7 +12,6 @@ from HardCode.scripts.cibil.apicreditdata import convert_to_df
 @api_view(['POST'])
 # @permission_classes((AllowAny,))
 def get_cibil_analysis(request):
-    print(111111)
     try:
         user_id = int(request.data.get('user_id'))
     except:
