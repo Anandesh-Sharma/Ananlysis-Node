@@ -62,10 +62,9 @@ def bl0(**kwargs):
         client = conn()
     except:
         logger.critical('error in connection')
-        return
+        return  {'status': False, 'message': "Error in making connection.",
+         'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
     logger.info('connection success')
-
-
 
 
     # >>==>> Classification
