@@ -4,7 +4,7 @@ head_matcher = {
     'PAYMEI' : ['PAYMEI', 'PMIFSP'],
     'SALARY' : ['SALARY', 'ESALRY'],
     'KISSHT' : ['KISSHT', 'kissht'],
-    'CASHBN' : ['CASHBN', 'CASHME'],
+    'CASHBN' : ['CASHBN', 'CASHME', 'TIGIDN'],
     'NOTICE' : ['NOTICE', 'MONEED'],
     'BAJAJF' : ['BAJAJF', 'Bajajf'],
     'DHANII' : ['DHANII', 'IDhani', 'DHANIP', 'BUDYLN'],
@@ -16,7 +16,8 @@ head_matcher = {
     'NANOCD' : ['NANOCD', 'NANOCR'],
     'ZESTMN' : ['ZESTMN', 'LOANZM'],
     'MNYTAP' : ['MNYTAP', 'MONTAP'],
-    'ICASHE' : ['ICASHE', 'CASHEB','CASHEM','CASHEP']
+    'ICASHE' : ['ICASHE', 'CASHEB','CASHEM','CASHEP'],
+    'MAFILO' : ['MAFILO', 'MAFILG']
 }
 
 # , 'NXCOMM', 'NXIFAI', 'NXIFAJ', 'NXIFAB', 'NXIFAC', 'NXIFAG', 'NXIFAP', 'NXIFAE' irredit headers
