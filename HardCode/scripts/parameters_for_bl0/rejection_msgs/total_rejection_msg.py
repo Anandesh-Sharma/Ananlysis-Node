@@ -83,8 +83,10 @@ def get_defaulter(user_id):
         legal_message_count = len(legal_messages)
         connect.analysisresult.legal_msg.update_one({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 
                                                                                 'legal_msg': legal_messages}}, upsert = True)
+        connect.close()
         return legal_message_count
     except BaseException as e:
         connect.analysisresult.exception_bl0.insert_one({'status': False, 'message': "error in legal-"+str(e), 
                                                          'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id})
+        connect.close()
         return legal_message_count

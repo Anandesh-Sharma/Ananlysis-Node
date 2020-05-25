@@ -1,8 +1,6 @@
 from HardCode.scripts.parameters_for_bl0.user_name_msg.username_info import get_profile_name
 from HardCode.scripts.Util import conn
 import pandas as pd
-from datetime import datetime, date
-import pytz
 
 import re
 
@@ -77,7 +75,7 @@ def get_name_count(cust_id):
         if not user_data.empty:
             actual_name = get_profile_name(cust_id)
             actual_name = str(actual_name).split(' ')
-            pattern = str(actual_name[0])
+            pattern = str(actual_name[0]).lower()
             for i in range(user_data.shape[0]):
                 message = str(user_data['body'][i]).lower()
                 matcher = re.search(pattern, message)
