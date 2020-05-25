@@ -140,36 +140,17 @@ def final_output(cust_id):
 
         try:
             report['OVERDUE_DAYS'] = max(li_ovrdue)
-        except Exception as e:
-            r = {'status': False, 'message': str(e),
-                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
-            client.analysisresult.exception_bl0.insert_one(r)
-        try:
             report['AVERAGE_EXCEPT_MAXIMUM_OVERDUE_DAYS'] = np.round(sum(li_ovrdue) - max(li_ovrdue) / (len(li_ovrdue) - 1),2)
-        except Exception as e:
-            r = {'status': False, 'message': str(e),
-                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
-            client.analysisresult.exception_bl0.insert_one(r)
-        try:
             report['OVERDUE_RATIO'] = np.round(len(li_ovrdue) / report['TOTAL_LOANS'], 2)
-        except Exception as e:
-            r = {'status': False, 'message': str(e),
-                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
-            client.analysisresult.exception_bl0.insert_one(r)
-            report['OVERDUE_RATIO'] = 0
-        try:
             report['LOAN_DATES'] = loan_disbursal_flow
-        except Exception as e:
+            report['MAX_AMOUNT'] = float(max(li))
+        except BaseException as e:
             r = {'status': False, 'message': str(e),
                 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
             client.analysisresult.exception_bl0.insert_one(r)
-            report['LOAN_DATES'] = {}
-
-        try:
-            report['MAX_AMOUNT'] = float(max(li))
-        except Exception as e:
-            logger.info('no amount detect')
             report['empty'] = True
+            report['LOAN_DATES'] = {}
+            report['OVERDUE_RATIO'] = 0
         # try:
         #     client.analysis.parameters.update_one({"cust_id" : cust_id}, {"$set" : {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
         #                                                                             "parameters.loan_info": report}},  upsert = True)
