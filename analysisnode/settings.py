@@ -15,12 +15,18 @@ from datetime import timedelta
 from django.utils import timezone
 from pprint import pprint
 from configparser import RawConfigParser
+import  platform
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 config = RawConfigParser()
-config.read('/etc/settings.ini')
+# config.read('/etc/setting.ini')
+
+if platform.system()=="Linux":
+     config.read('/etc/settings.ini')
+else:
+     config.read(os.path.join(BASE_DIR,'analysisnode/setting.ini'))
 
 MONGOUSER = config.get('section', 'MONGOUSER')
 MONGOPASS = config.get('section', 'MONGOPASS')

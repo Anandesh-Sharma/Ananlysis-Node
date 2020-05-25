@@ -68,19 +68,12 @@ def get_user_messages_length(user_id):
         return len(user_data)
 
 
-def  legal_messages_count_ratio(user_id):
+def  legal_messages_count_ratio(user_id,no_of_sms):
     ratio = -1
     legal_messages_count = 0
-    connect = conn()
-    db = connect.analysis.parameters
     try:
-        # user_sms_count = connection.analysisresult.bl0.find_one({'cust_id':user_id})
-        # user_sms_count = user_sms_count['result'][-1]
-        # user_sms_count = user_sms_count['sms_count']
-        user_sms_count = db.find_one({"cust_id":user_id})['Total_msg']
-        # defaulter, legal_messages_count = get_defaulter(user_id)
-        legal_sms_count = db.find_one({'cust_id': user_id})
-        legal_messages_count = legal_sms_count['legal_message_count']
+        legal_messages_count = get_defaulter(user_id)
+        user_sms_count = no_of_sms
         if user_sms_count==0:
             ratio=0
         else:
@@ -90,13 +83,12 @@ def  legal_messages_count_ratio(user_id):
         return ratio
 
 
-def overdue_count_ratio(user_id):
+def overdue_count_ratio(user_id,no_of_sms):
     ratio = -1
     overdue_count = 0
     connect = conn()
-    db = connect.analysis.parameters
     try:
-        user_sms_count = db.find_one({"cust_id":user_id})['Total_msg']
+        user_sms_count = no_of_sms
         due_overdue_messages = connect.messagecluster.loandueoverdue.find_one({'cust_id': user_id})
         if due_overdue_messages:
             due_overdue_messages = pd.DataFrame(due_overdue_messages['sms'])

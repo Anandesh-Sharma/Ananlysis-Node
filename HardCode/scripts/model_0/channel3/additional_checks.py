@@ -25,7 +25,7 @@ def get_additional_parameters(user_id):
     overdue_msg_ratio = parameters['overdue_msg_ratio']
     overdue_msg_count = parameters['overdue_msg_count']
     legal_msg_ratio = parameters['legal_msg_ratio']
-    legal_msg_count = parameters['legal_message_count']
+    legal_msg_count = parameters['legal_msg_count']
     cr_loan_limit = parameters['credicxo_loan_limit']
     total_loans = parameters['credicxo_total_loans']
     overdue_report = parameters['credicxo_overdue_days']
