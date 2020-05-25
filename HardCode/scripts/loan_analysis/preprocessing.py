@@ -32,11 +32,11 @@ def preprocessing(cust_id):
                 logger.info("app found in app list")
                 data = data.sort_values(by='timestamp')
                 data = data.reset_index(drop=True)
-                if app_name == 'WFCASH':
-                    print(app_name)
-                    print('*******************************************************************************************************************')
-                    print(data)
-                    print('*******************************************************************************************************************')
+                # if app_name == 'WFCASH':
+                #     print(app_name)
+                #     print('*******************************************************************************************************************')
+                #     print(data)
+                #     print('*******************************************************************************************************************')
 
                 loan_count = 0
                 loan_details_individual_app = {}
@@ -72,11 +72,8 @@ def preprocessing(cust_id):
                         while j < len(data):
                             msg_after_disbursal = str(data['body'][j].encode('utf-8')).lower()
                             if is_disbursed(msg_after_disbursal, app):
-                                if (datetime.strptime(str(data['timestamp'][j]), "%Y-%m-%d %H:%M:%S") - disbursal_date).days <= 1:
-                                    j += 1
-                                    msg_after_disbursal = str(data['body'][j].encode('utf-8')).lower()
-                                else:
-                                    break
+                                logger.info("another disbursed message found before closing last loan")
+                                break
                             if is_due(msg_after_disbursal, app):
                                 #print(222222222222)
                                 logger.info("due message found")

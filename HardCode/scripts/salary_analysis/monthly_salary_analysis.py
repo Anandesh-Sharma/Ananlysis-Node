@@ -212,7 +212,7 @@ def salary_main(user_id):
 
                     if salary:
                         for j in range(len(salary)):
-                            if int(salary[j]['Credit Amount']) >= 7000:
+                            if int(salary[j]['Credit Amount']) > 0:
                                 sal.append(int(salary[j]['Credit Amount']))
 
                     if sal:
@@ -259,7 +259,7 @@ def salary_main(user_id):
                             neft = []
                             if neft_msg:
                                 for j in range(len(neft_msg)):
-                                    if int(neft_msg[j]['Credit Amount']) >= 7000:
+                                    if int(neft_msg[j]['Credit Amount']) > 0:
                                         neft.append(int(neft_msg[j]['Credit Amount']))
                             if neft:
                                 neft_amt = max(neft)
