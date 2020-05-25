@@ -78,14 +78,13 @@ def get_defaulter(user_id):
             for pattern in patterns:
                 matcher = re.search(pattern, message)
                 if matcher is not None:
-                    legal_messages.append(row)
+                    legal_messages.append(dict(row))
                     break
-
         legal_message_count = len(legal_messages)
-        connect.analysisresult.legal_msg.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 
+        connect.analysisresult.legal_msg.update_one({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 
                                                                                 'legal_msg': legal_messages}}, upsert = True)
         return legal_message_count
     except BaseException as e:
-        connect.analysisresult.exception_bl0.insert_one({'status': False, 'message': "error in legal"+str(e), 
+        connect.analysisresult.exception_bl0.insert_one({'status': False, 'message': "error in legal-"+str(e), 
                                                          'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id})
         return legal_message_count
