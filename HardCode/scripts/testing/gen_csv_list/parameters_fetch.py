@@ -41,7 +41,7 @@ def fetch_parameters(user_id):
           'quarantine_salary': data['quarantine_salary'],
           'ecs': data['ecs_bounce'],
           'chq': data['chq_bounce'],
-          'legal_msg_count': data['legal_message_count'],
+          'legal_msg_count': data['legal_msg_count'],
           'legal_msg_ratio': data['legal_msg_ratio'],
           'overdue_msg_count': data['overdue_msg_count'],
           'overdue_msg_ratio': data['overdue_msg_ratio'],

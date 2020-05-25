@@ -9,8 +9,7 @@ def rejecting_parameters(user_id,sms_count):
     bal = parameters['available_balance']
     loan_due_days = parameters['loan_info']['OVERDUE_DAYS']
     overdue_count = parameters['overdue_msg_count']
-    rejection_msg  = parameters['legal_message_count']
-    flag = parameters['legal_message_status']
+    rejection_msg  = parameters['legal_msg_count']
 
     user_sms_count = sms_count
     # bal = find_info(user_id)
@@ -31,11 +30,11 @@ def rejecting_parameters(user_id,sms_count):
 
 
 
-    if flag and rejection_msg == 0:
-        msg = "user has msgs for overdue of more than 15 days"
-        rejection_reasons.append(msg)
+    # if flag and rejection_msg == 0:
+    #     msg = "user has msgs for overdue of more than 15 days"
+    #     rejection_reasons.append(msg)
 
-    if flag and rejection_msg >= 3:
+    if rejection_msg >= 3:
         msg = "user has legal notice messages"
         rejection_reasons.append(msg)
 

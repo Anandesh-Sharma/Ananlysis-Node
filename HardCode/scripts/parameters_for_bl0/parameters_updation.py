@@ -122,23 +122,22 @@ def parameters_updation(user_id,cibil_df,no_of_sms):
         print('error in reference-' + str(e))
 
     try:
-        legal_ratio = legal_messages_count_ratio(user_id)
+        legal_ratio = legal_messages_count_ratio(user_id,no_of_sms)
     except BaseException as e:
         legal_ratio = -1
         print('error in legal-' + str(e))
 
     try:
-        overdue_count, overdue_ratio = overdue_count_ratio(user_id)
+        overdue_count, overdue_ratio = overdue_count_ratio(user_id,no_of_sms)
     except BaseException as e:
         overdue_count = -1
         overdue_ratio = -1
         print('error in overdue-' + str(e))
 
     try:
-        legal_count , flag = get_defaulter(user_id)
+        legal_count = get_defaulter(user_id)
     except BaseException as e:
         legal_count = -1
-        flag = False
         print('error in total rejction msg-' + str(e))
 
     try:
@@ -231,8 +230,7 @@ def parameters_updation(user_id,cibil_df,no_of_sms):
                        'quarantine_salary':quarantine_salary,
                        'ecs_bounce':ecs_count,
                        'chq_bounce':chq_count,
-                       'legal_message_count':legal_count,
-                       'legal_message_status':flag,
+                       'legal_msg_count':legal_count,
                        'legal_msg_ratio':legal_ratio,
                        'overdue_msg_ratio':overdue_ratio,
                        'overdue_msg_count':overdue_count,
