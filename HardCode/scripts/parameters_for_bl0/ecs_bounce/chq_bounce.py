@@ -49,7 +49,7 @@ def get_count_cb(cust_id):
     cb = get_chq_bounce(cust_id)
     count = 0
     connect = conn()
-    test_db = connect.analysisresult.cheque_bounce_msg
+    test_db = connect.analysis.cheque_bounce_msg
     try:
         dict_chq = []
         if not cb.empty:
