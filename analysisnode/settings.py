@@ -15,18 +15,17 @@ from datetime import timedelta
 from django.utils import timezone
 from pprint import pprint
 from configparser import RawConfigParser
-import  platform
+import platform
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 config = RawConfigParser()
-# config.read('/etc/setting.ini')
 
-if platform.system()=="Linux":
-     config.read('/etc/settings.ini')
+if platform.system() == "Linux":
+    config.read('/etc/settings.ini')
 else:
-     config.read(os.path.join(BASE_DIR,'analysisnode/setting.ini'))
+    config.read(os.path.join(BASE_DIR, 'analysisnode/settings.ini'))
 
 MONGOUSER = config.get('section', 'MONGOUSER')
 MONGOPASS = config.get('section', 'MONGOPASS')
@@ -41,7 +40,6 @@ SECRET_KEY = 'k$bpv=+g4r@*^3ypth*-0#9*0zd81e$8ea!8d*v(9e_f%5a&7z'
 DEBUG = False
 
 ALLOWED_HOSTS = ['mlnode.credicxotech.com', '127.0.0.1']
-
 
 # Application definition
 

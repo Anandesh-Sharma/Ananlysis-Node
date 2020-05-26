@@ -4,6 +4,8 @@ from HardCode.live_api.ml_analysis_status import get_cibil_analysis_status
 from HardCode.live_api.pre_rejection_status import get_pre_rejection_status
 from HardCode.live_api.fetch_parameter import fetch_inputs
 from HardCode.live_api.set_parameter import set_inputs
+from HardCode.live_api.get_cibil_decision import cibil_decision
+from HardCode.live_api.final_results import final_results
 
 
 class CibilAnalysis(View):
@@ -29,3 +31,13 @@ class FetchParameter(View):
 class SetParameter(View):
     def post(self, request):
         return set_inputs(request, )
+
+
+class GetCibilDecisions(View):
+    def post(self, request):
+        return cibil_decision(request, )
+
+
+class FinalResults(View):
+    def post(self, request):
+        return final_results(request, )

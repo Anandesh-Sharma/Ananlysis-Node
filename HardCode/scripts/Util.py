@@ -7,7 +7,7 @@ from pymongo import MongoClient
 import warnings
 import urllib
 from analysisnode.settings import MONGOUSER, MONGOPASS
-
+import os
 warnings.filterwarnings("ignore")
 
 
@@ -21,6 +21,8 @@ def conn():
 def logger_1(name, user_id):
     logger = logging.getLogger('analysis_node ' + str(user_id) + "  " + name)
     logger.setLevel(logging.INFO)
+    if not os.path.exists(os.getcwd() + '/logs/'):
+        os.makedirs(os.getcwd() + '/logs/')
     logHandler = TimedRotatingFileHandler(filename="logs/analysis_node_{}.log".format(user_id), when="midnight", backupCount=7)
     logFormatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
     logHandler.setFormatter(logFormatter)
