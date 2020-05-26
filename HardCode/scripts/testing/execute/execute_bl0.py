@@ -2,14 +2,13 @@ import json
 import os
 import warnings
 import requests
-from HardCode.scripts.testing.execute.data_fetch import get_sms, get_cibil
-from HardCode.scripts.testing.user_ids import *
+from HardCode.scripts.data_fetch import get_sms, get_cibil
+# from HardCode.scripts.testing.user_ids import *
 
 warnings.filterwarnings('ignore')
 from tqdm import tqdm
 import pandas as pd
-import win32file
-win32file._setmaxstdio(2048)
+
 
 def generate_access_token():
     # ==> this function is used to generate the access token in case if it expires
@@ -122,7 +121,7 @@ def testing(user_id):
 
                 # ==> cibil score is passed 807 by default
                 a = execute_bl0(user_id=int(user_id), cibil_score=807)
-                # return a
+                return a
                 print(f"result generated successfully : {user_id}")
             else:
                 msg = 'sms json does not exists'
@@ -135,8 +134,8 @@ def testing(user_id):
         print(f"the following error occurred : {e}")
 
 #
-user_id = input('enter user id: ')
-testing(user_id=user_id)
+# user_id = input('enter user id: ')
+# testing(user_id=user_id)
 
 # l = ids
 # l.sort(reverse=True)
@@ -149,5 +148,5 @@ testing(user_id=user_id)
 # #     exc.map(testing,(i for i in l))
 
 
-# for i in tqdm(l[1061:]):
-#     testing(i)
+# for i in tqdm(l):
+print(testing(319035))
