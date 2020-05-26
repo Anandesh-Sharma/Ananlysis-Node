@@ -25,7 +25,6 @@ def get_cibil_analysis(request):
             del response['all_loan_amount']
         except:
             pass
-        print(response)
         if not verify_checksum(response, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
             raise ValueError
     except (AttributeError, ValueError, KeyError):
@@ -42,13 +41,6 @@ def get_cibil_analysis(request):
     except:
         pass
 
-        # return Response({'status': False, 'message': 'new_user parameter is required'}, 400)
-        # try:
-        #     # Bool
-        #     only_classifier = request.data.get('classify_message')
-        #     only_classifier = ast.literal_eval(only_classifier)
-        # except:
-        #     pass
     try:
         sms_json = request.FILES['sms_json']
         try:
@@ -72,7 +64,6 @@ def get_cibil_analysis(request):
                 destination.write(chunk)
     except:
         pass
-        # return Response({'status': False, 'message': 'cibil_xml parameter is required'}, 400)
 
     try:
         cibil_score = request.data.get('cibil_score', 600)
@@ -80,14 +71,12 @@ def get_cibil_analysis(request):
             raise Exception
     except:
         pass
-        # return Response({'status': False, 'message': 'cibil_score parameter is required'}, 400)
     try:
         current_loan_amount = request.data.get('current_loan_amount', 0)
         if current_loan_amount is None:
             raise Exception
     except:
         pass
-        # return Response({'status': False, 'message': 'current_loan_amount parameter is required'}, 400)
 
     try:
         all_loan_amount = request.data.get('all_loan_amount', '1000,2000,3000,4000')
@@ -95,14 +84,12 @@ def get_cibil_analysis(request):
             raise Exception
     except:
         pass
-        # return Response({'status': False, 'message': 'all_loan_amount parameter is required'}, 400)
 
     # call parser
     try:
         all_loan_amount = list(map(lambda x: int(float(x)), all_loan_amount.split(',')))
     except:
         pass
-        # return Response({'status': False, 'message': 'all_loan_amount values must be int convertible'}, 400)
 
     try:
         current_loan_amount = int(current_loan_amount)
@@ -110,11 +97,11 @@ def get_cibil_analysis(request):
         pass
     with open(PROCESSING_DOCS + str(user_id) + '/user_data.json', 'w') as json_file:
         json.dump({
-        'current_loan_amount': current_loan_amount,
-        'all_loan_amount': all_loan_amount,
-        'cibil_score': cibil_score,
-        'user_id': user_id,
-        'new_user': new_user,
-    }, json_file, ensure_ascii=True, indent=4)
+            'current_loan_amount': current_loan_amount,
+            'all_loan_amount': all_loan_amount,
+            'cibil_score': cibil_score,
+            'user_id': user_id,
+            'new_user': new_user,
+        }, json_file, ensure_ascii=True, indent=4)
         # return Response({'status': False, 'message': 'current_loan_amount parameter must be int convertible'}, 400)
     return Response({'message': 'FILES RECEIVED!!'})

@@ -203,7 +203,9 @@ def salary_check(data, id):
     data["salary"] = np.where(data["salary"] >= 7000, data["salary"], 0)
     if data.shape[0] == 0:
         return {'status': False, 'message': 'no messages found'}
+
     df_salary = data.groupby(grouper)['salary'].max()
+    print(1)
 
     df_salary.fillna(0, inplace=True)
     # logger.info('Finding salary from EPF keyword')
@@ -237,6 +239,7 @@ def salary_check(data, id):
             # logger.info('Finding salary from Salary keyword')
             data = get_salary(data, id)
             df_d_salary = data.groupby(grouper)['direct_sal'].max()
+            print(2)
 
             df_d_salary.fillna(0, inplace=True)
             if len(df_d_salary) < 2:
@@ -269,7 +272,7 @@ def salary_check(data, id):
 
             data["neft_amount"] = np.where(data["neft_amount"] >= 7000, data["neft_amount"], 0)
             df_credit = data.groupby(grouper)['neft_amount'].max()
-
+            print(3)
             df_credit.fillna(0, inplace=True)
             df_final_sal = pd.DataFrame(df_credit.tail())
             if df_final_sal.shape[0] > 1:

@@ -5,7 +5,6 @@ import hashlib
 
 from Cryptodome.Cipher import AES
 
-
 IV = "@@@@&&&&####$$$$"
 BLOCK_SIZE = 16
 
@@ -22,9 +21,10 @@ def generate_checksum(param_dict, merchant_key, salt=None):
 
     return __encode__(hash_string, IV, merchant_key)
 
+
 def generate_refund_checksum(param_dict, merchant_key, salt=None):
     for i in param_dict:
-        if("|" in param_dict[i]):
+        if ("|" in param_dict[i]):
             param_dict = {}
             exit()
     params_string = __get_param_string__(param_dict)
@@ -66,8 +66,8 @@ def verify_checksum(param_dict, merchant_key, checksum):
 
 def verify_checksum_by_str(param_str, merchant_key, checksum):
     # Remove checksum
-    #if 'CHECKSUMHASH' in param_dict:
-        #param_dict.pop('CHECKSUMHASH')
+    # if 'CHECKSUMHASH' in param_dict:
+    # param_dict.pop('CHECKSUMHASH')
 
     # Get salt
     paytm_hash = __decode__(checksum, IV, merchant_key)
@@ -83,7 +83,7 @@ def __id_generator__(size=6, chars=string.ascii_uppercase + string.digits + stri
 def __get_param_string__(params):
     params_string = []
     for key in sorted(params.keys()):
-        if("REFUND" in str(params[key]) or "|" in str(params[key])):
+        if ("REFUND" in str(params[key]) or "|" in str(params[key])):
             respons_dict = {}
             exit()
         value = params[key]
