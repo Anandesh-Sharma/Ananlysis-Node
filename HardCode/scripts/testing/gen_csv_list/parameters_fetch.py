@@ -87,10 +87,10 @@ def fetch_messages(user_id):
     ecs= connect.analysis.ecs_msg.find_one({'cust_id':user_id})
     legal = connect.analysis.legal_msg.find_one({'cust_id': user_id})
     sal = connect.analysis.salary.find_one({'cust_id': user_id})
-    premium_rej, normal_rej, message = get_rejection_count(user_id)
+    message = connect.messagecluster.loanrejection.find_one({'cust_id':user_id})
     loan = connect.analysis.loan.find_one({'cust_id': user_id})
     msgs = {}
-    msgs['rejection'] = message
+    msgs['rejection'] = message['sms']
     if chq:
         msgs['cheque_bounce'] = chq
     if ecs:
@@ -122,7 +122,7 @@ client = conn()
 # print(cust_ids - {21530, 22131, 37542, 146567, 163406, 167622, 185217, 208346, 224547, 240296, 244820, 254416, 262731,
 #                   263272, 280924, 281647, 298154, 301809, 305136, 305258, 306322, 338863, 355742})
 
-cust_ids = [123244]
+cust_ids = [262378,32926]
 list_of_dict = []
 
 for id in cust_ids:
@@ -133,6 +133,6 @@ for id in cust_ids:
         conn()#
     data = pd.DataFrame(list_of_dict)
     data.to_csv(f'rule_based_parameters.csv')
-    # fetch_messages(id)
+    fetch_messages(id)
 
 

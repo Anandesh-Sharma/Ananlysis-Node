@@ -77,7 +77,7 @@ def  legal_messages_count_ratio(user_id,no_of_sms):
         if user_sms_count==0:
             ratio=0
         else:
-            ratio = legal_messages_count / user_sms_count
+            ratio = round(legal_messages_count / user_sms_count,4)
         return ratio
     except Exception as e:
         return ratio
@@ -101,18 +101,21 @@ def overdue_count_ratio(user_id,no_of_sms):
                 message = str(due_overdue_messages['body'][i]).lower()
                 app = due_overdue_messages["Sender-Name"][i]
                 #app_name = app
-                if app in loan_apps_regex and app not in bank_headers:
+                if app not in loan_apps_regex.keys() and app not in bank_headers:
                     app = 'OTHER'
                 if is_overdue(message, app):
                     overdue_count += 1
 
+
         if user_sms_count==0:
             ratio=0
         else:
-            ratio = overdue_count / user_sms_count
+            ratio = round(overdue_count / user_sms_count,4)
+
         return overdue_count,ratio
     except Exception as e:
         return overdue_count, ratio
+
 
 
 

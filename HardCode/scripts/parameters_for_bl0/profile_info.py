@@ -43,7 +43,7 @@ def get_profile_info(user_id):
             else:
                 data = res.json()
                 if 'error' not in data:
-                    no_of_contacts = data['profile']['kyc']['contacts_count']
+                    no_of_contacts = data['profile']['KYC']['contacts_count']
                     age = data['profile']['dob']
                     app_data = data['apps']
                     if data['profile']['preference__relation'] and data['profile']['preference_number']:
@@ -61,11 +61,10 @@ def get_profile_info(user_id):
                         expected_date.append(dict['loanrepaymentdates__repayment_date'])
                     for dict in data['transaction_status']:
                         repayment_date.append(dict['date_time'])
-
         else:
             data = res.json()
             if 'error' not in data:
-                no_of_contacts = data['profile']['kyc']['contacts_count']
+                no_of_contacts = data['profile']['KYC']['contacts_count']
                 age = data['profile']['dob']
                 app_data = data['apps']
                 if data['profile']['preference__relation'] and data['profile']['preference_number']:

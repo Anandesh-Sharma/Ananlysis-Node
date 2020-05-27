@@ -19,7 +19,7 @@ def loan_app_count(user_id):
                 if i['app__category'] == 'FINANCE':
                     d.append(i)
 
-            percentage_of_loan_apps = (len(d) / len(app_data))
+            percentage_of_loan_apps = round((len(d) / len(app_data)),2)
         return percentage_of_loan_apps
     except BaseException as e:
 
