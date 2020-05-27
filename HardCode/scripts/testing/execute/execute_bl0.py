@@ -2,7 +2,7 @@ import json
 import os
 import warnings
 import requests
-from HardCode.scripts.data_fetch import get_sms, get_cibil
+from data_fetch import get_sms, get_cibil
 # from HardCode.scripts.testing.user_ids import *
 
 warnings.filterwarnings('ignore')
@@ -18,7 +18,6 @@ def generate_access_token():
     credentials = {'username': 'root', 'password': 'root'}
 
     res = requests.post(url=url, data=credentials, verify=False)
-    print(res.text)
     res = res.json()
     return res['access']
 
@@ -39,9 +38,7 @@ def execute_bl0(**kwargs):
     all_loan_amount = [1000, 2000, 3000, 4000]
     current_loan_amount = 0
 
-    url = 'http://127.0.0.1:8000/hard_code/bl0/'
-    # token = generate_access_token()
-    # Auth = 'Bearer ' + str(token)
+    url = 'http://localhost:8000/hard_code/bl0/'
     payload = {
         'user_id': user_id,
         'new_user': new_user,
@@ -52,7 +49,6 @@ def execute_bl0(**kwargs):
     }
     files = [('sms_json', sms_json), ('cibil_xml', cibil_xml)]
     result = requests.post(url=url, data=payload, files=files)
-    # print(result.text)
     result = result.json()
     return result
     # df = {"cust_id": user_id,"score": [result['Model_0']['score']],
@@ -133,7 +129,7 @@ def testing(user_id):
     except BaseException as e:
         print(f"the following error occurred : {e}")
 
-#
+# abc = 9
 # user_id = input('enter user id: ')
 # testing(user_id=user_id)
 
@@ -149,4 +145,4 @@ def testing(user_id):
 
 
 # for i in tqdm(l):
-print(testing(319035))
+print(testing(7436))
