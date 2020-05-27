@@ -27,12 +27,12 @@ def chq_bounce(df,user_id,result):
         else:
             mask.append(False)
 
-    # if user_id in result.keys():
-    #     a = result[user_id]
-    #     a.extend(list(selected))
-    #     result[user_id] = a
-    # else:
-    #     result[user_id] = list(selected)
+    if user_id in result.keys():
+        a = result[user_id]
+        a.extend(list(selected))
+        result[user_id] = a
+    else:
+        result[user_id] = list(selected)
 
     return df.copy()[mask].reset_index(drop = True)
 
@@ -40,7 +40,7 @@ def Cheque_Classifier(df, result, user_id, max_timestamp, new):
     logger = logger_1("Cheque bounce function", user_id)
     logger.info("Cheque bounce function started")
 
-    chq_messages = chq_bounce(df, result, user_id)
+    chq_messages = chq_bounce(df = df, result = result , user_id = user_id)
 
     if chq_messages.empty:
         chq_messages = pd.DataFrame(columns = ['body', 'timestamp', 'sender', 'read'])

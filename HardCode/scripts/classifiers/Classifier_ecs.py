@@ -35,12 +35,12 @@ def ecs_bounce(df,user_id,result):
         else:
             mask.append(False)
 
-    # if user_id in result.keys():
-    #     a = result[user_id]
-    #     a.extend(list(selected))
-    #     result[user_id] = a
-    # else:
-    #     result[user_id] = list(selected)
+    if user_id in result.keys():
+        a = result[user_id]
+        a.extend(list(selected))
+        result[user_id] = a
+    else:
+        result[user_id] = list(selected)
 
     return df.copy()[mask].reset_index(drop = True),df.drop(selected).reset_index(drop=True)
 
@@ -48,7 +48,7 @@ def Ecs_Classifier(df, result, user_id, max_timestamp, new):
     logger = logger_1("Ecs function", user_id)
     logger.info("Ecs function started")
 
-    ecs_messages,df = ecs_bounce(df, result, user_id)
+    ecs_messages,df = ecs_bounce(df = df, result = result , user_id = user_id)
 
     if ecs_messages.empty:
         ecs_messages = pd.DataFrame(columns = ['body', 'timestamp', 'sender', 'read'])

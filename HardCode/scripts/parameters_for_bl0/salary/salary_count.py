@@ -64,9 +64,6 @@ def last_sal(user_id):
     :return: last salary found
     rtype: float
     """
-    connect = conn()
-    db = connect.analysis.parameters
-    parameters = {}
     dict_of_sal = salary(user_id)
     list_of_sal = []
     last_sal = 0
@@ -77,15 +74,10 @@ def last_sal(user_id):
             if list_of_sal[-j] != 0:
                 last_sal = list_of_sal[-j]
                 break
-    # parameters['cust_id'] = user_id
-    # db.update({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-    #                                           'parameters.salary': last_sal}}, upsert=True)
-    # return {'status':True,'message':'success'}
     return last_sal
 
 def quarantine_sal(user_id):
     connect = conn()
-    db = connect.analysis.parameters
     salary = connect.analysis.salary.find_one({'cust_id':user_id})
     sal = -1
     try:
@@ -96,8 +88,10 @@ def quarantine_sal(user_id):
                 sal = salary['salary']['April']['salary']
             else:
                 sal = -1
+        connect.close()
         return sal
     except:
+        connect.close()
         return sal
 
 

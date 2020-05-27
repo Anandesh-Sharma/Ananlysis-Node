@@ -2,6 +2,7 @@ from HardCode.scripts.Util import conn
 import itertools
 from HardCode.scripts.parameters_for_bl0.available_balance.available_balance import find_info
 
+
 def mean_available(user_id):
     connect = conn()
     mean_bal = -1
@@ -41,7 +42,7 @@ def mean_available(user_id):
         list_msg = []
 
         for j in range(len(dfs[i]['data'])):
-            if dfs[i]['data'][j]['Available Balance'] != 0:
+            if int(dfs[i]['data'][j]['Available Balance']) > 0:
                 list_bal.append(int(dfs[i]['data'][j]['Available Balance']))
                 list_time.append(dfs[i]['data'][j]['timestamp'])
                 list_msg.append(dfs[i]['data'][j]['body'])
@@ -53,10 +54,10 @@ def mean_available(user_id):
             all_max_msg.append(list_msg[maxpos])
 
     if all_max_bal:
-        mean_bal = sum(all_max_bal) / len(all_max_bal)
+        mean_bal = round(sum(all_max_bal) / len(all_max_bal),2)
 
     if monthly_avg_bal:
-        avg_bal = sum(monthly_avg_bal)/len(monthly_avg_bal)
+        avg_bal = round(sum(monthly_avg_bal)/len(monthly_avg_bal),2)
     try:
         third_last_month = {'max_amt':all_max_bal[-3],'datetime':all_max_time[-3],'msg':all_max_msg[-3]}
     except:

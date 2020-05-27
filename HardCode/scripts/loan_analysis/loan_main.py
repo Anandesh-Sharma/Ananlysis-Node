@@ -131,8 +131,6 @@ def final_output(cust_id):
 
         return report
     except BaseException as e:
-        import traceback
-        traceback.print_tb(e.__traceback__)
         r = {'status': False, 'message': str(e),
                 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
         client.analysisresult.exception_bl0.insert_one(r)

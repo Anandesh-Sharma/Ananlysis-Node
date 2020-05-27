@@ -266,7 +266,7 @@ loan_apps_regex = {
     },
     'QCRDIT' : {
         'disbursal' : [r'loan.*(?:is|has\sbeen)\s(?:disbursed|transferred|sent)',
-                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:is|has\sbeen)\sinitiated|disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:is|has\sbeen)\s(?:initiated|disbursed|transferred|sent)',
                        r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
                        r'(?:rs[.?]|inr)\s?([0-9,]+[.]?[0-9]+).*(?:is|has\sbeen)\s(?:credited|transferred|disbursed|sent)'], #not original
         'due' : [r'loan.*has\sexhausted\s(?:[0-9]+)\sdays\so\/s\s?([0-9,]+[.]?[0-9]+)',
@@ -411,7 +411,10 @@ loan_apps_regex = {
                        r'sorry.*not.*suitable\sloan\soffer'] #common
     },
     'HOMECR' : {
-        'disbursal' : [],
+        'disbursal' : [r'loan.*(?:is|has\sbeen)\s(?:disbursed|transferred|sent)',
+                       r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:is|has\sbeen)\s(?:initiated|disbursed|transferred|sent)',
+                       r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                       r'(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:is|has\sbeen)\s(?:credited|transferred|disbursed|sent)'], #common
         'due' : [r'loan.*(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*emi.*(?:due|dey)\shai'],
         'overdue' : [r'loan.*bakaya\shai.*late\sfee[s]?\ske\ssath\sjama\skarwaye',
                      r'(?:emi|loan).*overdue\shai'],
@@ -471,7 +474,7 @@ loan_apps_regex = {
         'disbursal' : [r'loan.*(?:is|has\sbeen)\s(?:disbursed|transferred)',
                        r'loan.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:is|has\sbeen)\s(?:initiated|disbursed|transferred)',
                        r'loan.*disbursed.*(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+)',
-                       r'(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*?:is|has\sbeen)\s(?:credited|transferred|disbursed)'], #common
+                       r'(?:rs[.]?|inr)\s?([0-9,]+[.]?[0-9]+).*(?:is|has\sbeen)\s(?:credited|transferred|disbursed)'], #common
         'due' : [r'(?:emi|payment|amount|loan|instal[l]?ment)\s?(?:of)?\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*is\sdue',
                  r'(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*is\sdue'],
         'overdue' : [r'(?:emi|installment).*(?:inr|rs\.?)\s?(?:[0-9,]+[.]?[0-9]+).*still\sunpaid',

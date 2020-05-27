@@ -65,12 +65,12 @@ def legal(df,user_id,result):
         else:
             mask.append(False)
 
-    # if user_id in result.keys():
-    #     a = result[user_id]
-    #     a.extend(list(selected))
-    #     result[user_id] = a
-    # else:
-    #     result[user_id] = list(selected)
+    if user_id in result.keys():
+        a = result[user_id]
+        a.extend(list(selected))
+        result[user_id] = a
+    else:
+        result[user_id] = list(selected)
 
     logger.info("loop ended")
     return df[mask].reset_index(drop=True),df.drop(selected).reset_index(drop=True)
@@ -79,7 +79,8 @@ def legal_Classifier(df, result, user_id, max_timestamp, new):
     logger = logger_1("Legal function", user_id)
     logger.info("Legal function started")
 
-    legal_messages,df = legal(df, result, user_id)
+    legal_messages,df = legal(df = df, result = result , user_id = user_id)
+
 
     if legal_messages.empty:
         legal_messages = pd.DataFrame(columns = ['body', 'timestamp', 'sender', 'read'])
