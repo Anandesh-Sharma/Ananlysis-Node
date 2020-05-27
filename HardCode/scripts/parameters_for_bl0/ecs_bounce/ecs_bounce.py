@@ -60,7 +60,7 @@ def get_count_ecs(cust_id):
     ecs = get_ecs_bounce(cust_id)
     ecs_count = 0
     connect = conn()
-    test_db = connect.analysisresult.ecs_msg
+    test_db = connect.analysis.ecs_msg
 
     try:
         dict_ecs = []

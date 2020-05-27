@@ -81,7 +81,7 @@ def get_defaulter(user_id):
                     legal_messages.append(dict(row))
                     break
         legal_message_count = len(legal_messages)
-        connect.analysisresult.legal_msg.update_one({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 
+        connect.analysis.legal_msg.update_one({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                                                 'legal_msg': legal_messages}}, upsert = True)
         connect.close()
         return legal_message_count
