@@ -80,6 +80,9 @@ def get_defaulter(user_id):
                 if matcher is not None:
                     legal_messages.append(dict(row))
                     break
+
+        # legal = connect.messagecluster.legal_msgs.find_one({'cust_id':user_id})
+        # legal_messages = legal['sms']
         legal_message_count = len(legal_messages)
         connect.analysis.legal_msg.update_one({'cust_id': user_id}, {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
                                                                                 'legal_msg': legal_messages}}, upsert = True)
