@@ -103,8 +103,9 @@ def overdue_count_ratio(user_id,no_of_sms):
                 #app_name = app
                 if app not in loan_apps_regex.keys() and app not in bank_headers:
                     app = 'OTHER'
-                if is_overdue(message, app):
-                    overdue_count += 1
+                if app in loan_apps_regex.keys():
+                    if is_overdue(message, app):
+                        overdue_count += 1
 
 
         if user_sms_count==0:

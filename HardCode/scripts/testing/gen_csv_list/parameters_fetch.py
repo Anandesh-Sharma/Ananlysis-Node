@@ -83,9 +83,9 @@ def fetch_parameters(user_id):
 
 def fetch_messages(user_id):
     connect = conn()
-    chq = connect.analysis.cheque_bounce_msg.find_one({'cust_id':user_id})
-    ecs= connect.analysis.ecs_msg.find_one({'cust_id':user_id})
-    legal = connect.analysis.legal_msg.find_one({'cust_id': user_id})
+    chq = connect.messagecluster.cheque_bounce_msgs.find_one({'cust_id':user_id})
+    ecs= connect.messagecluster.ecs_msgs.find_one({'cust_id':user_id})
+    legal = connect.messagecluster.legal_msgs.find_one({'cust_id': user_id})
     sal = connect.analysis.salary.find_one({'cust_id': user_id})
     message = connect.messagecluster.loanrejection.find_one({'cust_id':user_id})
     loan = connect.analysis.loan.find_one({'cust_id': user_id})
