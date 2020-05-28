@@ -48,6 +48,7 @@ def sms_header_splitter(data):
     data['Sender-Name'] = np.nan
     for i in range(len(data)):
         data['sender'][i] = data['sender'][i].replace('-', '')
+        data['sender'][i] = data['sender'][i].replace('$', '')
         try:
             header = str(data["sender"][i][2:]).upper()
             header = sms_header_matcher(header)
