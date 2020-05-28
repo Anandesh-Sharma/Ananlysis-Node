@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 def get_chq_bounce_data(cust_id):
     try:
         connect = conn()
-        db = connect.messagecluster.extra
+        db = connect.messagecluster.cheque_bounce_msgs
         msgs = db.find_one({'cust_id': cust_id})
         cb_data = pd.DataFrame(msgs['sms'])
         cb_data = cb_data.sort_values(by = 'timestamp')
@@ -23,40 +23,12 @@ def get_chq_bounce_data(cust_id):
         cb_data = pd.DataFrame(columns = ['user_id', 'body', 'sender', 'timestamp', 'read'])
     return cb_data
 
-def get_chq_bounce(cust_id):
-    cb_data = get_chq_bounce_data(cust_id)
-    chq_bounce_list = []
-    mask = []
-    pattern_1 = r'auto(?:\-|\s)debit\sattempt\sfailed.*cheque\s(?:bounce[d]?|dishono[u]?r)\scharge[s]?'
-    pattern_2 = r'cheque.*(?:dishono[u]?red|bounce[d]?).*insufficient\s(?:balance|fund[s]?|bal)'
-
-    if not cb_data.empty:
-        for i in range(cb_data.shape[0]):
-            message = str(cb_data['body'][i].encode('utf-8')).lower()
-            matcher_1 = re.search(pattern_1, message)
-            matcher_2 = re.search(pattern_2, message)
-
-            if matcher_1 is not None or matcher_2 is not None:
-                chq_bounce_list.append(i)
-                mask.append(True)
-            else:
-                mask.append(False)
-    else:
-        pass
-    return cb_data.copy()[mask].reset_index(drop = True)
 
 def get_count_cb(cust_id):
-    cb = get_chq_bounce(cust_id)
+    cb = get_chq_bounce_data(cust_id)
     count = 0
-    connect = conn()
-    test_db = connect.analysis.cheque_bounce_msg
     try:
-        dict_chq = []
         if not cb.empty:
-            for i,row in cb.iterrows():
-                dict_chq.append(row.to_dict())
-            test_db.update({'cust_id' : cust_id}, {"$set" : {'modified_at' : str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                    'cheque_bounce_msg' : dict_chq}}, upsert = True)
             i = 0
 
             while i < cb.shape[0]:

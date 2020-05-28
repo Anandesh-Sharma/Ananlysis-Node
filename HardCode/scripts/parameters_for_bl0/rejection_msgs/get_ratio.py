@@ -3,8 +3,8 @@ import pandas as pd
 from datetime import datetime
 from HardCode.scripts.parameters_for_bl0.rejection_msgs.total_rejection_msg import get_defaulter
 from HardCode.scripts.Util import conn
-from HardCode.scripts.loan_analysis.my_modules import is_overdue
-
+from HardCode.scripts.loan_analysis.my_modules import is_overdue, sms_header_splitter, grouping
+from HardCode.scripts.loan_analysis.loan_app_regex_superset import loan_apps_regex, bank_headers
 
 def get_user_messages_length(user_id):
     client = conn()
@@ -77,7 +77,7 @@ def  legal_messages_count_ratio(user_id,no_of_sms):
         if user_sms_count==0:
             ratio=0
         else:
-            ratio = legal_messages_count / user_sms_count
+            ratio = round(legal_messages_count / user_sms_count,4)
         return ratio
     except Exception as e:
         return ratio
@@ -92,21 +92,31 @@ def overdue_count_ratio(user_id,no_of_sms):
         due_overdue_messages = connect.messagecluster.loandueoverdue.find_one({'cust_id': user_id})
         if due_overdue_messages:
             due_overdue_messages = pd.DataFrame(due_overdue_messages['sms'])
+            sms_header_splitter(due_overdue_messages)
+            app_list = list(due_overdue_messages["Sender-Name"].unique())
         else:
             return overdue_count,ratio
         if not due_overdue_messages.empty:
             for i in range(due_overdue_messages.shape[0]):
                 message = str(due_overdue_messages['body'][i]).lower()
-                if is_overdue(message):
-                    overdue_count += 1
+                app = due_overdue_messages["Sender-Name"][i]
+                #app_name = app
+                if app not in loan_apps_regex.keys() and app not in bank_headers:
+                    app = 'OTHER'
+                if app in loan_apps_regex.keys():
+                    if is_overdue(message, app):
+                        overdue_count += 1
+
 
         if user_sms_count==0:
             ratio=0
         else:
-            ratio = overdue_count / user_sms_count
+            ratio = round(overdue_count / user_sms_count,4)
+
         return overdue_count,ratio
     except Exception as e:
         return overdue_count, ratio
+
 
 
 

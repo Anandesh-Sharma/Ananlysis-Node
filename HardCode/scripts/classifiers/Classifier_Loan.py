@@ -31,7 +31,8 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'payment\sreceived\sfor.*?loan',
         r'received.*\n\n.*towards\syour\sloan',
         r'(?:repayment|payment).*(?:is|has\sbeen)\s?(?:well)?\sreceived',
-        r'received.*payment\sof\s(?:rs\.?|inr)'
+        r'received.*payment\sof\s(?:rs\.?|inr)',
+        r'loan.*(?:paid|repaid)\ssuccessfully'
     ]
 
     for i in range(data.shape[0]):
@@ -200,7 +201,16 @@ def get_loan_messages_promotional_removed(data, loan_messages):
         r'good\snews',
         r'confirm\snow',
         r'use\sdebit\scard.*netbanking.*wallets.*upi',
-        r'are\syou\snot\sgetting\sloan'
+        r'are\syou\snot\sgetting\sloan',
+        r'if\syou\shave.*overdue\sdebts',
+        r'check\sthis\soffer',
+        r'(?:extension|waiver|attractive|wow|dhamakedar|never\sbefore|believe\sit\sor\snot)\soffer',
+        r'offer\sends',
+        r'[0-9]+\s?day[s]?\sextension',
+        r'limited\speriod\soffer',
+        r'offering\sloan\sextension',
+        r'get.*latest\supdates'
+
     ]
     for i in range(data.shape[0]):
         if i not in loan_messages:
@@ -325,7 +335,7 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         r'loan\sapplication.*?got\srejected',
         r'loan.*paysense\sis\srejected',
         r'has\sbeen.*?rejected',
-        r'is\sdeclined',
+        r'(?:is|was|has\sbeen)\s(?:declined|rejected)',
         r'has\sbeen\sdeclined',
         r'has\snot\sbeen\sapproved',
         r'was\snot\sapproved',
@@ -465,8 +475,11 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'loan.*passed\sthe\sdue\sdate',
         r'repayment.*is\spending',
         r'settle\syour\sdues.*legal\saction',
-        r'pay\surgently',
-        r'will\sbe\sauto\s?[-]?debited.*against\syour\sdues'
+        r'pay\s(?:immediately|urgently|now)',
+        r'will\sbe\sauto\s?[-]?debited.*against\syour\sdues',
+        r'(?:loan|emi|payment).*over\s?[-]?due',
+        r'loan.*successfully\srescheduled',
+        r'payment.*(?:yet|still)?not\s?(?:yet|still)?.*received'
     ]
 
     for i in range(data.shape[0]):

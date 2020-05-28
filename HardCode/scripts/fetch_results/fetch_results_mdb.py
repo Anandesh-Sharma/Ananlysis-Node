@@ -24,7 +24,7 @@ def fetch_user(user_id):
         if alys_loan:
             del alys_loan["_id"]
         # -> rejection
-        alys_rejection = client.analysis.rejection.find_one({'cust_id': user_id})
+        alys_rejection = client.messagecluster.loanrejection.find_one({'cust_id': user_id})
         if alys_loan:
             del alys_rejection["_id"]
         # -> scoring_model
@@ -33,15 +33,15 @@ def fetch_user(user_id):
         if alys_sm:
             del alys_sm["_id"]
         # -> cheque bounce messages
-        alys_cb = client.analysis.cheque_bounce_msg.find_one({'cust_id':user_id})
+        alys_cb = client.messagecluster.cheque_bounce_msgs.find_one({'cust_id':user_id})
         if alys_cb:
             del alys_cb['_id']
         # -> ecs bounce messages
-        alys_ecs = client.analysis.ecs_msg.find_one({'cust_id':user_id})
+        alys_ecs = client.messagecluster.ecs_msgs.find_one({'cust_id':user_id})
         if alys_ecs:
             del alys_ecs['_id']
         # -> legal messages
-        alys_legal = client.analysis.legal_msg.find_one({'cust_id':user_id})
+        alys_legal = client.messagecluster.legal_msgs.find_one({'cust_id':user_id})
         if alys_legal:
             del alys_legal['_id']
         # -> parameters
@@ -81,4 +81,6 @@ def pre_rejection(user_id):
             return {'status': True, 'rejection_status': True, 'message': "rejection reasons found"}
     else:
         return {'status': False, 'message': "Calm down! We're working on it"}
+
+from pprint import pprint
 
