@@ -60,7 +60,7 @@ loan_apps_regex = {
                      r'pay\syour\sdues\simmediately',
                      r'pay\syour\sdue\sat\sthe\searliest',
                      r'delayed.*(?:emi|loan|payment)\s(?:for|since|by).*([0-9]+)\sdays',
-                     r'(?:emi|loan|payment)\s(?:is|has\sbeen)\sdelayed\s(?:for|since|by)\s([0-9]+)\sdays',
+                     r'(?:emi|loan|payment)\s(?:is|has\sbeen)\sdelayed\s(?:for|since|by)\s([0-9]+)\sday[s]?',
                      r"you\sdid\s?(?:n't|not)\smake.*(?:emi|loan)\spayment",
                      r'your\semi.*still\spending',
                      r'you\shave\stime\still.*make\syour\spayment.*prevent\s([0-9]+)\s?day[s]?\sdelay',
@@ -432,13 +432,16 @@ loan_apps_regex = {
                  r'loan.*approved.*due\sdate\sis\s(?:[0-9]+[-][0-9]+[-][0-9]+).*(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)'], #new
         'overdue' : [r'loan.*overdue\s?(?:for)?\s([0-9]+)\sday[s]?'], #new
         'closed' : [r'payment\sreceived.*loan.*closed\ssuccessfully'], #new
-        'rejection' : [r'loan\s?(?:application)?.*rejected'] #common
+        'rejection' : [r'loan\s?(?:application)?.*rejected',
+                       r'sorry.*application\s(?:is|has\sbeen\s|was|were|has)\srejected'] #common
     },
     'BRANCH' : {
         'disbursal' : [r'sent\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+)\sto\syour\s(?:a\/c|account)',
-                       r'loan\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*sent'],
+                       r'loan\sof\s(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*sent',
+                       r'loan.*sent\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'],
         'due' : [r'(?:loan|emi|installment|payment)\sis\sdue',
-                 r'loan.*(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*due\sin\s[0-9]+\s?day[s]?'],
+                 r'loan.*(?:inr|rs\.?)\s?([0-9,]+[.]?[0-9]+).*due\sin\s[0-9]+\s?day[s]?',
+                 r'(?:repayment|payment).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\sis\sdue'],
         'overdue' : [r'(?:repayment|payment|loan|emi).*overdue\s(?:by|with|for|from)\s([0-9]+)\s?day[s]?',
                      r'([0-9]+)\s?days\soverdue.*branch\sloan',
                      r'(?:repayment|payment)\sis\snow\soverdue',
@@ -885,10 +888,10 @@ loan_apps_regex = {
                  r'(?:today|tomorrow)\sis\s?(?:the)?\sdue\sdate',
                  r'loan\swill\s?(?:be)?\sdue',
                  r'(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*is\sdue',
-                 r'loan\sis\sdue.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'],  # common
+                 r'loan\sis\sdue.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
+                 r'payment\sdue\sfor\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)'],  # common
         'overdue' : [r'(?:loan|emi|payment).*(?:is|has\sbeen)\s?(?:in)?\sover\s?[-]?due',
-                     r'(?:loan|emi|payment).*over\s?[-]?due.*(?:by|for|since|from|with)\s([0-9]+)\s?day[s]?',
-                     r'loan\semi\sis\sdue\s(?:from|since)\s\s?([0-9]+)\sdays',
+                     r'(?:loan|emi|payment|bill).*(?:pending|over\s?[-]?due).*(?:by|for|since|from|with)\s?(?:over)?\s([0-9]+)\s?day[s]?',
                      r"overdue.*has\s?(?:n't|not)?\sprocessed",
                      r'loan.*passed.*due\sdate\sof\s([0-9]+)\s?day[s]?',
                      r'loan\s(?:is|has)\sexpired',
@@ -916,7 +919,8 @@ loan_apps_regex = {
                        r'sorry.*not.*suitable\sloan\soffer',
                        r'loan.*not\sapproved',
                        r'loan\sapplication\sfailed',
-                       r'loan.*not\spass.*eligibility\srequirements']  # common
+                       r'loan.*not\spass.*eligibility\srequirements',
+                       r"sorry.*application\shas\s?(?:n't|not)\sbeen\sapproved"]  # common
     }
 
 

@@ -1,13 +1,13 @@
 
 head_matcher = {
     'QCRDIT' : ['QCRDIT', 'QCREDT', 'CASHLN'],
-    'PAYMEI' : ['PAYMEI', 'PMIFSP'],
+    'PAYMEI' : ['PAYMEI', 'PMIFSP','PAYMEC'],
     'SALARY' : ['SALARY', 'ESALRY'],
     'KISSHT' : ['KISSHT', 'kissht'],
-    'CASHBN' : ['CASHBN', 'CASHME', 'TIGIDN'],
+    'CASHBN' : ['CASHBN', 'CASHME'],
     'NOTICE' : ['NOTICE', 'MONEED'],
     'BAJAJF' : ['BAJAJF', 'Bajajf'],
-    'DHANII' : ['DHANII', 'IDhani', 'DHANIP', 'BUDYLN'],
+    'DHANII' : ['DHANII', 'IDHANI', 'DHANIP', 'BUDYLN'],
     'GTCASH' : ['GTCASH', 'GTcash'],
     'KREDTB' : ['KREDTB', 'KRBEEE', 'KRTBEE'],
     'KREDTZ' : ['KREDTZ', 'KDITZY'],
@@ -17,6 +17,7 @@ head_matcher = {
     'ZESTMN' : ['ZESTMN', 'LOANZM'],
     'MNYTAP' : ['MNYTAP', 'MONTAP'],
     'ICASHE' : ['ICASHE', 'CASHEB','CASHEM','CASHEP'],
+    'RRLOAN' : ['RRLOAN', 'RUPEER','RRWPAY','TRUBAL','PAYUIB'],
     'MAFILO' : ['MAFILO', 'MAFILG']
 }
 

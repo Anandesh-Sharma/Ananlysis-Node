@@ -12,7 +12,7 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
     logger = logger_1("loan closed messages", name)
     selected_rows = []
     all_patterns = [
-        r'.*?loan.*?closed.*?',
+        r'.*?loan.*?(?:closed|settled).*?',
         r'.*?closed.*?successfully.*?',
         r'successfully\sreceived\spayment.*rs\.\s[0-9]{3,6}',
         r'loan.*?paid\s(?:back|off)',
@@ -32,7 +32,10 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'received.*\n\n.*towards\syour\sloan',
         r'(?:repayment|payment).*(?:is|has\sbeen)\s?(?:well)?\sreceived',
         r'received.*payment\sof\s(?:rs\.?|inr)',
-        r'loan.*(?:paid|repaid)\ssuccessfully'
+        r'loan.*(?:paid|repaid)\ssuccessfully',
+        r'received\syour\srepayment',
+        r'loan.*already\s(?:is|has\sbeen)\srepaid',
+        r'thanks\sfor.*repayment'
     ]
 
     for i in range(data.shape[0]):
@@ -114,7 +117,8 @@ def get_loan_messages(data):
         'kissht',
         'gotocash',
         'cashmama',
-        'nira'
+        'nira',
+        'freeloan'
     ]
     header = ['kredtb', 'cashbn', 'lnfrnt', 'cshmma', 'kredtz', 'rrloan',
               'frloan', 'wfcash', 'bajajf', 'flasho', 'kissht', 'gtcash', 'bajafn', 'monvew', 'mpockt',
@@ -125,11 +129,14 @@ def get_loan_messages(data):
               'cbtest','rsloan','rupbus','ckcash','llnbro','cashbs','credme','atomec','finmtv','cashtm','roboin','trubal','payltr','cashbk','loante',
               'payuib','iavail','smcoin','ruplnd','ftcash','rupeeh','cashmt','loanbl','cashep','cashem','tatacp','loanco','loanfu','loanpl','haaloo',
               'rsfast','cashbo','cashin','rupmax','cashpd','lendko','loanfx','mudrak','prloan','cmntri','cashmx','rupls','rscash','ezloan','ftloan',
-              'abcash','loanhr']
+              'abcash','loanhr','ruplus','notice','uucash','gsimpl','kaarva','mnywow']
 
     data['body'] = data['body'].apply(lambda m: replace_parenthesis(m))
     for i in range(data.shape[0]):
         head = str(data['sender'][i]).lower()
+        for j in head:
+            if j.isdigit():
+                continue
         if head[2:] in header or head[3:] in header:
             loan_messages.append(i)
             continue
@@ -270,7 +277,7 @@ def get_disbursed(data, loan_messages_filtered, result, name):
     logger = logger_1("loan disbursed", name)
     selected_rows = []
     all_patterns = [
-        r'(?:is|has\sbeen)\sdisburse[d]?',
+        r'(?:is|has\sbeen)\s(?:disburse[d]?|credited)',
         r'disbursement\shas\sbeen\scredited',
         r'has\sbeen\stransferred.*account',
         r'disburse?ment.*has\sbeen\sinitiated',
@@ -292,7 +299,9 @@ def get_disbursed(data, loan_messages_filtered, result, name):
         r'loan.*approved.*will\srelease.*loan\sto.*account',
         r'loan.*approved.*sent\srs.*to\syour\saccount',
         r'loan.*approved.*will\sbe\sdisbursed',
-        r'loan.*approved.*credit\sto.*?bank\saccount'
+        r'loan.*approved.*credit\sto.*?bank\saccount',
+        r'loan.*sent\sto\syour\sbank',
+        r'sanctioned\syour\sloan'
     ]
 
     for i in range(data.shape[0]):
@@ -335,7 +344,7 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         r'loan\sapplication.*?got\srejected',
         r'loan.*paysense\sis\srejected',
         r'has\sbeen.*?rejected',
-        r'(?:is|was|has\sbeen)\s(?:declined|rejected)',
+        r'(?:is|was|has\sbeen|were)\s(?:declined|rejected)',
         r'has\sbeen\sdeclined',
         r'has\snot\sbeen\sapproved',
         r'was\snot\sapproved',
@@ -346,7 +355,7 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         r'loan\s(?:is|was|has\sbeen)\srejected',
         r'sorry.*not.*suitable\sloan\soffer',
         r'unfortunately.*application\scould\snot\smatch.*eligibility\scriteria',
-        r'sorry.*can\s?not\sprocess\syour\sapplication',
+        r'sorry.*can\s?not\sprocess\syour\s?(?:loan)?\sapplication',
         r'loan\sprocess\scan\s?not\sbe\scompleted',
         r'loan\sapplication\shas\snot\spassed\sthe\sreview',
         r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
@@ -355,11 +364,14 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         r'unfortunately.*can\s?not\sapprove\syou\sfor\s?[a]?\sloan',
         r'discrepancy\sin\sthe\sdocuments',
         r'unable\sto\sprocess\syour\sapplication',
-        r'cannot\sprovide\syou\s?[a]?\sloan',
-        r'loan\sapplication.*cancelled',
+        r'can\s?not\s(?:give|provide)\syou\s?[a]?\sloan',
+        r'loan\sapplication.*(?:cancelled|rejected)',
         r'loan(.)*not(.)*eligib',
-        r'loan\sdid\snot\spass'
-    ]
+        r'loan\sdid\snot\spass',
+        r"sorry.*(?:loan)?\sapplication.*(?:not|n't).*approved",
+        r'application.*(?:cancelled|rejected)',
+        r'not\sbe\sable\sto\sserve\syou'
+        ]
     all_patterns_2 = [
         r'low\scibil\sscore',
         r'low\scredit\sscore',
@@ -479,7 +491,18 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'will\sbe\sauto\s?[-]?debited.*against\syour\sdues',
         r'(?:loan|emi|payment).*over\s?[-]?due',
         r'loan.*successfully\srescheduled',
-        r'payment.*(?:yet|still)?not\s?(?:yet|still)?.*received'
+        r'payment.*(?:yet|still)?not\s?(?:yet|still)?.*received',
+        r'repay\syour\sdues',
+        r'(?:loan|bill|amount|payment).*(?:pending|overdue).*([0-9]+)\s?day[s]?',
+        r'(?:payment|emi).*delayed',
+        r'loan\s(?:is|has)\sexpired',
+        r'pay.*total\sdue\samount\ssoon',
+        r'pay\sback.*[0-9]+\s?days\sdelay',
+        r'delayed.*emi\sfor.*[0-9]+\s?day[s]?',
+        r'delaying.*payment.*immediate\sre[-]?payment',
+        r'make.*payment\sof.*pending\samount',
+        r'account\sis\s[0-9]+\s?day[s]?\spast\sdue',
+        r'make.*repayment.*have\sbeen\scharged.*late\spayment\sfee'
     ]
 
     for i in range(data.shape[0]):
