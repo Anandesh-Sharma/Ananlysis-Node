@@ -64,32 +64,32 @@ def preprocessing(cust_id):
                         logger.info("disbursal message found")
                         disbursal_date = datetime.strptime(str(data['timestamp'][i]), "%Y-%m-%d %H:%M:%S")
                         individual_loan_details['disbursed_date'] = str(data['timestamp'][i])
-                        individual_loan_details['loan_disbursed_amount'] = float(disbursed_amount_extract(message, app))
+                        individual_loan_details['loan_disbursed_amount'] = extract_amount(msg1)
                         #individual_loan_details['messages'].append(str(data['body'][i]))
                         individual_loan_details["messages"].append({"date" : str(data['timestamp'][i]), "message" : str(data['body'][i])})
                         loan_count += 1
                         j = i + 1    # iterate through next message after disbursal message
                         while j < len(data):
-                            msg_after_disbursal = str(data['body'][j].encode('utf-8')).lower()
-                            if is_disbursed(msg_after_disbursal, app):
+                            msg2 = str(data['body'][j].encode('utf-8')).lower()
+                            if data["category"][j] == "disbursed":
                                 logger.info("another disbursed message found before closing last loan")
                                 break
-                            if is_due(msg_after_disbursal, app):
+                            if data["category"][j] == "due":
                                 #print(222222222222)
                                 logger.info("due message found")
                                 due_date = datetime.strptime(str(data['timestamp'][j]), "%Y-%m-%d %H:%M:%S")
                                 if (due_date - disbursal_date).days < 16:
                                     # due message belongs to above disbursal message
-                                    individual_loan_details['loan_due_amount'] = float(due_amount_extract(msg_after_disbursal, app))
+                                    individual_loan_details['loan_due_amount'] = extract_amount(msg2)
                                     #individual_loan_details['messages'].append(msg_after_disbursal)
                                     individual_loan_details["messages"].append({"date" : str(data['timestamp'][j]), "message" : str(data['body'][j])})
                                     k = j + 1
                                     while k < len(data):
-                                        msg_after_due = str(data['body'][k].encode('utf-8')).lower()
-                                        if is_overdue(msg_after_due, app):
+                                        msg3 = str(data['body'][k].encode('utf-8')).lower()
+                                        if data["category"][k] == "overdue":
                                             logger.info("overdue message found")
                                             try:
-                                                individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_due, app)
+                                                individual_loan_details['overdue_days'] = overdue_days_extract(msg3, app)
                                             except:
                                                 pass
                                             individual_loan_details['overdue_check'] += 1
@@ -97,8 +97,8 @@ def preprocessing(cust_id):
                                             individual_loan_details["messages"].append({"date" : str(data['timestamp'][k]), "message" : str(data['body'][k])})
                                             m = k + 1
                                             while m < len(data):
-                                                msg_after_overdue = str(data['body'][m].encode('utf-8')).lower()
-                                                if is_closed(msg_after_overdue, app):
+                                                msg4= str(data['body'][m].encode('utf-8')).lower()
+                                                if data["category"][m] == "closed":
                                                     logger.info("closed message found")
                                                     closed_date = datetime.strptime(str(data['timestamp'][m]), "%Y-%m-%d %H:%M:%S")
                                                     loan_duration = (closed_date - disbursal_date).days
@@ -106,22 +106,22 @@ def preprocessing(cust_id):
                                                         individual_loan_details['overdue_days'] = loan_duration - 15
                                                     individual_loan_details['closed_date'] = str(data['timestamp'][m])
                                                     individual_loan_details['loan_duration'] = loan_duration
-                                                    individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_overdue, app))
+                                                    individual_loan_details['loan_closed_amount'] = extract_amount(msg4)
                                                     #individual_loan_details['messages'].append(str(data['body'][m]))
                                                     individual_loan_details["messages"].append({"date" : str(data['timestamp'][m]), "message" : str(data['body'][m])})
                                                     k = m + 1
                                                     FLAG = True
                                                     logger.info("loan closed!")
                                                     break
-                                                elif is_disbursed(msg_after_overdue, app) or is_due(msg_after_overdue, app):
+                                                elif data["category"][m] == "disbursed" or data["category"][m] == "due":
                                                     logger.info("loan closed because before closing previous loan another disbursal message found")
                                                     k = m
                                                     FLAG = True
                                                     break
-                                                elif is_overdue(msg_after_overdue, app):
+                                                elif data["category"][m] == "overdue":
                                                     k = m
                                                     try:
-                                                        individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_overdue, app)
+                                                        individual_loan_details['overdue_days'] = overdue_days_extract(msg4, app)
                                                     except:
                                                         pass
                                                     individual_loan_details['overdue_check'] += 1
@@ -130,7 +130,7 @@ def preprocessing(cust_id):
                                                 else:
                                                     pass
                                                 m += 1
-                                        elif is_closed(msg_after_due, app):
+                                        elif data["category"][k] == "closed":
                                             logger.info("closed message found")
                                             closed_date = datetime.strptime(str(data['timestamp'][k]), "%Y-%m-%d %H:%M:%S")
                                             loan_duration = (closed_date - disbursal_date).days
@@ -138,19 +138,19 @@ def preprocessing(cust_id):
                                                 individual_loan_details['overdue_days'] = loan_duration - 15
                                             individual_loan_details['closed_date'] = str(data['timestamp'][k])
                                             individual_loan_details['loan_duration'] = loan_duration
-                                            individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_due, app))
+                                            individual_loan_details['loan_closed_amount'] = extract_amount(msg3)
                                             #individual_loan_details['messages'].append(str(data['body'][k]))
                                             individual_loan_details["messages"].append({"date" : str(data['timestamp'][k]), "message" : str(data['body'][k])})
                                             FLAG = True
                                             j = k + 1
                                             logger.info("loan closed")
                                             break
-                                        elif is_disbursed(msg_after_due, app):
+                                        elif data["category"][k] == "disbursed":
                                             logger.info("loan closed because before closing previous loan another disbursal message found")
                                             j = k
                                             FLAG = True
                                             break
-                                        elif is_due(msg_after_due, app):
+                                        elif data["category"][k] == "due":
                                             due_date = datetime.strptime(str(data['timestamp'][k]), "%Y-%m-%d %H:%M:%S")
                                             if (due_date - disbursal_date).days <= 16:
                                                 j = k
@@ -177,12 +177,12 @@ def preprocessing(cust_id):
                                     break
                             # ***********************************************************************************************
                             # ***********************************************************************************************
-                            elif is_overdue(msg_after_disbursal, app):
+                            elif data["category"][j] == "overdue":
                                 #print(333333333333333)
                                 #print(msg_after_disbursal)
                                 logger.info("overdue message found")
                                 try:
-                                    individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_disbursal, app)
+                                    individual_loan_details['overdue_days'] = overdue_days_extract(msg2, app)
                                 except:
                                     pass
                                 individual_loan_details['overdue_check'] += 1
@@ -190,8 +190,8 @@ def preprocessing(cust_id):
                                 individual_loan_details["messages"].append({"date" : str(data['timestamp'][j]), "message" : str(data['body'][j])})
                                 k = j + 1
                                 while k < len(data):
-                                    msg_after_overdue = str(data['body'][k].encode('utf-8')).lower()
-                                    if is_closed(msg_after_overdue, app):
+                                    msg5 = str(data['body'][k].encode('utf-8')).lower()
+                                    if data["category"][k] == "closed":
                                         logger.info("closed message found")
                                         closed_date = datetime.strptime(str(data['timestamp'][k]), "%Y-%m-%d %H:%M:%S")
                                         loan_duration = (closed_date - disbursal_date).days
@@ -199,22 +199,22 @@ def preprocessing(cust_id):
                                             individual_loan_details['overdue_days'] = loan_duration - 15
                                         individual_loan_details['closed_date'] = str(data['timestamp'][k])
                                         individual_loan_details['loan_duration'] = loan_duration
-                                        individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_overdue, app))
+                                        individual_loan_details['loan_closed_amount'] = extract_amount(msg5)
                                         #individual_loan_details['messages'].append(str(data['body'][k]))
                                         individual_loan_details["messages"].append({"date" : str(data['timestamp'][k]), "message" : str(data['body'][k])})
                                         FLAG = True
                                         j = k + 1
                                         logger.info("loan closed!")
                                         break
-                                    elif is_disbursed(msg_after_overdue, app) or is_due(msg_after_overdue, app):
+                                    elif data["category"][k] == "disbursed" or data["category"][k] == "due":
                                         logger.info("loan closed because before closing previous loan another disbursal/due message found")
                                         FLAG = True
                                         j = k
                                         break
-                                    elif is_overdue(msg_after_overdue, app):
+                                    elif data["category"][k] == "overdue":
                                         j = k
                                         try:
-                                            individual_loan_details['overdue_days'] = overdue_days_extract(msg_after_overdue, app)
+                                            individual_loan_details['overdue_days'] = overdue_days_extract(msg5, app)
                                             #individual_loan_details['messages'].append(msg_after_overdue)
                                             individual_loan_details["messages"].append({"date" : str(data['timestamp'][k]), "message" : str(data['body'][k])})
                                         except:
@@ -228,7 +228,7 @@ def preprocessing(cust_id):
                                     break   # comes out from 'j' loop
                             # ***********************************************************************************************
                             # ***********************************************************************************************
-                            elif is_closed(msg_after_disbursal, app):
+                            elif data["category"][j] == "closed":
                                 #print(44444444444444444)
                                 #print(msg_after_disbursal)
                                 logger.info("closed message found")
@@ -238,7 +238,7 @@ def preprocessing(cust_id):
                                     individual_loan_details['overdue_days'] = loan_duration - 15
                                 individual_loan_details['closed_date'] = str(data['timestamp'][j])
                                 individual_loan_details['loan_duration'] = loan_duration
-                                individual_loan_details['loan_closed_amount'] = float(closed_amount_extract(msg_after_disbursal, app))
+                                individual_loan_details['loan_closed_amount'] = extract_amount(msg2)
                                 #individual_loan_details['messages'].append(str(data['body'][j]))
                                 individual_loan_details["messages"].append({"date" : str(data['timestamp'][j]), "message" : str(data['body'][j])})
                                 i = j

@@ -109,7 +109,7 @@ def replace_parenthesis(message):
 def get_loan_messages(data):
     loan_messages = []
     all_patterns = [
-        'loan',
+        ' loan ',
         'kreditbee',
         'cashbean',
         'loanfront',
