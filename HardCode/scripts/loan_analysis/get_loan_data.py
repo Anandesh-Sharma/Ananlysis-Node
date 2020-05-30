@@ -25,13 +25,15 @@ def fetch_user_data(cust_id):
         # connect to collection
         approval_data = db.loanapproval
         disbursed_data = db.disbursed
-        overdue_data = db.loandueoverdue
+        overdue_data = db.loanoverdue
+        due_data = db.loandue
         closed_data = db.loanclosed
 
         closed = closed_data.find_one({"cust_id": cust_id})
         disbursed = disbursed_data.find_one({"cust_id": cust_id})
         approval = approval_data.find_one({"cust_id": cust_id})
         overdue = overdue_data.find_one({"cust_id": cust_id})
+        due = due_data.find_one({"cust_id": cust_id})
         loan_data = pd.DataFrame(columns=['sender', 'body', 'timestamp', 'read'])
         if len(closed['sms']) != 0:
             closed_df = pd.DataFrame(closed['sms'])
@@ -50,6 +52,13 @@ def fetch_user_data(cust_id):
         if len(overdue['sms']) != 0:
             overdue_df = pd.DataFrame(overdue['sms'])
             loan_data = loan_data.append(overdue_df)
+            logger.info("Found loan overdue data")
+        else:
+            logger.info("loan overdue data not found")
+
+        if len(due['sms']) != 0:
+            due_df = pd.DataFrame(due['sms'])
+            loan_data = loan_data.append(due_df)
             logger.info("Found loan overdue data")
         else:
             logger.info("loan overdue data not found")
