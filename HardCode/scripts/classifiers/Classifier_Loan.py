@@ -36,7 +36,6 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'received\syour\srepayment',
         r'loan.*already\s(?:is|has\sbeen)\srepaid',
         r'thanks\sfor.*repayment',
-        r"thank(.)*for paying(.)*loan|payment(.)*loan(.)*received|complete(.)*repayment(.)*loan|"
     ]
 
     for i in range(data.shape[0]):
@@ -609,11 +608,7 @@ def get_due_messages(data, loan_messages_filtered, result, name):
         r'is\syour\sdue\s(?:day|date)',
         r'(?:a\/c|account)\sis\sdue',
         r'repayment\sdue\s(?:day|date)',
-        r'will\sbe\sauto\s?[-]?debited.*against\syour\sdues',
-        r"loan(.)*is due|emi(.)*is due|",
-        r"Am(ount)*(.)*is due|pay(.)*is due|",
-        r"Am(ount)*(.)* was due|am(ount)*(.)* is(.)*past due|pay(.)*is(.)*past due|",
-        r"pay(.)*was due|emi(.)*was due|Awaiting(.)*emi payment|emi pending|",
+        r'will\sbe\sauto\s?[-]?debited.*against\syour\sdues'
     ]
 
     for i in range(data.shape[0]):
@@ -683,19 +678,7 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'pay\s(?:immediately|urgently|now)',
         r'(?:loan|emi|payment).*over\s?[-]?due',
         r'loan.*successfully\srescheduled',
-        r'payment.*(?:yet|still)?not\s?(?:yet|still)?.*received',
-        r"not(.)*pay(.)*within(.)*due|several reminders|",
-        r"pay your dues immediately|pay your pending emi",
-        r"|overdue by (.)* days|due for rs|",
-        r"payment has been delayed for(.)*days|exceeded your repayment by (.)* days|",
-        r"has been delinquent for over(.)*days|exceeded your(.)*emi(.)*by(.)*days|",
-        r"payment(.)*rs(.)*is overdue|emi(.)*rs(.)*is overdue",
-        r"|your account is past due|payment(.)*is due|",
-        r"transfer the overdue amount of rs|overdue for(.)*day|aapki rupeeredee ki Rs(.)* due hai|",
-        r"overdue payment notice|overdue still hasn't processed|overdue(.)*payment of"
-        r"|missed(.)*due date|overdue of|am(ount)*(.)*due|"
-        r"rs. [0-9](.)* is due|Rs. [0-9](.)*due added|rs. [0-9](.)*payment accepted|"
-        r"unpaid due|overdue am|due(.)*has been settled|clear your dues"
+        r'payment.*(?:yet|still)?not\s?(?:yet|still)?.*received'
     ]
 
     for i in range(data.shape[0]):
