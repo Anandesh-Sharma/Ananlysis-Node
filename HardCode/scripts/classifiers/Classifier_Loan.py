@@ -37,17 +37,31 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'loan.*already\s(?:is|has\sbeen)\srepaid',
         r'thanks\sfor.*repayment',
     ]
+    not_patterns = [r'waiver\sscheme',
+                    r'loan\sextension\sdate|tenor\sextension',
+                    r'seriously\soverdue',
+                    r'haven\'t\spaid',
+                    r'server\sissue']
 
     for i in range(data.shape[0]):
-        if i not in loan_messages_filtered:
+        if i not in loan_messages_filtered or data['sender'][i] == 'payltr':
             continue
 
         message = str(data['body'][i]).lower()
         for pattern in all_patterns:
             matcher = re.search(pattern, message)
             if matcher:
+                match = False
+                for pattern_2 in not_patterns:
+                    matcher = re.search(pattern_2, message)
+                    if matcher is not None:
+                        match = True
+                        break
+                if match:
+                    break
                 selected_rows.append(i)
                 break
+    loan_messages_filter = list(set(loan_messages_filtered)-set(selected_rows))
     logger.info("Loan closed sms extracted successfully")
 
     logger.info("Append name in result dictionary for loan closed")
@@ -67,7 +81,7 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
             mask.append(False)
     logger.info("Dropped sms other than loan closed")
     x= data.copy()[mask].reset_index(drop=True)
-    return x
+    return x,loan_messages_filter
 
 
 def replace_parenthesis(message):
@@ -251,6 +265,7 @@ def get_approval(data, loan_messages_filtered, result, name):
             if matcher:
                 selected_rows.append(i)
                 break
+    loan_messages_filter = list(set(loan_messages_filtered) - set(selected_rows))
     logger.info("Loan approval sms extracted successfully")
 
     logger.info("Append name in result dictionary for loan approval")
@@ -270,7 +285,7 @@ def get_approval(data, loan_messages_filtered, result, name):
             mask.append(False)
     logger.info("Dropped sms other than loan approval")
     approve = data.copy()[mask].reset_index(drop=True)
-    return approve
+    return approve,loan_messages_filter
 
 
 def get_disbursed(data, loan_messages_filtered, result, name):
@@ -301,19 +316,34 @@ def get_disbursed(data, loan_messages_filtered, result, name):
         r'loan.*approved.*will\sbe\sdisbursed',
         r'loan.*approved.*credit\sto.*?bank\saccount',
         r'loan.*sent\sto\syour\sbank',
-        r'sanctioned\syour\sloan'
+        r'sanctioned\syour\sloan',
+        r'loan.*approved.*transferred.*account'
     ]
+    not_patterns = [r'reward\s(?:of|point\sbalance)',
+                     r'complete.*process',
+                    r'click\sto\slogin',
+                    r'through\s\'?digital\sshop',
+                    r'\@upi']
 
     for i in range(data.shape[0]):
-        if i not in loan_messages_filtered:
+        if i not in loan_messages_filtered or data['sender'][i] == 'payltr':
             continue
         message = str(data['body'][i]).lower()
         for pattern in all_patterns:
             matcher = re.search(pattern, message)
 
             if matcher:
+                match = False
+                for pattern_2 in not_patterns:
+                    matcher = re.search(pattern_2, message)
+                    if matcher is not None:
+                        match = True
+                        break
+                if match:
+                    break
                 selected_rows.append(i)
                 break
+    loan_messages_filter = list(set(loan_messages_filtered) - set(selected_rows))
     logger.info("Loan disbursed sms extracted successfully")
 
     logger.info("Append name in result dictionary for loan disbursed")
@@ -333,7 +363,7 @@ def get_disbursed(data, loan_messages_filtered, result, name):
             mask.append(False)
     logger.info("Dropped sms other than loan disbursed")
     z = data.copy()[mask].reset_index(drop=True)
-    return z
+    return z,loan_messages_filter
 
 
 def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
@@ -396,6 +426,8 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
                     break
                 selected_rows.append(i)
                 break
+
+    loan_messages_filter = list(set(loan_messages_filtered) - set(selected_rows))
     logger.info("Loan rejection sms extracted successfully")
 
     logger.info("Append name in result dictionary for loan rejction")
@@ -415,7 +447,7 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
             mask.append(False)
     logger.info("Dropped sms other than loan rejection")
     reject = data.copy()[mask].reset_index(drop=True)
-    return reject
+    return reject,loan_messages_filter
 
 
 def loan(df, result, user_id, max_timestamp, new):
@@ -458,32 +490,32 @@ def loan(df, result, user_id, max_timestamp, new):
     loan_messages_filtered = get_loan_messages_promotional_removed(df, loan_messages)
     logger.info("get all loan disbursed messages")
 
-    data = get_disbursed(df, loan_messages_filtered, result, user_id)
+    data,loan_messages_filtered = get_disbursed(df, loan_messages_filtered, result, user_id)
     logger.info("Converting loan disbursed dataframe into json")
     data_disburse = convert_json(data, user_id, max_timestamp)
 
     logger.info("get all loan due overdue messages")
-    data = get_over_due(df, loan_messages_filtered, result, user_id)
+    data,loan_messages_filtered = get_over_due(df, loan_messages_filtered, result, user_id)
     logger.info("Converting loan due overdue dataframe into json")
     data_over_due = convert_json(data, user_id, max_timestamp)
 
     logger.info("get all loan due messages")
-    data = get_due_messages(df, loan_messages_filtered, result, user_id)
+    data,loan_messages_filtered = get_due_messages(df, loan_messages_filtered, result, user_id)
     logger.info("Converting loan due dataframe into json")
     data_due = convert_json(data, user_id, max_timestamp)
 
     logger.info("get all loan closed messages")
-    data = get_loan_closed_messages(df, loan_messages_filtered, result, user_id)
+    data,loan_messages_filtered = get_loan_closed_messages(df, loan_messages_filtered, result, user_id)
     logger.info("Converting loan closed dataframe into json")
     data_closed = convert_json(data, user_id, max_timestamp)
 
     logger.info("get all loan rejection messages")
-    data = get_loan_rejected_messages(df, loan_messages_filtered, result, user_id)
+    data,loan_messages_filtered = get_loan_rejected_messages(df, loan_messages_filtered, result, user_id)
     logger.info("Converting loan rejection dataframe into json")
     data_reject = convert_json(data, user_id, max_timestamp)
 
     logger.info("get all loan approval messages")
-    data = get_approval(df, loan_messages_filtered, result, user_id)
+    data,loan_messages_filtered = get_approval(df, loan_messages_filtered, result, user_id)
     logger.info("Converting loan approval dataframe into json")
     data_approve = convert_json(data, user_id, max_timestamp)
 
@@ -611,15 +643,19 @@ def get_due_messages(data, loan_messages_filtered, result, name):
         r'will\sbe\sauto\s?[-]?debited.*against\syour\sdues'
     ]
 
+
     for i in range(data.shape[0]):
-        if i not in loan_messages_filtered:
+        if i not in loan_messages_filtered or data['sender'][i] == 'payltr':
             continue
         message = str(data['body'][i]).lower()
         for pattern in all_patterns:
             matcher = re.search(pattern, message)
-            if matcher:
+            matcher1 = re.search('extend.*due\sdate',message)
+            if matcher and not matcher1:
                 selected_rows.append(i)
                 break
+
+    loan_messages_filter = list(set(loan_messages_filtered) - set(selected_rows))
     if name in result.keys():
         a = result[name]
         a.extend(list(selected_rows))
@@ -634,7 +670,7 @@ def get_due_messages(data, loan_messages_filtered, result, name):
         else:
             mask.append(False)
     due = data.copy()[mask].reset_index(drop=True)
-    return due
+    return due,loan_messages_filter
 
 
 def get_over_due(data, loan_messages_filtered, result, name):
@@ -678,8 +714,10 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'pay\s(?:immediately|urgently|now)',
         r'(?:loan|emi|payment).*over\s?[-]?due',
         r'loan.*successfully\srescheduled',
-        r'payment.*(?:yet|still)?not\s?(?:yet|still)?.*received'
+        r'payment.*(?:yet|still)?not\s?(?:yet|still)?.*received',
+        r'loan.*din\sse\szyada\sdue'
     ]
+
 
     for i in range(data.shape[0]):
         if i not in loan_messages_filtered:
@@ -687,10 +725,12 @@ def get_over_due(data, loan_messages_filtered, result, name):
         message = str(data['body'][i]).lower()
         for pattern in all_patterns:
             matcher = re.search(pattern, message)
-            if matcher:
+            matcher1 = re.search('to\sdue\sdate', message)
+            matcher2 = re.search('(?:0|-1)\s?day[s]?\soverdue',message)
+            if matcher and not matcher1 and not matcher2:
                 selected_rows.append(i)
                 break
-
+    loan_messages_filter = list(set(loan_messages_filtered) - set(selected_rows))
     logger.info("Loan due overdue sms extracted successfully")
     logger.info("Append name in result dictionary for loan due overdue")
     if name in result.keys():
@@ -709,7 +749,7 @@ def get_over_due(data, loan_messages_filtered, result, name):
             mask.append(False)
     logger.info("Dropped sms other than loan due overdue")
     overdue = data.copy()[mask].reset_index(drop=True)
-    return overdue
+    return overdue,loan_messages_filter
 
 
 

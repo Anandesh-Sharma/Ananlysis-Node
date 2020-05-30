@@ -57,8 +57,8 @@ def preprocessing(cust_id):
                         'overdue_check' : 0,
                         'messages': []
                     }
-                    message = str(data['body'][i].encode('utf-8')).lower()
-                    if is_disbursed(message, app):
+                    msg1 = str(data['body'][i].encode('utf-8')).lower()
+                    if data["category"][i] == "disbursed":
                         #print(11111111111111111)
                         #print(message)
                         logger.info("disbursal message found")
