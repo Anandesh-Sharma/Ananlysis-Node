@@ -1,15 +1,18 @@
 import json
 import os
+from datetime import datetime
 from time import sleep
 import shutil
+import pytz
 from HardCode.scripts import BL0
-from HardCode.scripts.cibil.Analysis import analyse
+from HardCode.scripts.Util import conn
 from HardCode.scripts.cibil.apicreditdata import convert_to_df
 from analysisnode.settings import PROCESSING_DOCS, CHECKSUM_KEY, FINAL_RESULT
-# from threadedprocess import ThreadedProcessPoolExecutor
 from concurrent.futures import ProcessPoolExecutor
 from analysisnode import Checksum
 import requests
+
+API_ENDPOINT = 'https://api.credicxotech.com/api/ml_analysis/callback/'
 
 
 def parallel_proccess_user_records(user_id):
@@ -22,18 +25,11 @@ def parallel_proccess_user_records(user_id):
 
     try:
         if len(sms_json) == 0:
-            limit = analyse(user_id=user_id, current_loan=user_data['current_loan_amount'], cibil_df=cibil_df,
-                            new_user=user_data['new_user'], cibil_score=user_data['cibil_score'])
             response_bl0 = {
-                "cust_id": user_id,
                 "status": True,
+                "cust_id": user_id,
                 "message": "No messages found in sms_json",
-                "result": {
-                    "loan_salary": -9,
-                    "loan": -9,
-                    "salary": -9,
-                    "cibil": limit
-                }
+                "result": False
             }
         else:
 
@@ -42,28 +38,20 @@ def parallel_proccess_user_records(user_id):
                                    current_loan=user_data['current_loan_amount'], sms_json=sms_json)
         shutil.rmtree(PROCESSING_DOCS + str(user_id))
 
-        try:
-            os.makedirs(FINAL_RESULT + str(user_id))
-        except FileExistsError:
-            pass
-
     except Exception as e:
         print(f"error in middleware {e}")
-        limit = analyse(user_id=user_id, current_loan=user_data['current_loan_amount'], cibil_df=cibil_df,
-                        new_user=user_data['new_user'], cibil_score=user_data['cibil_score'])
         response_bl0 = {
             "cust_id": user_id,
-            "status": True,
-            "message": "Exception occurred, I feel lonely in middleware",
-            "result": {
-                "loan_salary": -9,
-                "loan": -9,
-                "salary": -9,
-                "cibil": limit
-            }
+            "status": False,
+            "message": str(e),
+            "result": False
         }
-    with open(FINAL_RESULT + str(user_id) + '/user_data.json', 'w') as json_file:
-        json.dump(response_bl0, json_file, ensure_ascii=True, indent=4)
+
+    response_bl0['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
+    conn().analysisresult.bl0.insert_one(response_bl0)
+
+    print(requests.post(API_ENDPOINT, data=response_bl0,
+                        headers={'CHECKSUMHASH': Checksum.generate_checksum(response_bl0, CHECKSUM_KEY)}).json())
 
 
 def process_user_records(user_ids):

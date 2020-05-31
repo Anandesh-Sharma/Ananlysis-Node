@@ -1,4 +1,5 @@
 from HardCode.scripts.cibil.cibil_analysis import cibil_analysis
+from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
 from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.loan_analysis.preprocessing import preprocessing
 from HardCode.scripts.classifiers.Classifier import classifier
@@ -69,13 +70,13 @@ def bl0(**kwargs):
     # >>==>> Classification
     logger.info('starting classification')
     try:
-        result_class = classifier(sms_json,str(user_id))
+        result_class = classifier(sms_json, str(user_id))
         if not result_class['status']:
             msg = "Classifier failed due to some reason-" + result_class['message']
-            exception_feeder(client=client,user_id=user_id,msg=msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
     except BaseException as e:
         msg = "Exception in Classifier Analysis-" + str(e)
-        exception_feeder(user_id=user_id,msg=msg,client=client)
+        exception_feeder(user_id=user_id, msg=msg, client=client)
     logger.info('classification completes')
 
     # >>=>> LOAN ANALYSIS
@@ -148,7 +149,6 @@ def bl0(**kwargs):
         exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Salary analysis complete')
 
-
     # >>=>> Loan Rejection
     try:
         result_loan_rejection = get_rejection_count(user_id)
@@ -164,7 +164,7 @@ def bl0(**kwargs):
 
     # >>=>> Parameters Updation
     try:
-        result_params = parameters_updation(user_id,cibil_df,sms_count)
+        result_params = parameters_updation(user_id, cibil_df, sms_count)
         if not result_params['status']:
             msg = "Parameters updation check failed due to some reason-" + result_params['message']
             logger.error(msg)
@@ -202,16 +202,19 @@ def bl0(**kwargs):
     logger.info('Scoring Model complete')
 
     # >>=>> Rule Engine
-    # try:
-    #     rule_engine = rule_engine_main(user_id)
-    #     if not rule_engine['status']:
-    #         msg = "Rule engine failed due to some reason-"+rule_engine['message']
-    #         logger.error(msg)
-    #         exception_feeder(client=client, user_id=user_id,msg=msg)
-    # except BaseException as e:
-    #     msg = "Rule engine failed due to some reason-"+str(e)
-    #     logger.error(msg)
-    #     exception_feeder(client=client, user_id=user_id,msg=msg)
-    # logger.info('Rule engine complete')
+    try:
+        rule_engine = rule_engine_main(user_id)
+        if not rule_engine['status']:
+            msg = "Rule engine failed due to some reason-" + rule_engine['message']
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id, msg=msg)
+            rule_engine = {"status": True, "cust_id": user_id, "result": False}
+    except BaseException as e:
+        msg = "Rule engine failed due to some reason-" + str(e)
+        logger.error(msg)
+        exception_feeder(client=client, user_id=user_id, msg=msg)
+        rule_engine = {"status": False, "cust_id": user_id, "result": False, "message": str(e)}
 
-    return {"status": True, "messages": "success"}
+    logger.info('Rule engine complete')
+
+    return rule_engine

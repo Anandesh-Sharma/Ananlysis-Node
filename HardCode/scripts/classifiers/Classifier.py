@@ -5,7 +5,7 @@ from .Classifier_salary import salary
 from .Classifier_legal import legal_Classifier
 from .Classifier_cheque_bounce import Cheque_Classifier
 from .Classifier_ecs import Ecs_Classifier
-import multiprocessing
+from multiprocessing import Pool
 from HardCode.scripts.Util import conn, read_json, convert_json, logger_1
 import warnings
 from datetime import datetime
@@ -103,40 +103,46 @@ def classifier(sms_json, user_id):
     logger = logger_1("Classifier", user_id)
     logger.info("Creating Multiprocessing Manager")
     result = dict()
-    print(sms_json)
     logger.info("Read sms json object")
     result1 = read_json(sms_json, user_id)
     if not result1:
         logger.error("JSON not read successfully")
         return result1
     df = result1['df']
-    print(df)
     new = result1['new']
     max_timestamp = result1['timestamp']
     try:
         logger.info("Classification start for Credit card Classifier")
-        result = multiprocessing.Pool().map(credit, [[df, result, user_id, max_timestamp, new]])[0]['result']
+        with Pool() as p:
+            result = p.map(credit, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Loan Classifier")
-        result = multiprocessing.Pool().map(loan, [[df, result, user_id, max_timestamp, new]])[0]['result']
+        with Pool() as p:
+            result = p.map(loan, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Transaction Classifier")
-        result = multiprocessing.Pool().map(cleaning, [[df, result, user_id, max_timestamp, new]])[0]['result']
+        with Pool() as p:
+            result = p.map(cleaning, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Salary Classifier")
-        result = multiprocessing.Pool().map(salary, [[df, result, user_id, max_timestamp, new]])[0]['result']
+        with Pool() as p:
+            result = p.map(salary, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Legal Classifier")
-        result = multiprocessing.Pool().map(legal_Classifier, [[df, result, user_id, max_timestamp, new]])[0]['result']
+        with Pool() as p:
+            result = p.map(legal_Classifier, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Ecs Classifier")
-        result = multiprocessing.Pool().map(Ecs_Classifier, [[df, result, user_id, max_timestamp, new]])[0]['result']
+        with Pool() as p:
+            result = p.map(Ecs_Classifier, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for cheque bounce Classifier")
-        result = multiprocessing.Pool().map(Cheque_Classifier, [[df, result, user_id, max_timestamp, new]])[0]['result']
+        with Pool() as p:
+            result = p.map(Cheque_Classifier, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("extra classifier called")
-        multiprocessing.Pool().map(extra, [[df, result, user_id, max_timestamp, new]])
+        with Pool() as p:
+            result = p.map(extra, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
     except BaseException as e:
         return {"status": False, "message": "Error in Classifier - " + str(e)}

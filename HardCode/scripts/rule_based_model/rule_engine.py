@@ -1,24 +1,19 @@
 from HardCode.scripts.Util import conn
 from HardCode.scripts.rule_based_model.phase2 import rule_quarantine
-from pymongo import MongoClient
-from tqdm import tqdm
-import pandas as pd
-from HardCode.scripts.testing.all_repeated_ids import *
-
 
 
 def rule_phase1(user_id):
     connect = conn()
-    params = connect.analysis.parameters.find_one({'cust_id':user_id})
+    params = connect.analysis.parameters.find_one({'cust_id': user_id})
     # params = params['result'][-1]
     loan_app_count_percentage = params['parameters']['percentage_of_loan_apps']
     # avg_bal  = params['parameters']['avg_balance']
-    #similarity = params['parameters']['reference']['result']['similarity_score']
-    #relatives = params['parameters']['no_of_relatives']
+    # similarity = params['parameters']['reference']['result']['similarity_score']
+    # relatives = params['parameters']['no_of_relatives']
     day_3_7 = params['parameters']['overdue_days']['3-7_days']
     day_7_12 = params['parameters']['overdue_days']['7-12_days']
     day_12_15 = params['parameters']['overdue_days']['12-15_days']
-    more_than_15= params['parameters']['overdue_days']['more_than_15']
+    more_than_15 = params['parameters']['overdue_days']['more_than_15']
     total_loans = params['parameters']['total_loans']
     cr_day_0_3 = params['parameters']['credicxo_overdue_days']['0-3_days']
     cr_day_3_7 = params['parameters']['credicxo_overdue_days']['3-7_days']
@@ -67,12 +62,22 @@ def rule_phase1(user_id):
 
 
 def rule_engine_main(user_id):
-    phase1 = rule_phase1(user_id)
-    phase2 = rule_quarantine(user_id)
-    result_pass = phase1 and phase2
-    if result_pass:
-        print("approved")
-    else:
-        print("rejected by rule engine")
-    return result_pass
-
+    try:
+        # phase1 = rule_phase1(user_id)
+        phase2 = rule_quarantine(user_id)
+        connect = conn()
+        params = connect.analysis.parameters.find_one({'cust_id': user_id})
+        connect.close()
+        salary = params['parameters'][-1]['quarantine_salary']
+        if salary > 0:
+            phase1 = True
+        else:
+            phase1 = False
+        result_pass = phase1 and phase2
+        if result_pass:
+            print("approved")
+        else:
+            print("rejected by rule engine")
+    except BaseException as e:
+        return {"status": False, "cust_id": user_id, "message": str(e), "result": False}
+    return {"status": True, "cust_id": user_id, "result": result_pass}
