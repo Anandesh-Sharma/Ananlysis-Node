@@ -44,7 +44,12 @@ def ecs_bounce(df,user_id,result):
 
     return df.copy()[mask].reset_index(drop = True),df.drop(selected).reset_index(drop=True)
 
-def Ecs_Classifier(df, result, user_id, max_timestamp, new):
+def Ecs_Classifier(args):
+    df = args[0]
+    result = args[1]
+    user_id = args[2]
+    max_timestamp = args[3]
+    new = args[4]
     logger = logger_1("Ecs function", user_id)
     logger.info("Ecs function started")
 
@@ -83,4 +88,4 @@ def Ecs_Classifier(df, result, user_id, max_timestamp, new):
                                    upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True}
+    return {'status': True, 'result': result}

@@ -7,21 +7,29 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+
 def check_account_number(message):
     all_patterns = [
-    r'[\*nx]+([0-9]{3,})',
-    r'[a]\/c ([0-9]+)',
-    r'[\.]{3,}([0-9]+)',
-    r'account(.*)?\[([0-9]+)\]'
+        r'[\*nx]+([0-9]{3,})',
+        r'[a]\/c ([0-9]+)',
+        r'[\.]{3,}([0-9]+)',
+        r'account(.*)?\[([0-9]+)\]'
     ]
 
     for pat in all_patterns:
-        matcher = re.search(pat, message)    
+        matcher = re.search(pat, message)
         if matcher:
             return True
     return False
 
-def cleaning(df, result, user_id, max_timestamp, new):
+
+def cleaning(args):
+    df = args[0]
+    result = args[1]
+    user_id = args[2]
+    max_timestamp = args[3]
+    new = args[4]
+
     logger = logger_1("cleaning", user_id)
     transaction_patterns = ['debited', 'credited', "inft"]
 
@@ -312,4 +320,4 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                   upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True}
+    return {'status': True, 'result': result}

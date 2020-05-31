@@ -14,7 +14,12 @@ import pytz
 warnings.filterwarnings("ignore")
 
 
-def extra(df, user_id, result, max_timestamp, new):
+def extra(args):
+    df = args[0]
+    result = args[1]
+    user_id = args[2]
+    max_timestamp = args[3]
+    new = args[4]
     """
         Extract all extra messages for extra cluster on MongoDB.
 
@@ -97,56 +102,43 @@ def classifier(sms_json, user_id):
         """
     logger = logger_1("Classifier", user_id)
     logger.info("Creating Multiprocessing Manager")
-    manager = multiprocessing.Manager()
-    result = manager.dict()
-
+    result = dict()
+    print(sms_json)
     logger.info("Read sms json object")
     result1 = read_json(sms_json, user_id)
     if not result1:
         logger.error("JSON not read successfully")
         return result1
     df = result1['df']
+    print(df)
     new = result1['new']
     max_timestamp = result1['timestamp']
     try:
         logger.info("Classification start for Credit card Classifier")
-        result_out = credit(df, result, user_id, max_timestamp, new)
-        if not result_out['status']:
-            return result_out
+        result = multiprocessing.Pool().map(credit, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Loan Classifier")
-        result_out = loan(df, result, user_id, max_timestamp, new)
-        if not result_out['status']:
-            return result_out
+        result = multiprocessing.Pool().map(loan, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Transaction Classifier")
-        result_out = cleaning(df, result, user_id, max_timestamp, new)
-        if not result_out['status']:
-            return result_out
+        result = multiprocessing.Pool().map(cleaning, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Salary Classifier")
-        result_out = salary(df, result, user_id, max_timestamp, new)
-        if not result_out['status']:
-            return result_out
+        result = multiprocessing.Pool().map(salary, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Legal Classifier")
-        result_out = legal_Classifier(df, result, user_id, max_timestamp, new)
-        if not result_out['status']:
-            return result_out
+        result = multiprocessing.Pool().map(legal_Classifier, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for Ecs Classifier")
-        result_out = Ecs_Classifier(df, result, user_id, max_timestamp, new)
-        if not result_out['status']:
-            return result_out
+        result = multiprocessing.Pool().map(Ecs_Classifier, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("Classification start for cheque bounce Classifier")
-        result_out = Cheque_Classifier(df, result, user_id, max_timestamp, new)
-        if not result_out['status']:
-            return result_out
+        result = multiprocessing.Pool().map(Cheque_Classifier, [[df, result, user_id, max_timestamp, new]])[0]['result']
 
         logger.info("extra classifier called")
-        extra(df, user_id, result, max_timestamp, new)
+        multiprocessing.Pool().map(extra, [[df, result, user_id, max_timestamp, new]])
+
     except BaseException as e:
-        return {"status":False,"message":"Error in Classifier - "+str(e)}
+        return {"status": False, "message": "Error in Classifier - " + str(e)}
     finally:
         return {"status": True, "message": "success"}

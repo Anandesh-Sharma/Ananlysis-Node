@@ -36,7 +36,12 @@ def chq_bounce(df,user_id,result):
 
     return df.copy()[mask].reset_index(drop = True)
 
-def Cheque_Classifier(df, result, user_id, max_timestamp, new):
+def Cheque_Classifier(args):
+    df = args[0]
+    result = args[1]
+    user_id = args[2]
+    max_timestamp = args[3]
+    new = args[4]
     logger = logger_1("Cheque bounce function", user_id)
     logger.info("Cheque bounce function started")
 
@@ -75,4 +80,4 @@ def Cheque_Classifier(df, result, user_id, max_timestamp, new):
                                    upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True}
+    return {'status': True, 'result': result}

@@ -101,7 +101,12 @@ def legal(df,user_id,result):
     logger.info("loop ended")
     return df[mask].reset_index(drop=True),df.drop(selected).reset_index(drop=True)
 
-def legal_Classifier(df, result, user_id, max_timestamp, new):
+def legal_Classifier(args):
+    df = args[0]
+    result = args[1]
+    user_id = args[2]
+    max_timestamp = args[3]
+    new = args[4]
     logger = logger_1("Legal function", user_id)
     logger.info("Legal function started")
 
@@ -141,4 +146,4 @@ def legal_Classifier(df, result, user_id, max_timestamp, new):
                                    upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True}
+    return {'status': True, 'result': result}
