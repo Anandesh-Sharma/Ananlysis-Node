@@ -1,6 +1,7 @@
 from HardCode.scripts.Util import conn, logger_1
 from HardCode.scripts.balance_sheet_analysis.transaction_analysis import process_data
 import warnings
+import pandas as pd
 import re
 from datetime import datetime
 import pytz
@@ -91,6 +92,9 @@ def salary(df, result, user_id, max_timestamp, new):
 
     deposited_messages,df = deposited_keyword(df, result, user_id)
 
+    if deposited_messages.empty:
+        deposited_messages = pd.DataFrame(columns = ['body', 'timestamp', 'sender', 'read'])
+
     deposited_messages = process_data(deposited_messages, user_id)
 
     data = convert_json(epf_messages,deposited_messages['df'],user_id,max_timestamp)
@@ -116,7 +120,7 @@ def salary(df, result, user_id, max_timestamp, new):
         logger.info("Old User checked")
         for i in range(len(data['deposited'])):
             db.salary.update({"cust_id": int(user_id)}, {"$push": {"deposited": data['deposited'][i],"epf": data['epf'][i]}})
-            logger.info("loan approval sms of old user updated successfully")
+            logger.info("salary sms of old user updated successfully")
         db.salary.update_one({"cust_id": int(user_id)}, {
             "$set": {"timestamp": max_timestamp, 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
                                    upsert=True)

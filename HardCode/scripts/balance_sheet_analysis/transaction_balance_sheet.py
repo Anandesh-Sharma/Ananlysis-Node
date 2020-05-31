@@ -1,10 +1,10 @@
 from .transaction_analysis import process_data
 from .monthly_transactions import monthly_credit_sum, monthly_debit_sum
 from HardCode.scripts.balance_sheet_analysis.Validation2 import *
-from datetime import datetime 
+from datetime import datetime
 import pytz
 import json
-from HardCode.scripts.Util import conn, logger_1, convert_json_balanced_sheet, convert_json_balanced_sheet_empty
+from HardCode.scripts.Util import conn, logger_1, convert_json_balanced_sheet# convert_json_balanced_sheet_empty
 
 
 def create_transaction_balanced_sheet(user_id):
@@ -46,13 +46,12 @@ def create_transaction_balanced_sheet(user_id):
         if p:
             index = 0
         df = df.loc[index:]
-    # if df.shape[0] == 0:
-    #     return {'status': True, 'message': 'success'}  # do something
+        if df.shape[0] == 0:
+            return {'status': True, 'message': 'success'}  # do something
     # doing something
     logger.info('Converting file to dataframe')
     if df.shape[0] == 0:
-        r = {'status': True, 'message': 'success', 'df': convert_json_balanced_sheet_empty()}
-        return r
+        return {'status':True,'message':"success"}
     logger.info('Conversion Successful')
     logger.info('Starting to process data')
     result = process_data(df, user_id)

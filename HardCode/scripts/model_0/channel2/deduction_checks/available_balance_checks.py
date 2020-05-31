@@ -1,11 +1,19 @@
-from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.available_balance import find_info
-from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.mean_available_balance import mean_available
-from datetime import datetime
-
+# from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.available_balance import find_info
+# from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.mean_available_balance import mean_available
+# from datetime import datetime
+from HardCode.scripts.Util import conn
 def available_balance_check(user_id):
-    available_balance = find_info(user_id)
+    connect = conn()
+    parameters = connect.analysis.parameters.find_one({'cust_id': user_id})['parameters'][-1]
+    bal = parameters['mean_bal']
+    last_peak_bal = parameters['last_month_peak']
+    scnd_last_peak_bal = parameters['second_last_month_peak']
+    third_last_peak_bal = parameters['third_last_month_peak']
+    avg_bal = parameters['avg_balance']
+    available_balance = parameters['available_balance']
+    # available_balance = find_info(user_id)
 
-    bal,third_last_peak_bal,scnd_last_peak_bal,last_peak_bal,avg_bal = mean_available(user_id)
+    # bal,third_last_peak_bal,scnd_last_peak_bal,last_peak_bal,avg_bal = mean_available(user_id)
 
     available_balance_check1 = False
     available_balance_check2 = False
@@ -31,7 +39,7 @@ def available_balance_check(user_id):
 
     if bal <= 0 or bal > 40000:
         available_balance_check7 = True
-
+    connect.close()
     variables = {
         'available_balance_check1':available_balance_check1,
         'available_balance_check2': available_balance_check2,

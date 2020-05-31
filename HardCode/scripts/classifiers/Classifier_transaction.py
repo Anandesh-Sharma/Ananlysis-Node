@@ -1,34 +1,25 @@
 import re
 from datetime import datetime
 import pytz
-# import threading
+import threading
 from HardCode.scripts.Util import conn, convert_json, logger_1
 import warnings
 
 warnings.filterwarnings("ignore")
 
-
 def check_account_number(message):
     all_patterns = [
-        r'[\*nx]+([0-9]{3,})',
-        r'[a]\/c ([0-9]+)',
-        r'[\.]{3,}([0-9]+)',
-        r'account(.*)?\[([0-9]+)\]'
+    r'[\*nx]+([0-9]{3,})',
+    r'[a]\/c ([0-9]+)',
+    r'[\.]{3,}([0-9]+)',
+    r'account(.*)?\[([0-9]+)\]'
     ]
 
     for pat in all_patterns:
-        matcher = re.search(pat, message)
+        matcher = re.search(pat, message)    
         if matcher:
             return True
     return False
-
-
-def check_amount(message):
-    matcher = re.search(r"(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)", message)
-    if matcher:
-        return True
-    return False
-
 
 def cleaning(df, result, user_id, max_timestamp, new):
     logger = logger_1("cleaning", user_id)
@@ -37,19 +28,16 @@ def cleaning(df, result, user_id, max_timestamp, new):
     required_rows = []
     internet_banking = []
     withdraw = []
-    pattern_inb_wd = [" inb txn ", "w/d@", "w/d at",
-                      r"sbidrcard.*?(?:(?:rs|inr|\u20B9)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)"]
+    pattern_inb_wd = [" inb txn ", "w/d@", "w/d at"]
     for index, row in df.iterrows():
         body = row["body"].lower()
         match = True
         for pattern in transaction_patterns:
             matcher = re.search(pattern, body)
             if matcher:
-                if check_amount(body):
-                    required_rows.append(index)
-                    break
-                else:
-                    break
+                required_rows.append(index)
+                match = False
+                break
         with_match = False
         if match:
             for pat in pattern_inb_wd:
@@ -61,10 +49,9 @@ def cleaning(df, result, user_id, max_timestamp, new):
         if match and with_match:
             matcher = re.search("withdraw", body)
             if matcher:
-                if re.search("failed", body) is None:
-                    if check_account_number(body):
-                        withdraw.append(index)
-    # --> old patterns
+                if check_account_number(body):
+                    withdraw.append(index)
+
     cleaning_transaction_patterns_header = ['vfcare',
                                             'oyorms',
                                             'payzap',
@@ -142,49 +129,10 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                             'ryatri',
                                             'dhanip',
                                             'zestmo',
+                                            'smart',
                                             'myntra',
                                             'reings',
-                                            'reingp',
-                                            'smart']
-    # -->New Patterns
-    # cleaning_transaction_patterns_header =['airbnk',
-    #                                         'phonpe',
-    #                                         'paytm',
-    #                                         'mytsky',
-    #                                         'lenkrt',
-    #                                         'vfcare',
-    #                                         'payzap',
-    #                                         'ftcash',
-    #                                         'gofynd',
-    #                                         'zestmo',
-    #                                         'quikrr',
-    #                                         'flpkrt',
-    #                                         'rummy',
-    #                                         'epfoho',
-    #                                         'mobikw',
-    #                                         'goibib',
-    #                                         'erecharge',
-    #                                         'muthut',
-    #                                         'salary',
-    #                                         'rupmax',
-    #                                         'myfynd',
-    #                                         'dhanip',
-    #                                         'jionet',
-    #                                         'vishal',
-    #                                         'oxymny',
-    #                                         'grofrs',
-    #                                         'cureft',
-    #                                         'bigbzr',
-    #                                         'adapkr',
-    #                                         'oyorms',
-    #                                         'bigbkt',
-    #                                         'fabhtl',
-    #                                         'mututc',
-    #                                         'notice',
-    #                                         'ryatri',
-    #                                         'dinout',
-    #                                         'fpanda',
-    #                                         'spcmak']
+                                            'reingp']
     garbage_header_rows = []
     for i, row in df.iterrows():
         if i in required_rows:
@@ -208,7 +156,6 @@ def cleaning(df, result, user_id, max_timestamp, new):
 
     required_rows = list(set(required_rows) - set(g))
 
-    # -->Old cleaning patterns
     cleaning_transaction_patterns = ['request received to', 'received a request to add', 'premium receipt',
                                      'contribution',
                                      'data benefit', 'team hr', 'free [0-9]+ ?[gm]b', ' data ', 'voucher', 'data pack',
@@ -236,14 +183,14 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                      'remaining emi installment', 'salary amount', 'incentive amount ', 'dear investor',
                                      'verification code', 'outstanding dues', 'congrat(ulation)?s', 'available limit ',
                                      'oyo money credited',
-                                     'reminder', 'card ?((holder)|(member))', 'login request', ' cashback ',
+                                     'reminder', 'card ?((holder)|(member))', 'login request', 'cashback',
                                      'electricity bill', 'data pack activation',
                                      'paytm postpaid bill', 'failed', 'declined', 'cardmember', 'credit ?card',
                                      ' porting ', 'lenskart',
                                      'activated for fund transfer', 'biocon', 'updated wallet balance', 'recharging',
                                      'assessment year', 'we wish to inform', 'refunded',
                                      'amendment', 'added/modified', 'kyc verification', 'is due', 'paytm postpaid',
-                                     'please pay', 'flight booking', 'to be credited',
+                                     'please pay', 'flight booking', 'offer',
                                      '(credited)?(received)? [0-9]+[gm]b', 'payment.*failed',
                                      'uber india systems pvt ltd', 'has requested money', 'on approving',
                                      'not received', 'received your', 'brand factory has credited ', 'train ticket',
@@ -254,77 +201,18 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                      'frequency monthly', 'received a pay rise', 'cheque book',
                                      'will be', 'unpaid', 'received (for|in) clearing', 'presented for clearing',
                                      'your application', 'to know', 'unpaid', r'\slakh\s', 'thanking you', 'redeem',
+                                     'transferred',
                                      'available credit limit']
-    # -->New Cleaning Patterns
 
-    # cleaning_transaction_patterns =['can be credited ',
-    #                                 'will be',
-    #                                 'congratulations?',
-    #                                 'lenskart',
-    #                                 'has requested money',
-    #                                 'is due',
-    #                                 'credited to your wallet',
-    #                                 'credit ?card',
-    #                                 ' data ',
-    #                                 'refunded',
-    #                                 'hurry',
-    #                                 'total (amt)?(amount)? due',
-    #                                 'card ?((holder)|(member))',
-    #                                 'to know',
-    #                                 'welcome',
-    #                                 ' cashback ',
-    #                                 'sorry',
-    #                                 'contribution',
-    #                                 'available limit ',
-    #                                 'on approving',
-    #                                 '\\slakh\\s',
-    #                                 'failed',
-    #                                 'to be credited',
-    #                                 'congrat(ulation)?s',
-    #                                 'salary credited',
-    #                                 'recharging',
-    #                                 '(credited)?(received)? [0-9]+[gm]b',
-    #                                 'uber india systems pvt ltd',
-    #                                 'claim',
-    #                                 'your application',
-    #                                 'your order',
-    #                                 'redbus wallet',
-    #                                 'kyc',
-    #                                 'month of',
-    #                                 'voucher',
-    #                                 'redeem',
-    #                                 'coupon',
-    #                                 'points ',
-    #                                 'auto debited',
-    #                                 'data benefit',
-    #                                 'data pack',
-    #                                 'credited a free',
-    #                                 'woohoo!',
-    #                                 'win real cash',
-    #                                 'redemption request',
-    #                                 'benefit of ',
-    #                                 'sign up',
-    #                                 'due of',
-    #                                 'subscribing',
-    #                                 'please pay',
-    #                                 'last day',
-    #                                 'brand factory has credited ']
     garbage_rows = []
     for i, row in df.iterrows():
         if i in required_rows:
             message = row["body"].lower()
-            match = True
             for pattern in cleaning_transaction_patterns:
                 matcher = re.search(pattern, message)
                 if matcher:
                     garbage_rows.append(i)
-                    match = False
                     break
-            if match:
-                matcher = re.search("offer", message)
-                if matcher:
-                    if not check_account_number(message):
-                        garbage_rows.append(i)
 
     required_rows = list(set(required_rows) - set(garbage_rows))
 

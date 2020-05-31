@@ -2,6 +2,9 @@ from .Classifier_CreditCard import credit
 from .Classifier_Loan import loan
 from .Classifier_transaction import cleaning
 from .Classifier_salary import salary
+from .Classifier_legal import legal_Classifier
+from .Classifier_cheque_bounce import Cheque_Classifier
+from .Classifier_ecs import Ecs_Classifier
 import multiprocessing
 from HardCode.scripts.Util import conn, read_json, convert_json, logger_1
 import warnings
@@ -107,13 +110,13 @@ def classifier(sms_json, user_id):
     max_timestamp = result1['timestamp']
     logger.info("Multiprocessing start for Credit card Classifier")
     try:
-        p1 = multiprocessing.Process(target=credit(df, result, user_id, max_timestamp, new,))
+        p1 = multiprocessing.Process(target=credit, args=(df, result, user_id, max_timestamp, new,))
     except BaseException as e:
         logger.info(f"error in credit card classifier as {e}")
         return False
     logger.info("Multiprocessing start for Loan Classifier")
     try:
-        p2 = multiprocessing.Process(target=loan(df, result, user_id, max_timestamp, new, ))
+        p2 = multiprocessing.Process(target=loan, args=(df, result, user_id, max_timestamp, new, ))
     except BaseException as e:
         logger.info(f"error in loan classifier as {e}")
         return False
@@ -128,6 +131,24 @@ def classifier(sms_json, user_id):
         p4 = multiprocessing.Process(target=salary(df, result, user_id, max_timestamp, new, ))
     except BaseException as e:
         logger.info(f"error in salary classifier as {e}")
+        return False
+    logger.info("Multiprocessing start for Legal Classifier")
+    try:
+        p5 = multiprocessing.Process(target=legal_Classifier(df, result, user_id, max_timestamp, new, ))
+    except BaseException as e:
+        logger.info(f"error in legal classifier as {e}")
+        return False
+    logger.info("Multiprocessing start for Ecs Classifier")
+    try:
+        p6 = multiprocessing.Process(target=Ecs_Classifier(df, result, user_id, max_timestamp, new, ))
+    except BaseException as e:
+        logger.info(f"error in ecs classifier as {e}")
+        return False
+    logger.info("Multiprocessing start for cheque bounce Classifier")
+    try:
+        p7 = multiprocessing.Process(target=Cheque_Classifier(df, result, user_id, max_timestamp, new, ))
+    except BaseException as e:
+        logger.info(f"error in cheque bounce classifier as {e}")
         return False
     logger.info("process 1 starts")
     try:
@@ -153,6 +174,21 @@ def classifier(sms_json, user_id):
         logger.info(f"error in salary classifier {e}")
         return False
     try:
+        p5.start()
+    except BaseException as e:
+        logger.info(f"error in legal classifier {e}")
+        return False
+    try:
+        p6.start()
+    except BaseException as e:
+        logger.info(f"error in ecs classifier {e}")
+        return False
+    try:
+        p7.start()
+    except BaseException as e:
+        logger.info(f"error in cheque bounce classifier {e}")
+        return False
+    try:
         p1.join()
     except BaseException:
         return False
@@ -172,6 +208,21 @@ def classifier(sms_json, user_id):
     except BaseException as e:
         return False
     logger.info("process 4 complete")
+    try:
+        p5.join()
+    except BaseException as e:
+        return False
+    logger.info("process 5 complete")
+    try:
+        p6.join()
+    except BaseException as e:
+        return False
+    logger.info("process 6 complete")
+    try:
+        p7.join()
+    except BaseException as e:
+        return False
+    logger.info("process 7 complete")
 
     logger.info("extra classifier called")
     extra(df, user_id, result, max_timestamp, new)

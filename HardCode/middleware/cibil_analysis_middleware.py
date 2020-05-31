@@ -97,11 +97,11 @@ def get_cibil_analysis(request):
         pass
     with open(PROCESSING_DOCS + str(user_id) + '/user_data.json', 'w') as json_file:
         json.dump({
-        'current_loan_amount': current_loan_amount,
-        'all_loan_amount': all_loan_amount,
-        'cibil_score': cibil_score,
-        'user_id': user_id,
-        'new_user': new_user,
-    }, json_file, ensure_ascii=True, indent=4)
+            'current_loan_amount': current_loan_amount,
+            'all_loan_amount': all_loan_amount,
+            'cibil_score': cibil_score,
+            'user_id': user_id,
+            'new_user': new_user,
+        }, json_file, ensure_ascii=True, indent=4)
         # return Response({'status': False, 'message': 'current_loan_amount parameter must be int convertible'}, 400)
     return Response({'message': 'FILES RECEIVED!!'})

@@ -1,19 +1,18 @@
-from HardCode.scripts.model_0.parameters.deduction_parameters.loan_app.loan_app_count_validate import loan_app_count
-from HardCode.scripts.model_0.parameters.deduction_parameters.account_status.status import get_acc_status
-from HardCode.scripts.model_0.parameters.deduction_parameters.loan_limit.loan_info import loan_limit
-from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.total_rejection_msg import get_defaulter
-from HardCode.scripts.model_0.parameters.deduction_parameters.rejection_msgs.get_ratio import overdue_count_ratio
-from HardCode.scripts.model_0.parameters.deduction_parameters.available_balance.available_balance import find_info
 
+from HardCode.scripts.Util import conn
 
-def rejecting_parameters(user_id, cibil_df, sms_count):
-    loan_app , loan_status = loan_app_count(user_id)
-    account_status_value , ac_status = get_acc_status(cibil_df)
-    max_limit, loan_due_days, no_of_loan_apps, loan_apps , overdue_ratio, loan_dates, total_loans = loan_limit(user_id)
-    flag , rejection_msg = get_defaulter(user_id)
-    ratio , overdue_count = overdue_count_ratio(user_id)
+def rejecting_parameters(user_id,sms_count):
+    connect = conn()
+    parameters = connect.analysis.parameters.find_one({'cust_id':user_id})['parameters'][-1]
+    loan_app = parameters['percentage_of_loan_apps']
+    account_status_value = parameters['account_status']
+    bal = parameters['available_balance']
+    loan_due_days = parameters['loan_info']['OVERDUE_DAYS']
+    overdue_count = parameters['overdue_msg_count']
+    rejection_msg  = parameters['legal_msg_count']
+
     user_sms_count = sms_count
-    bal = find_info(user_id)
+    # bal = find_info(user_id)
 
     rejection_reasons = []
     if loan_app >= 0.70:
@@ -24,15 +23,18 @@ def rejecting_parameters(user_id, cibil_df, sms_count):
         msg = "written off nas suit filed found for the user"
         rejection_reasons.append(msg)
 
-    if loan_due_days['more_than_15'] > 0:
+
+    if loan_due_days >= 15:
         msg = "user has overdue days more than 15 days"
         rejection_reasons.append(msg)
 
-    if flag and rejection_msg == 0:
-        msg = "user has msgs for overdue of more than 15 days"
-        rejection_reasons.append(msg)
 
-    if flag and rejection_msg >= 3:
+
+    # if flag and rejection_msg == 0:
+    #     msg = "user has msgs for overdue of more than 15 days"
+    #     rejection_reasons.append(msg)
+
+    if rejection_msg >= 3:
         msg = "user has legal notice messages"
         rejection_reasons.append(msg)
 
@@ -47,6 +49,7 @@ def rejecting_parameters(user_id, cibil_df, sms_count):
     if overdue_count > 10:
         msg = "user has more than 10 overdue msgs"
         rejection_reasons.append(msg)
+
 
     return rejection_reasons
 

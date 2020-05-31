@@ -407,6 +407,7 @@ def balance_check(data):
             amount = 0
         data['available balance'][i] = float(str(amount).replace(",", ""))
 
+
 def get_time(data):
     for i in range(data.shape[0]):
         x = datetime.strptime(data['timestamp'][i], '%Y-%m-%d %H:%M:%S')

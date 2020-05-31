@@ -15,11 +15,17 @@ from datetime import timedelta
 from django.utils import timezone
 from pprint import pprint
 from configparser import RawConfigParser
+import platform
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 config = RawConfigParser()
-config.read('/etc/settings.ini')
+
+if platform.system() == "Linux":
+    config.read('/etc/settings.ini')
+else:
+    config.read(os.path.join(BASE_DIR, 'analysisnode/settings.ini'))
 
 MONGOUSER = config.get('section', 'MONGOUSER')
 MONGOPASS = config.get('section', 'MONGOPASS')
@@ -35,7 +41,6 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['mlnode.credicxotech.com', '127.0.0.1']
 
-
 # Application definition
 
 
@@ -46,7 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'django_crontab'
+    'django_crontab',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -76,7 +82,7 @@ TEMPLATES = [
     },
 ]
 
-#WSGI_APPLICATION = 'analysisnode.wsgi.application'
+# WSGI_APPLICATION = 'analysisnode.wsgi.application'
 
 
 # Database
@@ -108,8 +114,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CRONJOBS = [
-        ('*/5 * * * *', 'HardCode.cron.process_user_records', '>' + BASE_DIR + '/process_user_records.log'),
-    ]
+    ('*/5 * * * *', 'HardCode.cron.process_user_records', '>' + BASE_DIR + '/process_user_records.log'),
+]
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -125,7 +131,8 @@ USE_TZ = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 

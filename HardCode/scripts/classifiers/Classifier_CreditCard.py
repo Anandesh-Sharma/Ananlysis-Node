@@ -69,7 +69,7 @@ def get_confirm_cc_messages(data):
         matcher_2 = re.search(credit_card_pattern_2, message)
         matcher_3 = re.search(credit_card_pattern_3, message)
         matcher_4 = re.search(credit_card_pattern_4, message)
-        if matcher_1 or matcher_2 or matcher_3 or matcher_4 :
+        if matcher_1 is not None or matcher_2 is not None or matcher_3 is not None or matcher_4 is not None:
             cc_list.append(i)
     for i in range(data.shape[0]):
         if i in cc_list:
@@ -77,10 +77,11 @@ def get_confirm_cc_messages(data):
                 message = str(data['body'][i]).lower()
                 matcher = re.search(pattern, message)
 
-                if matcher:
+                if matcher is not None:
                     cc_confirm_index_list.append(i)
                     break
     return cc_confirm_index_list
+
 
 def credit(df, result, user_id, max_timestamp, new):
     logger = logger_1("credit card", user_id)
