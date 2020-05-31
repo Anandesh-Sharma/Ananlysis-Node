@@ -41,11 +41,6 @@ def result_output_block():
     return {'status': True, 'message': "success"}
 
 
-def set_processing_bool(user_id, status):
-    client = conn()
-    client.user_process.bl0.update_one({'cust_id': user_id}, {'$set': {'processing': status}}, upsert=True)
-
-
 def bl0(**kwargs):
     user_id = kwargs.get('user_id')
     sms_json = kwargs.get('sms_json')
@@ -67,10 +62,9 @@ def bl0(**kwargs):
         client = conn()
     except:
         logger.critical('error in connection')
-        return  {'status': False, 'message': "Error in making connection.",
-         'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+        return {'status': False, 'message': "Error in making connection.",
+                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
     logger.info('connection success')
-
 
     # >>==>> Classification
     logger.info('starting classification')

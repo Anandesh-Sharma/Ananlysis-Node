@@ -120,7 +120,7 @@ def salary(df, result, user_id, max_timestamp, new):
         logger.info("Old User checked")
         for i in range(len(data['deposited'])):
             db.salary.update({"cust_id": int(user_id)}, {"$push": {"deposited": data['deposited'][i],"epf": data['epf'][i]}})
-            logger.info("loan approval sms of old user updated successfully")
+            logger.info("salary sms of old user updated successfully")
         db.salary.update_one({"cust_id": int(user_id)}, {
             "$set": {"timestamp": max_timestamp, 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
                                    upsert=True)

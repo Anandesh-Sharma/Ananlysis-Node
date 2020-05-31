@@ -82,6 +82,7 @@ def get_confirm_cc_messages(data):
                     break
     return cc_confirm_index_list
 
+
 def credit(df, result, user_id, max_timestamp, new):
     logger = logger_1("credit card", user_id)
     # logger.info("Removing credit card promotional sms")

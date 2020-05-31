@@ -8,7 +8,7 @@ def get_app_rejection_count(cust_id):
     try:
         client = conn()
         loan_details = client.analysis.loan.find_one({"cust_id": cust_id})
-        rejection_count_details = loan_details['loan_rejection']
+        rejection_count_details = loan_details['loan_rejection']['rejection_count']
 
         premium_apps = ['CASHBN', 'KREDTB', 'KREDTZ', 'LNFRNT', 'NIRAFN', 'SALARY']
         if rejection_count_details:

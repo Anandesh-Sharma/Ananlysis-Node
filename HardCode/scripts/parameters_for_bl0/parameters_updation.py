@@ -100,12 +100,6 @@ def parameters_updation(user_id,cibil_df,no_of_sms):
         print('error in loan app percentage-' + str(e))
 
     try:
-        payment_rating = get_payment_rating(cibil_df)
-    except BaseException as e:
-        payment_rating = ""
-        print('error in payment rating-' + str(e))
-
-    try:
         cr_overdue_days,cr_total_loans,cr_loan_limit,cr_pending_emi = repayment_history(user_id)
     except BaseException as e:
         cr_overdue_days = -1
@@ -205,10 +199,12 @@ def parameters_updation(user_id,cibil_df,no_of_sms):
             history = -1
             amt_principal = -1
             amt_total = -1
+            payment_r = -1
     except BaseException as e:
         history = -1
         amt_principal = -1
         amt_total = -1
+        payment_r = -1
         print('error in payment history-'+str(e))
 
 
@@ -243,7 +239,7 @@ def parameters_updation(user_id,cibil_df,no_of_sms):
                        'payment_history': history,
                        'written_amt_principal': amt_principal,
                        'written_amt_total': amt_total,
-                       'payment_rating':payment_rating,
+                       'payment_rating':payment_r,
                        'age':age_of_user,
                        'percentage_of_loan_apps':percent_of_loan_apps,
                        'credicxo_loan_limit':cr_loan_limit,

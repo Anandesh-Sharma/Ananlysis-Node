@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 import pytz
 
+
 def fetch_user_data(cust_id):
     """
     This function establishes a connection from the mongo database and fetches data of the user.
@@ -23,18 +24,24 @@ def fetch_user_data(cust_id):
         logger.info("Successfully established the connection with DataBase")
 
         # connect to collection
-        approval_data = db.loanapproval
+        #approval_data = db.loanapproval
         disbursed_data = db.disbursed
-        overdue_data = db.loandueoverdue
+        overdue_data = db.loanoverdue
+        due_data = db.loandue
         closed_data = db.loanclosed
+        rejected_data = db.loanrejection
 
         closed = closed_data.find_one({"cust_id": cust_id})
         disbursed = disbursed_data.find_one({"cust_id": cust_id})
-        approval = approval_data.find_one({"cust_id": cust_id})
+        #approval = approval_data.find_one({"cust_id": cust_id})
         overdue = overdue_data.find_one({"cust_id": cust_id})
+        due = due_data.find_one({"cust_id": cust_id})
+        rejected = rejected_data.find_one({"cust_id": cust_id})
+
         loan_data = pd.DataFrame(columns=['sender', 'body', 'timestamp', 'read'])
         if len(closed['sms']) != 0:
             closed_df = pd.DataFrame(closed['sms'])
+            closed_df["category"] = "closed"
             loan_data = loan_data.append(closed_df)
             logger.info("Found loan closed data")
         else:
@@ -42,6 +49,7 @@ def fetch_user_data(cust_id):
 
         if len(disbursed['sms']) != 0:
             disbursed_df = pd.DataFrame(disbursed['sms'])
+            disbursed_df["category"] = "disbursed"
             loan_data = loan_data.append(disbursed_df)
             logger.info("Found loan disbursed data")
         else:
@@ -49,10 +57,27 @@ def fetch_user_data(cust_id):
 
         if len(overdue['sms']) != 0:
             overdue_df = pd.DataFrame(overdue['sms'])
+            overdue_df["category"] = "overdue"
             loan_data = loan_data.append(overdue_df)
             logger.info("Found loan overdue data")
         else:
             logger.info("loan overdue data not found")
+
+        if len(due['sms']) != 0:
+            due_df = pd.DataFrame(due['sms'])
+            due_df["category"] = "due"
+            loan_data = loan_data.append(due_df)
+            logger.info("Found loan overdue data")
+        else:
+            logger.info("loan overdue data not found")
+
+        if len(rejected['sms']) != 0:
+            rejected_df = pd.DataFrame(rejected['sms'])
+            rejected_df["category"] = "rejected"
+            loan_data = loan_data.append(rejected_df)
+            logger.info("Found loan rejection data")
+        else:
+            logger.info("loan rejection data not found")
 
         loan_data.sort_values(by=["timestamp"])
 

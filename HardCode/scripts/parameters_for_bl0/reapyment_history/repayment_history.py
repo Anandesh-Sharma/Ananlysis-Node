@@ -6,8 +6,6 @@ from HardCode.scripts.Util import conn,logger_1
 
 def repayment_history(user_id):
     connect=  conn()
-    db = connect.analysis.parameters
-    parameters = {}
     age,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation,no_of_contacts = get_profile_info(user_id)
     if allowed_limit:
         loan_limit = allowed_limit[-1]
