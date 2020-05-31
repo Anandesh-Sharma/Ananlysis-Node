@@ -141,12 +141,9 @@ def get_loan_messages(data):
                 break
         if not p:
             continue
-        print("****")
-        print(head)
+
         if re.search("[0-9]", head):
-            print("******")
-            print(f"{message}, {message[2]}")
-            print(f"{word1}")
+
             if re.search(word1, message) and head[2] == "-":
                 head = 'ab-cashbn'
             elif re.search(word2, message) and head[2] == "-":
@@ -454,7 +451,6 @@ def loan(df, result, user_id, max_timestamp, new):
     logger = logger_1("loan_classifier", user_id)
     logger.info("get all loan messages")
     loan_messages = get_loan_messages(df)
-    print(loan_messages)
 
     logger.info("remove all loan promotional messages")
     loan_messages_filtered = get_loan_messages_promotional_removed(df, loan_messages)
