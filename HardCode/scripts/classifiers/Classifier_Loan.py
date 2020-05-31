@@ -151,14 +151,12 @@ def get_loan_messages(data):
             else:
                 continue
         if head[2:] in header or head[3:] in header:
-            print("Message appended by 1")
             loan_messages.append(i)
             continue
         else:
             for pattern in all_patterns:
                 matcher = re.search(pattern, message)
                 if matcher:
-                    print("Message appended by 2")
                     loan_messages.append(i)
                     break
     return loan_messages
