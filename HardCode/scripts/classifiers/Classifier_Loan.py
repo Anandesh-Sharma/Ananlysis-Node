@@ -44,7 +44,7 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
                     r'server\sissue']
 
     for i in range(data.shape[0]):
-        if i not in loan_messages_filtered or data['sender'][i] == 'payltr':
+        if i not in loan_messages_filtered or 'payltr' in str(data['sender'][i]).lower():
             continue
 
         message = str(data['body'][i]).lower()
@@ -143,20 +143,36 @@ def get_loan_messages(data):
               'cbtest','rsloan','rupbus','ckcash','llnbro','cashbs','credme','atomec','finmtv','cashtm','roboin','trubal','payltr','cashbk','loante',
               'payuib','iavail','smcoin','ruplnd','ftcash','rupeeh','cashmt','loanbl','cashep','cashem','tatacp','loanco','loanfu','loanpl','haaloo',
               'rsfast','cashbo','cashin','rupmax','cashpd','lendko','loanfx','mudrak','prloan','cmntri','cashmx','rupls','rscash','ezloan','ftloan',
-              'abcash','loanhr','ruplus','notice','uucash','gsimpl','kaarva','mnywow']
-
+              'abcash','loanhr','ruplus','notice','uucash','gsimpl','kaarva','mnywow','zestmo','rupred','mclick','cashwn']
+    ignore_header = ['kotakb','mafild','iiflfn','capflt','kotkbk','ktkbnk' , 'fedbnk','icicib','obcbnk','empbnk','indbnk', 'qzhdfc', 'yesbnk', 'hdfcbn', 'kblbnk', 'hdfcbk', 'canbnk',
+            'synbnk', 'icicbk', 'hdfcpr', 'hdfcpll', 'icicbk', 'axisbk', 'kotakb', 'qlhdfc', 'vrhdfc','indusb']
+    word1 = 'cashbean'
+    word2 = 'zestmoney'
     data['body'] = data['body'].apply(lambda m: replace_parenthesis(m))
+
+
     for i in range(data.shape[0]):
         head = str(data['sender'][i]).lower()
-        for j in head:
-            if j.isdigit():
+        message = str(data['body'][i]).lower()
+        p = True
+        for j in ignore_header:
+            if j in head:
+                p = False
+                break
+        if not p:
+            continue
+        if re.search("[0-9]", head):
+            if re.search(word1, message) and head[2] == "-":
+                head = 'ab-cashbn'
+            elif re.search(word2, message) and head[2] == "-":
+                head = 'ab-zestmn'
+            else:
                 continue
         if head[2:] in header or head[3:] in header:
             loan_messages.append(i)
             continue
         else:
             for pattern in all_patterns:
-                message = str(data['body'][i]).lower()
                 matcher = re.search(pattern, message)
                 if matcher:
                     loan_messages.append(i)
@@ -230,7 +246,8 @@ def get_loan_messages_promotional_removed(data, loan_messages):
         r'[0-9]+\s?day[s]?\sextension',
         r'limited\speriod\soffer',
         r'offering\sloan\sextension',
-        r'get.*latest\supdates'
+        r'get.*latest\supdates',
+        r'gold\sloan'
 
     ]
     for i in range(data.shape[0]):
@@ -323,10 +340,13 @@ def get_disbursed(data, loan_messages_filtered, result, name):
                      r'complete.*process',
                     r'click\sto\slogin',
                     r'through\s\'?digital\sshop',
-                    r'\@upi']
+                    r'\@upi',
+                    r'received\spayment\sof',
+                    r'you\swill\sbe\snotified\swhen\sthe\smoney\sis\sdisbursed',
+                    r'your loan application.*has been successfully submitted']
 
     for i in range(data.shape[0]):
-        if i not in loan_messages_filtered or data['sender'][i] == 'payltr':
+        if i not in loan_messages_filtered or 'payltr' in str(data['sender'][i]).lower():
             continue
         message = str(data['body'][i]).lower()
         for pattern in all_patterns:
@@ -494,6 +514,11 @@ def loan(df, result, user_id, max_timestamp, new):
     logger.info("Converting loan disbursed dataframe into json")
     data_disburse = convert_json(data, user_id, max_timestamp)
 
+    logger.info("get all loan closed messages")
+    data,loan_messages_filtered = get_loan_closed_messages(df, loan_messages_filtered, result, user_id)
+    logger.info("Converting loan closed dataframe into json")
+    data_closed = convert_json(data, user_id, max_timestamp)
+
     logger.info("get all loan due overdue messages")
     data,loan_messages_filtered = get_over_due(df, loan_messages_filtered, result, user_id)
     logger.info("Converting loan due overdue dataframe into json")
@@ -504,10 +529,6 @@ def loan(df, result, user_id, max_timestamp, new):
     logger.info("Converting loan due dataframe into json")
     data_due = convert_json(data, user_id, max_timestamp)
 
-    logger.info("get all loan closed messages")
-    data,loan_messages_filtered = get_loan_closed_messages(df, loan_messages_filtered, result, user_id)
-    logger.info("Converting loan closed dataframe into json")
-    data_closed = convert_json(data, user_id, max_timestamp)
 
     logger.info("get all loan rejection messages")
     data,loan_messages_filtered = get_loan_rejected_messages(df, loan_messages_filtered, result, user_id)
@@ -645,7 +666,7 @@ def get_due_messages(data, loan_messages_filtered, result, name):
 
 
     for i in range(data.shape[0]):
-        if i not in loan_messages_filtered or data['sender'][i] == 'payltr':
+        if i not in loan_messages_filtered or 'payltr' in str(data['sender'][i]).lower():
             continue
         message = str(data['body'][i]).lower()
         for pattern in all_patterns:
