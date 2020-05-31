@@ -68,18 +68,14 @@ def bl0(**kwargs):
 
     # >>==>> Classification
     logger.info('starting classification')
-    p = multiprocessing.Process(target=classifier, args=(sms_json, str(user_id),))
     try:
-        p.start()
+        result_class = classifier(sms_json,str(user_id))
+        if not result_class['status']:
+            msg = "Classifier failed due to some reason-" + result_class['message']
+            exception_feeder(client=client,user_id=user_id,msg=msg)
     except BaseException as e:
-        msg = "Exception in starting classifier" + str(e)
-        exception_feeder(user_id=user_id, msg=msg, client=client)
-
-    try:
-        p.join()
-    except BaseException as e:
-        msg = "Exception in joining classification process" + str(e)
-        exception_feeder(user_id=user_id, msg=msg, client=client)
+        msg = "Exception in Classifier Analysis-" + str(e)
+        exception_feeder(user_id=user_id,msg=msg,client=client)
     logger.info('classification completes')
 
     # >>=>> LOAN ANALYSIS

@@ -204,7 +204,7 @@ def salary_main(user_id):
             if sorted['df']:
                 for df in sorted['df']:
                     m = datetime.strptime(df['time'], "%Y-%m")
-                    month = m.strftime("%B")
+                    month = m.strftime("%B %Y")
                     data = df['data']
                     salary = get_salary(data)
 

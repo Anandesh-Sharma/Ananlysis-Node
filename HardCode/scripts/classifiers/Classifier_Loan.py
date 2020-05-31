@@ -571,6 +571,7 @@ def loan(df, result, user_id, max_timestamp, new):
                                  upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
+    return {'status': True}
 
 
 def get_due_messages(data, loan_messages_filtered, result, name):
