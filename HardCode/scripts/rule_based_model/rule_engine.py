@@ -67,12 +67,23 @@ def rule_phase1(user_id):
 
 
 def rule_engine_main(user_id):
-    phase1 = rule_phase1(user_id)
-    phase2 = rule_quarantine(user_id)
-    result_pass = phase1 and phase2
-    if result_pass:
-        print("approved")
-    else:
-        print("rejected by rule engine")
-    return result_pass
+    try:
+        # phase1 = rule_phase1(user_id)
+        phase2 = rule_quarantine(user_id)
+        connect = conn()
+        params = connect.analysis.parameters.find_one({'cust_id':user_id})
+        connect.close()
+        salary = params['parameters'][-1]['quarantine_salary']
+        if salary > 0:
+            phase1=True
+        else:
+            phase1=False
+        result_pass = phase1 and phase2
+        if result_pass:
+            print("approved")
+        else:
+            print("rejected by rule engine")
+    except BaseException as e:
+        return {"status":False,"message":str(e)}
+    return {"status":True,"result":result_pass}
 

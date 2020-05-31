@@ -9,6 +9,7 @@ from HardCode.scripts.parameters_for_bl0.parameters_updation import parameters_u
 from HardCode.scripts.loan_analysis.current_open_details import get_current_open_details
 from HardCode.scripts.loan_analysis.loan_rejection import get_rejection_count
 from HardCode.scripts.model_0.scoring.generate_total_score import get_score
+from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
 from HardCode.scripts.Util import conn, logger_1
 import multiprocessing
 import warnings
@@ -202,16 +203,19 @@ def bl0(**kwargs):
     logger.info('Scoring Model complete')
 
     # >>=>> Rule Engine
-    # try:
-    #     rule_engine = rule_engine_main(user_id)
-    #     if not rule_engine['status']:
-    #         msg = "Rule engine failed due to some reason-"+rule_engine['message']
-    #         logger.error(msg)
-    #         exception_feeder(client=client, user_id=user_id,msg=msg)
-    # except BaseException as e:
-    #     msg = "Rule engine failed due to some reason-"+str(e)
-    #     logger.error(msg)
-    #     exception_feeder(client=client, user_id=user_id,msg=msg)
-    # logger.info('Rule engine complete')
+    try:
+        rule_engine = rule_engine_main(user_id)
+        if not rule_engine['status']:
+            msg = "Rule engine failed due to some reason-"+rule_engine['message']
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id,msg=msg)
+            rule_engine = {"result":False}
+    except BaseException as e:
+        msg = "Rule engine failed due to some reason-"+str(e)
+        logger.error(msg)
+        exception_feeder(client=client, user_id=user_id,msg=msg)
+        rule_engine = {"result":False}
+    logger.info('Rule engine complete')
 
-    return {"status": True, "messages": "success"}
+    client.analysis.result_bl0.insert_one({"cust_id":user_id,'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),"result":rule_engine['result']})
+    return rule_engine['result']
