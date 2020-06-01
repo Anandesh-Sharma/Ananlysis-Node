@@ -23,7 +23,6 @@ def fetch_user_data(cust_id):
         logger.info("Successfully established the connection with DataBase")
 
         # connect to collection
-        #approval_data = db.loanapproval
         disbursed_data = db.disbursed
         overdue_data = db.loanoverdue
         due_data = db.loandue
@@ -32,7 +31,6 @@ def fetch_user_data(cust_id):
 
         closed = closed_data.find_one({"cust_id": cust_id})
         disbursed = disbursed_data.find_one({"cust_id": cust_id})
-        #approval = approval_data.find_one({"cust_id": cust_id})
         overdue = overdue_data.find_one({"cust_id": cust_id})
         due = due_data.find_one({"cust_id": cust_id})
         rejected = rejected_data.find_one({"cust_id": cust_id})

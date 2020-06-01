@@ -57,6 +57,7 @@ def get_confirm_cc_messages(data):
         r'request\sto\sincrease.*credit\slimit.*initiated',
         r'convert.*(?:transaction|trxn|txn)\sof\s(?:rs\.?|inr)\s?([0-9]+[.]?[0-9]+).*into.*emi[s]?',
         r'transfer.*outstanding\scredit\scard.*personal\sloan',
+        r'(?:sbidrcard|sbi\s?card).*used\sfor\s(?:rs\.?|inr)\s?([0-9,]+[.][0-9]+)'
     ]
     cc_list = []
     credit_card_pattern_1 = "credit card"

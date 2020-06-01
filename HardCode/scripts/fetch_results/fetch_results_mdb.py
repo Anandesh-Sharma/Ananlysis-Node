@@ -82,5 +82,5 @@ def pre_rejection(user_id):
     else:
         return {'status': False, 'message': "Calm down! We're working on it"}
 
-from pprint import pprint
+
 

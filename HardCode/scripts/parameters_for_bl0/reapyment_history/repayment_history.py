@@ -55,9 +55,6 @@ def repayment_history(user_id):
                         overdue_report['12-15_days'] += 1
                     else:
                         overdue_report['more_than_15'] += 1
-
-
-
             elif expected_date[i] > date1:
                 try:
                     if repayment_date[i] > expected_date[i]:

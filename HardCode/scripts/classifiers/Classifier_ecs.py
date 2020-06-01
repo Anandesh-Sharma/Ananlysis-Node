@@ -20,7 +20,8 @@ def ecs_bounce(df,user_id,result):
         r'nach\s(?:payment|paymt|paymnt).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\s(?:has|is)\sbeen?\s(?:bounced|dishono[u]?red)'
         r'(?:emi|payment|paymnt|paymt|ecs)\s.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*has\sbeen\sdishono[u]?red.*is\soverdue',
         r'your\s(?:nach|ecs)\s?(payment)?\swas\sunsuccessful',
-        r'repayment.*not\ssuccessful\sthrough.*auto\s?\-?debit\sfacility'
+        r'repayment.*not\ssuccessful\sthrough.*auto\s?\-?debit\sfacility',
+        r'emi.*due.*(?:has\sbeen|is)\sbounce[d]?',
     ]
 
 

@@ -74,12 +74,12 @@ def get_final_loan_details(cust_id):
                             r["message"] = last_message
                         else:
                             r["date"] = str(data['timestamp'].iloc[-1])
-                            r["status"] = "Last msg from particular app was due/overdue then no msg retrieved from the same app (means msg deleted)"
+                            r["status"] = "Last msg from particular app was due then no msg retrieved from the same app (means msg deleted)"
                             r["category"] = True
                             r["message"] = last_message
                     elif category == "overdue":
                         r["date"] = str(data['timestamp'].iloc[-1])
-                        r["status"] = "Last msg from particular app was due/overdue then no msg retrieved from the same app (means msg deleted)"
+                        r["status"] = "Last msg from particular app was overdue then no msg retrieved from the same app (means msg deleted)"
                         r["category"] = True
                         r["message"] = last_message
                     elif category == "rejected":
@@ -93,9 +93,7 @@ def get_final_loan_details(cust_id):
                         r["category"] = False
                         r["message"] = last_message
                     report[app_name] = r
-        #pprint(report)
         connect.close()
-        # get_current_open_details(cust_id)
     except BaseException as e:
         import traceback
         traceback.print_tb(e.__traceback__)

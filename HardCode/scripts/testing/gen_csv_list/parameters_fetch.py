@@ -3,6 +3,7 @@ from pprint import pprint
 import pandas as pd
 from HardCode.scripts.testing.gen_csv_list.loan_rejection_2 import get_rejection_count
 from HardCode.scripts.testing.gen_csv_list.overdue_details_2 import get_overdue_details
+from HardCode.scripts.testing.user_ids import users
 
 
 def fetch_parameters(user_id):
@@ -114,25 +115,53 @@ def fetch_messages(user_id):
 
 
 
-client = conn()
 
 # cust_ids = set(client.analysis.salary.distinct("cust_id", {}))
 # # print(cust_ids, len(cust_ids))
-#
-# print(cust_ids - {21530, 22131, 37542, 146567, 163406, 167622, 185217, 208346, 224547, 240296, 244820, 254416, 262731,
-#                   263272, 280924, 281647, 298154, 301809, 305136, 305258, 306322, 338863, 355742})
 
-cust_ids = [262378,32926]
+
+cust_ids = users
 list_of_dict = []
 
-for id in cust_ids:
+# for id in cust_ids:
+#     try:
+#         list_of_dict.append(fetch_parameters(id))
+#     except Exception as e:
+#         print(f"{e} for userid : {id}")
+#         conn()#
+#     data = pd.DataFrame(list_of_dict)
+#     data.to_csv(f'rule_based_parameters.csv')
+    # fetch_messages(id)
+
+client = conn()
+dict = {}
+# for id in []:
+#     len = client.analysis.parameters.find_one({'cust_id': id})['parameters'][-1]['total_msgs']
+#     dict[id] = len
+# dict.sort(by = len)
+# sorted = {}
+# for i in len(dict):
+#     sorted[dict[i][id]] = i+1
+
+for i in users:
+    # len = client.analysis.parameters.find_one({'cust_id':key})['parameters'][-1]['total_msgs']
+    data = client.messagecluster.disbursed.find_one({'cust_id':i})
+    data1 = client.messagecluster.loanclosed.find_one({'cust_id':i})
+    data2 = client.messagecluster.loandue.find_one({'cust_id':i})
+    data3 = client.messagecluster.loanoverdue.find_one({'cust_id':i})
+    data4 = client.messagecluster.extra.find_one({'cust_id': i})
     try:
-        list_of_dict.append(fetch_parameters(id))
-    except Exception as e:
-        print(f"{e} for userid : {id}")
-        conn()#
-    data = pd.DataFrame(list_of_dict)
-    data.to_csv(f'rule_based_parameters.csv')
-    fetch_messages(id)
+        data = pd.DataFrame(data['sms'])
+        data1 = pd.DataFrame(data1['sms'])
+        data2 = pd.DataFrame(data2['sms'])
+        data3 = pd.DataFrame(data3['sms'])
+        data4 = pd.DataFrame(data4['sms'])
+        data.to_csv(f'users_data/mongo_disbursed_{i}.csv')
+        data1.to_csv(f'users_data/mongo_closed_{i}.csv')
+        data2.to_csv(f'users_data/mongo_due_{i}.csv')
+        data3.to_csv(f'users_data/mongo_overdue_{i}.csv')
+        data4.to_csv(f'users_data/mongo_extra_{i}.csv')
+    except:
+        continue
 
 
