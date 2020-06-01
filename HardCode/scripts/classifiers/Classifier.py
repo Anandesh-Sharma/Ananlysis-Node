@@ -108,122 +108,45 @@ def classifier(sms_json, user_id):
     df = result1['df']
     new = result1['new']
     max_timestamp = result1['timestamp']
-    logger.info("Multiprocessing start for Credit card Classifier")
     try:
-        p1 = multiprocessing.Process(target=credit, args=(df, result, user_id, max_timestamp, new,))
-    except BaseException as e:
-        logger.info(f"error in credit card classifier as {e}")
-        return False
-    logger.info("Multiprocessing start for Loan Classifier")
-    try:
-        p2 = multiprocessing.Process(target=loan(df, result, user_id, max_timestamp, new, ))
-    except BaseException as e:
-        logger.info(f"error in loan classifier as {e}")
-        return False
-    logger.info("Multiprocessing start for Transaction Classifier")
-    try:
-        p3 = multiprocessing.Process(target=cleaning(df, result, user_id, max_timestamp, new, ))
-    except BaseException as e:
-        logger.info(f"error in transaction classifier as {e}")
-        return False
-    logger.info("Multiprocessing start for Salary Classifier")
-    try:
-        p4 = multiprocessing.Process(target=salary(df, result, user_id, max_timestamp, new, ))
-    except BaseException as e:
-        logger.info(f"error in salary classifier as {e}")
-        return False
-    logger.info("Multiprocessing start for Legal Classifier")
-    try:
-        p5 = multiprocessing.Process(target=legal_Classifier(df, result, user_id, max_timestamp, new, ))
-    except BaseException as e:
-        logger.info(f"error in legal classifier as {e}")
-        return False
-    logger.info("Multiprocessing start for Ecs Classifier")
-    try:
-        p6 = multiprocessing.Process(target=Ecs_Classifier(df, result, user_id, max_timestamp, new, ))
-    except BaseException as e:
-        logger.info(f"error in ecs classifier as {e}")
-        return False
-    logger.info("Multiprocessing start for cheque bounce Classifier")
-    try:
-        p7 = multiprocessing.Process(target=Cheque_Classifier(df, result, user_id, max_timestamp, new, ))
-    except BaseException as e:
-        logger.info(f"error in cheque bounce classifier as {e}")
-        return False
-    logger.info("process 1 starts")
-    try:
-        p1.start()
-    except BaseException as e:
-        logger.info(f"error in credit card classifier as {e}")
-        return False
-    logger.info("process 2 starts")
-    try:
-        p2.start()
-    except BaseException as e:
-        logger.info(f"error in loan classifier as {e}")
-        return False
-    logger.info("process 3 starts")
-    try:
-        p3.start()
-    except BaseException as e:
-        logger.info(f"error in transaction classifier {e}")
-        return False
-    try:
-        p4.start()
-    except BaseException as e:
-        logger.info(f"error in salary classifier {e}")
-        return False
-    try:
-        p5.start()
-    except BaseException as e:
-        logger.info(f"error in legal classifier {e}")
-        return False
-    try:
-        p6.start()
-    except BaseException as e:
-        logger.info(f"error in ecs classifier {e}")
-        return False
-    try:
-        p7.start()
-    except BaseException as e:
-        logger.info(f"error in cheque bounce classifier {e}")
-        return False
-    try:
-        p1.join()
-    except BaseException:
-        return False
-    logger.info("process 1 complete")
-    try:
-        p2.join()
-    except BaseException as e:
-        return False
-    logger.info("process 2 complete")
-    try:
-        p3.join()
-    except BaseException as e:
-        return False
-    logger.info("process 3 complete")
-    try:
-        p4.join()
-    except BaseException as e:
-        return False
-    logger.info("process 4 complete")
-    try:
-        p5.join()
-    except BaseException as e:
-        return False
-    logger.info("process 5 complete")
-    try:
-        p6.join()
-    except BaseException as e:
-        return False
-    logger.info("process 6 complete")
-    try:
-        p7.join()
-    except BaseException as e:
-        return False
-    logger.info("process 7 complete")
+        logger.info("Classification start for Credit card Classifier")
+        result_out = credit(df, result, user_id, max_timestamp, new)
+        if not result_out['status']:
+            return result_out
 
-    logger.info("extra classifier called")
-    extra(df, user_id, result, max_timestamp, new)
-    return True
+        logger.info("Classification start for Loan Classifier")
+        result_out = loan(df, result, user_id, max_timestamp, new)
+        if not result_out['status']:
+            return result_out
+
+        logger.info("Classification start for Transaction Classifier")
+        result_out = cleaning(df, result, user_id, max_timestamp, new)
+        if not result_out['status']:
+            return result_out
+
+        logger.info("Classification start for Salary Classifier")
+        result_out = salary(df, result, user_id, max_timestamp, new)
+        if not result_out['status']:
+            return result_out
+
+        logger.info("Classification start for Legal Classifier")
+        result_out = legal_Classifier(df, result, user_id, max_timestamp, new)
+        if not result_out['status']:
+            return result_out
+
+        logger.info("Classification start for Ecs Classifier")
+        result_out = Ecs_Classifier(df, result, user_id, max_timestamp, new)
+        if not result_out['status']:
+            return result_out
+
+        logger.info("Classification start for cheque bounce Classifier")
+        result_out = Cheque_Classifier(df, result, user_id, max_timestamp, new)
+        if not result_out['status']:
+            return result_out
+
+        logger.info("extra classifier called")
+        extra(df, user_id, result, max_timestamp, new)
+    except BaseException as e:
+        return {"status":False,"message":"Error in Classifier - "+str(e)}
+    finally:
+        return {"status": True, "message": "success"}

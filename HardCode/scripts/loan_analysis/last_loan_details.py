@@ -48,8 +48,9 @@ def get_final_loan_details(cust_id):
                 last_message = str(data['body'].iloc[-1]).lower()
                 last_message_date = datetime.strptime(str(data['timestamp'].iloc[-1]), "%Y-%m-%d %H:%M:%S")
                 # report["message"] = (last_message)
+                category = data["category"].iloc[-1]
                 if last_message_date > start_date:
-                    if is_disbursed(last_message, app):
+                    if category == "disbursed":
                         if (current_date - last_message_date).days < 15:
                             r["date"] = str(data['timestamp'].iloc[-1])
                             r["status"] = "client taken loan but due dates not over"
@@ -60,12 +61,12 @@ def get_final_loan_details(cust_id):
                             r["status"] = "last loan message was disbursed message and than no messgage even after 15 days (means msg deleted)over"
                             r["category"] = True
                             r["message"] = last_message
-                    elif is_closed(last_message, app):
+                    elif category == "closed":
                         r["date"] = str(data['timestamp'].iloc[-1])
                         r["status"] = "Repay msg captured successfully before taking loan from our app"
                         r["category"] = False
                         r["message"] = last_message
-                    elif is_due(last_message, app):
+                    elif category == "due":
                         if (current_date - last_message_date).days < 10:
                             r["date"] = str(data['timestamp'].iloc[-1])
                             r["status"] = "client taken loan but due dates not over"
@@ -76,12 +77,12 @@ def get_final_loan_details(cust_id):
                             r["status"] = "Last msg from particular app was due/overdue then no msg retrieved from the same app (means msg deleted)"
                             r["category"] = True
                             r["message"] = last_message
-                    elif is_overdue(last_message, app):
+                    elif category == "overdue":
                         r["date"] = str(data['timestamp'].iloc[-1])
                         r["status"] = "Last msg from particular app was due/overdue then no msg retrieved from the same app (means msg deleted)"
                         r["category"] = True
                         r["message"] = last_message
-                    elif is_rejected(last_message, app):
+                    elif category == "rejected":
                         r["date"] = str(data['timestamp'].iloc[-1])
                         r["status"] = "user was rejected by this loan app"
                         r["category"] = False
@@ -96,7 +97,9 @@ def get_final_loan_details(cust_id):
         connect.close()
         # get_current_open_details(cust_id)
     except BaseException as e:
-        print("error in last laon")
+        import traceback
+        traceback.print_tb(e.__traceback__)
+        print("error in last loan")
         res= {'status': False, 'message': str(e),
             'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': cust_id}
         connect.analysisresult.exception_bl0.insert_one(res)

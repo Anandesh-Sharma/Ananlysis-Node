@@ -82,9 +82,9 @@ def quarantine_sal(user_id):
     sal = -1
     try:
         if salary:
-            if "May" in list(salary['salary'].keys()):
+            if "May 2020" in list(salary['salary'].keys()):
                 sal = salary['salary']['May']['salary']
-            elif "April" in list(salary['salary'].keys()):
+            elif "April 2020" in list(salary['salary'].keys()):
                 sal = salary['salary']['April']['salary']
             else:
                 sal = -1

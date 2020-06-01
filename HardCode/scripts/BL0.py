@@ -9,6 +9,7 @@ from HardCode.scripts.parameters_for_bl0.parameters_updation import parameters_u
 from HardCode.scripts.loan_analysis.current_open_details import get_current_open_details
 from HardCode.scripts.loan_analysis.loan_rejection import get_rejection_count
 from HardCode.scripts.model_0.scoring.generate_total_score import get_score
+from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
 from HardCode.scripts.Util import conn, logger_1
 import multiprocessing
 import warnings
@@ -62,25 +63,20 @@ def bl0(**kwargs):
         client = conn()
     except:
         logger.critical('error in connection')
-        return  {'status': False, 'message': "Error in making connection.",
-         'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+        return {'status': False, 'message': "Error in making connection.",
+                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
     logger.info('connection success')
-
 
     # >>==>> Classification
     logger.info('starting classification')
-    p = multiprocessing.Process(target=classifier, args=(sms_json, str(user_id),))
     try:
-        p.start()
+        result_class = classifier(sms_json,str(user_id))
+        if not result_class['status']:
+            msg = "Classifier failed due to some reason-" + result_class['message']
+            exception_feeder(client=client,user_id=user_id,msg=msg)
     except BaseException as e:
-        msg = "Exception in starting classifier" + str(e)
-        exception_feeder(user_id=user_id, msg=msg, client=client)
-
-    try:
-        p.join()
-    except BaseException as e:
-        msg = "Exception in joining classification process" + str(e)
-        exception_feeder(user_id=user_id, msg=msg, client=client)
+        msg = "Exception in Classifier Analysis-" + str(e)
+        exception_feeder(user_id=user_id,msg=msg,client=client)
     logger.info('classification completes')
 
     # >>=>> LOAN ANALYSIS
@@ -207,16 +203,19 @@ def bl0(**kwargs):
     logger.info('Scoring Model complete')
 
     # >>=>> Rule Engine
-    # try:
-    #     rule_engine = rule_engine_main(user_id)
-    #     if not rule_engine['status']:
-    #         msg = "Rule engine failed due to some reason-"+rule_engine['message']
-    #         logger.error(msg)
-    #         exception_feeder(client=client, user_id=user_id,msg=msg)
-    # except BaseException as e:
-    #     msg = "Rule engine failed due to some reason-"+str(e)
-    #     logger.error(msg)
-    #     exception_feeder(client=client, user_id=user_id,msg=msg)
-    # logger.info('Rule engine complete')
+    try:
+        rule_engine = rule_engine_main(user_id)
+        if not rule_engine['status']:
+            msg = "Rule engine failed due to some reason-"+rule_engine['message']
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id,msg=msg)
+            rule_engine = {"result":False}
+    except BaseException as e:
+        msg = "Rule engine failed due to some reason-"+str(e)
+        logger.error(msg)
+        exception_feeder(client=client, user_id=user_id,msg=msg)
+        rule_engine = {"result":False}
+    logger.info('Rule engine complete')
 
-    return {"status": True, "messages": "success"}
+    client.analysis.result_bl0.insert_one({"cust_id":user_id,'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),"result":rule_engine['result']})
+    return rule_engine['result']

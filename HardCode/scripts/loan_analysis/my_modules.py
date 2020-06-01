@@ -46,17 +46,21 @@ def sms_header_splitter(data):
     li = []
     pd.options.mode.chained_assignment = None
     data['Sender-Name'] = np.nan
-    for i in range(len(data)):
-        data['sender'][i] = data['sender'][i].replace('-', '')
-        data['sender'][i] = data['sender'][i].replace('$', '')
-        try:
-            header = str(data["sender"][i][2:]).upper()
-            header = sms_header_matcher(header)
-        except:
-            header = data["sender"][i][2:]
-        data['Sender-Name'][i] = header
-    data.drop(['sender'], axis=1, inplace=True)
-    data = remove_numerical_header(data)
+    try:
+        for i in range(len(data)):
+            data['sender'][i] = data['sender'][i].replace('-', '')
+            data['sender'][i] = data['sender'][i].replace('$', '')
+            try:
+                header = str(data["sender"][i][2:]).upper()
+                header = sms_header_matcher(header)
+            except:
+                header = data["sender"][i][2:]
+            data['Sender-Name'][i] = header
+        data.drop(['sender'], axis=1, inplace=True)
+        data = remove_numerical_header(data)
+    except Exception as e:
+        import traceback
+        traceback.print_tb(e.__traceback__)
     return data
 
 
@@ -253,3 +257,119 @@ def is_rejected(message, app):
             return True
     else:
         return False
+
+def extract_amount(message):
+    amount = 0
+    patterns = [
+    r'total\srepayment\s?(?:of)?\s(?:rs\.?|inr)([0-9,]+[.]?[0-9]+)',
+    r'(?:loan|payment[s]?)\s?(?:of)?\s([0-9,]+[.]?[0-9]+)',
+    r'amount\srepayable\sis\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
+    r'(?:inr\.?|rs\.?)\s?\s?([0-9,]+[.]?[0-9]+)',
+    r'\s([0-9,]+[.]?[0-9]+){4-5}\s',
+    r'\s([0-9]{4,5})\s',
+    r'([0-9,]+[.]?[0-9]+)\s?(?:rupees|inr)',
+    r'(?:amount|amt|repay)\s?(?:is)?\s([0-9,]+[.?][0-9]+)',
+    ]
+    not_pattern_1 = r'free\scoupon\sof\s[0-9,]+[.]?[0-9]+\s?(?:rupees|inr)'
+    not_pattern_2 = r'[0-9,]+[.]?[0-9]+\s?(?:rupees|inr)\scoupon'
+
+
+    for pattern in patterns:
+        matcher = re.search(pattern, message)
+        if matcher:
+            not_matcher_1 = re.search(not_pattern_1,message)
+            not_matcher_2 = re.search(not_pattern_2,message)
+            if not (not_matcher_1 or not_matcher_2):
+                amount = matcher.group(1)
+                amount = amount.replace(',', '')
+                break
+    return float(amount)
+
+def days_extract(message):
+    days = -1
+    patterns = [r'([0-9]+)\s?(?:din|day[s]?)']
+    pattern_not_1 = r'get\sextension\sof\s[0-9]+\s?day[s]?'
+
+    for pattern in patterns:
+        matcher = re.search(pattern,message)
+        if matcher:
+            matcher_not_1 = re.search(pattern_not_1,message)
+            if not matcher_not_1:
+                days = matcher.group(1)
+                days = int(days)
+
+    return days
+
+def date_extract(message):
+    date = -1
+    patterns = [
+        r'([0-9]{1,2}\/[0-9]{1,2}\/(?:20|19|18))',
+        r'([0-9]{2}\/?[-]?[0-9]{2}\/?[-]?20(?:20|19|18))',
+        r'\s([0-9]{1,2}\/[0-9]{1,2})\.',
+        r'\s([0-9]{1,2}\/[0-9]{1,2})\s',
+        r'([0-9]{1,2}\-[0-9]{1,2}\-20(?:20|19|18))',
+        r'\s([0-9]{1,2}(?:th|rd|st|nd)\s(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec))\s',
+        r'([0-9]{1,2}\.[0-9]{1,2}\.[0-9]{2,4})',
+        r'(20(?:20|19|18)\-[0-9]{1,2}\-[0-9]{1,2})',
+        r'([0-9]{1,2}(?:th|rd|st|nd)\s[a-z]+\s[0-9]{2,4})',
+        r'((?:[0-9]{1,2})?\s?\-?(?:january|february|march|april|may|june|july|august|september|october|november|december)\s?\-?[0-9]{1,2})',
+        r'([0-9]{1,2}\s(?:january|february|march|april|may|june|july|august|september|october|november|december))',
+        r'([0-9]{1,2}[-]?[,]?\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)[-]?[,]?\s?20(?:20|19|18))',
+        r'((?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)\s?[-]?[0-9]{1,2}\s?[-]?20(?:20|19|18))',
+        r'([0-9]{1,2}[-]?[,]?\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)[-]?[,]?\s?(?:20|19|18))',
+        r'([0-9]{1,2}(?:th|st|nd|rd)\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)\s?\'?(?:20|19|18))'
+    ]
+
+    for pattern in patterns:
+        matcher = re.search(pattern,message)
+        if matcher:
+            date = matcher.group(1)
+
+    return date
+
+def fetch_info(df):
+    df['amount'] = [0] * df.shape[0]
+    df['loan_duration'] = [-1] * df.shape[0]
+    df['overdue_date'] = [-1] * df.shape[0]
+    df['overdue_days'] = [-1] * df.shape[0]
+    df['due_date'] = [-1] * df.shape[0]
+    df['expected_closing_date'] = [-1] * df.shape[0]
+    df['due_days'] = [-1] * df.shape[0]
+    # df['overdue_days'] = [-1] * df.shape[0]
+    # df['penalty'] = [-1] * df.shape[0]
+    # df['expected_closing_date'] = [-1] * df.shape[0]
+
+    for i in range(df.shape[0]):
+        message = str(df['body'][i]).lower()
+        if df['category'][i] == 'disbursed':
+            df['amount'][i] = extract_amount(message)
+            df['loan_duration'][i] = days_extract(message)
+        elif df['category'][i] == 'due':
+            df['amount'][i] = extract_amount(message)
+            df['due_date'][i] = date_extract(message)
+            df['due days'][i] = days_extract(message)
+        elif df['category'][i] == 'overdue':
+            df['overdue_days'][i] = days_extract(message)
+            df['amount'][i] = extract_amount(message)
+            df['expected_closing_date'] = date_extract(message)
+        else:
+            df['amount'][i] = extract_amount(message)
+    return df
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -312,3 +312,4 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                   upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
+    return {'status': True}
