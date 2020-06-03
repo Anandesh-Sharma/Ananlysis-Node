@@ -23,7 +23,7 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'payment\sof.*?agreement.*?received',
         r'received.*?payment\s(of|rs).*?loan',
         r'rcvd\spayment\s(of|rs).*?loan',
-        r'thank\syou\sfor\spayment.*?towards.*?loan',
+        r'thank\syou\sfor.*payment.*?towards.*?loan',
         r'acknowledge\sreceipt.*?emi\sof.*?(against|towards).*?loan',
         r'your\sfirst\sloan.*?paid\ssuccessfully',
         r'you\sjust\spaid.*?towards\sloan',
@@ -39,6 +39,8 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'due.*has been settled',
         r'thank.*for paying.*loan',
         r'rs\.?\s?([0-9,]+[.]?[0-9]+)\sreceived',
+        r'loan\shas\sbeen\spaid',
+        r'received.*payment.*for.*?loan'
     ]
     not_patterns = [r'waiver\sscheme',
                     r'loan\sextension\sdate|tenor\sextension',
@@ -126,7 +128,7 @@ def get_loan_messages(data):
               'rsfast', 'cashbo', 'cashin', 'rupmax', 'cashpd', 'lendko', 'loanfx', 'mudrak', 'prloan', 'cmntri',
               'cashmx', 'rupls', 'rscash', 'ezloan', 'ftloan',
               'abcash', 'loanhr', 'ruplus', 'notice', 'uucash', 'gsimpl', 'kaarva', 'mnywow', 'zestmo', 'rupred',
-              'mclick', 'cashwn']
+              'mclick', 'cashwn','lzypay']
     ignore_header = ['kotakb', 'mafild', 'iiflfn', 'capflt', 'kotkbk', 'ktkbnk', 'fedbnk', 'icicib', 'obcbnk', 'empbnk',
                      'indbnk', 'qzhdfc', 'yesbnk', 'hdfcbn', 'kblbnk', 'hdfcbk', 'canbnk',
                      'synbnk', 'icicbk', 'hdfcpr', 'hdfcpll', 'icicbk', 'axisbk', 'kotakb', 'qlhdfc', 'vrhdfc',
@@ -289,7 +291,8 @@ def get_disbursed(data, loan_messages_filtered, result, name):
         r'loan.*approved.*transferred.*account',
         r'loan.*rs.*[0-9] is\sprocessed\sfor\sdisbursal',
         r'transfer.*loan.*initiated',
-        r'loan account.*credit.*rs.*[0-9]'
+        r'loan account.*credit.*rs.*[0-9]',
+        r'credited.*amount\sto\s?(?:your)?\sbank'
     ]
     not_patterns = [r'reward\s(?:of|point\sbalance)',
                     r'complete.*process',
@@ -363,7 +366,7 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         r'sorry.*can\s?not\sprocess\syour\s?(?:loan)?\sapplication',
         r'loan\sprocess\scan\s?not\sbe\scompleted',
         r'loan\sapplication\shas\snot\spassed\sthe\sreview',
-        r'application\s(?:can\s?not|could\snot)\sbe\sprocessed',
+        r'(?:application|request)\s(?:can\s?not|could\snot)\sbe\sprocessed',
         r'loan\sapplication\sfailed\sto\spass',
         r'unable\sto\sserve\syou.*at\sthe\smoment',
         r'unfortunately.*can\s?not\sapprove\syou\sfor\s?[a]?\sloan',
@@ -379,6 +382,8 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
         r'unfortunately.*not\squalify\sfor.*loan',
         r'loan.*not.*(?:approved|criteria)',
         r'unfortunately.*not\s(?:qualify|approve[d]?)\sfor.*loan',
+        r'loan.*application\shas\sbeen\sdenied',
+        r'could\snot\sapprove.*profile'
     ]
     all_patterns_2 = [
         r'low\scibil\sscore',
@@ -609,12 +614,12 @@ def get_due_messages(data, loan_messages_filtered, result, name):
         r'do\snot\sforget\sto\spay.*?loan',
         r'emi.*?will\sbe\s(auto-)?debited',
         r'dues\sof\srs.*?outstanding.*?for\sloan',
-        r'.*payment.*rs\.?.*?([0-9]+).*due.*',
-        r'.*due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)',
-        r'.*rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+).*',
-        r'due\s(?:on)?.*([0-9]+/[0-9]+).*',
-        r'.*loan.*rs\.?.*?([0-9]+).*due.*',
-        r'.*payment.*due.*',
+        r'payment.*rs\.?.*?([0-9]+).*due',
+        r'due.*on\s([0-9]+-[0-9]+?-[0-9]+).*payment.*rs\.?\s?([0-9]+)',
+        r'rs\.?\s([0-9]+).*due.*([0-9]+-[0-9]+-[0-9]+)',
+        r'due\s(?:on)?.*([0-9]+/[0-9]+)',
+        r'loan.*rs\.?.*?([0-9]+).*due',
+        r'payment.*\sdue',
         r'(?:emi|loan|repayment|payment)\sis\sdue',
         r'is\syour\sdue\s(?:day|date)',
         r'(?:a\/c|account)\sis\sdue',
@@ -631,6 +636,10 @@ def get_due_messages(data, loan_messages_filtered, result, name):
         r'(?:loan|emi).*due\s(?:on\s|is\s|)(?:tomorrow|today)',
         r'loan\sto\sbe\srepaid',
         r'(?:loan\sre[-]?payment|instal[l]?ment).*is\sdue',
+        r'emi.*is\sdue',
+        r'emi\srepayment\sdate',
+        r'will\s?(?:be)?\sdue',
+        r'(?:today|tomorrow).*(?:due|repayment)\s(?:date|day)'
     ]
 
     for i in range(data.shape[0]):
@@ -700,10 +709,10 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'loan.*passed\sthe\sdue\sdate',
         r'repayment.*is\spending',
         r'settle\syour\sdues.*legal\saction',
-        r'[^a-z]pay\s(?:immediately|urgently|now)',
+        r'[^a-z\-]pay\s(?:immediately|urgently|now)',
         r'(?:loan|emi|payment).*over\s?[-]?due',
         r'loan.*successfully\srescheduled',
-        r'payment.*(?:yet|still)?not\s?(?:yet|still)?.*received',
+        r'[^a-z]payment.*(?:yet|still)?not\s?(?:yet|still)?.*received',
         r'loan.*din\sse\szyada\sdue',
         r'over[_]?due\sfor\s([0-9]+)\sdays',
         r'payment.*not\sdone.*many\sdays',
@@ -720,11 +729,37 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'rs\.?\s([0-9,]+[.]?[0-9]+)\shas\sbeen\sover\s?due',
         r'we\swill\sbe\sshortly\sreporting\sto\scibil',
         r'outstanding\sof\srs\.?.*is\sover[_]?due',
+        r'payment.*overdue\s(?:since|from)',
+        r'more\sthan.*days\soverdue',
+        r'overdue\spayment\snotice',
+        r'overdue\s(?:by|since|for|from)\s[0-9]+\s?day[s]?',
+        r'[0-9]+\s?day[s]?\spast.*due\sdate'
     ]
     not_patterns = [r'(?:to|is)\sdue',
                     r'(?:0|-1)\s?day[s]?\soverdue',
-                    r'penalties\swaived',
-                    r'fee\swill\sbe\s(?:reduced|reducted)']
+                    r'(?:penalties|charges).*waived',
+                    r'fee\swill\sbe\s(?:reduced|reducted)',
+                    r'will\s(?:be|cause)\s(?:due|overdue)',
+                    r'technical\s(?:issue|error)',
+                    r'top(\-?\s?)up|cashback',
+                    r'(?:extended|extension).*loan.*(?:date|tenure)',
+                    r'loan.*rescheduled',
+                    r'click\sto\s(?:login|download)',
+                    r'credit\sscore.*pay.*loan.*pay\snow',
+                    r'coupon.*penalty.*if.*overdue',
+                    r'repayment.*next\sloan.*do\snot\soverdue',
+                    r'to\sstop\slegal.*pay\snow',
+                    r'reach.*us.*get.*flexible\spayment\soption',
+                    r'make.*payment.*avoid.*overdue',
+                    r'overdue\swill.*affect.*credit',
+                    r'overdue\swill\scause.*charges',
+                    r'(?:today|tomorrow).*(?:due|repayment)\s(?:date|day)',
+                    r'extended.* due\sdate',
+                    r'loan.*overdue\stoday',
+                    r'last\sday\sto\savoid.*overdue',
+                    r'due\s(?:date\day).*tomorrow',
+                    r'last\stime.*got\sextra\sdays\sto\srepay',
+                    r'emi.*due.*tomorrow']
 
     for i in range(data.shape[0]):
         if i not in loan_messages_filtered:

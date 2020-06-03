@@ -79,12 +79,14 @@ def legal(df,user_id,result):
         r'field\sagents\swill\scome.*part\sof\scollections'
     ]
 
+
     logger.info("loop started")
     for i, row in df.iterrows():
         message = row['body'].lower()
         for pattern in patterns:
             matcher = re.search(pattern, message)
-            if matcher :
+            matcher1 = re.search('avoid\slegal\saction',message)
+            if matcher and not matcher1 :
                 mask.append(True)
                 selected.append(i)
                 break

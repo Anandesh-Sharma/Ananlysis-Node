@@ -72,6 +72,7 @@ def get_salary(data):
     pattern4 = r"credited.*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*?sal.*\/salary"
     pattern5 = r"(?:a\/c|account).*credited\s?(?:with|for|by)?\s(?:rs\.?|inr\.?)\s?([0-9,]+[.]?[0-9]+).*salary"
     pattern6 = r"(?:rs\.?|inr\.?)\s?([0-9,]+[.]?[0-9]+).*(?:credited|deposited).*salary"
+    pattern7 = r"(?:a\/c|account).*credit?.*by\ssalary.*(?:rs\.?|inr\.?)\s?([0-9,]+[.]?[0-9]+)"
     if data:
         for i in range(len(data)):
             m = data[i]["body"].lower()
@@ -82,6 +83,7 @@ def get_salary(data):
             y4 = re.search(pattern4, m)
             y5 = re.search(pattern5, m)
             y6 = re.search(pattern6, m)
+            y7 = re.search(pattern7, m)
             if y1 :
                 salary.append(data[i])
 
@@ -98,6 +100,9 @@ def get_salary(data):
                 salary.append(data[i])
 
             elif y6:
+                salary.append(data[i])
+
+            elif y7:
                 salary.append(data[i])
 
             else:
