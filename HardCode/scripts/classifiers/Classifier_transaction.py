@@ -22,7 +22,13 @@ def check_account_number(message):
     return False
 
 
-def cleaning(df, result, user_id, max_timestamp, new):
+def cleaning(args):
+    df = args[0]
+    result = args[1]
+    user_id = args[2]
+    max_timestamp = args[3]
+    new = args[4]
+
     logger = logger_1("cleaning", user_id)
     transaction_patterns = ['debited', 'credited', "inft"]
 
@@ -320,4 +326,4 @@ def cleaning(df, result, user_id, max_timestamp, new):
                                   upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True}
+    return {'status': True, 'result': result}

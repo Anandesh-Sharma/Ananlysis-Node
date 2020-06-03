@@ -432,7 +432,13 @@ def get_loan_rejected_messages(data, loan_messages_filtered, result, name):
     return reject, loan_messages_filter
 
 
-def loan(df, result, user_id, max_timestamp, new):
+def loan(args):
+    df = args[0]
+    result = args[1]
+    user_id = args[2]
+    max_timestamp = args[3]
+    new = args[4]
+
     # logger = logger_1("loan_classifier", user_id)
     # logger.info("get all loan messages")
     # loan_messages = get_loan_messages(df)
@@ -589,7 +595,7 @@ def loan(df, result, user_id, max_timestamp, new):
                                  upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True}
+    return {'status': True, 'result': result}
 
 
 def get_due_messages(data, loan_messages_filtered, result, name):

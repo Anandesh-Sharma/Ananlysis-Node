@@ -84,7 +84,13 @@ def get_confirm_cc_messages(data):
     return cc_confirm_index_list
 
 
-def credit(df, result, user_id, max_timestamp, new):
+def credit(args):
+    df = args[0]
+    result = args[1]
+    user_id = args[2]
+    max_timestamp = args[3]
+    new = args[4]
+
     logger = logger_1("credit card", user_id)
     # logger.info("Removing credit card promotional sms")
     # data_not_needed = get_creditcard_promotion(df)
@@ -134,4 +140,4 @@ def credit(df, result, user_id, max_timestamp, new):
                                  upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True}
+    return {'status': True, 'result': result}

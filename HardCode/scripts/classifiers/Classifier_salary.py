@@ -87,7 +87,13 @@ def deposited_keyword(df, result, user_id):
     return df[mask].reset_index(drop=True), df.drop(selected).reset_index(drop=True)
 
 
-def salary(df, result, user_id, max_timestamp, new):
+def salary(args):
+    df = args[0]
+    result = args[1]
+    user_id = args[2]
+    max_timestamp = args[3]
+    new = args[4]
+
     logger = logger_1("Salary function", user_id)
     logger.info("Salary function started")
 
@@ -130,4 +136,4 @@ def salary(df, result, user_id, max_timestamp, new):
                              upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True}
+    return {'status': True, 'result': result}
