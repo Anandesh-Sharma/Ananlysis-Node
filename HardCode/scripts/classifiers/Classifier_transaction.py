@@ -33,7 +33,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
     for index, row in df.iterrows():
         body = row["body"].lower()
         sender = row["sender"].lower()[3:]
-        if sender in ['cbsbnk','dopbnk','csisms']:
+        if sender in ['cbsbnk','dopbnk','csisms','cbssbi']:
             if ' credit ' in body:
                 spcl_salary.append(index)
                 continue
