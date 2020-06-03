@@ -17,7 +17,6 @@ def transaction_msg(user_id):
     sal_modified = connect.analysis.salary.find_one({'cust_id': user_id})
     final = []
 
-
     if sal_modified is None:
         new_user = True
     else:
@@ -30,10 +29,9 @@ def transaction_msg(user_id):
             sal_modified = sal_modified['modified_at']
             if sal_modified < max_time:
                 for i in range(len(msgs['sheet'])):
-                   if msgs['sheet'][i]['timestamp'] == sal_modified:
-                       index = i + 1
-                       break
-
+                    if msgs['sheet'][i]['timestamp'] == sal_modified:
+                        index = i + 1
+                        break
 
     if deposited_msg:
         deposited = deposited_msg['deposited']
@@ -55,7 +53,6 @@ def transaction_msg(user_id):
     return final
 
 
-
 def get_salary_msg(data):
     salary = []
     for i in range(len(data)):
@@ -63,6 +60,7 @@ def get_salary_msg(data):
         if re.search('salary', m):
             salary.append(data[i])
     return salary
+
 
 def get_salary(data):
     salary = []
@@ -72,6 +70,7 @@ def get_salary(data):
     pattern4 = r"credited.*?(((?:[Rr][sS]|inr)\.?\s?)(\d+(:?\,\d+)?(\,\d+)?(\.\d{1,2})?)).*?sal.*\/salary"
     pattern5 = r"(?:a\/c|account).*credited\s?(?:with|for|by)?\s(?:rs\.?|inr\.?)\s?([0-9,]+[.]?[0-9]+).*salary"
     pattern6 = r"(?:rs\.?|inr\.?)\s?([0-9,]+[.]?[0-9]+).*(?:credited|deposited).*salary"
+    pattern7 = r"(?:a\/c|account).*credit?.*by\ssalary.*(?:rs\.?|inr\.?)\s?([0-9,]+[.]?[0-9]+)"
     if data:
         for i in range(len(data)):
             m = data[i]["body"].lower()
@@ -82,13 +81,14 @@ def get_salary(data):
             y4 = re.search(pattern4, m)
             y5 = re.search(pattern5, m)
             y6 = re.search(pattern6, m)
-            if y1 :
+            y7 = re.search(pattern7, m)
+            if y1:
                 salary.append(data[i])
 
-            elif y2 :
+            elif y2:
                 salary.append(data[i])
 
-            elif y3 :
+            elif y3:
                 salary.append(data[i])
 
             elif y4:
@@ -98,6 +98,9 @@ def get_salary(data):
                 salary.append(data[i])
 
             elif y6:
+                salary.append(data[i])
+
+            elif y7:
                 salary.append(data[i])
 
             else:
@@ -162,7 +165,7 @@ def get_epf_amount(user_id):
     return data
 
 
-def sorted_data(data,user_id):
+def sorted_data(data, user_id):
     logger = logger_1("sorted data", user_id)
     logger.info("sorting data")
     if data:
@@ -191,16 +194,16 @@ def salary_main(user_id):
     db = connect.analysis.salary
     trans = transaction_msg(user_id)
     epf = get_epf_amount(user_id)
-    if isinstance(trans,dict) and not epf:
+    if isinstance(trans, dict) and not epf:
         return {'status': True, 'message': "no messages", 'cust_id': int(user_id), 'salary': 0}
-    elif isinstance(trans,dict) and epf :
+    elif isinstance(trans, dict) and epf:
         bal_sheet = epf
     else:
         bal_sheet = trans + epf
 
     try:
         if bal_sheet:
-            sorted = sorted_data(bal_sheet,user_id)
+            sorted = sorted_data(bal_sheet, user_id)
             if sorted['df']:
                 for df in sorted['df']:
                     m = datetime.strptime(df['time'], "%Y-%m")
@@ -297,7 +300,8 @@ def salary_main(user_id):
                                             result['salary'] = monthwise
                                             db.update({'cust_id': user_id}, {"$set": result}, upsert=True)
                                             neft_amt_1 = salary_dict['salary']
-                                            neft_time = datetime.strptime(salary_dict['message']['timestamp'],"%Y-%m-%d %H:%M:%S")
+                                            neft_time = datetime.strptime(salary_dict['message']['timestamp'],
+                                                                          "%Y-%m-%d %H:%M:%S")
                                             flag = True
                                             logger.info("salary found from neft keyword")
                             else:
@@ -315,12 +319,6 @@ def salary_main(user_id):
         logger.info("salary analysis completed")
         return {'status': True, 'message': 'Success', 'cust_id': int(user_id), 'result': result['salary'],
                 'salary': float(last_salary)}
-        
+
     except BaseException as e:
         return {'status': False, 'message': str(e), 'cust_id': int(user_id), 'salary': 0}
-
-
-
-
-
-

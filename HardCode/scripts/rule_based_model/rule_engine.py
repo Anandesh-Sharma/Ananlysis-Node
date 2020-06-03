@@ -2,6 +2,9 @@ from HardCode.scripts.Util import conn
 from HardCode.scripts.rule_based_model.phase2 import rule_quarantine
 
 
+# from HardCode.scripts.testing.all_repeated_ids import *
+
+
 def rule_phase1(user_id):
     connect = conn()
     params = connect.analysis.parameters.find_one({'cust_id': user_id})
@@ -79,5 +82,5 @@ def rule_engine_main(user_id):
         else:
             print("rejected by rule engine")
     except BaseException as e:
-        return {"status": False, "cust_id": user_id, "message": str(e), "result": False}
-    return {"status": True, "cust_id": user_id, "result": result_pass}
+        return {"status": False, "message": str(e)}
+    return {"status": True, "result": result_pass}

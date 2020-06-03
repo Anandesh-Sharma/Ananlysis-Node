@@ -1,12 +1,11 @@
 import re
 import pandas as pd
-from HardCode.scripts.Util import conn,logger_1,convert_json
+from HardCode.scripts.Util import conn, logger_1, convert_json
 from datetime import datetime
 import pytz
 
 
-def ecs_bounce(df,user_id,result):
-
+def ecs_bounce(df, user_id, result):
     ecs_bounce_list = []
     mask = []
     selected = []
@@ -20,9 +19,10 @@ def ecs_bounce(df,user_id,result):
         r'nach\s(?:payment|paymt|paymnt).*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)\s(?:has|is)\sbeen?\s(?:bounced|dishono[u]?red)'
         r'(?:emi|payment|paymnt|paymt|ecs)\s.*(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+).*has\sbeen\sdishono[u]?red.*is\soverdue',
         r'your\s(?:nach|ecs)\s?(payment)?\swas\sunsuccessful',
-        r'repayment.*not\ssuccessful\sthrough.*auto\s?\-?debit\sfacility'
+        r'repayment.*not\ssuccessful\sthrough.*auto\s?\-?debit\sfacility',
+        r'emi.*due.*(?:has\sbeen|is)\sbounce[d]?',
+        r'ecs\smandate.*dishono[u]?red'
     ]
-
 
     for i in range(df.shape[0]):
         message = str(df['body'][i].encode('utf-8')).lower()
@@ -42,24 +42,19 @@ def ecs_bounce(df,user_id,result):
     else:
         result[user_id] = list(selected)
 
-    return df.copy()[mask].reset_index(drop = True),df.drop(selected).reset_index(drop=True)
+    return df.copy()[mask].reset_index(drop=True), df.drop(selected).reset_index(drop=True)
 
-def Ecs_Classifier(args):
-    df = args[0]
-    result = args[1]
-    user_id = args[2]
-    max_timestamp = args[3]
-    new = args[4]
+
+def Ecs_Classifier(df, result, user_id, max_timestamp, new):
     logger = logger_1("Ecs function", user_id)
     logger.info("Ecs function started")
 
-    ecs_messages,df = ecs_bounce(df = df, result = result , user_id = user_id)
+    ecs_messages, df = ecs_bounce(df=df, result=result, user_id=user_id)
 
     if ecs_messages.empty:
-        ecs_messages = pd.DataFrame(columns = ['body', 'timestamp', 'sender', 'read'])
+        ecs_messages = pd.DataFrame(columns=['body', 'timestamp', 'sender', 'read'])
 
-
-    data = convert_json(ecs_messages,user_id,max_timestamp)
+    data = convert_json(ecs_messages, user_id, max_timestamp)
 
     try:
         logger.info('making connection with db')
@@ -73,10 +68,10 @@ def Ecs_Classifier(args):
 
     if new:
         logger.info("New user checked")
-        db.ecs_msgs.update({"cust_id": int(user_id)},{"cust_id": int(user_id), 'timestamp': data['timestamp'],
-                                                    'modified_at': str(
-                                                    datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                    "sms": data['sms']} , upsert=True)
+        db.ecs_msgs.update({"cust_id": int(user_id)}, {"cust_id": int(user_id), 'timestamp': data['timestamp'],
+                                                       'modified_at': str(
+                                                           datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                       "sms": data['sms']}, upsert=True)
         logger.info("All ecs messages of new user inserted successfully")
     else:
         logger.info("Old User checked")
@@ -85,7 +80,7 @@ def Ecs_Classifier(args):
             logger.info("ecs sms of old user updated successfully")
         db.legal_msgs.update_one({"cust_id": int(user_id)}, {
             "$set": {"timestamp": max_timestamp, 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
-                                   upsert=True)
+                                 upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True, 'result': result}
+    return {'status': True}

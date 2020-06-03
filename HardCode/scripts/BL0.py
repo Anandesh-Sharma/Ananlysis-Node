@@ -1,5 +1,3 @@
-from HardCode.scripts.cibil.cibil_analysis import cibil_analysis
-from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
 from HardCode.scripts.rejection.rejected import check_rejection
 from HardCode.scripts.loan_analysis.preprocessing import preprocessing
 from HardCode.scripts.classifiers.Classifier import classifier
@@ -10,8 +8,8 @@ from HardCode.scripts.parameters_for_bl0.parameters_updation import parameters_u
 from HardCode.scripts.loan_analysis.current_open_details import get_current_open_details
 from HardCode.scripts.loan_analysis.loan_rejection import get_rejection_count
 from HardCode.scripts.model_0.scoring.generate_total_score import get_score
+from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
 from HardCode.scripts.Util import conn, logger_1
-import multiprocessing
 import warnings
 from datetime import datetime
 import pytz
@@ -208,13 +206,15 @@ def bl0(**kwargs):
             msg = "Rule engine failed due to some reason-" + rule_engine['message']
             logger.error(msg)
             exception_feeder(client=client, user_id=user_id, msg=msg)
-            rule_engine = {"status": True, "cust_id": user_id, "result": False}
+            rule_engine = {"result": False}
     except BaseException as e:
         msg = "Rule engine failed due to some reason-" + str(e)
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id, msg=msg)
-        rule_engine = {"status": False, "cust_id": user_id, "result": False, "message": str(e)}
-
+        rule_engine = {"result": False}
     logger.info('Rule engine complete')
 
-    return rule_engine
+    client.analysis.result_bl0.update_one({'cust_id': user_id}, {"$push": {
+        "result": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "result": rule_engine['result']}}},
+                                          upsert=True)
+    return rule_engine['result']

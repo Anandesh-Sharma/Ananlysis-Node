@@ -57,6 +57,7 @@ def get_confirm_cc_messages(data):
         r'request\sto\sincrease.*credit\slimit.*initiated',
         r'convert.*(?:transaction|trxn|txn)\sof\s(?:rs\.?|inr)\s?([0-9]+[.]?[0-9]+).*into.*emi[s]?',
         r'transfer.*outstanding\scredit\scard.*personal\sloan',
+        r'(?:sbidrcard|sbi\s?card).*used\sfor\s(?:rs\.?|inr)\s?([0-9,]+[.][0-9]+)'
     ]
     cc_list = []
     credit_card_pattern_1 = "credit card"
@@ -83,18 +84,12 @@ def get_confirm_cc_messages(data):
     return cc_confirm_index_list
 
 
-def credit(args):
-    df = args[0]
-    result = args[1]
-    user_id = args[2]
-    max_timestamp = args[3]
-    new = args[4]
+def credit(df, result, user_id, max_timestamp, new):
     logger = logger_1("credit card", user_id)
     # logger.info("Removing credit card promotional sms")
     # data_not_needed = get_creditcard_promotion(df)
     logger.info("Extracting Credit card sms")
     data_needed = get_confirm_cc_messages(df)
-
     if user_id in result.keys():
         a = result[user_id]
         a.extend(list(data_needed))
@@ -139,4 +134,4 @@ def credit(args):
                                  upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True, 'result': result}
+    return {'status': True}

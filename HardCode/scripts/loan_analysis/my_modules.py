@@ -16,6 +16,7 @@ def sms_header_matcher(header):
             pass
     return header
 
+
 def remove_numerical_header(data):
     li = []
     try:
@@ -25,8 +26,8 @@ def remove_numerical_header(data):
                     li.append(i)
             except:
                 pass
-        data.drop(li, axis = 0, inplace = True)
-        data.reset_index(drop = True, inplace = True)
+        data.drop(li, axis=0, inplace=True)
+        data.reset_index(drop=True, inplace=True)
     except BaseException as e:
         print(e)
     return data
@@ -76,6 +77,7 @@ def grouping(data):
     group_by_sender = data.groupby('Sender-Name')
     return group_by_sender
 
+
 def is_disbursed(message, app):
     """
     This funtion checks if the message is of disbursal or not.
@@ -88,15 +90,12 @@ def is_disbursed(message, app):
     """
     patterns = loan_apps_regex[app]['disbursal']
 
-
     for pattern in patterns:
         matcher = re.search(pattern, message)
         if matcher:
             return True
     else:
         return False
-
-
 
 
 def disbursed_amount_extract(message, app):
@@ -122,14 +121,14 @@ def is_closed(message, app):
         bool            : True if the message is of closed else False
 
     """
-    
+
     patterns = loan_apps_regex[app]['closed']
     for pattern in patterns:
         matcher = re.search(pattern, message)
         if matcher:
             return True
     else:
-        return False 
+        return False
 
 
 def closed_amount_extract(message, app):
@@ -152,7 +151,7 @@ def is_due(message, app):
         if matcher:
             return True
     else:
-        return False 
+        return False
 
 
 def due_date_extract(message):
@@ -195,7 +194,6 @@ def due_amount_extract(message, app):
 
 
 def is_overdue(message, app):
-
     patterns = loan_apps_regex[app]['overdue']
     for pattern in patterns:
         matcher = re.search(pattern, message)
@@ -203,6 +201,7 @@ def is_overdue(message, app):
             return True
     else:
         return False
+
 
 def overdue_days_extract(message, app):
     patterns = loan_apps_regex[app]['overdue']
@@ -214,6 +213,7 @@ def overdue_days_extract(message, app):
             except:
                 days = -1
     return days
+
 
 def extract_amount_from_overdue_message(message, app):
     amount = -1
@@ -258,32 +258,33 @@ def is_rejected(message, app):
     else:
         return False
 
+
 def extract_amount(message):
     amount = 0
     patterns = [
-    r'total\srepayment\s?(?:of)?\s(?:rs\.?|inr)([0-9,]+[.]?[0-9]+)',
-    r'(?:loan|payment[s]?)\s?(?:of)?\s([0-9,]+[.]?[0-9]+)',
-    r'amount\srepayable\sis\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
-    r'(?:inr\.?|rs\.?)\s?\s?([0-9,]+[.]?[0-9]+)',
-    r'\s([0-9,]+[.]?[0-9]+){4-5}\s',
-    r'\s([0-9]{4,5})\s',
-    r'([0-9,]+[.]?[0-9]+)\s?(?:rupees|inr)',
-    r'(?:amount|amt|repay)\s?(?:is)?\s([0-9,]+[.?][0-9]+)',
+        r'total\srepayment\s?(?:of)?\s(?:rs\.?|inr)([0-9,]+[.]?[0-9]+)',
+        r'(?:loan|payment[s]?)\s?(?:of)?\s([0-9,]+[.]?[0-9]+)',
+        r'amount\srepayable\sis\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
+        r'(?:inr\.?|rs\.?)\s?\s?([0-9,]+[.]?[0-9]+)',
+        r'\s([0-9,]+[.]?[0-9]+){4-5}\s',
+        r'\s([0-9]{4,5})\s',
+        r'([0-9,]+[.]?[0-9]+)\s?(?:rupees|inr)',
+        r'(?:amount|amt|repay)\s?(?:is)?\s([0-9,]+[.?][0-9]+)',
     ]
     not_pattern_1 = r'free\scoupon\sof\s[0-9,]+[.]?[0-9]+\s?(?:rupees|inr)'
     not_pattern_2 = r'[0-9,]+[.]?[0-9]+\s?(?:rupees|inr)\scoupon'
 
-
     for pattern in patterns:
         matcher = re.search(pattern, message)
         if matcher:
-            not_matcher_1 = re.search(not_pattern_1,message)
-            not_matcher_2 = re.search(not_pattern_2,message)
+            not_matcher_1 = re.search(not_pattern_1, message)
+            not_matcher_2 = re.search(not_pattern_2, message)
             if not (not_matcher_1 or not_matcher_2):
                 amount = matcher.group(1)
                 amount = amount.replace(',', '')
                 break
     return float(amount)
+
 
 def days_extract(message):
     days = -1
@@ -291,14 +292,15 @@ def days_extract(message):
     pattern_not_1 = r'get\sextension\sof\s[0-9]+\s?day[s]?'
 
     for pattern in patterns:
-        matcher = re.search(pattern,message)
+        matcher = re.search(pattern, message)
         if matcher:
-            matcher_not_1 = re.search(pattern_not_1,message)
+            matcher_not_1 = re.search(pattern_not_1, message)
             if not matcher_not_1:
                 days = matcher.group(1)
                 days = int(days)
 
     return days
+
 
 def date_extract(message):
     date = -1
@@ -321,11 +323,12 @@ def date_extract(message):
     ]
 
     for pattern in patterns:
-        matcher = re.search(pattern,message)
+        matcher = re.search(pattern, message)
         if matcher:
             date = matcher.group(1)
 
     return date
+
 
 def fetch_info(df):
     df['amount'] = [0] * df.shape[0]
@@ -355,21 +358,3 @@ def fetch_info(df):
         else:
             df['amount'][i] = extract_amount(message)
     return df
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

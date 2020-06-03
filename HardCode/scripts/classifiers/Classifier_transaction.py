@@ -1,7 +1,6 @@
 import re
 from datetime import datetime
 import pytz
-import threading
 from HardCode.scripts.Util import conn, convert_json, logger_1
 import warnings
 
@@ -23,22 +22,22 @@ def check_account_number(message):
     return False
 
 
-def cleaning(args):
-    df = args[0]
-    result = args[1]
-    user_id = args[2]
-    max_timestamp = args[3]
-    new = args[4]
-
+def cleaning(df, result, user_id, max_timestamp, new):
     logger = logger_1("cleaning", user_id)
     transaction_patterns = ['debited', 'credited', "inft"]
 
     required_rows = []
     internet_banking = []
+    spcl_salary = []
     withdraw = []
     pattern_inb_wd = [" inb txn ", "w/d@", "w/d at"]
     for index, row in df.iterrows():
         body = row["body"].lower()
+        sender = row["sender"].lower()[3:]
+        if sender in ['cbsbnk', 'dopbnk', 'csisms']:
+            if ' credit ' in body:
+                spcl_salary.append(index)
+                continue
         match = True
         for pattern in transaction_patterns:
             matcher = re.search(pattern, body)
@@ -272,6 +271,7 @@ def cleaning(args):
     logger.info("important loan messages saved")
     required_rows.extend(internet_banking)
     required_rows.extend(withdraw)
+    required_rows.extend(spcl_salary)
     if user_id in result.keys():
         a = result[user_id]
         a.extend(list(required_rows))
@@ -320,4 +320,4 @@ def cleaning(args):
                                   upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True, 'result': result}
+    return {'status': True}

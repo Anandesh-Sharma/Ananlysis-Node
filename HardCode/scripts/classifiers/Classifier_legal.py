@@ -1,11 +1,11 @@
 import re
 import pandas as pd
-from HardCode.scripts.Util import conn,logger_1,convert_json
+from HardCode.scripts.Util import conn, logger_1, convert_json
 from datetime import datetime
 import pytz
 
 
-def legal(df,user_id,result):
+def legal(df, user_id, result):
     logger = logger_1("legal_classifier", user_id)
     logger.info("legal started")
     mask = []
@@ -84,7 +84,8 @@ def legal(df,user_id,result):
         message = row['body'].lower()
         for pattern in patterns:
             matcher = re.search(pattern, message)
-            if matcher :
+            matcher1 = re.search('avoid\slegal\saction', message)
+            if matcher and not matcher1:
                 mask.append(True)
                 selected.append(i)
                 break
@@ -99,25 +100,19 @@ def legal(df,user_id,result):
         result[user_id] = list(selected)
 
     logger.info("loop ended")
-    return df[mask].reset_index(drop=True),df.drop(selected).reset_index(drop=True)
+    return df[mask].reset_index(drop=True), df.drop(selected).reset_index(drop=True)
 
-def legal_Classifier(args):
-    df = args[0]
-    result = args[1]
-    user_id = args[2]
-    max_timestamp = args[3]
-    new = args[4]
+
+def legal_Classifier(df, result, user_id, max_timestamp, new):
     logger = logger_1("Legal function", user_id)
     logger.info("Legal function started")
 
-    legal_messages,df = legal(df = df, result = result , user_id = user_id)
-
+    legal_messages, df = legal(df=df, result=result, user_id=user_id)
 
     if legal_messages.empty:
-        legal_messages = pd.DataFrame(columns = ['body', 'timestamp', 'sender', 'read'])
+        legal_messages = pd.DataFrame(columns=['body', 'timestamp', 'sender', 'read'])
 
-
-    data = convert_json(legal_messages,user_id,max_timestamp)
+    data = convert_json(legal_messages, user_id, max_timestamp)
 
     try:
         logger.info('making connection with db')
@@ -131,10 +126,10 @@ def legal_Classifier(args):
 
     if new:
         logger.info("New user checked")
-        db.legal_msgs.update({"cust_id": int(user_id)},{"cust_id": int(user_id), 'timestamp': data['timestamp'],
-                                                    'modified_at': str(
-                                                    datetime.now(pytz.timezone('Asia/Kolkata'))),
-                                                    "sms": data['sms']} , upsert=True)
+        db.legal_msgs.update({"cust_id": int(user_id)}, {"cust_id": int(user_id), 'timestamp': data['timestamp'],
+                                                         'modified_at': str(
+                                                             datetime.now(pytz.timezone('Asia/Kolkata'))),
+                                                         "sms": data['sms']}, upsert=True)
         logger.info("All legal messages of new user inserted successfully")
     else:
         logger.info("Old User checked")
@@ -143,7 +138,7 @@ def legal_Classifier(args):
             logger.info("legal sms of old user updated successfully")
         db.legal_msgs.update_one({"cust_id": int(user_id)}, {
             "$set": {"timestamp": max_timestamp, 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}},
-                                   upsert=True)
+                                 upsert=True)
         logger.info("Timestamp of User updated")
     client.close()
-    return {'status': True, 'result': result}
+    return {'status': True}

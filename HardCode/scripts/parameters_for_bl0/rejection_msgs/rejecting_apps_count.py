@@ -24,4 +24,3 @@ def get_app_rejection_count(cust_id):
         return normal_apps_rejection_count, premium_apps_rejection_count
     except BaseException as e:
         return normal_apps_rejection_count, premium_apps_rejection_count
-

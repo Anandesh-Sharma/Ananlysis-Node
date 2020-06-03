@@ -1,4 +1,3 @@
-import numpy as np
 from HardCode.scripts.loan_analysis.my_modules import *
 from HardCode.scripts.Util import logger_1, conn
 from datetime import datetime
