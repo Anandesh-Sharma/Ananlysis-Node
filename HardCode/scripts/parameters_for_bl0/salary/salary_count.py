@@ -1,6 +1,4 @@
 from HardCode.scripts.Util import conn
-from datetime import datetime
-import pytz
 from HardCode.scripts.salary_analysis.monthly_salary_analysis import salary_main
 
 
@@ -24,6 +22,7 @@ def salary(user_id):
 
     return dict_of_sal
 
+
 def avg_sal(user_id):
     """
 
@@ -39,6 +38,7 @@ def avg_sal(user_id):
             list_of_sal.append(dict_of_sal[i]['salary'])
             avg_sal = sum(list_of_sal) / len(list_of_sal)
     return avg_sal
+
 
 def max_sal(user_id):
     """
@@ -56,6 +56,7 @@ def max_sal(user_id):
             print(f"max_sal: {list_of_sal}")
             max_sal = max(list_of_sal)
     return max_sal
+
 
 def last_sal(user_id):
     """
@@ -76,25 +77,22 @@ def last_sal(user_id):
                 break
     return last_sal
 
+
 def quarantine_sal(user_id):
     connect = conn()
-    salary = connect.analysis.salary.find_one({'cust_id':user_id})
+    salary = connect.analysis.salary.find_one({'cust_id': user_id})
     sal = -1
     try:
         if salary:
-            if "May 2020" in list(salary['salary'].keys()):
-                sal = salary['salary']['May']['salary']
-            elif "April 2020" in list(salary['salary'].keys()):
-                sal = salary['salary']['April']['salary']
-            else:
-                sal = -1
+            month_list = list(salary['salary'].keys())
+            if "April 2020" in month_list:
+                index = month_list.index("April 2020")
+                new_month_list = month_list[index:]
+                for i in new_month_list:
+                    if salary['salary'][i]['salary'] > sal:
+                        sal = salary['salary'][i]['salary']
         connect.close()
         return sal
     except:
         connect.close()
         return sal
-
-
-
-
-
