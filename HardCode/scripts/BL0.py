@@ -217,5 +217,5 @@ def bl0(**kwargs):
         rule_engine = {"result":False}
     logger.info('Rule engine complete')
 
-    client.analysis.result_bl0.insert_one({"cust_id":user_id,'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),"result":rule_engine['result']})
+    client.analysis.result_bl0.update_one({'cust_id': user_id}, {"$push": {"result":{'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),"result":rule_engine['result']}}}, upsert=True)
     return rule_engine['result']

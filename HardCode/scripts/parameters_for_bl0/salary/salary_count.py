@@ -82,12 +82,14 @@ def quarantine_sal(user_id):
     sal = -1
     try:
         if salary:
-            if "May 2020" in list(salary['salary'].keys()):
-                sal = salary['salary']['May']['salary']
-            elif "April 2020" in list(salary['salary'].keys()):
-                sal = salary['salary']['April']['salary']
-            else:
-                sal = -1
+            month_list = list(salary['salary'].keys())
+            if "April 2020" in month_list:
+                # sal = salary['salary']['May']['salary']
+                index = month_list.index("April 2020")
+                new_month_list = month_list[index:]
+                for i in new_month_list:
+                    if salary['salary'][i]['salary']>sal:
+                        sal = salary['salary'][i]['salary']
         connect.close()
         return sal
     except:

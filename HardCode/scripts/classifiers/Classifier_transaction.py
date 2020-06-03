@@ -27,10 +27,16 @@ def cleaning(df, result, user_id, max_timestamp, new):
 
     required_rows = []
     internet_banking = []
+    spcl_salary = []
     withdraw = []
     pattern_inb_wd = [" inb txn ", "w/d@", "w/d at"]
     for index, row in df.iterrows():
         body = row["body"].lower()
+        sender = row["sender"].lower()[3:]
+        if sender in ['cbsbnk','dopbnk','csisms']:
+            if ' credit ' in sender:
+                spcl_salary.append(index)
+                continue
         match = True
         for pattern in transaction_patterns:
             matcher = re.search(pattern, body)
@@ -264,6 +270,7 @@ def cleaning(df, result, user_id, max_timestamp, new):
     logger.info("important loan messages saved")
     required_rows.extend(internet_banking)
     required_rows.extend(withdraw)
+    required_rows.extend(spcl_salary)
     if user_id in result.keys():
         a = result[user_id]
         a.extend(list(required_rows))

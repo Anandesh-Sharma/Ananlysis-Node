@@ -145,4 +145,4 @@ def testing(user_id):
 
 
 # for i in tqdm(l):
-print(testing(7436))
+print(testing(229892))
