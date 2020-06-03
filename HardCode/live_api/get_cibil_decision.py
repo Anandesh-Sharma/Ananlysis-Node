@@ -16,7 +16,7 @@ def cibil_decision(request):
         return Response({'error': 'INVALID CHECKSUM!!!'}, 400)
     user_id = request.data.get('user_id')
     try:
-        return Response({'user_id': user_id, 'cibil_decision': False})
+        return Response({'status': True, 'cust_id': user_id, 'result': False, 'result_type': 'before_cibil'})
     except FileNotFoundError:
         return Response({
             'error': 'Results awaited for ' + str(user_id) + '!!'

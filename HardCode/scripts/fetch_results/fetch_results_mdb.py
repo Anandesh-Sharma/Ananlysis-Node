@@ -76,8 +76,11 @@ def pre_rejection(user_id):
     rej_result = client.analysis.scoring_model.find_one({'cust_id': user_id})
     if rej_result:
         if len(rej_result['result'][-1]['rejection_reasons']) == 0:
-            return {'status': True, 'rejection_status': False, 'message': " no rejection reasons found"}
+            return {'status': True, 'result': False, 'message': "no rejection reasons found",
+                    'result_type': "before_kyc", 'cust_id': user_id}
         else:
-            return {'status': True, 'rejection_status': True, 'message': "rejection reasons found"}
+            return {'status': True, 'result': True, 'message': "rejection reasons found", "result_type": "before_kyc",
+                    'cust_id': user_id}
     else:
-        return {'status': False, 'message': "Calm down! We're working on it"}
+        return {'status': False, 'message': "Calm down! We're working on it", 'result_type': 'before_kyc',
+                'cust_id': user_id}

@@ -206,15 +206,15 @@ def bl0(**kwargs):
             msg = "Rule engine failed due to some reason-" + rule_engine['message']
             logger.error(msg)
             exception_feeder(client=client, user_id=user_id, msg=msg)
-            rule_engine = {"result": False}
+            rule_engine = {"status": False, "cust_id": user_id, "result": False, "result_type": "before_loan"}
     except BaseException as e:
         msg = "Rule engine failed due to some reason-" + str(e)
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id, msg=msg)
-        rule_engine = {"result": False}
+        rule_engine = {"status": False, "cust_id": user_id, "result": False, "result_type": "before_loan"}
     logger.info('Rule engine complete')
 
     client.analysis.result_bl0.update_one({'cust_id': user_id}, {"$push": {
         "result": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "result": rule_engine['result']}}},
                                           upsert=True)
-    return rule_engine['result']
+    return rule_engine

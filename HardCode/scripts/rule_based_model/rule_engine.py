@@ -82,5 +82,5 @@ def rule_engine_main(user_id):
         else:
             print("rejected by rule engine")
     except BaseException as e:
-        return {"status": False, "message": str(e)}
-    return {"status": True, "result": result_pass}
+        return {"status": False, "cust_id": user_id, "result": False, "result_type": "before_loan"}
+    return {"status": False, "cust_id": user_id, "result": result_pass, "result_type": "before_loan"}
