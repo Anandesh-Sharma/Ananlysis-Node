@@ -202,6 +202,7 @@ def bl0(**kwargs):
     # >>=>> Rule Engine
     try:
         rule_engine = rule_engine_main(user_id)
+        print(rule_engine)
         if not rule_engine['status']:
             msg = "Rule engine failed due to some reason-" + rule_engine['message']
             logger.error(msg)
@@ -214,7 +215,4 @@ def bl0(**kwargs):
         rule_engine = {"status": False, "cust_id": user_id, "result": False, "result_type": "before_loan"}
     logger.info('Rule engine complete')
 
-    client.analysis.result_bl0.update_one({'cust_id': user_id}, {"$push": {
-        "result": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), "result": rule_engine['result']}}},
-                                          upsert=True)
     return rule_engine

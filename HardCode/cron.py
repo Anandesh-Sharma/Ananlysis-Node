@@ -48,7 +48,10 @@ def parallel_proccess_user_records(user_id):
         }
 
     response_bl0['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
-    conn().analysisresult.bl0.insert_one(response_bl0)
+    temp_response_bl0 = response_bl0
+    del temp_response_bl0["cust_id"]
+    conn().analysisresult.bl0.update_one({'cust_id': int(user_id)}, {"$push": {
+        "result": temp_response_bl0}}, upsert=True)
 
     print(requests.post(API_ENDPOINT, data=response_bl0,
                         headers={'CHECKSUMHASH': Checksum.generate_checksum(response_bl0, CHECKSUM_KEY)}).json())
