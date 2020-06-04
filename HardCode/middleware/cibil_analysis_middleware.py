@@ -11,6 +11,7 @@ from analysisnode.settings import CHECKSUM_KEY, PROCESSING_DOCS
 @api_view(['POST'])
 @permission_classes((AllowAny,))
 def get_cibil_analysis(request):
+    print(request.data)
     try:
         response = request.data
         try:
@@ -25,7 +26,7 @@ def get_cibil_analysis(request):
             del response['all_loan_amount']
         except:
             pass
-        if not verify_checksum(response, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
+        if not verify_checksum({'user_id': int(request.data.get('user_id'))}, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
             raise ValueError
     except (AttributeError, ValueError, KeyError):
         return Response({'error': 'INVALID CHECKSUM!!!'}, 400)

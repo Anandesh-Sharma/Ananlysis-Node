@@ -28,4 +28,3 @@ threadedprocess==0.0.5
 tqdm==4.43.0
 urllib3==1.25.8
 xmltodict==0.12.0
-threadedprocess~=0.0.5

@@ -202,7 +202,6 @@ def bl0(**kwargs):
     # >>=>> Rule Engine
     try:
         rule_engine = rule_engine_main(user_id)
-        print(rule_engine)
         if not rule_engine['status']:
             msg = "Rule engine failed due to some reason-" + rule_engine['message']
             logger.error(msg)
