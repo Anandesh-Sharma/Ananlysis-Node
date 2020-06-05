@@ -44,7 +44,7 @@ def preprocessing(cust_id):
                         'closed_date': -1,
                         'loan_duration': -1,
                         'loan_disbursed_amount': -1,
-                        'due_message_date' : -1,
+                        'due_date' : -1,
                         'loan_due_amount': -1,
                         'loan_closed_amount' : -1,
                         'overdue_days' : -1,
