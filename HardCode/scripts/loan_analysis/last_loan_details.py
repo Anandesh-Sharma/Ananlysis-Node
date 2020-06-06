@@ -1,4 +1,5 @@
 #import numpy as np
+import pandas as pd
 from HardCode.scripts.loan_analysis.my_modules import sms_header_splitter, grouping, is_disbursed, is_closed, is_due, is_overdue, is_rejected
 from HardCode.scripts.loan_analysis.get_loan_data import fetch_user_data
 from HardCode.scripts.loan_analysis.loan_app_regex_superset import loan_apps_regex, bank_headers
@@ -27,11 +28,13 @@ def get_final_loan_details(cust_id):
     loan_data = fetch_user_data(cust_id)
     sms_header_splitter(loan_data)
     loan_data_grouped = grouping(loan_data)
-
+    extra_data = connect.messagecluster.extra.find_one({"cust_id" : cust_id})
+    extra_data = pd.DataFrame(extra_data['sms'])
+    sms_header_splitter(extra_data)
+    extra_data_grouped = grouping(extra_data)
     report = {}
     try:
         current_date = datetime.now()
-        start_date = datetime.strptime("2020-03-01 00:00:00", "%Y-%m-%d %H:%M:%S")
         for app, data in loan_data_grouped:
             app_name = app
             data = data.sort_values(by = 'timestamp')
@@ -47,9 +50,8 @@ def get_final_loan_details(cust_id):
                 }
                 last_message = str(data['body'].iloc[-1]).lower()
                 last_message_date = datetime.strptime(str(data['timestamp'].iloc[-1]), "%Y-%m-%d %H:%M:%S")
-                # report["message"] = (last_message)
                 category = data["category"].iloc[-1]
-                if last_message_date > start_date:
+                if (current_date - last_message_date).days < 30:
                     if category == "disbursed":
                         if (current_date - last_message_date).days < 15:
                             r["date"] = str(data['timestamp'].iloc[-1])
@@ -78,10 +80,22 @@ def get_final_loan_details(cust_id):
                             r["category"] = True
                             r["message"] = last_message
                     elif category == "overdue":
-                        r["date"] = str(data['timestamp'].iloc[-1])
-                        r["status"] = "Last msg from particular app was overdue then no msg retrieved from the same app (means msg deleted)"
-                        r["category"] = True
-                        r["message"] = last_message
+                        for sender, msg_data in extra_data_grouped:
+                            if sender == app_name:
+                                if not msg_data.empty:
+                                    msg_data = msg_data.sort_values(by = 'timestamp')
+                                    msg_data = msg_data.reset_index(drop = True)
+                                    last_extra_msg_date = datetime.strptime(str(msg_data['timestamp'].iloc[-1]), "%Y-%m-%d %H:%M:%S")
+                                    if last_extra_msg_date > last_message_date:
+                                        r["date"] = str(data['timestamp'].iloc[-1])
+                                        r["status"] = "after overdue msg, promotional msg found and loan is closed by user"
+                                        r["category"] = False
+                                        r["message"] = last_message
+                                    else:
+                                        r["date"] = str(data['timestamp'].iloc[-1])
+                                        r["status"] = "Last msg from particular app was overdue then no msg retrieved from the same app (means msg deleted)"
+                                        r["category"] = True
+                                        r["message"] = last_message
                     elif category == "rejected":
                         r["date"] = str(data['timestamp'].iloc[-1])
                         r["status"] = "user was rejected by this loan app"
@@ -104,4 +118,3 @@ def get_final_loan_details(cust_id):
         connect.close()
     finally:
         return report
-
