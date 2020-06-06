@@ -1,26 +1,49 @@
+from HardCode.scripts.Util import conn,logger_1
 
-from HardCode.scripts.parameters_for_bl0.profile_info import get_profile_info
+def loan_app_percentage(**kwargs):
+    """This code gives the loan app percentage in a userl's mobile.
 
+    Parameters:
+        cust_id(int)    : id of the user
+        app_data(dict)  : a dictionary of the apps user contains and the category of the apps.
 
-def loan_app_count(user_id):
+    Returns:
+        dict : containing-
+            status(bool)        : whether code ran successfully
+            message(string)     : containing success of error.
+            percentage(float)   : if successfull the percentage of app(0-1).
     """
-    :returns percentage of loan apps installed
-    :rtype: float
-    """
-    age,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation,no_of_contacts = get_profile_info(user_id)
+    user_id = kwargs.get("user_id")
+    app_data = kwargs.get("app_data")
+    logger = logger_1('loan app count', user_id)
+    logger.info("function started")
     percentage_of_loan_apps = 0
-    try:
-        if app_data:
-            d = []
+    if app_data:
+        logger.info("app data function")
+        try:
+            count=0
             for i in app_data:
                 # TODO >== prepare a list of loan apps and
                 #          check from that instead of using finance keyword
 
                 if i['app__category'] == 'FINANCE':
-                    d.append(i)
-
-            percentage_of_loan_apps = round((len(d) / len(app_data)),2)
-        return percentage_of_loan_apps
-    except BaseException as e:
-
-        return percentage_of_loan_apps
+                    count+=1
+            percentage_of_loan_apps = count / len(app_data)
+            logger.info("app data function")
+        except BaseException as e:
+            msg = f"Error in loan app count validation : {e}"
+            logger.error(msg)
+            return {
+            "status":False,
+            "message":msg,
+            "percentage":0
+            }
+    else:
+        msg = "app data not found"
+        logger.error(msg)
+        return {
+            "status":False,
+            "message":"app data not found",
+            "percentage":0
+        }
+    return {"status":True,"message":"success","percentage":round(percentage_of_loan_apps, 2)}
