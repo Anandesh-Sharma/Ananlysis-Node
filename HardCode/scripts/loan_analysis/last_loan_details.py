@@ -1,10 +1,14 @@
-from HardCode.scripts.loan_analysis.my_modules import sms_header_splitter, grouping
+#import numpy as np
+import pandas as pd
+from HardCode.scripts.loan_analysis.my_modules import sms_header_splitter, grouping, is_disbursed, is_closed, is_due, is_overdue, is_rejected
 from HardCode.scripts.loan_analysis.get_loan_data import fetch_user_data
 from HardCode.scripts.loan_analysis.loan_app_regex_superset import loan_apps_regex, bank_headers
+# from HardCode.scripts.loan_analysis.current_open_details import get_current_open_details
 from HardCode.scripts.Util import logger_1, conn
 from datetime import datetime
 import pytz
 import warnings
+#from pprint import pprint
 
 warnings.filterwarnings('ignore')
 
@@ -24,29 +28,30 @@ def get_final_loan_details(cust_id):
     loan_data = fetch_user_data(cust_id)
     sms_header_splitter(loan_data)
     loan_data_grouped = grouping(loan_data)
-
+    extra_data = connect.messagecluster.extra.find_one({"cust_id" : cust_id})
+    extra_data = pd.DataFrame(extra_data['sms'])
+    sms_header_splitter(extra_data)
+    extra_data_grouped = grouping(extra_data)
     report = {}
     try:
         current_date = datetime.now()
-        start_date = datetime.strptime("2020-03-01 00:00:00", "%Y-%m-%d %H:%M:%S")
         for app, data in loan_data_grouped:
             app_name = app
-            data = data.sort_values(by='timestamp')
-            data = data.reset_index(drop=True)
+            data = data.sort_values(by = 'timestamp')
+            data = data.reset_index(drop = True)
             if app not in list(loan_apps_regex.keys()) and app not in bank_headers:
                 app = 'OTHER'
             if not data.empty and app not in bank_headers:
                 r = {
-                    "date": -1,
-                    "status": "",
-                    "category": False,
-                    "message": ""
+                "date" : -1,
+                "status" : "",
+                "category" : False,
+                "message" : ""
                 }
                 last_message = str(data['body'].iloc[-1]).lower()
                 last_message_date = datetime.strptime(str(data['timestamp'].iloc[-1]), "%Y-%m-%d %H:%M:%S")
-                # report["message"] = (last_message)
                 category = data["category"].iloc[-1]
-                if last_message_date > start_date:
+                if (current_date - last_message_date).days < 30:
                     if category == "disbursed":
                         if (current_date - last_message_date).days < 15:
                             r["date"] = str(data['timestamp'].iloc[-1])
@@ -55,8 +60,7 @@ def get_final_loan_details(cust_id):
                             r["message"] = last_message
                         else:
                             r["date"] = str(data['timestamp'].iloc[-1])
-                            r[
-                                "status"] = "last loan message was disbursed message and than no messgage even after 15 days (means msg deleted)over"
+                            r["status"] = "last loan message was disbursed message and than no messgage even after 15 days (means msg deleted)over"
                             r["category"] = True
                             r["message"] = last_message
                     elif category == "closed":
@@ -72,16 +76,26 @@ def get_final_loan_details(cust_id):
                             r["message"] = last_message
                         else:
                             r["date"] = str(data['timestamp'].iloc[-1])
-                            r[
-                                "status"] = "Last msg from particular app was due then no msg retrieved from the same app (means msg deleted)"
+                            r["status"] = "Last msg from particular app was due then no msg retrieved from the same app (means msg deleted)"
                             r["category"] = True
                             r["message"] = last_message
                     elif category == "overdue":
-                        r["date"] = str(data['timestamp'].iloc[-1])
-                        r[
-                            "status"] = "Last msg from particular app was overdue then no msg retrieved from the same app (means msg deleted)"
-                        r["category"] = True
-                        r["message"] = last_message
+                        for sender, msg_data in extra_data_grouped:
+                            if sender == app_name:
+                                if not msg_data.empty:
+                                    msg_data = msg_data.sort_values(by = 'timestamp')
+                                    msg_data = msg_data.reset_index(drop = True)
+                                    last_extra_msg_date = datetime.strptime(str(msg_data['timestamp'].iloc[-1]), "%Y-%m-%d %H:%M:%S")
+                                    if last_extra_msg_date > last_message_date:
+                                        r["date"] = str(data['timestamp'].iloc[-1])
+                                        r["status"] = "after overdue msg, promotional msg found and loan is closed by user"
+                                        r["category"] = False
+                                        r["message"] = last_message
+                                    else:
+                                        r["date"] = str(data['timestamp'].iloc[-1])
+                                        r["status"] = "Last msg from particular app was overdue then no msg retrieved from the same app (means msg deleted)"
+                                        r["category"] = True
+                                        r["message"] = last_message
                     elif category == "rejected":
                         r["date"] = str(data['timestamp'].iloc[-1])
                         r["status"] = "user was rejected by this loan app"
@@ -98,8 +112,8 @@ def get_final_loan_details(cust_id):
         import traceback
         traceback.print_tb(e.__traceback__)
         print("error in last loan")
-        res = {'status': False, 'message': str(e),
-               'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': cust_id}
+        res= {'status': False, 'message': str(e),
+            'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': cust_id}
         connect.analysisresult.exception_bl0.insert_one(res)
         connect.close()
     finally:
