@@ -1,5 +1,8 @@
 from HardCode.scripts.Util import conn
 from HardCode.scripts.rule_based_model.phase2 import rule_quarantine
+from HardCode.scripts.parameters_for_bl0.available_balance.last_month_avbl_bal import average_balance
+from datetime import datetime
+import pytz
 
 
 # from HardCode.scripts.testing.all_repeated_ids import *
@@ -63,6 +66,24 @@ def rule_phase1(user_id):
     else:
         return True
 
+def quarantine_sal(user_id):
+    connect = conn()
+    salary = connect.analysis.salary.find_one({'cust_id': user_id})
+    sal = -1
+    try:
+        if salary:
+            month_list = list(salary['salary'].keys())
+            if "April 2020" in month_list:
+                index = month_list.index("April 2020")
+                new_month_list = month_list[index:]
+                for i in new_month_list:
+                    if salary['salary'][i]['salary'] > sal:
+                        sal = salary['salary'][i]['salary']
+        connect.close()
+        return sal
+    except:
+        connect.close()
+        return sal
 
 def rule_engine_main(user_id):
     try:
@@ -70,22 +91,33 @@ def rule_engine_main(user_id):
         reason = []
         phase2 = rule_quarantine(user_id)
         connect = conn()
-        params = connect.analysis.parameters.find_one({'cust_id': user_id})
-        connect.close()
-        salary = params['parameters'][-1]['quarantine_salary']
+        # params = connect.analysis.parameters.find_one({'cust_id': user_id})
+        salary = quarantine_sal(user_id)
         if salary > 0:
             phase1 = True
         else:
             phase1 = False
-        result_pass = phase1 and phase2
+        avl_bal = average_balance(user_id)
+        if not avl_bal['status']:
+            connect.analysis.exception_bl0.insert_one({"cust_id":user_id,"message":"error in avl bal average - "+str(avl_bal['message']),'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))})
+        if avl_bal['last_avbl_bal'] > 4000:
+            phase3 = True
+        else:
+            phase3 = False
+        result_pass = (phase1 or phase3) and phase2
         if not phase1:
             reason.append("Quarantine Salary")
         if not phase2:
             reason.append("Loan open")
+        if not phase3:
+            reason.append("avbl bal")
         if result_pass:
             print("approved")
         else:
             print("rejected by rule engine")
+        dict_update={"quarntine_salary":salary,"Last_open":phase2,"avbl_open":avl_bal['last_avbl_bal']}
+        connect.analysisresult.bl0.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}}, upsert=True)
+
     except BaseException as e:
         return {"status": False, "cust_id": user_id, "result": False, "result_type": "before_loan", 'message': str(e)}
     return {"status": True, "cust_id": user_id, "result": result_pass,"reason":reason, "result_type": "before_loan"}

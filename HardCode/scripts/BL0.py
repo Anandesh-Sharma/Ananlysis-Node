@@ -1,6 +1,6 @@
 from HardCode.scripts.update_analysis import update
 from HardCode.scripts.parameters_for_bl0.parameters_updation import parameters_updation
-from HardCode.scripts.model_0.scoring.generate_total_score import get_score
+# from HardCode.scripts.model_0.scoring.generate_total_score import get_score
 from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
 from HardCode.scripts.Util import conn, logger_1
 import warnings
@@ -36,7 +36,7 @@ def result_output_block():
 def bl0(**kwargs):
     user_id = kwargs.get('user_id')
     sms_json = kwargs.get('sms_json')
-    cibil_df = kwargs.get('cibil_xml')
+    # cibil_df = kwargs.get('cibil_xml')
     sms_count = len(sms_json)
 
     # ==> creating logger and checking user_id
@@ -58,6 +58,10 @@ def bl0(**kwargs):
                 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
     logger.info('connection success')
 
+    if sms_count<400:
+        dict_update={"sms_count":sms_count}
+        client.analysisresult.bl0.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}}, upsert=True)
+
     # ===> Analysis
     try:
         result = update(user_id=user_id,sms_json=sms_json)
@@ -76,17 +80,17 @@ def bl0(**kwargs):
     # ===> Analysis Complete
 
     # >>=>> Parameters Updation
-    try:
-        result_params = parameters_updation(user_id, cibil_df, sms_count)
-        if not result_params['status']:
-            msg = "Parameters updation check failed due to some reason-" + result_params['message']
-            logger.error(msg)
-            exception_feeder(client=client, user_id=user_id, msg=msg)
-    except BaseException as e:
-        msg = "Parameters updation failed due to some reason-" + str(e)
-        logger.error(msg)
-        exception_feeder(client=client, user_id=user_id, msg=msg)
-    logger.info('Parameters updation complete')
+    # try:
+    #     result_params = parameters_updation(user_id, cibil_df, sms_count)
+    #     if not result_params['status']:
+    #         msg = "Parameters updation check failed due to some reason-" + result_params['message']
+    #         logger.error(msg)
+    #         exception_feeder(client=client, user_id=user_id, msg=msg)
+    # except BaseException as e:
+    #     msg = "Parameters updation failed due to some reason-" + str(e)
+    #     logger.error(msg)
+    #     exception_feeder(client=client, user_id=user_id, msg=msg)
+    # logger.info('Parameters updation complete')
 
     # # >>=>> Scoring Model
     # try:
