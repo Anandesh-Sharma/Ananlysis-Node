@@ -117,7 +117,7 @@ def rule_engine_main(user_id):
             print("rejected by rule engine")
         dict_update={"quarntine_salary":salary,"Last_open":phase2,"avbl_open":avl_bal['last_avbl_bal']}
         connect.analysisresult.bl0.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}}, upsert=True)
-
+        connect.close()
     except BaseException as e:
         return {"status": False, "cust_id": user_id, "result": False, "result_type": "before_loan", 'message': str(e)}
     return {"status": True, "cust_id": user_id, "result": result_pass,"reason":reason, "result_type": "before_loan"}
