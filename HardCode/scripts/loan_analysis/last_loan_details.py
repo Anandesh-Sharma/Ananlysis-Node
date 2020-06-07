@@ -98,12 +98,10 @@ def get_final_loan_details(cust_id):
                 "category" : False,
                 "message" : ""
                 }
-                print(app)
                 last_message = str(data['body'].iloc[-1]).lower()
                 last_message_date = datetime.strptime(str(data['timestamp'].iloc[-1]), "%Y-%m-%d %H:%M:%S")
                 category = data["category"].iloc[-1]
                 if (current_date - last_message_date).days < 30:
-                    print(app)
                     if category == "disbursed":
                         status, extra_msg = is_promotional(extra_data_grouped, app, last_message_date)
                         if status:
@@ -183,7 +181,6 @@ def get_final_loan_details(cust_id):
                         r["category"] = False
                         r["message"] = last_message
                 else:
-                    print(app)
                     r["date"] = str(data['timestamp'].iloc[-1])
                     r["status"] = "no message found from more than last 30 days, hence considered as closed"
                     r["category"] = False
@@ -191,9 +188,6 @@ def get_final_loan_details(cust_id):
                 report[app] = r
         connect.close()
     except BaseException as e:
-        import traceback
-        traceback.print_tb(e.__traceback__)
-        print("error in last loan")
         res= {'status': False, 'message': str(e),
             'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': cust_id}
         connect.analysisresult.exception_bl0.insert_one(res)
