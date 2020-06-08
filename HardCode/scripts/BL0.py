@@ -19,18 +19,10 @@ def exception_feeder(**kwargs):
 
     logger.error(msg)
     r = {'status': False, 'message': msg,
-         'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+         'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id,"result_type":"before_loan"}
     if client:
         client.analysisresult.exception_bl0.insert_one(r)
     return r
-
-
-def result_output_false(msg):
-    return {'status': False, 'message': msg}
-
-
-def result_output_block():
-    return {'status': True, 'message': "success"}
 
 
 def bl0(**kwargs):
@@ -54,14 +46,15 @@ def bl0(**kwargs):
     except:
         logger.critical('error in connection')
         return {'status': False, 'message': "Error in making connection.",
-                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
+                'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),"result_type":"before_loan",'cust_id': user_id}
     logger.info('connection success')
 
     if sms_count < 400:
-        dict_update = {"status": True, "cust_id": user_id, "result": False, "reason": [f"sms_json is {sms_count}"],
-                       "result_type": "before_loan"}
+        dict_update = {"status": True, "cust_id": user_id, "result": False, "reason": [f"sms_json is {sms_count}"],}
         client.analysisresult.parameters.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}},
                                                     upsert=True)
+        dict_update["result_type"]="before_loan"
+        return dict_update
 
     # ===> Analysis
     # try:
@@ -120,5 +113,9 @@ def bl0(**kwargs):
         exception_feeder(client=client, user_id=user_id, msg=msg)
         rule_engine = {"status": False, "cust_id": user_id, "result": False, "result_type": "before_loan"}
     logger.info('Rule engine complete')
-
+    dict_update=rule_engine['dict_update']
+    del rule_engine['dict_update']
+    client.analysisresult.bl0.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}}, upsert=True)
+    client.close()
+    rule_engine[ "result_type"]="before_loan"
     return rule_engine

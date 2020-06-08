@@ -124,4 +124,4 @@ def update(**kwargs):
         exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Loan rejection complete')
 
-    return {'status': True, 'message': 'success', 'result_type': 'update_analysis'}
+    return {'status': True, 'message': 'success'}
