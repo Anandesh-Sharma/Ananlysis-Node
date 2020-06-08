@@ -1,4 +1,4 @@
-# from HardCode.scripts.update_analysis import update
+from HardCode.scripts.update_analysis import update
 # from HardCode.scripts.parameters_for_bl0.parameters_updation import parameters_updation
 # from HardCode.scripts.model_0.scoring.generate_total_score import get_score
 from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
@@ -57,20 +57,20 @@ def bl0(**kwargs):
         return dict_update
 
     # ===> Analysis
-    # try:
-    #     result = update(user_id=user_id, sms_json=sms_json)
-    #     if not result['status']:
-    #         msg = "sms updation failed due to some reason-" + result['message']
-    #         logger.error(msg)
-    #         exception_feeder(client=client, user_id=user_id,
-    #                          msg=msg)
-    #         return result_output_false(msg)
-    # except BaseException as e:
-    #     msg = "sms updation failed due to some reason-" + str(e)
-    #     logger.error(msg)
-    #     exception_feeder(client=client, user_id=user_id,
-    #                      msg=msg)
-    #     return result_output_false(msg)
+    try:
+        result = update(user_id=user_id, sms_json=sms_json)
+        if not result['status']:
+            msg = "sms updation failed due to some reason-" + result['message']
+            logger.error(msg)
+            exception_feeder(client=client, user_id=user_id,
+                             msg=msg)
+            return result_output_false(msg)
+    except BaseException as e:
+        msg = "sms updation failed due to some reason-" + str(e)
+        logger.error(msg)
+        exception_feeder(client=client, user_id=user_id,
+                         msg=msg)
+        return result_output_false(msg)
     # ===> Analysis Complete
 
     # >>=>> Parameters Updation
