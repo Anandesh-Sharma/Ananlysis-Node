@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from HardCode.views import CibilAnalysis, CibilAnalysisStatus, PreRejection, FetchParameter, SetParameter, \
-    GetCibilDecisions, FinalResults
+    GetCibilDecisions, FinalResults,FetchClassifiedMessages
 
 urlpatterns = [
     path('bl0/', csrf_exempt(CibilAnalysis.as_view())),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('bl0/set_params/', csrf_exempt(SetParameter.as_view())),
     path('bl0/get_cibil_decision/', csrf_exempt(GetCibilDecisions.as_view())),
     path('bl0/final_results/', csrf_exempt(FinalResults.as_view())),
+    path('bl0/fetch_classified_messages/', csrf_exempt(FetchClassifiedMessages.as_view())),
 ]
