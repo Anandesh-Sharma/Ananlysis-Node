@@ -12,6 +12,7 @@ from analysisnode.settings import CHECKSUM_KEY
 @api_view(['POST'])
 @permission_classes((AllowAny,))
 def final_results(request):
+    print(request.data)
     try:
 
         if not verify_checksum({'user_id': int(request.data.get('user_id'))}, CHECKSUM_KEY,
