@@ -71,6 +71,7 @@ def preprocessing(cust_id):
                                 if (due_date - disbursal_date).days < 16:
                                     # due message belongs to above disbursal message
                                     individual_loan_details['loan_due_amount'] = extract_amount(msg2)
+                                    individual_loan_details['expected_closed_date'] = date_extract(msg2)
                                     individual_loan_details["messages"].append({"date" : str(data['timestamp'][j]), "message" : str(data['body'][j])})
                                     k = j + 1
                                     while k < len(data):
@@ -226,74 +227,82 @@ def preprocessing(cust_id):
 
                     elif data["category"][i] == "due":
                         due_date = datetime.strptime(str(data['timestamp'][i]), "%Y-%m-%d %H:%M:%S")
-                        individual_loan_details['loan_due_amount'] = extract_amount(msg1)
-                        individual_loan_details['expected_closed_date'] = date_extract(msg1)
-                        individual_loan_details['due_date'] = data['timestamp'][i]
-                        individual_loan_details["messages"].append({"date" : str(data['timestamp'][i]), "message" : str(data['body'][i])})
-                        loan_count += 1
-                        j = i + 1
-                        while j < len(data):
-                            msg6 = str(data["body"][j]).lower()
-                            if data["category"][j] == "due":
-                                nxt_due_date = datetime.strptime(str(data['timestamp'][j]), "%Y-%m-%d %H:%M:%S")
-                                if (nxt_due_date - due_date).days <= 16:
-                                    i = j
-                                    if individual_loan_details['expected_closed_date'] == -1:
-                                        individual_loan_details['expected_closed_date'] = date_extract(msg6)
+                        check = False
+                        if i != 0:
+                            previous_date = datetime.strptime(str(data['timestamp'][i - 1]), "%Y-%m-%d %H:%M:%S")
+                            if data["category"][i - 1] == "closed":
+                                diff = (due_date - previous_date).seconds / 3600
+                                if diff < 24:
+                                    check = True
+                        if not check:
+                            individual_loan_details['loan_due_amount'] = extract_amount(msg1)
+                            individual_loan_details['expected_closed_date'] = date_extract(msg1)
+                            individual_loan_details['due_date'] = data['timestamp'][i]
+                            individual_loan_details["messages"].append({"date" : str(data['timestamp'][i]), "message" : str(data['body'][i])})
+                            loan_count += 1
+                            j = i + 1
+                            while j < len(data):
+                                msg6 = str(data["body"][j]).lower()
+                                if data["category"][j] == "due":
+                                    nxt_due_date = datetime.strptime(str(data['timestamp'][j]), "%Y-%m-%d %H:%M:%S")
+                                    if (nxt_due_date - due_date).days <= 16:
+                                        i = j
+                                        if individual_loan_details['expected_closed_date'] == -1:
+                                            individual_loan_details['expected_closed_date'] = date_extract(msg6)
+                                        individual_loan_details["messages"].append({"date" : str(data['timestamp'][j]), "message" : str(data['body'][j])})
+                                    else:
+                                        logger.info("loan closed because a due message found which is not belong to current loan")
+                                        FLAG = True
+                                        i = j - 1
+                                        break
+                                elif data["category"][j] == "overdue":
+                                    individual_loan_details['overdue_days'] = days_extract(msg6)
+                                    individual_loan_details['overdue_check'] += 1
                                     individual_loan_details["messages"].append({"date" : str(data['timestamp'][j]), "message" : str(data['body'][j])})
-                                else:
-                                    logger.info("loan closed because a due message found which is not belong to current loan")
-                                    FLAG = True
+                                    k = j + 1
+                                    while k < len(data):
+                                        msg7 = str(data["body"][k]).lower()
+                                        if data["category"][k] == "overdue":
+                                            individual_loan_details['overdue_days'] = days_extract(msg7)
+                                            individual_loan_details['overdue_check'] += 1
+                                            individual_loan_details["messages"].append({"date" : str(data['timestamp'][k]), "message" : str(data['body'][k])})
+                                            j = k
+                                        elif data["category"][k] == "disbursed" or data["category"][k] == "due":
+                                            j = k - 1
+                                            FLAG = True
+                                            break
+                                        elif data["category"][k] == "closed":
+                                            logger.info("closed message found")
+                                            individual_loan_details['closed_date'] = str(data['timestamp'][k])
+                                            #individual_loan_details['loan_duration'] = loan_duration
+                                            individual_loan_details['loan_closed_amount'] = extract_amount(msg7)
+                                            individual_loan_details["messages"].append({"date" : str(data['timestamp'][k]), "message" : str(data['body'][k])})
+                                            j = k
+                                            logger.info("loan closed!")
+                                            FLAG = True
+                                            break
+                                        else:
+                                            pass
+                                        k += 1
+                                    if FLAG == True:
+                                        i = j
+                                        break
+                                elif data["category"][j] == "closed":
+                                    logger.info("closed message found")
+                                    individual_loan_details['closed_date'] = str(data['timestamp'][j])
+                                    #individual_loan_details['loan_duration'] = loan_duration
+                                    individual_loan_details['loan_closed_amount'] = extract_amount(msg6)
+                                    individual_loan_details["messages"].append({"date" : str(data['timestamp'][j]), "message" : str(data['body'][j])})
+                                    i = j
+                                    logger.info("loan closed!")
+                                    break
+                                elif data["category"][j] == "disbursed":
                                     i = j - 1
                                     break
-                            elif data["category"][j] == "overdue":
-                                individual_loan_details['overdue_days'] = days_extract(msg6)
-                                individual_loan_details['overdue_check'] += 1
-                                individual_loan_details["messages"].append({"date" : str(data['timestamp'][j]), "message" : str(data['body'][j])})
-                                k = j + 1
-                                while k < len(data):
-                                    msg7 = str(data["body"][k]).lower()
-                                    if data["category"][k] == "overdue":
-                                        individual_loan_details['overdue_days'] = days_extract(msg7)
-                                        individual_loan_details['overdue_check'] += 1
-                                        individual_loan_details["messages"].append({"date" : str(data['timestamp'][k]), "message" : str(data['body'][k])})
-                                        j = k
-                                    elif data["category"][k] == "disbursed" or data["category"][k] == "due":
-                                        j = k - 1
-                                        FLAG = True
-                                        break
-                                    elif data["category"][k] == "closed":
-                                        logger.info("closed message found")
-                                        individual_loan_details['closed_date'] = str(data['timestamp'][k])
-                                        #individual_loan_details['loan_duration'] = loan_duration
-                                        individual_loan_details['loan_closed_amount'] = extract_amount(msg7)
-                                        individual_loan_details["messages"].append({"date" : str(data['timestamp'][k]), "message" : str(data['body'][k])})
-                                        j = k
-                                        logger.info("loan closed!")
-                                        FLAG = True
-                                        break
-                                    else:
-                                        pass
-                                    k += 1
-                                if FLAG == True:
-                                    i = j
-                                    break
-                            elif data["category"][j] == "closed":
-                                logger.info("closed message found")
-                                individual_loan_details['closed_date'] = str(data['timestamp'][j])
-                                #individual_loan_details['loan_duration'] = loan_duration
-                                individual_loan_details['loan_closed_amount'] = extract_amount(msg6)
-                                individual_loan_details["messages"].append({"date" : str(data['timestamp'][j]), "message" : str(data['body'][j])})
-                                i = j
-                                logger.info("loan closed!")
-                                break
-                            elif data["category"][j] == "disbursed":
-                                i = j - 1
-                                break
-                            else:
-                                pass
-                            j += 1
-                        loan_details_individual_app[str(loan_count)] = individual_loan_details
+                                else:
+                                    pass
+                                j += 1
+                            loan_details_individual_app[str(loan_count)] = individual_loan_details
                     else:
                         pass
                     i += 1   # 'i' loop increment

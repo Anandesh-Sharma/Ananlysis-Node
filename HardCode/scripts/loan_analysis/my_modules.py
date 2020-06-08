@@ -262,7 +262,7 @@ def is_rejected(message, app):
 def extract_amount(message):
     amount = 0
     patterns = [
-    r'sent\s(?:rs\.?|rp|inr\.?|\u20B9|\?\??)\s?([0-9,]+[.]?[0-9]+)',
+    r'sent\s(?:rs\.?|rp|inr\.?|\u20B9|\?|\??)\s?([0-9,]+[.]?[0-9]+)',
     r'total\srepayment\s?(?:of)?\s(?:rs\.?|rp|inr\.?|\u20B9)([0-9,]+[.]?[0-9]+)',
     r'(?:loan|payment[s]?)\s?(?:of)?\s([0-9,]+[.]?[0-9]+)',
     r'amount\srepayable\sis\s(?:rs\.?|inr\.?|rp|\u20B9)\s?([0-9,]+[.]?[0-9]+)',
@@ -270,7 +270,7 @@ def extract_amount(message):
     r'\s([0-9,]+[.]?[0-9]+){4-5}\s',
     # r'\s([0-9]{4,5})\s',
     r'([0-9,]+[.]?[0-9]+)\s?(?:rupees|inr|rs)',
-    r'(?:amount|amt|repay)\s?(?:is)?\s([0-9,]+[.?][0-9]+)',
+    r'(?:amount|amt|repay)\s?(?:is|:)?\s([0-9,]+[.?][0-9]+)',
     ]
     not_pattern_1 = r'free\scoupon\sof\s[0-9,]+[.]?[0-9]+\s?(?:rupees|inr)'
     not_pattern_2 = r'[0-9,]+[.]?[0-9]+\s?(?:rupees|inr)\scoupon'
@@ -309,21 +309,22 @@ def date_extract(message):
     date = -1
     patterns = [
         r'([0-9]{1,2}\/[0-9]{1,2}\/(?:20|19|18))',
-        r'([0-9]{2}\/?[-]?[0-9]{2}\/?[-]?20(?:20|19|18))',
-        r'\s([0-9]{1,2}\/?[-][0-9]{1,2})\.',
-        r'\s([0-9]{1,2}\/[0-9]{1,2})\s',
+        r'([0-9]{2}(?:\/|\-)[0-9]{2}(?:\/|\-)20(?:20|19|18))',
+        r'\s([0-9]{1,2}(?:\/|-)[0-9]{1,2})\.',
+        r'([0-9]{1,2}\/[0-9]{1,2})\s',
         r'([0-9]{1,2}\-[0-9]{1,2}\-20(?:20|19|18))',
         r'\s([0-9]{1,2}(?:th|rd|st|nd)\s(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec))\s',
         r'([0-9]{1,2}\.[0-9]{1,2}\.[0-9]{2,4})',
         r'(20(?:20|19|18)\-[0-9]{1,2}\-[0-9]{1,2})',
         r'([0-9]{1,2}(?:th|rd|st|nd)\s[a-z]+\s[0-9]{2,4})',
-        r'((?:[0-9]{1,2})?\s?\-?(?:january|february|march|april|may|june|july|august|september|october|november|december)\s?\-?[0-9]{1,2})',
-        r'([0-9]{1,2}\s(?:january|february|march|april|may|june|july|august|september|october|november|december))',
-        r'([0-9]{1,2}[-]?[,]?\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)[-]?[,]?\s?20(?:20|19|18))',
-        r'((?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)\s?[-]?[0-9]{1,2}\s?[-]?20(?:20|19|18))',
-        r'([0-9]{1,2}[-]?[,]?\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)[-]?[,]?\s?(?:20|19|18))',
+        r'((?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)(?:\s|-)[0-9]{1,2}(?:\s|-)20(?:20|19|18))',
+        r'((?:[0-9]{1,2})?(?:\s|\-)(?:january|february|march|april|may|june|july|august|september|october|november|december)(?:\s|\-)[0-9]{1,2})',
+        r'\s([0-9]{1,2}\s(?:january|february|march|april|may|june|july|august|september|october|november|december))',
+        r'([0-9]{1,2}(?:-|,|\s?)(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)(?:-|,|\s?)(?:20|19|18))',
+        r'([0-9]{1,2}(?:-|,|\s?)(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)(?:-|,|\s?)20(?:20|19|18))',
         r'([0-9]{1,2}(?:th|st|nd|rd)\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)\s?\'?(?:20|19|18))',
-        r'due\s(?:on)?\s?([0-9]{1,2}(?:st|nd|rd|th)\s?\-?(?:[a-z]+))'
+        r'([0-9]{1,2}(?:st|nd|rd|th)(?:\s|,)(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)(?:,|\s)20(?:20|19|18))',
+        r'due\s(?:on)?\s?([0-9]{1,2}(?:st|nd|rd|th)(?:\s|\-)(?:[a-z]+))'
     ]
 
     for pattern in patterns:
