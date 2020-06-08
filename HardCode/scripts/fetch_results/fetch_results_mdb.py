@@ -44,6 +44,10 @@ def fetch_user(user_id):
         alys_legal = client.messagecluster.legal_msgs.find_one({'cust_id': user_id})
         if alys_legal:
             del alys_legal['_id']
+        # -> analysis result
+        alys_result_bl0 = client.analysisresult.bl0.find_one({'cust_id': user_id})
+        if alys_result_bl0:
+            del alys_result_bl0['_id']
         # -> parameters
         alys_result['parameters'] = [alys_result['parameters'][-1]]
         if alys_result:
@@ -62,7 +66,7 @@ def fetch_user(user_id):
                 'ecs_bounce': alys_ecs if alys_ecs else {},
                 'legal': alys_legal if alys_legal else {},
                 'parameters': alys_result if alys_result else {},
-
+                'result':alys_result_bl0 if alys_result_bl0 else {}
             },
         }
         return final_result
