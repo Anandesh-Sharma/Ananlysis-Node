@@ -7,7 +7,7 @@ import pytz
 from HardCode.scripts import BL0
 from HardCode.scripts.update_analysis import update
 from HardCode.scripts.Util import conn
-from HardCode.scripts.cibil.apicreditdata import convert_to_df
+# from HardCode.scripts.cibil.apicreditdata import convert_to_df
 from analysisnode.settings import PROCESSING_DOCS, CHECKSUM_KEY, FINAL_RESULT
 from concurrent.futures import ProcessPoolExecutor
 from analysisnode import Checksum
@@ -18,10 +18,11 @@ API_ENDPOINT = 'https://testing.credicxotech.com/api/ml_analysis/callback/'
 
 def parallel_proccess_user_records(user_id):
     user_data = json.load(open(PROCESSING_DOCS + str(user_id) + '/user_data.json'))
-    cibil_df = {'status': False, 'data': None, 'message': 'None'}
-    if os.path.exists(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'):
-        response_parser = convert_to_df(open(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'))
-        cibil_df = response_parser
+    step = user_data['step']
+    # cibil_df = {'status': False, 'data': None, 'message': 'None'}
+    # if os.path.exists(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'):
+    #     response_parser = convert_to_df(open(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'))
+    #     cibil_df = response_parser
     sms_json = json.load(open(PROCESSING_DOCS + str(user_id) + '/sms_data.json', 'rb'))
 
     try:
@@ -34,7 +35,7 @@ def parallel_proccess_user_records(user_id):
             }
         else:
             # UPDATE ANALYSIS
-            if user_data['step'] == 0:
+            if step == 0:
                 resonse = update(user_id=user_id, sms_json=sms_json)
                 if resonse['status']:
                     final_response = {"status": True,
@@ -45,7 +46,7 @@ def parallel_proccess_user_records(user_id):
                                       "cust_id": user_id,
                                       "result_type": "update_analysis"}
             # KYC STEP
-            if user_data['step'] == 1:
+            if step == 1:
                 response = BL0.bl0(user_id=user_id, sms_json=sms_json)
                 if response['status']:
                     response['result_type'] = 'before_kyc'
@@ -53,16 +54,16 @@ def parallel_proccess_user_records(user_id):
                 else:
                     final_response = {"status": False,
                                       "cust_id": user_id,
+                                      "result": False,
                                       "result_type": "before_kyc"}
             # CIBIL STEP
-            if user_data['step'] == 2:
+            if step == 2:
                 # before cibil
                 pass
             # LOAN STEP
-            if user_data['step'] == 3:
+            if step == 3:
                 response = BL0.bl0(user_id=user_id, sms_json=sms_json)
                 if response['status']:
-
                     final_response = response
                 else:
                     final_response = {"status": False,

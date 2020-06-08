@@ -1,9 +1,10 @@
+import json
+import os
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from analysisnode.Checksum import verify_checksum
-from analysisnode.settings import CHECKSUM_KEY
-from HardCode.scripts.update_analysis import update
+from analysisnode.settings import CHECKSUM_KEY, PROCESSING_DOCS
 
 
 @api_view(['POST'])
@@ -19,13 +20,25 @@ def update_analysis(request):
         user_id = int(request.data.get('user_id'))
     except:
         return Response({'status': False, 'message': 'user_id parameter is required'}, 400)
+
     try:
-        sms_json = request.FILES['sms_json']
+        sms_json = json.load(request.FILES['sms_json'])
+        try:
+            os.makedirs(PROCESSING_DOCS + str(user_id))
+        except FileExistsError:
+            pass
+        with open(PROCESSING_DOCS + str(user_id) + '/sms_data.json', 'wb+') as destination:
+            for chunk in sms_json.chunks():
+                destination.write(chunk)
     except:
         return Response({'status': False, 'message': 'sms_json parameter is required'}, 400)
 
     try:
-        return Response(update(user_id=user_id, sms_json=sms_json), 200)
+        with open(PROCESSING_DOCS + str(user_id) + '/user_data.json', 'w') as json_file:
+            json.dump({
+                'step': 0
+            }, json_file, ensure_ascii=True, indent=4)
+        return Response({"status": True, "message": "Files Received for Before_Kyc"}, 200)
     except FileNotFoundError:
         return Response({
             'error': 'Results awaited for ' + str(user_id) + '!!'
