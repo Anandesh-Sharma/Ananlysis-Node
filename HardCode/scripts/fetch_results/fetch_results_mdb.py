@@ -66,7 +66,7 @@ def fetch_user(user_id):
                 'ecs_bounce': alys_ecs if alys_ecs else {},
                 'legal': alys_legal if alys_legal else {},
                 'parameters': alys_result if alys_result else {},
-                'result':alys_result_bl0 if alys_result_bl0 else {}
+                'result':alys_result_bl0 if alys_result_bl0 else []
             },
         }
         return final_result
