@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 
 def conn():
     connection = MongoClient(f"mongodb://{(urllib.parse.quote(MONGOUSER))}:{urllib.parse.quote(MONGOPASS)}@localhost"
-                             f":27017/?authSource=admin&readPreference=primary&ssl=false", socketTimeoutMS=900000)
+                             f":27018/?authSource=admin&readPreference=primary&ssl=false", socketTimeoutMS=900000)
 
     return connection
 

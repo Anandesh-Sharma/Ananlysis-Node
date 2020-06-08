@@ -24,6 +24,8 @@ def exception_feeder(**kwargs):
         client.analysisresult.exception_bl0.insert_one(r)
     return r
 
+def result_output_false(msg):
+    return {'status': False, 'message': msg,"result":False,"result_type":"before_loan"}
 
 def bl0(**kwargs):
     user_id = kwargs.get('user_id')
