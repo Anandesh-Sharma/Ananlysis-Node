@@ -262,28 +262,31 @@ def is_rejected(message, app):
 def extract_amount(message):
     amount = 0
     patterns = [
-        r'total\srepayment\s?(?:of)?\s(?:rs\.?|inr)([0-9,]+[.]?[0-9]+)',
-        r'(?:loan|payment[s]?)\s?(?:of)?\s([0-9,]+[.]?[0-9]+)',
-        r'amount\srepayable\sis\s(?:rs\.?|inr)\s?([0-9,]+[.]?[0-9]+)',
-        r'(?:inr\.?|rs\.?)\s?\s?([0-9,]+[.]?[0-9]+)',
-        r'\s([0-9,]+[.]?[0-9]+){4-5}\s',
-        r'\s([0-9]{4,5})\s',
-        r'([0-9,]+[.]?[0-9]+)\s?(?:rupees|inr)',
-        r'(?:amount|amt|repay)\s?(?:is)?\s([0-9,]+[.?][0-9]+)',
+    r'sent\s(?:rs\.?|rp|inr\.?|\u20B9|\?\??)\s?([0-9,]+[.]?[0-9]+)',
+    r'total\srepayment\s?(?:of)?\s(?:rs\.?|rp|inr\.?|\u20B9)([0-9,]+[.]?[0-9]+)',
+    r'(?:loan|payment[s]?)\s?(?:of)?\s([0-9,]+[.]?[0-9]+)',
+    r'amount\srepayable\sis\s(?:rs\.?|inr\.?|rp|\u20B9)\s?([0-9,]+[.]?[0-9]+)',
+    r'(?:inr\.?|rs\.?|rp|\u20B9)\s?\s?([0-9,]+[.]?[0-9]+)',
+    r'\s([0-9,]+[.]?[0-9]+){4-5}\s',
+    # r'\s([0-9]{4,5})\s',
+    r'([0-9,]+[.]?[0-9]+)\s?(?:rupees|inr|rs)',
+    r'(?:amount|amt|repay)\s?(?:is)?\s([0-9,]+[.?][0-9]+)',
     ]
     not_pattern_1 = r'free\scoupon\sof\s[0-9,]+[.]?[0-9]+\s?(?:rupees|inr)'
     not_pattern_2 = r'[0-9,]+[.]?[0-9]+\s?(?:rupees|inr)\scoupon'
 
+
     for pattern in patterns:
         matcher = re.search(pattern, message)
         if matcher:
-            not_matcher_1 = re.search(not_pattern_1, message)
-            not_matcher_2 = re.search(not_pattern_2, message)
+            not_matcher_1 = re.search(not_pattern_1,message)
+            not_matcher_2 = re.search(not_pattern_2,message)
             if not (not_matcher_1 or not_matcher_2):
                 amount = matcher.group(1)
                 amount = amount.replace(',', '')
                 break
     return float(amount)
+
 
 
 def days_extract(message):
@@ -307,7 +310,7 @@ def date_extract(message):
     patterns = [
         r'([0-9]{1,2}\/[0-9]{1,2}\/(?:20|19|18))',
         r'([0-9]{2}\/?[-]?[0-9]{2}\/?[-]?20(?:20|19|18))',
-        r'\s([0-9]{1,2}\/[0-9]{1,2})\.',
+        r'\s([0-9]{1,2}\/?[-][0-9]{1,2})\.',
         r'\s([0-9]{1,2}\/[0-9]{1,2})\s',
         r'([0-9]{1,2}\-[0-9]{1,2}\-20(?:20|19|18))',
         r'\s([0-9]{1,2}(?:th|rd|st|nd)\s(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec))\s',
@@ -319,7 +322,8 @@ def date_extract(message):
         r'([0-9]{1,2}[-]?[,]?\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)[-]?[,]?\s?20(?:20|19|18))',
         r'((?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)\s?[-]?[0-9]{1,2}\s?[-]?20(?:20|19|18))',
         r'([0-9]{1,2}[-]?[,]?\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)[-]?[,]?\s?(?:20|19|18))',
-        r'([0-9]{1,2}(?:th|st|nd|rd)\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)\s?\'?(?:20|19|18))'
+        r'([0-9]{1,2}(?:th|st|nd|rd)\s?(?:jan|feb|mar|apr|may|jun|jul|aug|sep[t]?|oct|nov|dec)\s?\'?(?:20|19|18))',
+        r'due\s(?:on)?\s?([0-9]{1,2}(?:st|nd|rd|th)\s?\-?(?:[a-z]+))'
     ]
 
     for pattern in patterns:
