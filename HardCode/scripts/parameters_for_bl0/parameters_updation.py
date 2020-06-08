@@ -7,7 +7,6 @@ from HardCode.scripts.parameters_for_bl0.available_balance.mean_available_balanc
 from HardCode.scripts.parameters_for_bl0.credit_card_limit.cc_limit import get_cc_limit
 from HardCode.scripts.parameters_for_bl0.ecs_bounce.chq_bounce import get_count_cb
 from HardCode.scripts.parameters_for_bl0.ecs_bounce.ecs_bounce import get_count_ecs
-from HardCode.scripts.parameters_for_bl0.loan_app.loan_app_count_validate import loan_app_count
 from HardCode.scripts.parameters_for_bl0.payment_rating.pay_rating import get_payment_rating
 from HardCode.scripts.parameters_for_bl0.reapyment_history.repayment_history import repayment_history
 from HardCode.scripts.parameters_for_bl0.reference_verification.validation.check_reference import validate

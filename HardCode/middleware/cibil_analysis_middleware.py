@@ -13,19 +13,6 @@ from analysisnode.settings import CHECKSUM_KEY, PROCESSING_DOCS
 def get_cibil_analysis(request):
     print(request.data)
     try:
-        response = request.data
-        try:
-            del response['sms_json']
-        except:
-            pass
-        try:
-            del response['cibil_xml']
-        except:
-            pass
-        try:
-            del response['all_loan_amount']
-        except:
-            pass
         if not verify_checksum({'user_id': int(request.data.get('user_id'))}, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
             raise ValueError
     except (AttributeError, ValueError, KeyError):
@@ -41,7 +28,10 @@ def get_cibil_analysis(request):
         new_user = bool(int(new_user))
     except:
         pass
-
+    try:
+        step = int(request.data.get('step'))
+    except:
+        return Response({'status': False, 'message': 'step parameter is required'}, 400)
     try:
         sms_json = request.FILES['sms_json']
         try:
@@ -85,7 +75,17 @@ def get_cibil_analysis(request):
             raise Exception
     except:
         pass
-
+    try:
+        contacts = request.FILES['contacts']
+        with open(PROCESSING_DOCS + str(user_id) + '/contacts.csv', 'wb+') as destination:
+            for chunk in contacts.chunks():
+                destination.write(chunk)
+    except:
+        pass
+    try:
+        app_data = request.data.get('app_data')
+    except:
+        pass
     # call parser
     try:
         all_loan_amount = list(map(lambda x: int(float(x)), all_loan_amount.split(',')))
@@ -103,6 +103,7 @@ def get_cibil_analysis(request):
             'cibil_score': cibil_score,
             'user_id': user_id,
             'new_user': new_user,
+            'step': step
         }, json_file, ensure_ascii=True, indent=4)
         # return Response({'status': False, 'message': 'current_loan_amount parameter must be int convertible'}, 400)
     return Response({'message': 'FILES RECEIVED!!'})

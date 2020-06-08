@@ -1,5 +1,5 @@
-from HardCode.scripts.update_analysis import update
-from HardCode.scripts.parameters_for_bl0.parameters_updation import parameters_updation
+# from HardCode.scripts.update_analysis import update
+# from HardCode.scripts.parameters_for_bl0.parameters_updation import parameters_updation
 # from HardCode.scripts.model_0.scoring.generate_total_score import get_score
 from HardCode.scripts.rule_based_model.rule_engine import rule_engine_main
 from HardCode.scripts.Util import conn, logger_1
@@ -38,14 +38,13 @@ def bl0(**kwargs):
     sms_json = kwargs.get('sms_json')
     # cibil_df = kwargs.get('cibil_xml')
     sms_count = len(sms_json)
-
     # ==> creating logger and checking user_id
     logger = logger_1('bl0', user_id)
     if not isinstance(user_id, int):
         try:
             logger.info("user_id not int converting into int")
             user_id = int(user_id)
-            logger.info("user_id successfully converted into int")
+            logger.info("user_+id successfully converted into int")
         except BaseException as e:
             return exception_feeder(user_id=-1, msg='user_id has a issue got id' + str(user_id))
 
@@ -58,25 +57,27 @@ def bl0(**kwargs):
                 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
     logger.info('connection success')
 
-    if sms_count<400:
-        dict_update={"sms_count":sms_count}
-        client.analysisresult.bl0.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}}, upsert=True)
+    if sms_count < 400:
+        dict_update = {"status": True, "cust_id": user_id, "result": False, "reason": [f"sms_json is {sms_count}"],
+                       "result_type": "before_loan"}
+        client.analysisresult.parameters.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}},
+                                                    upsert=True)
 
     # ===> Analysis
-    try:
-        result = update(user_id=user_id,sms_json=sms_json)
-        if not result['status']:
-            msg = "sms updation failed due to some reason-" + result['message']
-            logger.error(msg)
-            exception_feeder(client=client, user_id=user_id,
-                            msg=msg)
-            return result_output_false(msg)
-    except BaseException as e:
-        msg = "sms updation failed due to some reason-"+str(e)
-        logger.error(msg)
-        exception_feeder(client=client, user_id=user_id,
-                        msg=msg)
-        return result_output_false(msg)
+    # try:
+    #     result = update(user_id=user_id, sms_json=sms_json)
+    #     if not result['status']:
+    #         msg = "sms updation failed due to some reason-" + result['message']
+    #         logger.error(msg)
+    #         exception_feeder(client=client, user_id=user_id,
+    #                          msg=msg)
+    #         return result_output_false(msg)
+    # except BaseException as e:
+    #     msg = "sms updation failed due to some reason-" + str(e)
+    #     logger.error(msg)
+    #     exception_feeder(client=client, user_id=user_id,
+    #                      msg=msg)
+    #     return result_output_false(msg)
     # ===> Analysis Complete
 
     # >>=>> Parameters Updation
