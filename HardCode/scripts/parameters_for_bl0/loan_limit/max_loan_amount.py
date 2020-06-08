@@ -7,7 +7,7 @@ def get_loan_max_amount(cust_id):
     loan_info = connect.analysis.loan.find_one({'cust_id': cust_id})
     data = loan_info['complete_info']
     current_date = datetime.now()
-    start_date = current_date + relativedelta(months = 3)
+    start_date = current_date + relativedelta(months = 6)
     amount_list = []
     amount = 0
     try:
@@ -39,8 +39,12 @@ def get_loan_max_amount(cust_id):
                             amount_list.append(closed_amount)
         if amount_list:
             amount = max(amount_list)
+        status = True
+        msgs = 'success'
     except BaseException as e:
+        status = False
+        msg = str(e)
         pass
     finally:
-        return amount
+        return {'status':status,'message':msg,'loan_amount':amount}
 

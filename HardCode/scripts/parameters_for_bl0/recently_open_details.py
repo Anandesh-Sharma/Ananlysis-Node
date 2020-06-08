@@ -40,14 +40,11 @@ def get_recently_open_loan_details(cust_id):
                         logger.info("not found info about recent loan")
         parameters['recent_open_count'] = recent_open_count
         parameters['recent_open_apps'] = app_list
-        db = client.analysis.loan
-        db.update_one({'cust_id': cust_id},
-          {"$set": {'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))),
-                    'recent_open_details': parameters}}, upsert=True)
-        print(app_list)
-        print(recent_open_count)
+        client.close()
+
     except BaseException as e:
-        import traceback
-        traceback.print_tb(e.__traceback__)
+        parameters['recent_open_count'] = recent_open_count
+        parameters['recent_open_apps'] = app_list
+
     finally:
-        return recent_open_count
+        return parameters
