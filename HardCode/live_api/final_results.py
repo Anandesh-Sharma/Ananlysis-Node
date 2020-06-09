@@ -28,22 +28,21 @@ def final_results(request):
 
     try:
         sms_json = request.FILES['sms_json']
-        try:
-            os.makedirs(PROCESSING_DOCS + str(user_id)+"_3")
-        except FileExistsError:
-            pass
+    except:
+        return Response({'status': False, 'message': 'sms_json parameter is required'}, 400)
+    try:
+        os.makedirs(PROCESSING_DOCS + str(user_id)+"_3")
+    except FileExistsError:
+        print("error")
+        pass
+    try:
         with open(PROCESSING_DOCS + str(user_id)+"_3" + '/sms_data.json', 'wb+') as destination:
             for chunk in sms_json.chunks():
                 destination.write(chunk)
     except:
-        return Response({'status': False, 'message': 'sms_json parameter is required'}, 400)
-
+        print("error in saving file")
     # WRITE THE FUNCTION BELOW
     try:
-        with open(PROCESSING_DOCS + str(user_id) + '/user_data.json', 'w') as json_file:
-            json.dump({
-                'step': 3
-            }, json_file, ensure_ascii=True, indent=4)
         return Response({"status": True, "message": "Files Received for Before_Loan"}, 200)
     except FileNotFoundError:
         return Response({

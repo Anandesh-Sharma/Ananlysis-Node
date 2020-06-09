@@ -19,7 +19,7 @@ else:
     API_ENDPOINT = 'https://api.credicxotech.com/api/ml_analysis/callback/'
 
 def parallel_proccess_user_records(user_id_dir):
-    step = int(user_id_die[-1])
+    step = int(user_id_dir[-1])
     user_id=user_id_dir[:-2]
     # cibil_df = {'status': False, 'data': None, 'message': 'None'}
     # if os.path.exists(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'):
