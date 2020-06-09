@@ -93,6 +93,15 @@ def parallel_proccess_user_records(user_id_dir):
             "message": str(e),
             "result": False
         }
+        if step==0:
+            final_response["result_type"]="update_analysis"
+        elif step==1:
+            final_response["result_type"]="before_kyc"
+        elif step==2:
+            final_response["result_type"]="before_cibil"
+        else:
+            final_response["result_type"]="before_loan"
+        shutil.move(PROCESSING_DOCS + str(user_id_dir),"error_docs/")
     final_response['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
     temp_response_bl0 = final_response
     del temp_response_bl0["cust_id"]
