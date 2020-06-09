@@ -135,8 +135,10 @@ REST_FRAMEWORK = {
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-
-CHECKSUM_KEY = 'NUG2EDIWi3%khpfw'
+if DEBUG:
+    CHECKSUM_KEY = '4Qd5ip$dOwZHVjkY'
+else:
+    CHECKSUM_KEY = 'NUG2EDIWi3%khpfw'
 
 # Static files (CSS, JavaScript, Images)`
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

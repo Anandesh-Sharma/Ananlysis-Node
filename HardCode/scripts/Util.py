@@ -6,15 +6,18 @@ from logging.handlers import TimedRotatingFileHandler
 from pymongo import MongoClient
 import warnings
 import urllib
-from analysisnode.settings import MONGOUSER, MONGOPASS
+from analysisnode.settings import MONGOUSER, MONGOPASS,DEBUG
 
 warnings.filterwarnings("ignore")
 
 
 def conn():
-    connection = MongoClient(f"mongodb://{(urllib.parse.quote(MONGOUSER))}:{urllib.parse.quote(MONGOPASS)}@localhost"
+    if DEBUG:
+        connection = MongoClient(f"mongodb://{(urllib.parse.quote(MONGOUSER))}:{urllib.parse.quote(MONGOPASS)}@localhost"
                              f":27018/?authSource=admin&readPreference=primary&ssl=false", socketTimeoutMS=900000)
-
+    else:
+        connection = MongoClient(f"mongodb://{(urllib.parse.quote(MONGOUSER))}:{urllib.parse.quote(MONGOPASS)}@localhost"
+                             f":27017/?authSource=admin&readPreference=primary&ssl=false", socketTimeoutMS=900000)
     return connection
 
 

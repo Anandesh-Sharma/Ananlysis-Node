@@ -8,13 +8,15 @@ from HardCode.scripts import BL0
 from HardCode.scripts.update_analysis import update
 from HardCode.scripts.Util import conn
 # from HardCode.scripts.cibil.apicreditdata import convert_to_df
-from analysisnode.settings import PROCESSING_DOCS, CHECKSUM_KEY, FINAL_RESULT
+from analysisnode.settings import PROCESSING_DOCS, CHECKSUM_KEY, FINAL_RESULT,DEBUG
 from concurrent.futures import ProcessPoolExecutor
 from analysisnode import Checksum
 import requests
 
-API_ENDPOINT = 'https://testing.credicxotech.com/api/ml_analysis/callback/'
-
+if DEBUG:
+    API_ENDPOINT = 'https://testing.credicxotech.com/api/ml_analysis/callback/'
+else:
+    API_ENDPOINT = 'https://api.credicxotech.com/api/ml_analysis/callback/'
 
 def parallel_proccess_user_records(user_id):
     user_data = json.load(open(PROCESSING_DOCS + str(user_id) + '/user_data.json'))
