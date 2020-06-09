@@ -49,10 +49,7 @@ def parallel_proccess_user_records(user_id_dir):
                 if resonse['status']:
                     final_response = {"status": True,
                                       "cust_id": user_id,
-                                      "result_type": "update_analysis"}
-                else:
-                    final_response = {"status": False,
-                                      "cust_id": user_id,
+                                      "result":True,
                                       "result_type": "update_analysis"}
             # KYC STEP
             elif step == 1:
@@ -111,7 +108,6 @@ def parallel_proccess_user_records(user_id_dir):
     conn().analysisresult.bl0.update_one({'cust_id': int(user_id)}, {"$push": {
         "result": temp_response_bl0}}, upsert=True)
     final_response['user_id'] = int(user_id)
-    print(final_response)
     print(requests.post(API_ENDPOINT, data=final_response,
                         headers={'CHECKSUMHASH': Checksum.generate_checksum({'user_id': user_id}, CHECKSUM_KEY)}).json())
 
