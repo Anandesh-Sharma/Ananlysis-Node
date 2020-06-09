@@ -22,7 +22,7 @@ def update_analysis(request):
         return Response({'status': False, 'message': 'user_id parameter is required'}, 400)
 
     try:
-        sms_json = json.load(request.FILES['sms_json'])
+        sms_json = request.FILES['sms_json']
         try:
             os.makedirs(PROCESSING_DOCS + str(user_id)+"_0")
         except FileExistsError:

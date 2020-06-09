@@ -31,7 +31,7 @@ def get_pre_rejection_status(request):
     except:
         return Response({'status': False, 'message': 'user_id parameter is required'}, 400)
     try:
-        sms_json = json.load(request.FILES['sms_json'])
+        sms_json = request.FILES['sms_json']
     except:
         return Response({'status': False, 'message': 'sms_json parameter is required'}, 400)
     try:
