@@ -112,7 +112,7 @@ def parallel_proccess_user_records(user_id_dir):
         "result": temp_response_bl0}}, upsert=True)
     final_response['cust_id'] = int(user_id)
     print(requests.post(API_ENDPOINT, data=final_response,
-                        headers={'CHECKSUMHASH': Checksum.generate_checksum(final_response, CHECKSUM_KEY)}).json())
+                        headers={'CHECKSUMHASH': Checksum.generate_checksum({'user_id': user_id}, CHECKSUM_KEY)}).json())
 
 
 def process_user_records(user_ids):

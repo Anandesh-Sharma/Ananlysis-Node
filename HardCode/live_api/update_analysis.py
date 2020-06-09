@@ -12,7 +12,7 @@ from analysisnode.settings import CHECKSUM_KEY, PROCESSING_DOCS
 def update_analysis(request):
     try:
         response = request.data
-        if not verify_checksum(response, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
+        if not verify_checksum({'user_id': int(request.data.get('user_id'))}, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
             raise ValueError
     except (AttributeError, ValueError, KeyError):
         return Response({'error': 'INVALID CHECKSUM!!!'}, 400)
