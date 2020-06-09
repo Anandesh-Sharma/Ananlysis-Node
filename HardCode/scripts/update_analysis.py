@@ -34,7 +34,14 @@ def update(**kwargs):
     sms_json = kwargs.get('sms_json')
 
     # ==> creating logger and checking user_id
-    logger = logger_1('bl0', user_id)
+    logger = logger_1('update', user_id)
+    if not isinstance(user_id, int):
+        try:
+            logger.info("user_id not int converting into int")
+            user_id = int(user_id)
+            logger.info("user_id successfully converted into int")
+        except BaseException as e:
+            return exception_feeder(user_id=-1, msg='user_id has a issue got id' + str(user_id))
 
     try:
         logger.info('making connection with db')
