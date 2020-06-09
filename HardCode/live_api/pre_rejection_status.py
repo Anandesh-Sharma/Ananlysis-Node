@@ -32,15 +32,18 @@ def get_pre_rejection_status(request):
         return Response({'status': False, 'message': 'user_id parameter is required'}, 400)
     try:
         sms_json = json.load(request.FILES['sms_json'])
-        try:
-            os.makedirs(PROCESSING_DOCS + str(user_id)+"_1")
-        except FileExistsError:
-            pass
-        with open(PROCESSING_DOCS + str(user_id)+ "_1" + '/sms_data.json', 'wb+') as destination:
-            for chunk in sms_json.chunks():
-                destination.write(chunk)
     except:
         return Response({'status': False, 'message': 'sms_json parameter is required'}, 400)
+    try:
+        os.makedirs('PROCESSING_DOCS/' + str(user_id)+"_1")
+    except FileExistsError:
+        pass
+    try:
+        with open('PROCESSING_DOCS/' + str(user_id)+ "_1" + '/sms_data.json', 'wb+') as destination:
+            for chunk in sms_json.chunks():
+                destination.write(chunk)
+    except BaseException as e:
+        print(str(e))
     # try:
     #     contacts = request.FILES['contacts']
     # except:
