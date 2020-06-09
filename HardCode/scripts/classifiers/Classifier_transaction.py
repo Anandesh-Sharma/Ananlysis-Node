@@ -1,26 +1,25 @@
 import re
 from datetime import datetime
 import pytz
+import threading
 from HardCode.scripts.Util import conn, convert_json, logger_1
 import warnings
 
 warnings.filterwarnings("ignore")
 
-
 def check_account_number(message):
     all_patterns = [
-        r'[\*nx]+([0-9]{3,})',
-        r'[a]\/c ([0-9]+)',
-        r'[\.]{3,}([0-9]+)',
-        r'account(.*)?\[([0-9]+)\]'
+    r'[\*nx]+([0-9]{3,})',
+    r'[a]\/c ([0-9]+)',
+    r'[\.]{3,}([0-9]+)',
+    r'account(.*)?\[([0-9]+)\]'
     ]
 
     for pat in all_patterns:
-        matcher = re.search(pat, message)
+        matcher = re.search(pat, message)    
         if matcher:
             return True
     return False
-
 
 def cleaning(args):
     df = args[0]
@@ -40,7 +39,7 @@ def cleaning(args):
     for index, row in df.iterrows():
         body = row["body"].lower()
         sender = row["sender"].lower()[3:]
-        if sender in ['cbsbnk', 'dopbnk', 'csisms']:
+        if sender in ['cbsbnk','dopbnk','csisms','cbssbi']:
             if ' credit ' in body:
                 spcl_salary.append(index)
                 continue
@@ -64,6 +63,7 @@ def cleaning(args):
             if matcher:
                 if check_account_number(body):
                     withdraw.append(index)
+
 
     cleaning_transaction_patterns_header = ['vfcare',
                                             'oyorms',

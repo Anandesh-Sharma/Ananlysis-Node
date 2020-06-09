@@ -2,7 +2,6 @@ from HardCode.scripts.Util import conn
 
 
 def get_app_rejection_count(cust_id):
-    script_status = {}
     premium_apps_rejection_count = 0
     normal_apps_rejection_count = 0
     try:
@@ -21,6 +20,6 @@ def get_app_rejection_count(cust_id):
                         normal_apps_rejection_count += 1
 
         # upload rejection count detail in db here
-        return normal_apps_rejection_count, premium_apps_rejection_count
+        return {"status":True,"normal_apps":normal_apps_rejection_count,"premium_apps":premium_apps_rejection_count}
     except BaseException as e:
-        return normal_apps_rejection_count, premium_apps_rejection_count
+        return {"status":False,"meesage":str(e),"normal_apps":normal_apps_rejection_count,"premium_apps":premium_apps_rejection_count}

@@ -6,6 +6,8 @@ from HardCode.live_api.fetch_parameter import fetch_inputs
 from HardCode.live_api.set_parameter import set_inputs
 from HardCode.live_api.get_cibil_decision import cibil_decision
 from HardCode.live_api.final_results import final_results
+from HardCode.live_api.fetch_classified_messages import fetch_classified_messages
+from HardCode.live_api.update_analysis import update_analysis
 
 
 class CibilAnalysis(View):
@@ -41,3 +43,13 @@ class GetCibilDecisions(View):
 class FinalResults(View):
     def post(self, request):
         return final_results(request, )
+
+
+class FetchClassifiedMessages(View):
+    def post(self, request):
+        return fetch_classified_messages(request, )
+
+
+class UpdateAnalysis(View):
+    def post(self, request):
+        return update_analysis(request, )

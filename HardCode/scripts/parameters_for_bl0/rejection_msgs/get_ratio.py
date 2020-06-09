@@ -116,10 +116,3 @@ def overdue_count_ratio(user_id,no_of_sms):
         return overdue_count,ratio
     except Exception as e:
         return overdue_count, ratio
-
-
-
-
-
-
-

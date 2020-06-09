@@ -44,6 +44,10 @@ def fetch_user(user_id):
         alys_legal = client.messagecluster.legal_msgs.find_one({'cust_id': user_id})
         if alys_legal:
             del alys_legal['_id']
+        # -> analysis result
+        alys_result_bl0 = client.analysisresult.bl0.find_one({'cust_id': user_id})
+        if alys_result_bl0:
+            del alys_result_bl0['_id']
         # -> parameters
         alys_result['parameters'] = [alys_result['parameters'][-1]]
         if alys_result:
@@ -62,7 +66,7 @@ def fetch_user(user_id):
                 'ecs_bounce': alys_ecs if alys_ecs else {},
                 'legal': alys_legal if alys_legal else {},
                 'parameters': alys_result if alys_result else {},
-
+                'result':alys_result_bl0 if alys_result_bl0 else []
             },
         }
         return final_result
@@ -70,17 +74,24 @@ def fetch_user(user_id):
         return {'status': False, 'message': "Calm down! We're working on it"}
 
 
-def pre_rejection(user_id):
+def fetch_user_messages(user_id):
+    # -> CHECK IF THE USER_ID IS PROCESSED BY CHECKING ANALYSIS RESULT
     client = conn()
     user_id = int(user_id)
-    rej_result = client.analysis.scoring_model.find_one({'cust_id': user_id})
-    if rej_result:
-        if len(rej_result['result'][-1]['rejection_reasons']) == 0:
-            return {'status': True, 'result': False, 'message': "no rejection reasons found",
-                    'result_type': "before_kyc", 'cust_id': user_id}
-        else:
-            return {'status': True, 'result': True, 'message': "rejection reasons found", "result_type": "before_kyc",
-                    'cust_id': user_id}
-    else:
-        return {'status': False, 'message': "Calm down! We're working on it", 'result_type': 'before_kyc',
-                'cust_id': user_id}
+    try:
+        # -> parameters
+        mydb = client['messagecluster']
+        collections = [col for col in mydb.list_collection_names()]
+        coll_dict = dict()
+        for col in collections:
+            coll_dict[col] = mydb[col].find_one({'cust_id': user_id})
+            del coll_dict[col]['_id']
+            del coll_dict[col]['cust_id']
+        final_result = {
+            'status': True,
+            'message': "Success",
+            'message_cluster': mydb
+        }
+        return final_result
+    except:
+        return {'status': False, 'message': "Calm down! We're working on it"}

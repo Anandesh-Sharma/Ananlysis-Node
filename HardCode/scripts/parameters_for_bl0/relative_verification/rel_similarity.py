@@ -1,12 +1,21 @@
 from HardCode.scripts.parameters_for_bl0.relative_verification import relatives as rel
 
 
-def rel_sim(**kwargs):
-    contacts = kwargs.get('contacts')
-    status = False
+def rel_sim(contacts):
+    """ Parameters: csv object
+        Output: status(bool),relatives count (int),Relatives names (list)
+    """
     Rel_name = []
-    for key in contacts.keys():
-        for contact_name in contacts[key]:
+    contacts = contacts.split('\r\n')
+    for contact in contacts:
+        if len(contact) >= 0:
+            splitted_list = contact.split(',')
+            if len(splitted_list) == 2:
+                name,_ = splitted_list
+
+            elif len(splitted_list) == 3:
+                name = splitted_list[0]
+            contact_name=name
             contact_name = str(contact_name)
             res = contact_name.lower()
             res = str(res).split(' ')
@@ -14,7 +23,5 @@ def rel_sim(**kwargs):
                 for y in rel.relatives:
                     if x == y:
                         Rel_name.append(contact_name)
-                        if len(Rel_name) >= 3:
-                            status = True
 
-    return status,len(Rel_name)
+    return len(Rel_name)
