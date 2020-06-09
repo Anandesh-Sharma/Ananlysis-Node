@@ -25,16 +25,16 @@ def parallel_proccess_user_records(user_id):
     # if os.path.exists(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'):
     #     response_parser = convert_to_df(open(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'))
     #     cibil_df = response_parser
-    sms_json = json.load(open(PROCESSING_DOCS + str(user_id) + '/sms_data.json', 'rb'))
     try:
-        old_sms = open(f'~/old_users/{user_id}/sms_data.json', 'rb')
-        old_sms_json = json.load(old_sms)
-        sms_json.update(old_sms_json)
-        old_sms.close()
-    except Exception as e:
-        print(str(e))
-        pass
-    try:
+        sms_json = json.load(open(PROCESSING_DOCS + str(user_id) + '/sms_data.json', 'rb'))
+        try:
+            old_sms = open(f'~/old_users/{user_id}/sms_data.json', 'rb')
+            old_sms_json = json.load(old_sms)
+            sms_json.update(old_sms_json)
+            old_sms.close()
+        except Exception as e:
+            print(str(e))
+
         if len(sms_json) == 0:
             final_response = {
                 "status": True,
