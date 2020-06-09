@@ -55,7 +55,7 @@ def parallel_proccess_user_records(user_id_dir):
                                       "cust_id": user_id,
                                       "result_type": "update_analysis"}
             # KYC STEP
-            if step == 1:
+            elif step == 1:
                 response = BL0.bl0(user_id=user_id, sms_json=sms_json)
                 if response['status']:
                     response['result_type'] = 'before_kyc'
@@ -66,11 +66,11 @@ def parallel_proccess_user_records(user_id_dir):
                                       "result": False,
                                       "result_type": "before_kyc"}
             # CIBIL STEP
-            if step == 2:
+            elif step == 2:
                 # before cibil
                 pass
             # LOAN STEP
-            if step == 3:
+            elif step == 3:
                 response = BL0.bl0(user_id=user_id, sms_json=sms_json)
                 if response['status']:
                     final_response = response
@@ -111,6 +111,7 @@ def parallel_proccess_user_records(user_id_dir):
     conn().analysisresult.bl0.update_one({'cust_id': int(user_id)}, {"$push": {
         "result": temp_response_bl0}}, upsert=True)
     final_response['user_id'] = int(user_id)
+    print(final_response)
     print(requests.post(API_ENDPOINT, data=final_response,
                         headers={'CHECKSUMHASH': Checksum.generate_checksum({'user_id': user_id}, CHECKSUM_KEY)}).json())
 
