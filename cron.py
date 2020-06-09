@@ -30,6 +30,7 @@ def parallel_proccess_user_records(user_id):
         sms_json.update(old_sms_json)
         old_sms.close()
     except Exception as e:
+        print(str(e))
         pass
     try:
         if len(sms_json) == 0:
