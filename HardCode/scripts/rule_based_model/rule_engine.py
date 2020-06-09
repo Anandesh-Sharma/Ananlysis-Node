@@ -89,7 +89,7 @@ def rule_engine_main(user_id):
     try:
         # phase1 = rule_phase1(user_id)
         reason = []
-        phase2 = rule_quarantine(user_id)
+        phase2,app_list = rule_quarantine(user_id)
         # params = connect.analysis.parameters.find_one({'cust_id': user_id})
         salary = quarantine_sal(user_id)
         if salary > 0:
@@ -116,7 +116,7 @@ def rule_engine_main(user_id):
             print("approved")
         else:
             print("rejected by rule engine")
-        dict_update={"quarntine_salary":salary,"Last_open":phase2,"avbl_open":avl_bal['last_avbl_bal']}
+        dict_update={"quarntine_salary":salary,"Last_open":phase2,"avbl_open":avl_bal['last_avbl_bal'],'open_loans_apps':app_list}
     except BaseException as e:
         return {"status": False, "cust_id": user_id, "result": False, 'message': str(e)}
     return {"status": True, "cust_id": user_id, "result": result_pass,"reason":reason,"dict_update":dict_update}

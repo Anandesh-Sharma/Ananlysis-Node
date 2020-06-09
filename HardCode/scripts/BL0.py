@@ -53,7 +53,7 @@ def bl0(**kwargs):
 
     if sms_count < 400:
         dict_update = {"status": True, "cust_id": user_id, "result": False, "reason": [f"sms_json is {sms_count}"],}
-        client.analysisresult.parameters.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}},
+        client.analysis.parameters.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}},
                                                     upsert=True)
         dict_update["result_type"]="before_loan"
         return dict_update
@@ -117,7 +117,7 @@ def bl0(**kwargs):
     logger.info('Rule engine complete')
     dict_update=rule_engine['dict_update']
     del rule_engine['dict_update']
-    client.analysisresult.bl0.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}}, upsert=True)
+    client.analysis.parameters.update_one({'cust_id': user_id}, {"$push": {'parameters-3': dict_update}}, upsert=True)
     client.close()
     rule_engine[ "result_type"]="before_loan"
     return rule_engine
