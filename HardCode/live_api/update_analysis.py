@@ -24,21 +24,17 @@ def update_analysis(request):
     try:
         sms_json = json.load(request.FILES['sms_json'])
         try:
-            os.makedirs(PROCESSING_DOCS + str(user_id))
+            os.makedirs(PROCESSING_DOCS + str(user_id)+"_0")
         except FileExistsError:
             pass
-        with open(PROCESSING_DOCS + str(user_id) + '/sms_data.json', 'wb+') as destination:
+        with open(PROCESSING_DOCS + str(user_id)+"_0" + '/sms_data.json', 'wb+') as destination:
             for chunk in sms_json.chunks():
                 destination.write(chunk)
     except:
         return Response({'status': False, 'message': 'sms_json parameter is required'}, 400)
 
     try:
-        with open(PROCESSING_DOCS + str(user_id) + '/user_data.json', 'w') as json_file:
-            json.dump({
-                'step': 0
-            }, json_file, ensure_ascii=True, indent=4)
-        return Response({"status": True, "message": "Files Received for Before_Kyc"}, 200)
+        return Response({"status": True, "message": "Files Received for Updation"}, 200)
     except FileNotFoundError:
         return Response({
             'error': 'Results awaited for ' + str(user_id) + '!!'

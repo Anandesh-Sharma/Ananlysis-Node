@@ -29,10 +29,10 @@ def final_results(request):
     try:
         sms_json = request.FILES['sms_json']
         try:
-            os.makedirs(PROCESSING_DOCS + str(user_id))
+            os.makedirs(PROCESSING_DOCS + str(user_id)+"_3")
         except FileExistsError:
             pass
-        with open(PROCESSING_DOCS + str(user_id) + '/sms_data.json', 'wb+') as destination:
+        with open(PROCESSING_DOCS + str(user_id)+"_3" + '/sms_data.json', 'wb+') as destination:
             for chunk in sms_json.chunks():
                 destination.write(chunk)
     except:

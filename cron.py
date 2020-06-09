@@ -18,15 +18,15 @@ if DEBUG:
 else:
     API_ENDPOINT = 'https://api.credicxotech.com/api/ml_analysis/callback/'
 
-def parallel_proccess_user_records(user_id):
-    user_data = json.load(open(PROCESSING_DOCS + str(user_id) + '/user_data.json'))
-    step = user_data['step']
+def parallel_proccess_user_records(user_id_dir):
+    step = int(user_id_die[-1])
+    user_id=user_id_dir[:-2]
     # cibil_df = {'status': False, 'data': None, 'message': 'None'}
     # if os.path.exists(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'):
     #     response_parser = convert_to_df(open(PROCESSING_DOCS + str(user_id) + '/experian_cibil.xml'))
     #     cibil_df = response_parser
     try:
-        sms_json = json.load(open(PROCESSING_DOCS + str(user_id) + '/sms_data.json', 'rb'))
+        sms_json = json.load(open(PROCESSING_DOCS + str(user_id_dir) + '/sms_data.json', 'rb'))
         try:
             old_sms = open(f'~/old_users/{user_id}/sms_data.json', 'rb')
             old_sms_json = json.load(old_sms)
@@ -83,7 +83,7 @@ def parallel_proccess_user_records(user_id):
             # response_bl0 = BL0.bl0(cibil_xml=cibil_df, cibil_score=user_data['cibil_score'], user_id=int(user_id)
             #                        , new_user=user_data['new_user'], list_loans=user_data['all_loan_amount'],
             #                        current_loan=user_data['current_loan_amount'], sms_json=sms_json)
-        shutil.rmtree(PROCESSING_DOCS + str(user_id))
+        shutil.rmtree(PROCESSING_DOCS + str(user_id_dir))
 
     except Exception as e:
         print(f"error in middleware {e}")

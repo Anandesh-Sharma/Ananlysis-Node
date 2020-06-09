@@ -13,7 +13,7 @@ from analysisnode.settings import CHECKSUM_KEY, PROCESSING_DOCS
 # from HardCode.scripts.Util import conn, logger_1
 from HardCode.scripts.BL0 import bl0
 
-API_ENDPOINT = 'https://testing.credicxotech.com/api/ml_analysis/callback/'
+# API_ENDPOINT = 'https://testing.credicxotech.com/api/ml_analysis/callback/'
 
 
 @api_view(['POST'])
@@ -33,10 +33,10 @@ def get_pre_rejection_status(request):
     try:
         sms_json = json.load(request.FILES['sms_json'])
         try:
-            os.makedirs(PROCESSING_DOCS + str(user_id))
+            os.makedirs(PROCESSING_DOCS + str(user_id)+"_1")
         except FileExistsError:
             pass
-        with open(PROCESSING_DOCS + str(user_id) + '/sms_data.json', 'wb+') as destination:
+        with open(PROCESSING_DOCS + str(user_id)+ "_1" + '/sms_data.json', 'wb+') as destination:
             for chunk in sms_json.chunks():
                 destination.write(chunk)
     except:
@@ -61,10 +61,6 @@ def get_pre_rejection_status(request):
         #
         # conn().analysisresult.before_kyc.update_one({'cust_id': int(user_id)}, {"$push": {
         #     "result": result}}, upsert=True
-        with open(PROCESSING_DOCS + str(user_id) + '/user_data.json', 'w') as json_file:
-            json.dump({
-                'step': 1
-            }, json_file, ensure_ascii=True, indent=4)
         return Response({"status": True, "message": "Files Received for Before_Kyc"}, 200)
     except FileNotFoundError:
         return Response({
