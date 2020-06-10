@@ -6,7 +6,7 @@ def fetch_user(user_id):
     client = conn()
     user_id = int(user_id)
     alys_result = client.analysis.parameters.find_one({'cust_id': user_id})
-
+    msg_result = fetch_user_messages(user_id)
     # -> FETCH ANALYSIS
     if alys_result:
         # alys_result["result"] = [alys_result["result"][-1]]
@@ -52,6 +52,11 @@ def fetch_user(user_id):
         alys_result['parameters'] = [alys_result['parameters'][-1]]
         if alys_result:
             del alys_result['_id']
+        # -> message cluster
+        if msg_result['status']:
+            message_cluster = msg_result['message_cluster']
+
+
 
         final_result = {
             'status': True,
@@ -66,6 +71,7 @@ def fetch_user(user_id):
                 'ecs_bounce': alys_ecs if alys_ecs else {},
                 'legal': alys_legal if alys_legal else {},
                 'parameters': alys_result if alys_result else {},
+                'messagecluster': message_cluster if msg_result['status'] else [],
                 'result':alys_result_bl0 if alys_result_bl0 else []
             },
         }
@@ -90,10 +96,11 @@ def fetch_user_messages(user_id):
         final_result = {
             'status': True,
             'message': "Success",
-            'message_cluster': mydb
+            'message_cluster': coll_dict
         }
         client.close()
         return final_result
     except:
         client.close()
         return {'status': False, 'message': "Calm down! We're working on it"}
+
