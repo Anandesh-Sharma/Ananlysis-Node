@@ -92,6 +92,8 @@ def fetch_user_messages(user_id):
             'message': "Success",
             'message_cluster': mydb
         }
+        client.close()
         return final_result
     except:
+        client.close()
         return {'status': False, 'message': "Calm down! We're working on it"}
