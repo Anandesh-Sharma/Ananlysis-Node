@@ -17,7 +17,7 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'loan.*?paid\s(?:back|off)',
         r'making\spayment.*?home\scredit\sloan',
         r'bhugta+n\skarne\ske\sliye\sdhanya?wad',
-        r'payment.*?was\ssuccessful',
+        r'payment.*?(?:was|is)\ssuccessful',
         r'payment\sof.*?received.*?loan',
         r'payment\sof.*?agreement.*?received',
         r'received.*?payment\s(of|rs).*?loan',
@@ -36,10 +36,14 @@ def get_loan_closed_messages(data, loan_messages_filtered, result, name):
         r'loan.*already\s(?:is|has\sbeen)\srepaid',
         r'thanks\sfor.*repayment',
         r'due.*has been settled',
-        r'thank.*for paying.*loan',
+        r'thank.*for paying.*(?:loan|emi)',
         r'rs\.?\s?([0-9,]+[.]?[0-9]+)\sreceived',
         r'loan\shas\sbeen\spaid',
-        r'received.*payment.*for.*?loan'
+        r'received.*payment.*for.*?loan',
+        r'emi.*?for\sthe\smonth\sof.*?received',
+        r'repay\sbill\ssuccess',
+        r'thank.*for\s?(?:your|making)?\spayment',
+        r'payment.*?(?:was|is|has\sbeen)\ssuccessful'
     ]
     not_patterns = [r'waiver\sscheme',
                     r'loan\sextension\sdate|tenor\sextension',
@@ -94,6 +98,8 @@ def replace_parenthesis(message):
     message = message.replace('(', '')
     message = message.replace(')', '')
     message = message.replace('*', '')
+    message = message.replace('[','')
+    message = message.replace(']','')
     return message
 
 
@@ -125,11 +131,11 @@ def get_loan_messages(data):
               'payuib', 'iavail', 'smcoin', 'ruplnd', 'ftcash', 'rupeeh', 'cashmt', 'loanbl', 'cashep', 'cashem',
               'tatacp', 'loanco', 'loanfu', 'loanpl', 'haaloo',
               'rsfast', 'cashbo', 'cashin', 'rupmax', 'cashpd', 'lendko', 'loanfx', 'mudrak', 'prloan', 'cmntri',
-              'cashmx', 'rupls', 'rscash', 'ezloan', 'ftloan',
+              'cashmx', 'rupls', 'rscash', 'ezloan', 'ftloan','cashpy',
               'abcash', 'loanhr', 'ruplus', 'notice', 'uucash', 'gsimpl', 'kaarva', 'mnywow', 'zestmo', 'rupred',
               'mclick', 'cashwn', 'lzypay']
     ignore_header = ['kotakb', 'mafild', 'iiflfn', 'capflt', 'kotkbk', 'ktkbnk', 'fedbnk', 'icicib', 'obcbnk', 'empbnk',
-                     'indbnk', 'qzhdfc', 'yesbnk', 'hdfcbn', 'kblbnk', 'hdfcbk', 'canbnk',
+                     'indbnk', 'qzhdfc', 'yesbnk', 'hdfcbn', 'kblbnk', 'hdfcbk', 'canbnk','idfcfb' , 'licind'
                      'synbnk', 'icicbk', 'hdfcpr', 'hdfcpll', 'icicbk', 'axisbk', 'kotakb', 'qlhdfc', 'vrhdfc',
                      'indusb']
     word1 = 'cashbean'
@@ -291,7 +297,9 @@ def get_disbursed(data, loan_messages_filtered, result, name):
         r'loan.*rs.*[0-9] is\sprocessed\sfor\sdisbursal',
         r'transfer.*loan.*initiated',
         r'loan account.*credit.*rs.*[0-9]',
-        r'credited.*amount\sto\s?(?:your)?\sbank'
+        r'credited.*amount\sto\s?(?:your)?\sbank',
+        r'congratulations.*?credited\sfor\s(?:rs\.?|inr)',
+        r'loan\sdisburse\smoney\ssuccess'
     ]
     not_patterns = [r'reward\s(?:of|point\sbalance)',
                     r'complete.*process',
@@ -632,7 +640,7 @@ def get_due_messages(data, loan_messages_filtered, result, name):
         r'will\sbe\sauto\s?[-]?debited.*against\syour\sdues',
         r'make.*repayment.*immediately.*avoid\supheaval',
         r'remind\s?\s?you.*loan.*due\ssoon',
-        r'repayment\sdate\sis'
+        r'repayment\sdate\sis',
         r'loan\sis\spending',
         r'emi\swill\sbe\sdeducted.*keep\ssufficient\sbalance',
         r'emi\swill\sbecome\sdue\son',
@@ -644,7 +652,9 @@ def get_due_messages(data, loan_messages_filtered, result, name):
         r'emi.*is\sdue',
         r'emi\srepayment\sdate',
         r'will\s?(?:be)?\sdue',
-        r'(?:today|tomorrow).*(?:due|repayment)\s(?:date|day)'
+        r'(?:today|tomorrow).*(?:due|repayment)\s(?:date|day)',
+        r'due\sby\s(?:tomorrow|today)',
+        r'due\sis\scoming\sup'
     ]
 
     for i in range(data.shape[0]):

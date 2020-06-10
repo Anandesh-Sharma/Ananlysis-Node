@@ -35,6 +35,7 @@ def cleaning(args):
     internet_banking = []
     spcl_salary = []
     withdraw = []
+    avail = []
     pattern_inb_wd = [" inb txn ", "w/d@", "w/d at"]
     for index, row in df.iterrows():
         body = row["body"].lower()
@@ -63,6 +64,8 @@ def cleaning(args):
             if matcher:
                 if check_account_number(body):
                     withdraw.append(index)
+        if re.search('\savail\sbal.*cr\s',body):
+            avail.append(index)
 
 
     cleaning_transaction_patterns_header = ['vfcare',
@@ -145,7 +148,8 @@ def cleaning(args):
                                             'smart',
                                             'myntra',
                                             'reings',
-                                            'reingp']
+                                            'reingp',
+                                            'monybk']
     garbage_header_rows = []
     for i, row in df.iterrows():
         if i in required_rows:
@@ -278,6 +282,7 @@ def cleaning(args):
     required_rows.extend(internet_banking)
     required_rows.extend(withdraw)
     required_rows.extend(spcl_salary)
+    required_rows.extend(avail)
     if user_id in result.keys():
         a = result[user_id]
         a.extend(list(required_rows))
