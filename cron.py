@@ -28,7 +28,7 @@ def parallel_proccess_user_records(user_id_dir):
     try:
         sms_json = json.load(open(PROCESSING_DOCS + str(user_id_dir) + '/sms_data.json', 'rb'))
         try:
-            old_sms = open(f'~/old_users/{user_id}/sms_data.json', 'rb')
+            old_sms = open(f'../../old_users/{user_id}/sms_data.json', 'rb')
             old_sms_json = json.load(old_sms)
             sms_json.update(old_sms_json)
             old_sms.close()
@@ -53,7 +53,7 @@ def parallel_proccess_user_records(user_id_dir):
                                       "result_type": "update_analysis"}
             # KYC STEP
             elif step == 1:
-                response = BL0.bl0(user_id=user_id, sms_json=sms_json)
+                response=BL0.bl0(user_id=user_id, sms_json=sms_json)
                 if response['status']:
                     response['result_type'] = 'before_kyc'
                     final_response = response
