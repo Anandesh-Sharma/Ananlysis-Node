@@ -50,8 +50,8 @@ def parallel_proccess_user_records(user_id):
     # conn().analysisresult.bl0.update_one({'cust_id': int(user_id)}, {"$push": {
     #     "result": temp_response_bl0}}, upsert=True)
 
-    print(requests.post(API_ENDPOINT, data=response_bl0,
-                        headers={'CHECKSUMHASH': Checksum.generate_checksum(response_bl0, CHECKSUM_KEY)}).json())
+    # print(requests.post(API_ENDPOINT, data=response_bl0,
+    #                     headers={'CHECKSUMHASH': Checksum.generate_checksum(response_bl0, CHECKSUM_KEY)}).json())
 
 
 def process_user_records(user_ids):

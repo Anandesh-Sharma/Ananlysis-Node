@@ -11,7 +11,6 @@ from analysisnode.settings import CHECKSUM_KEY, PROCESSING_DOCS
 @permission_classes((AllowAny,))
 def update_analysis(request):
     try:
-        response = request.data
         if not verify_checksum({'user_id': int(request.data.get('user_id'))}, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
             raise ValueError
     except (AttributeError, ValueError, KeyError):
