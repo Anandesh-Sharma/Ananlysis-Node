@@ -5,7 +5,7 @@ def fetch_user(user_id):
     # -> CHECK IF THE USER_ID IS PROCESSED BY CHECKING ANALYSIS RESULT
     client = conn()
     user_id = int(user_id)
-    alys_result = client.analysis.parameters.find_one({'cust_id': user_id})
+    alys_result = client.messagecluster.extra.find_one({'cust_id': user_id})
     msg_result = fetch_user_messages(user_id)
     # -> FETCH ANALYSIS
     if alys_result:
@@ -29,8 +29,8 @@ def fetch_user(user_id):
             del alys_rejection["_id"]
         # -> scoring_model
         alys_sm = client.analysis.scoring_model.find_one({'cust_id': user_id})
-        alys_sm["result"] = [alys_sm["result"][-1]]
         if alys_sm:
+            alys_sm["result"] = [alys_sm["result"][-1]]
             del alys_sm["_id"]
         # -> cheque bounce messages
         alys_cb = client.messagecluster.cheque_bounce_msgs.find_one({'cust_id': user_id})
@@ -49,9 +49,18 @@ def fetch_user(user_id):
         if alys_result_bl0:
             del alys_result_bl0['_id']
         # -> parameters
-        alys_result['parameters'] = [alys_result['parameters'][-1]]
-        if alys_result:
-            del alys_result['_id']
+        alys_param = client.analysis.parameters.find_one({'cust_id': user_id})
+        if alys_param:
+            try:
+                alys_param['parameters'] = [alys_param['parameters'][-1]]
+                del alys_param['_id']
+            except BaseException as e:
+                alys_param = None
+        # -> parameters-3
+        alys_param3 = client.analysis.parameters.find_one({'cust_id': user_id})
+        alys_param3['parameters-3'] = [alys_param3['parameters-3'][-1]]
+        if alys_param3:
+            del alys_param3['_id']
         # -> message cluster
         if msg_result['status']:
             message_cluster = msg_result['message_cluster']
@@ -70,7 +79,8 @@ def fetch_user(user_id):
                 'cheque_bounce': alys_cb if alys_cb else {},
                 'ecs_bounce': alys_ecs if alys_ecs else {},
                 'legal': alys_legal if alys_legal else {},
-                'parameters': alys_result if alys_result else {},
+                'parameters': alys_param if alys_param else {},
+                'parameters_3': alys_param3 if alys_param3 else {},
                 'messagecluster': message_cluster if msg_result['status'] else [],
                 'result':alys_result_bl0 if alys_result_bl0 else []
             },
