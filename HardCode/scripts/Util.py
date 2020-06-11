@@ -12,12 +12,9 @@ warnings.filterwarnings("ignore")
 
 
 def conn():
-    if DEBUG:
-        connection = MongoClient(f"mongodb://{(urllib.parse.quote(MONGOUSER))}:{urllib.parse.quote(MONGOPASS)}@localhost"
-                             f":27018/?authSource=admin&readPreference=primary&ssl=false", socketTimeoutMS=900000)
-    else:
-        connection = MongoClient(f"mongodb://{(urllib.parse.quote(MONGOUSER))}:{urllib.parse.quote(MONGOPASS)}@localhost"
-                             f":27017/?authSource=admin&readPreference=primary&ssl=false", socketTimeoutMS=900000)
+    connection = MongoClient(f"mongodb://{(urllib.parse.quote(MONGOUSER))}:{urllib.parse.quote(MONGOPASS)}@localhost"
+                         f":27017/?authSource=admin&readPreference=primary&ssl=false", socketTimeoutMS=900000)
+
     return connection
 
 

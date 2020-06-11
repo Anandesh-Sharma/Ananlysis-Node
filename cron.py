@@ -13,10 +13,7 @@ from concurrent.futures import ProcessPoolExecutor
 from analysisnode import Checksum
 import requests
 
-if DEBUG:
-    API_ENDPOINT = 'https://testing.credicxotech.com/api/ml_analysis/callback/'
-else:
-    API_ENDPOINT = 'https://api.credicxotech.com/api/ml_analysis/callback/'
+
 
 def parallel_proccess_user_records(user_id_dir):
     step = int(user_id_dir[-1])
@@ -108,8 +105,6 @@ def parallel_proccess_user_records(user_id_dir):
     conn().analysisresult.bl0.update_one({'cust_id': int(user_id)}, {"$push": {
         "result": temp_response_bl0}}, upsert=True)
     final_response['user_id'] = int(user_id)
-    print(requests.post(API_ENDPOINT, data=final_response,
-                        headers={'CHECKSUMHASH': Checksum.generate_checksum({'user_id': user_id}, CHECKSUM_KEY)}).json())
 
 
 def process_user_records(user_ids):
