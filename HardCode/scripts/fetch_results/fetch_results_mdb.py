@@ -54,17 +54,16 @@ def fetch_user(user_id):
             try:
                 alys_param['parameters'] = [alys_param['parameters'][-1]]
                 del alys_param['_id']
-            except BaseException as e:
+            except:
                 alys_param = None
         # -> parameters-3
         alys_param3 = client.analysis.parameters.find_one({'cust_id': user_id})
-        alys_param3['parameters-3'] = [alys_param3['parameters-3'][-1]]
         if alys_param3:
             del alys_param3['_id']
+            alys_param3['parameters-3'] = [alys_param3['parameters-3'][-1]]
         # -> message cluster
         if msg_result['status']:
             message_cluster = msg_result['message_cluster']
-
 
 
         final_result = {
