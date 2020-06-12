@@ -39,6 +39,14 @@ def parallel_proccess_user_records(user_id_dir):
                 "message": "No messages found in sms_json",
                 "result": False
             }
+            if step==0:
+                final_response["result_type"]="update_analysis"
+            elif step==1:
+                final_response["result_type"]="before_kyc"
+            elif step==2:
+                final_response["result_type"]="before_cibil"
+            elif step==3:
+                final_response["result_type"]="before_loan"
         else:
             # UPDATE ANALYSIS
             if step == 0:
@@ -93,7 +101,7 @@ def parallel_proccess_user_records(user_id_dir):
             final_response["result_type"]="before_kyc"
         elif step==2:
             final_response["result_type"]="before_cibil"
-        else:
+        elif step==3:
             final_response["result_type"]="before_loan"
         try:
             shutil.move(PROCESSING_DOCS + str(user_id_dir),"error_docs/")
