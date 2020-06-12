@@ -18,7 +18,8 @@ head_matcher = {
     'ICASHE' : ['ICASHE', 'CASHEB','CASHEM','CASHEP'],
     'RRLOAN' : ['RRLOAN', 'RUPEER','RRWPAY','TRUBAL','PAYUIB','RUPRED'],
     'MAFILO' : ['MAFILO', 'MAFILG'],
-    'RAPIDR' : ['RAPIDR','AFGAFG']
+    'RAPIDR' : ['RAPIDR','AFGAFG'],
+    'RUPLUS' : ['RUPLUS','RUPEEP','KRXSMS']
 }
 
 # , 'NXCOMM', 'NXIFAI', 'NXIFAJ', 'NXIFAB', 'NXIFAC', 'NXIFAG', 'NXIFAP', 'NXIFAE' irredit headers
