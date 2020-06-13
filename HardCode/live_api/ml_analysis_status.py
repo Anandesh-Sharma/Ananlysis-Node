@@ -11,9 +11,7 @@ from HardCode.scripts.fetch_results.fetch_results_mdb import fetch_user
 @permission_classes((AllowAny,))
 def get_cibil_analysis_status(request):
     try:
-        response = request.data
-        print(response)
-        if not verify_checksum(response, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
+        if not verify_checksum({'user_id': int(request.data.get('user_id'))}, CHECKSUM_KEY, request.headers['CHECKSUMHASH']):
             raise ValueError
     except (AttributeError, ValueError, KeyError):
         return Response({'error': 'INVALID CHECKSUM!!!'}, 400)
