@@ -26,7 +26,7 @@ def exception_feeder(**kwargs):
 def analysis_n_parameters(**kwargs):
     user_id = kwargs.get('user_id')
     sms_json = kwargs.get('sms_json')
-    cibil_df = kwargs.get('cibil_xml')
+    # cibil_df = kwargs.get('cibil_xml')
     app_data = kwargs.get('app_data')
     contacts = kwargs.get('contacts')
     sms_count = len(sms_json)
@@ -50,27 +50,27 @@ def analysis_n_parameters(**kwargs):
                 'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata'))), 'cust_id': user_id}
     logger.info('connection success')
 
-
     # ===> Analysis
     try:
-        result = update(user_id=user_id,sms_json=sms_json)
+        result = update(user_id=user_id, sms_json=sms_json)
         if not result['status']:
             msg = "sms updation failed due to some reason-" + result['message']
             logger.error(msg)
             exception_feeder(client=client, user_id=user_id,
-                            msg=msg)
+                             msg=msg)
 
     except BaseException as e:
-        msg = "sms updation failed due to some reason-"+str(e)
+        msg = "sms updation failed due to some reason-" + str(e)
         logger.error(msg)
         exception_feeder(client=client, user_id=user_id,
-                        msg=msg)
+                         msg=msg)
 
     # ===> Analysis Complete
 
     # >>=>> Parameters Updation
     try:
-        result_params = parameters_updation(user_id=user_id, cibil_xml=cibil_df, sms_count=sms_count, app_data=app_data,contacts=contacts)
+        result_params = parameters_updation(user_id=user_id, cibil_xml=None, sms_count=sms_count, app_data=app_data,
+                                            contacts=contacts)
         if not result_params['status']:
             msg = "Parameters updation check failed due to some reason-" + result_params['message']
             logger.error(msg)
@@ -81,4 +81,4 @@ def analysis_n_parameters(**kwargs):
         exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Parameters updation complete')
 
-    return {'status':True,'message':'success'}
+    return {'status': True, 'message': 'success'}

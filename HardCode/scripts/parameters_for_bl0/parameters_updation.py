@@ -142,7 +142,8 @@ def parameters_updation(**kwargs):
         print('error in total rejction msg-' + str(e))
 
     try:
-        normal_app_count, premium_app_count = get_app_rejection_count(user_id)
+        normal_app_count = get_app_rejection_count(user_id)["normal_apps"]
+        premium_app_count = get_app_rejection_count(user_id)["premium_apps"]
     except BaseException as e:
         normal_app_count = 0
         premium_app_count = 0

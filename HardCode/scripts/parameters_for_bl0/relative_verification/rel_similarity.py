@@ -7,15 +7,16 @@ def rel_sim(contacts):
     """
     Rel_name = []
     contacts = contacts.split('\r\n')
+    print(contacts)
     for contact in contacts:
         if len(contact) >= 0:
             splitted_list = contact.split(',')
             if len(splitted_list) == 2:
-                name,_ = splitted_list
+                name, _ = splitted_list
 
             elif len(splitted_list) == 3:
                 name = splitted_list[0]
-            contact_name=name
+            contact_name = name
             contact_name = str(contact_name)
             res = contact_name.lower()
             res = str(res).split(' ')

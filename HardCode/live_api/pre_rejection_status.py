@@ -39,19 +39,25 @@ def get_pre_rejection_status(request):
     except FileExistsError:
         pass
     try:
-        with open('PROCESSING_DOCS/' + str(user_id)+ "_1" + '/sms_data.json', 'wb+') as destination:
+        with open('PROCESSING_DOCS/' + str(user_id) + "_1" + '/sms_data.json', 'wb+') as destination:
             for chunk in sms_json.chunks():
                 destination.write(chunk)
     except BaseException as e:
         print(str(e))
-    # try:
-    #     contacts = request.FILES['contacts']
-    # except:
-    #     return Response({'status': False, 'message': 'contacts parameter is required'}, 400)
-    # try:
-    #     app_data = request.FILES['app_data']
-    # except:
-    #     return Response({'status': False, 'message': 'app_data parameter is required'}, 400)
+    try:
+        contacts = request.FILES['contacts']
+        with open('PROCESSING_DOCS/' + str(user_id) + "_1" + '/contacts.csv', 'wb+') as destination:
+            for chunk in contacts.chunks():
+                destination.write(chunk)
+    except:
+        return Response({'status': False, 'message': 'contacts parameter is required'}, 400)
+    try:
+        app_data = json.loads(request.data.get('app_data'))
+        with open('PROCESSING_DOCS/' + str(user_id) + "_1" + '/app_data.json', 'w+') as destination:
+            json.dump(app_data, destination)
+    except Exception as e:
+        print(e)
+        return Response({'status': False, 'message': 'app_data parameter is required'}, 400)
     try:
         # result = before_kyc_function(user_id=user_id, sms_json=sms_json, contacts=contacts, app_data=app_data)
         # temp_result = result

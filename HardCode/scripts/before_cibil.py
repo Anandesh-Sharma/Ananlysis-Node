@@ -10,7 +10,7 @@ from HardCode.scripts.loan_analysis.loan_main import final_output
 from HardCode.scripts.loan_analysis.overdue_details import get_overdue_details
 from HardCode.scripts.parameters_for_bl0.available_balance.last_month_avbl_bal import \
     average_balance
-from HardCode.scripts.analysis_updation import update
+# from HardCode.scripts.analysis_updation import update
 from HardCode.scripts.parameters_for_bl0.loan_limit.max_loan_amount import get_loan_max_amount
 from HardCode.scripts.Util import conn, logger_1
 
