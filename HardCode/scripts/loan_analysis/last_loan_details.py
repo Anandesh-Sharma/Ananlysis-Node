@@ -38,6 +38,8 @@ def is_promotional(extra_data_grouped, app, last_message_date):
 
 def is_important_promotional(message):
     patterns = [
+        r'otp.*never.*asking\sfor\sotp',
+        r'payment.*not\smade.*negative\scustomer',
         r'received.*?application\sfor\s?(?:personal)?\sloan',
         r'hold.*loan\srepayments.*without\sany\spenalty',
         r'pay\s(?:rs\.?|inr).*get\s[0-9]+\s?days\sextra',
@@ -186,6 +188,7 @@ def get_final_loan_details(cust_id):
                     r["category"] = False
                     r["message"] = last_message
                 report[app] = r
+        #pprint(report)
         connect.close()
     except BaseException as e:
         res= {'status': False, 'message': str(e),
