@@ -34,6 +34,8 @@ def parameters_updation(**kwargs):
     no_of_sms = kwargs.get('sms_count')
     app_data = kwargs.get('app_data')
     contacts = kwargs.get('contacts')
+    profile_info = kwargs.get('profile_info')
+
 
     connect = conn()
     db = connect.analysis.parameters
@@ -233,6 +235,11 @@ def parameters_updation(**kwargs):
         payment_r = -1
         print('error in payment history-'+str(e))
 
+    try:
+        profession = profile_info['profile']['profession__profession']
+    except BaseException as e:
+        profession = " "
+        print('error in profession - '+str(e))
 
     try:
         dict_update = {'Total_msgs':no_of_sms,
@@ -282,6 +289,7 @@ def parameters_updation(**kwargs):
                        'no_of_relatives':rel_length,
                        'relatives':res,
                        'username_msgs':username_msgs ,
+                       'profession':profession,
                        'modified_at': str(datetime.now(pytz.timezone('Asia/Kolkata')))}
 
         db.update_one({'cust_id': user_id}, {"$push": {'parameters': dict_update}}, upsert=True)
