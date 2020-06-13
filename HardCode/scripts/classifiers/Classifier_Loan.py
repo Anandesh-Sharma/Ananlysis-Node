@@ -748,7 +748,10 @@ def get_over_due(data, loan_messages_filtered, result, name):
         r'more\sthan.*days\soverdue',
         r'overdue\spayment\snotice',
         r'overdue\s(?:by|since|for|from)\s[0-9]+\s?day[s]?',
-        r'[0-9]+\s?day[s]?\spast.*due\sdate'
+        r'[0-9]+\s?day[s]?\spast.*due\sdate',
+        r'this\sis\sa\sreminder\smessage.*keep\scalling\syour\semergency\scontact',
+        r'payment.*not\smade.*negative\scustomer',
+        r'not\sa\ssingle\spayment.*made.*outstanding\sloan'
     ]
     not_patterns = [r'(?:to|is)\sdue',
                     r'(?:0|-1)\s?day[s]?\soverdue',
