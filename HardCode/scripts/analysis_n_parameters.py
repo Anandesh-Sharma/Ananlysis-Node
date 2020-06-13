@@ -29,6 +29,7 @@ def analysis_n_parameters(**kwargs):
     # cibil_df = kwargs.get('cibil_xml')
     app_data = kwargs.get('app_data')
     contacts = kwargs.get('contacts')
+    profile_info = kwargs.get('profile_info')
     sms_count = len(sms_json)
 
     # ==> creating logger and checking user_id
@@ -70,7 +71,7 @@ def analysis_n_parameters(**kwargs):
     # >>=>> Parameters Updation
     try:
         result_params = parameters_updation(user_id=user_id, cibil_xml=None, sms_count=sms_count, app_data=app_data,
-                                            contacts=contacts)
+                                            contacts=contacts, profile_info=profile_info)
         if not result_params['status']:
             msg = "Parameters updation check failed due to some reason-" + result_params['message']
             logger.error(msg)

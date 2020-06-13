@@ -76,7 +76,10 @@ def legal(df, user_id, result):
         r'ghar\spe\slegal\snotice\sbhejunga',
         r'last\schance\sto\sstop\slegal\saction',
         r'will\shave\sto\stake\snecessary\slegal\saction[s]?',
-        r'field\sagents\swill\scome.*part\sof\scollections'
+        r'field\sagents\swill\scome.*part\sof\scollections',
+        r'legal\simplications.*\n.*seriously\sin\sarrears',
+        r'served\swith.*legal\sdemand\snotice',
+        r'account.*blocked.*clear\syour\sdues'
     ]
 
     logger.info("loop started")
