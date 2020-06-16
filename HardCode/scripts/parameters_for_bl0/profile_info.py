@@ -19,7 +19,7 @@ def get_profile_info(user_id):
     :returns age of the user
     :rtype: str
     """
-    Auth = 'Bearer ' + generate_access_token()
+    Auth = 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTkyMzg5NDkwLCJqdGkiOiIwYzNiN2NlZTg4OTA0Mjc3OGRlYTJjZWI0YjNiYzg4OCIsInVzZXJfaWQiOjE1NzAxMSwiY3VycmVudF9zdGVwIjotMSwiZGVzaWduYXRpb24iOlsiTUxfTWFuYWdlciIsIjE3Il0sIm5hbWUiOiJUZXN0IiwiZW1haWwiOiJhbmFuZGVzaHNoYXJtYUBnbWFpbC5jb20iLCJwaG9uZV9udW1iZXIiOjk5OTY5NDQ5NDN9.nPkj5NqX7bBFI5mELySa3gor5vTI9Em3No5AW4ygrZQ'
     age = None
     app_data = None
     reference_relation, reference_number = None, None

@@ -22,7 +22,7 @@ def generate_access_token():
 def get_contacts_data(user_id):
     # ==> fetches the user contact list
 
-    Auth = 'Bearer ' + generate_access_token()
+    Auth = 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTkyMzg5NDkwLCJqdGkiOiIwYzNiN2NlZTg4OTA0Mjc3OGRlYTJjZWI0YjNiYzg4OCIsInVzZXJfaWQiOjE1NzAxMSwiY3VycmVudF9zdGVwIjotMSwiZGVzaWduYXRpb24iOlsiTUxfTWFuYWdlciIsIjE3Il0sIm5hbWUiOiJUZXN0IiwiZW1haWwiOiJhbmFuZGVzaHNoYXJtYUBnbWFpbC5jb20iLCJwaG9uZV9udW1iZXIiOjk5OTY5NDQ5NDN9.nPkj5NqX7bBFI5mELySa3gor5vTI9Em3No5AW4ygrZQ'
     data_contacts = defaultdict(list)
     url_contacts = 'https://admin.credicxotech.com/UserInfo/' + str(user_id) + '/contacts.csv'
 
