@@ -82,4 +82,4 @@ def analysis_n_parameters(**kwargs):
         exception_feeder(client=client, user_id=user_id, msg=msg)
     logger.info('Parameters updation complete')
 
-    return {'status': True, 'message': 'success'}
+    return {'status': True, 'cust_id': user_id, 'result': True}

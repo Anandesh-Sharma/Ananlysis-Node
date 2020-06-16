@@ -13,6 +13,7 @@ from analysisnode.settings import PROCESSING_DOCS, CHECKSUM_KEY, FINAL_RESULT, D
 from concurrent.futures import ProcessPoolExecutor
 from analysisnode import Checksum
 import requests
+import pandas as pd
 
 
 def parallel_proccess_user_records(user_id_dir):
@@ -58,11 +59,15 @@ def parallel_proccess_user_records(user_id_dir):
                                       "result_type": "update_analysis"}
             # KYC STEP
             elif step == 1:
-                contact_csv = open(f"{PROCESSING_DOCS}/{user_id}_1/contacts.csv").read()
+                contact_csv = pd.read_csv(f"{PROCESSING_DOCS}/{user_id}_1/contacts.csv", header=None, index_col=0,
+                                          squeeze=True).to_dict()
                 with open(f"{PROCESSING_DOCS}/{user_id}_1/app_data.json") as f:
                     app_data = json.load(f)
+                with open(f"{PROCESSING_DOCS}/{user_id}_1/profile_data.json") as f:
+                    profile_data = json.load(f)
                 response = analysis_n_parameters(user_id=int(user_id), sms_json=sms_json, contacts=contact_csv,
-                                                 app_data=app_data)
+                                                 app_data=app_data, profile_info=profile_data)
+                print(response)
                 if response['status']:
                     response['result_type'] = 'before_kyc'
                     final_response = response

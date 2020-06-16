@@ -7,13 +7,13 @@ from HardCode.scripts.Util import conn
 
 
 
-def validate(user_id):
+def validate(user_id, contacts):
     """
     :returns True/False if the reference of mother/father verifies from the contact list
     :rtype: dict
     """
     status = True
-    age,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation,no_of_contacts = get_profile_info(user_id)
+    age,app_data,total_loans,allowed_limit,expected_date,repayment_date,reference_number,reference_relation, no_of_contacts = get_profile_info(user_id)
     contacts_data = get_contacts_data(user_id)
     validated = False
     max_similarity = -9

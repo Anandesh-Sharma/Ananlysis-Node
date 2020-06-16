@@ -29,9 +29,6 @@ def rel_validate(user_id, contacts):
         else:
             status = False
             msg = 'no data fetched from api'
-        client = conn()
-        client.analysis.parameters.update({'cust_id': user_id}, {"$set": relatives}, upsert=True)
-        client.close()
     except BaseException as e:
         print(f"Error in validation: {e}")
         msg = f"error in relatives verification : {str(e)}"

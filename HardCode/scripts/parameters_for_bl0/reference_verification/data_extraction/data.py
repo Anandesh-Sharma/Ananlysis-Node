@@ -2,7 +2,6 @@ import requests
 from collections import defaultdict
 
 URL = 'https://admin.credicxotech.com/api/get_user_info/'
-Auth = 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTU4OTIyMDY3OSwianRpIjoiNTM2YzM4NWU2NzNjNDg1ODhjZGEwY2UzMDA4NTA2NzgiLCJ1c2VyX2lkIjoxNywiY3VycmVudF9zdGVwIjoxLCJkZXNpZ25hdGlvbiI6WyJzdXBlcnVzZXJfc3VwZXJ1c2VyIl0sIm5hbWUiOiJTdXJhaiBCb2hhcmEiLCJlbWFpbCI6InN1cmFqLmJvaGFyYS41ODlAZ21haWwuY29tIiwicGhvbmVfbnVtYmVyIjo5MjY3OTg4NTY1fQ.e9_9BKfyehBBYzwJQ9uvmmrcAh2GR0JzCYSED-hhLKQ'
 
 
 def generate_access_token():
@@ -11,7 +10,7 @@ def generate_access_token():
     url_refresh = 'https://admin.credicxotech.com/api/token/refresh/'
 
     refresh_token = {
-        'refresh': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTU5MTg5NzY4NywianRpIjoiMDgxMDJmOGYzZGY0NDdhNTg3MDM5OGIwM2Q1ZWYzMjciLCJ1c2VyX2lkIjoxNywiY3VycmVudF9zdGVwIjoxLCJkZXNpZ25hdGlvbiI6WyJzdXBlcnVzZXJfc3VwZXJ1c2VyIl0sIm5hbWUiOiJTdXJhaiBCb2hhcmEiLCJlbWFpbCI6InN1cmFqLmJvaGFyYS41ODlAZ21haWwuY29tIiwicGhvbmVfbnVtYmVyIjo5MjY3OTg4NTY1fQ.n9MRdhDHx-NdQElB0AHgerpDdLYl5Ufw_oSXJoUrB0o'}
+        'refresh': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTU5MjY0MzE3MCwianRpIjoiNjYyMzI4OTQ2ZTRlNGU0NWEyNjQ2ZDdlOGQzODYwOWUiLCJ1c2VyX2lkIjoxNTcwMTEsImN1cnJlbnRfc3RlcCI6MTAxLCJkZXNpZ25hdGlvbiI6WyJNTF9NYW5hZ2VyIiwiMTciXSwibmFtZSI6IlRlc3QiLCJlbWFpbCI6ImFuYW5kZXNoc2hhcm1hQGdtYWlsLmNvbSIsInBob25lX251bWJlciI6OTk5Njk0NDk0M30.Q0G3C33JUA9m2Fwm-PN7dcHincc8WRhd0zzhtnRL7pA'}
 
     res = requests.post(url=url_refresh, data=refresh_token)
     r = res.json()
@@ -23,7 +22,7 @@ def generate_access_token():
 def get_contacts_data(user_id):
     # ==> fetches the user contact list
 
-    global Auth
+    Auth = 'Bearer ' + generate_access_token()
     data_contacts = defaultdict(list)
     url_contacts = 'https://admin.credicxotech.com/UserInfo/' + str(user_id) + '/contacts.csv'
 

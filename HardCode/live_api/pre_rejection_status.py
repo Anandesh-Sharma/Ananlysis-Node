@@ -59,6 +59,13 @@ def get_pre_rejection_status(request):
         print(e)
         return Response({'status': False, 'message': 'app_data parameter is required'}, 400)
     try:
+        user_data = json.loads(request.data.get('profile_data'))
+        with open('PROCESSING_DOCS/' + str(user_id) + "_1" + '/profile_data.json', 'w+') as destination:
+            json.dump(user_data, destination)
+    except Exception as e:
+        print(e)
+        return Response({'status': False, 'message': 'profile_data parameter is required'}, 400)
+    try:
         # result = before_kyc_function(user_id=user_id, sms_json=sms_json, contacts=contacts, app_data=app_data)
         # temp_result = result
         # temp_result['modified_at'] = str(datetime.now(pytz.timezone('Asia/Kolkata')))
